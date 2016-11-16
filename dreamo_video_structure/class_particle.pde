@@ -1,6 +1,6 @@
 //*************************************************
 // class Particle
-// last modified: 12/11/16
+// last modified: 16/11/16
 //
 //**************************************************
 
@@ -15,6 +15,7 @@ abstract class Particle
   private Vector rotation;
   private int depth;
   private int lifeTime;
+  private int lifeTimeLeft;
   
   private long id;
   private boolean destroy;
@@ -27,7 +28,8 @@ abstract class Particle
     gravity = new Vector(0, 0, false);
     rotation = new Vector(1, 0, true); 
     depth = 0;
-    lifeTime = -1;
+    lifeTimeLeft = -1;
+    lifeTime = 0;
     
     id = global_particlesInstanciatedNumber;
     global_particlesInstanciatedNumber++;
@@ -42,7 +44,8 @@ abstract class Particle
     gravity = new Vector(0, 0, false);
     rotation = new Vector(1, 0, true); 
     depth = newDepth;
-    lifeTime = -1;
+    lifeTimeLeft = -1;
+    lifeTime = 0;
     
     id = global_particlesInstanciatedNumber;
     global_particlesInstanciatedNumber++;
@@ -57,7 +60,8 @@ abstract class Particle
     gravity = new Vector(toCopy.gravity);
     rotation = new Vector(toCopy.rotation);
     depth = toCopy.depth;
-    lifeTime = -1;
+    lifeTimeLeft = -1;
+    lifeTime = 0;
     
     id = global_particlesInstanciatedNumber;
     global_particlesInstanciatedNumber++;
@@ -97,6 +101,11 @@ abstract class Particle
     return id;
   }
   
+  public int getLifeTimeLeft()
+  {
+    return lifeTimeLeft;
+  }
+  
   public int getLifeTime()
   {
     return lifeTime;
@@ -128,9 +137,9 @@ abstract class Particle
     depth = newDepth;
   }
   
-  public void setLifeTime(int newLifeTime)
+  public void setLifeTimeLeft(int newLifeTimeLeft)
   {
-    lifeTime = newLifeTime;
+    lifeTimeLeft = newLifeTimeLeft;
   }
   
   //apply transoformations method
@@ -165,10 +174,11 @@ abstract class Particle
     speed = speed.sum(gravity);
     
     //life variables update
-    if(lifeTime > 0)
+    lifeTime++;
+    if(lifeTimeLeft > 0)
     {
-      lifeTime--;
-      if(lifeTime == 0)
+      lifeTimeLeft--;
+      if(lifeTimeLeft == 0)
       {
         instanceDestroy();
       }
