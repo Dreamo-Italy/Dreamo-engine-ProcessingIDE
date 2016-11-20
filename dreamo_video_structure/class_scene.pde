@@ -1,36 +1,58 @@
-//*************************************************
-// class Scene
-// last modified: 13/11/16
-//
-//**************************************************
+//package dreamo.display;
 
 import java.util.Arrays;
 
-class Scene
+class Scene extends AgingObject
 {
-  private final short PARTICLES_MAX = 10000;
+  private final int PARTICLES_MAX = 10000;
   private Particle[] particlesList;
-  private short particlesNumber;
+  private int particlesNumber;
+  
+  private Background sceneBackground;
+  private boolean backgroundEnabled;
   
   //CONSTRUCTORS
   public Scene()
   {
     particlesList = new Particle[PARTICLES_MAX];
     particlesNumber = 0;
+    sceneBackground = null;
+    backgroundEnabled = false;
   }
+  
   //copy constructor
   public Scene(Scene toCopy)
   {
     particlesList = new Particle[PARTICLES_MAX];
     particlesNumber = toCopy.particlesNumber;
+    sceneBackground = toCopy.sceneBackground;
+    backgroundEnabled = toCopy.backgroundEnabled;
     
-    for(short i = 0; i < particlesNumber; i++)
+    for(int i = 0; i < particlesNumber; i++)
     {
-      particlesList[i] = toCopy.particlesList[i];
+      if(toCopy.particlesList[i] != null)
+      {
+        particlesList[i] = toCopy.particlesList[i];
+      }
     }
   }
   
   //
+  public void setBackground(Background newBackground)
+  {
+    sceneBackground = newBackground;
+  }
+  
+  public void enableBackground()
+  {
+    backgroundEnabled = true;
+  }
+  
+  public void disableBackground()
+  {
+    backgroundEnabled = false;
+  }
+  
   public void addParticle(Particle toAdd)
   {
     if(particlesNumber < PARTICLES_MAX)
@@ -38,19 +60,23 @@ class Scene
       particlesList[particlesNumber] = toAdd;
       particlesNumber++;
       Arrays.sort(particlesList, new ParticleComparator());
-      //initialize particle
-      toAdd.init();
+      //initialise particle
+      if(!toAdd.getInitialised())
+      {
+        toAdd.init();
+        toAdd.assertInitialised();
+      }
     }
     else
     {
-      println("Warning: reached maximum number of particles for a Scene.");
+      println("Warning: reached maximum number of particles for a Scene. Last Particle wasn't added.");
     }
   } 
   
   public void removeParticleById(int idToRemove)
   {
     boolean match = false;
-    for(short i = 0; i < particlesNumber; i++)
+    for(int i = 0; i < particlesNumber; i++)
     {
       if(idToRemove == particlesList[i].getId())
       {
@@ -64,12 +90,12 @@ class Scene
     }
   }
   
-  private void removeParticleByListIndex(short indexToRemove)
+  private void removeParticleByListIndex(int indexToRemove)
   {
     if(indexToRemove < particlesNumber)
     {
       particlesList[indexToRemove] = null;
-      for(short i = indexToRemove; i < particlesNumber-1; i++)
+      for(int i = indexToRemove; i < particlesNumber-1; i++)
       {
         particlesList[i] = particlesList[i+1];
       }
@@ -95,10 +121,21 @@ class Scene
     }
   }
   
-  //trace and update methods
+  public void exportPersistentParticles(Scene targetScene)
+  {
+    for(int i = 0; i < particlesNumber; i++)
+    {
+      if(particlesList[i].getPersistence())
+      {
+        targetScene.addParticle(particlesList[i]);
+      }
+    }
+  }
+  
+  //trace and update methods  
   public void update()
   {
-    for(short i = 0; i < particlesNumber; i++)
+    for(int i = 0; i < particlesNumber; i++)
     {
       particlesList[i].updatePhysics();
       particlesList[i].update();
@@ -106,8 +143,13 @@ class Scene
   }
   
   public void trace()
-  {
-    for(short i = 0; i < particlesNumber; i++)
+  {  
+    if(sceneBackground != null && backgroundEnabled)
+    {
+      sceneBackground.trace();
+    }
+    
+    for(int i = 0; i < particlesNumber; i++)
     {
       particlesList[i].beginTransformations();
       particlesList[i].trace();
@@ -115,10 +157,10 @@ class Scene
     }
   }
   
-  //verify for instances to be destroyed
-  public void trashDeadInstances()
+  //verify for particles to be destroyed
+  public void trashDeadParticles()
   {
-    for(short i = 0; i < particlesNumber; i++)
+    for(int i = 0; i < particlesNumber; i++)
     {
       if(particlesList[i].isToBeDestroyed())
       {

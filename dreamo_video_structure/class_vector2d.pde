@@ -1,17 +1,13 @@
-//*************************************************
-// class Vector
-// last modified: 13/11/16
-//
-//**************************************************
+//package dreamo.display;
 
-class Vector
+class Vector2d
 {
   //PRIVATE MEMBERS
   private float x, y;
   private float modulus, direction;
   
   //CONSTRUCTORS
-  public Vector(float newX_Mod, float newY_Dir, boolean polar)
+  public Vector2d(float newX_Mod, float newY_Dir, boolean polar)
   {
     if(polar)
     {
@@ -24,7 +20,7 @@ class Vector
   }
   
   //copy constructor
-  public Vector(Vector toCopy)
+  public Vector2d(Vector2d toCopy)
   {
     x = toCopy.x;
     y = toCopy.y;
@@ -109,23 +105,23 @@ class Vector
   }
   
   //functions  
-  public float distance(Vector other)
+  public float distance(Vector2d other)
   {
     return dist(x, y, other.getX(), other.getY());
   }
   
-  public Vector sum(Vector other)
+  public Vector2d sum(Vector2d other)
   {
-    return new Vector(x+other.getX(), y+other.getY(), false);
+    return new Vector2d(x+other.getX(), y+other.getY(), false);
   }
   
-  public Vector mirrorX()
+  public Vector2d mirrorX()
   {
-    return new Vector(-x, y, false);
+    return new Vector2d(-x, y, false);
   }
   
-  public Vector mirrorY()
+  public Vector2d mirrorY()
   {
-    return new Vector(x, -y, false);
+    return new Vector2d(x, -y, false);
   }
 }

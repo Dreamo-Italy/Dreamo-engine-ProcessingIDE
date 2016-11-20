@@ -1,35 +1,33 @@
-//*************************************************
-// class Particle
-// last modified: 16/11/16
-//
-//**************************************************
-
 import java.util.Comparator;
 
-abstract class Particle
+//package dreamo.display;
+
+abstract class Particle extends AgingObject
 {
   //PRIVATE MEMBERS
-  private Vector position;
-  private Vector speed;
-  private Vector gravity;
-  private Vector rotation;
+  private Vector2d position;
+  private Vector2d speed;
+  private Vector2d gravity;
+  private Vector2d rotation;
   private int depth;
-  private int lifeTime;
-  private int lifeTimeLeft;
   
   private long id;
   private boolean destroy;
   
+  private boolean persistent;
+  private boolean initialised;
+  
   //CONTRUCTORS  
   public Particle()
   {
-    position = new Vector(0, 0, false);
-    speed = new Vector(0, 0, false);
-    gravity = new Vector(0, 0, false);
-    rotation = new Vector(1, 0, true); 
+    position = new Vector2d(0, 0, false);
+    speed = new Vector2d(0, 0, false);
+    gravity = new Vector2d(0, 0, false);
+    rotation = new Vector2d(1, 0, true); 
     depth = 0;
-    lifeTimeLeft = -1;
-    lifeTime = 0;
+  
+    persistent = false;
+    initialised = false;
     
     id = global_particlesInstanciatedNumber;
     global_particlesInstanciatedNumber++;
@@ -37,31 +35,17 @@ abstract class Particle
     destroy = false;
   }
   
-  public Particle(int newDepth)
-  {
-    position = new Vector(0, 0, false);
-    speed = new Vector(0, 0, false);
-    gravity = new Vector(0, 0, false);
-    rotation = new Vector(1, 0, true); 
-    depth = newDepth;
-    lifeTimeLeft = -1;
-    lifeTime = 0;
-    
-    id = global_particlesInstanciatedNumber;
-    global_particlesInstanciatedNumber++;
-    global_particlesCount++;
-    destroy = false;
-  }
   //copy constructor
   public Particle(Particle toCopy)
   {
-    position = new Vector(toCopy.position);
-    speed = new Vector(toCopy.speed);
-    gravity = new Vector(toCopy.gravity);
-    rotation = new Vector(toCopy.rotation);
+    position = new Vector2d(toCopy.position);
+    speed = new Vector2d(toCopy.speed);
+    gravity = new Vector2d(toCopy.gravity);
+    rotation = new Vector2d(toCopy.rotation);
     depth = toCopy.depth;
-    lifeTimeLeft = -1;
-    lifeTime = 0;
+    
+    persistent = toCopy.persistent;
+    initialised = false;
     
     id = global_particlesInstanciatedNumber;
     global_particlesInstanciatedNumber++;
@@ -71,17 +55,17 @@ abstract class Particle
   
   //PUBLIC METHODS
   //get methods
-  public Vector getPosition()
+  public Vector2d getPosition()
   {
     return position;
   }
   
-  public Vector getSpeed()
+  public Vector2d getSpeed()
   {
     return speed;
   }
   
-  public Vector getGravity()
+  public Vector2d getGravity()
   {
     return gravity;
   }
@@ -101,35 +85,35 @@ abstract class Particle
     return id;
   }
   
-  public int getLifeTimeLeft()
+  public boolean getPersistence()
   {
-    return lifeTimeLeft;
+    return persistent;
   }
   
-  public int getLifeTime()
+  boolean getInitialised()
   {
-    return lifeTime;
+    return initialised;
   }
   
   //set methods  
-  public void setPosition(Vector newPosition)
+  public void setPosition(Vector2d newPosition)
   {
-    position = new Vector(newPosition);
+    position = new Vector2d(newPosition);
   }
   
-  public void setSpeed(Vector newSpeed)
+  public void setSpeed(Vector2d newSpeed)
   {
-    speed = new Vector(newSpeed);
+    speed = new Vector2d(newSpeed);
   }
   
-  public void setGravity(Vector newGravity)
+  public void setGravity(Vector2d newGravity)
   {
-    gravity = new Vector(newGravity); 
+    gravity = new Vector2d(newGravity); 
   }
   
   public void setRotation(float newRotation)
   {
-    rotation = new Vector(1, newRotation, true);
+    rotation = new Vector2d(1, newRotation, true);
   }
   
   public void setDepth(int newDepth)
@@ -137,20 +121,25 @@ abstract class Particle
     depth = newDepth;
   }
   
-  public void setLifeTimeLeft(int newLifeTimeLeft)
+  public void setPersistence(boolean newPersistent)
   {
-    lifeTimeLeft = newLifeTimeLeft;
+    persistent = newPersistent;
   }
   
-  //apply transoformations method
-  public void beginTransformations()
+  void assertInitialised()
+  {
+    initialised = true;
+  }
+  
+  //apply transformations method
+  void beginTransformations()
   {
     pushMatrix();
     position.applyTranslation();
     rotation.applyRotation();
   }
   
-  public void endTransformations()
+  void endTransformations()
   {
     popMatrix();
   }
@@ -161,33 +150,29 @@ abstract class Particle
     destroy = true;
   }
   
-  public boolean isToBeDestroyed()
+  boolean isToBeDestroyed()
   {
     return destroy;
   }
   
   //update and trace methods
-  public void updatePhysics()
+  void updatePhysics()
   {
     //spacial variables update
     position = position.sum(speed);
     speed = speed.sum(gravity);
     
     //life variables update
-    lifeTime++;
-    if(lifeTimeLeft > 0)
+    updateTime();
+    if(getLifeTimeIsUp())
     {
-      lifeTimeLeft--;
-      if(lifeTimeLeft == 0)
-      {
-        instanceDestroy();
-      }
+      instanceDestroy();
     }
   }
   
-  public abstract void init();
-  public abstract void update();
-  public abstract void trace();
+  abstract void init();
+  abstract void update();
+  abstract void trace();
 }
 
 class ParticleComparator implements Comparator<Particle>
