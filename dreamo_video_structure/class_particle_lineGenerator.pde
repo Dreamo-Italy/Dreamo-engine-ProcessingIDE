@@ -10,7 +10,7 @@ class LineGenerator extends Particle
     if(frameCount%1 == 0)
     {
       Line tempLine = new Line();
-      tempLine.setPosition(new Vector2d(getPosition().getX(), getPosition().getY(), false));
+      tempLine.setPosition(new Vector2d(getPosition()));
       global_stage.getCurrentScene().addParticle(tempLine);
     }
   }
