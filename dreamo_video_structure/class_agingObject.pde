@@ -2,9 +2,9 @@
 
 class AgingObject
 {
-  private int lifeTime;
-  private int lifeTimeLeft;
-  private boolean lifeTimeIsUp;
+  private int lifeTime;     // number of frames since initialization
+  private int lifeTimeLeft;   // number of frames left before death
+  private boolean lifeTimeIsUp; // is it dead?
   
   public AgingObject()
   {
