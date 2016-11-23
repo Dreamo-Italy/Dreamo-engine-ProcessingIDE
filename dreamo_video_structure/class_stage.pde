@@ -53,7 +53,7 @@ class Stage
   
   public void nextScene()  
   {
-    if(currentSceneIndex >= 0)
+    if(currentSceneIndex >= 0) // currentSceneIndex = -1 means there are no scenes avalaible
     {
       currentSceneIndex++;
       if(currentSceneIndex >= scenesNumber)
