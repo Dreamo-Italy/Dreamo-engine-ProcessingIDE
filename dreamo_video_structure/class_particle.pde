@@ -8,14 +8,14 @@ abstract class Particle extends AgingObject
   private Vector2d position;
   private Vector2d speed;
   private Vector2d gravity;
-  private Vector2d rotation;
-  private int depth;
+  private Vector2d rotation; //image rotation
+  private int depth; //layers; small depth => near layer
   
-  private long id;
-  private boolean destroy;
+  private long id; //number of particles 
+  private boolean destroy; // to be destroyed?
   
-  private boolean persistent;
-  private boolean initialised;
+  private boolean persistent; // the particle continues to exist even after changing scene
+  private boolean initialised; // has init() been called?
   
   //CONTRUCTORS  
   public Particle()
@@ -57,7 +57,7 @@ abstract class Particle extends AgingObject
   //get methods
   public Vector2d getPosition()
   {
-    return position;
+    return position; // give the address of the "position" vector
   }
   
   public Vector2d getSpeed()
@@ -96,12 +96,12 @@ abstract class Particle extends AgingObject
   }
   
   //set methods  
-  public void setPosition(Vector2d newPosition)
+  public void setPosition(Vector2d newPosition) 
   {
     position = new Vector2d(newPosition);
   }
   
-  public void setSpeed(Vector2d newSpeed)
+  public void setSpeed(Vector2d newSpeed) // EX: particle.setPosition(new Vector2d(5, pi/4, true));
   {
     speed = new Vector2d(newSpeed);
   }
@@ -116,7 +116,7 @@ abstract class Particle extends AgingObject
     rotation = new Vector2d(1, newRotation, true);
   }
   
-  public void setDepth(int newDepth)
+  public void setDepth(int newDepth) //depth can be positive or negative
   {
     depth = newDepth;
   }
@@ -132,16 +132,16 @@ abstract class Particle extends AgingObject
   }
   
   //apply transformations method
-  void beginTransformations()
+  void beginTransformations() // 
   {
     pushMatrix();
-    position.applyTranslation();
-    rotation.applyRotation();
+    position.applyTranslation(); // temporary change from (position_x, position_y) --> (0,0) 
+    rotation.applyRotation();   // temporary change
   }
   
   void endTransformations()
   {
-    popMatrix();
+    popMatrix(); // wipe temporary changes
   }
   
   //destruction
@@ -170,7 +170,7 @@ abstract class Particle extends AgingObject
     }
   }
   
-  abstract void init();
+  abstract void init(); // it's better to implement these 3 methods in the "child classes"
   abstract void update();
   abstract void trace();
 }
