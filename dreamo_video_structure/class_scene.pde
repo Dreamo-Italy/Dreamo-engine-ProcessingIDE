@@ -6,10 +6,10 @@ class Scene extends AgingObject
 {
   private final int PARTICLES_MAX = 10000;
   private Particle[] particlesList;
-  private int particlesNumber;
+  private int particlesNumber; // can also decrease
   
   private Background sceneBackground;
-  private boolean backgroundEnabled;
+  private boolean backgroundEnabled; // true -> screen refresh at every frame
   
   //CONSTRUCTORS
   public Scene()
@@ -17,7 +17,7 @@ class Scene extends AgingObject
     particlesList = new Particle[PARTICLES_MAX];
     particlesNumber = 0;
     sceneBackground = null;
-    backgroundEnabled = false;
+    backgroundEnabled = false; // false -> the screen doesn't refresh at every frame
   }
   
   //copy constructor
@@ -28,7 +28,7 @@ class Scene extends AgingObject
     sceneBackground = toCopy.sceneBackground;
     backgroundEnabled = toCopy.backgroundEnabled;
     
-    for(int i = 0; i < particlesNumber; i++)
+    for(int i = 0; i < particlesNumber; i++) // pass by reference
     {
       if(toCopy.particlesList[i] != null)
       {
@@ -59,7 +59,8 @@ class Scene extends AgingObject
     {
       particlesList[particlesNumber] = toAdd;
       particlesNumber++;
-      Arrays.sort(particlesList, new ParticleComparator());
+      Arrays.sort(particlesList, new ParticleComparator()); // SORT: list[0] = far particle, small (or negative) depth 
+                                                            // list[big number] = near particle, big depth
       //initialise particle
       if(!toAdd.getInitialised())
       {
@@ -94,7 +95,7 @@ class Scene extends AgingObject
   {
     if(indexToRemove < particlesNumber)
     {
-      particlesList[indexToRemove] = null;
+      particlesList[indexToRemove] = null; // the object pointed by particlesList[indexToRemove] has now no reference and will be removed from memory
       for(int i = indexToRemove; i < particlesNumber-1; i++)
       {
         particlesList[i] = particlesList[i+1];
@@ -108,7 +109,7 @@ class Scene extends AgingObject
     }
   }
   
-  public void popParticle()
+  public void popParticle() // remove the youngest particle
   {
     if(particlesNumber>0)
     {
