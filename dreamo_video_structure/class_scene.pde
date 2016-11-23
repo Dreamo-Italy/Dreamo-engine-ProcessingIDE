@@ -59,7 +59,7 @@ class Scene extends AgingObject
     {
       particlesList[particlesNumber] = toAdd;
       particlesNumber++;
-      Arrays.sort(particlesList, new ParticleComparator()); // SORT: list[0] = far particle, small (or negative) depth 
+      sortParticlesList(); // SORT: list[0] = far particle, small (or negative) depth 
                                                             // list[big number] = near particle, big depth
       //initialise particle
       if(!toAdd.getInitialised())
@@ -73,6 +73,11 @@ class Scene extends AgingObject
       println("Warning: reached maximum number of particles for a Scene. Last Particle wasn't added.");
     }
   } 
+  
+  public void sortParticlesList()
+  {
+    Arrays.sort(particlesList, new ParticleComparator());
+  }
   
   public void removeParticleById(int idToRemove)
   {
