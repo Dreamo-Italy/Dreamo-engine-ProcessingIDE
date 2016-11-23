@@ -41,7 +41,7 @@ class Stage
       scenesNumber++;
       if(currentScene == null)
       {
-        currentScene = new Scene(toAdd);
+        currentScene = toAdd;
         currentSceneIndex = 0;
       }
     }
@@ -100,9 +100,9 @@ class Stage
   
   private void changeScene(Scene newScene)  
   {
-    Scene tempScene = new Scene(newScene);
-    currentScene.exportPersistentParticles(tempScene);
-    currentScene = tempScene;
+    currentScene.exportPersistentParticles(newScene);
+    newScene.sortParticlesList();
+    currentScene = newScene;
   }
   
   public void popScene()
