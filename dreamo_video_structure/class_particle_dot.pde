@@ -5,8 +5,8 @@ class Dot extends Particle
   {
     setSpeed(new Vector2d(5, random(TWO_PI), true));
     setGravity(new Vector2d(0, 0.1, false));
-    setPersistence(true);
-    setLifeTimeLeft(300);
+    setPersistence(true);    // smoother transition from one scene to another
+    setLifeTimeLeft(300);    // time left decreases each frame
    
    int i = floor(random(3));
    switch(i)

@@ -41,7 +41,7 @@ class Stage
       scenesNumber++;
       if(currentScene == null)
       {
-        currentScene = toAdd;
+        currentScene = new Scene(toAdd);
         currentSceneIndex = 0;
       }
     }
@@ -100,9 +100,10 @@ class Stage
   
   private void changeScene(Scene newScene)  
   {
-    currentScene.exportPersistentParticles(newScene);
-    newScene.sortParticlesList();
-    currentScene = newScene;
+    Scene tempScene = new Scene(newScene); // use the copy constructor from the class "Scene"
+    tempScene.sortParticlesList();
+    currentScene.exportPersistentParticles(tempScene);    
+    currentScene = tempScene;
   }
   
   public void popScene()
@@ -130,6 +131,9 @@ class Stage
   //update and trace methods
   public void updateAndTrace()
   {
+    // audioFeature.update()
+    // emg.update()
+    
     currentScene.update();
     currentScene.trace();
     currentScene.trashDeadParticles();

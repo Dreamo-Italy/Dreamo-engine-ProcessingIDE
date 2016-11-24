@@ -18,6 +18,8 @@ class Scene extends AgingObject
     particlesNumber = 0;
     sceneBackground = null;
     backgroundEnabled = false; // false -> the screen doesn't refresh at every frame
+    
+    //forse dovremmo mettere qui la specifica della scena, cioè il generatore di oggetti
   }
   
   //copy constructor

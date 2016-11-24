@@ -38,13 +38,16 @@ void draw()
 {
   global_stage.updateAndTrace();
   
-  fill(255);
-  stroke(255);
-  if(frameCount%20 == 0)
+  // audioFeature.update()
+  
+  fill(120); // for the DEBUG text
+  stroke(120); // for the DEBUG text
+  if(frameCount%20 == 0) // print the DEBUG TEXT every 20 frames
   {
     fps = frameRate;
   }
   text("particles: " + global_particlesCount + "; framerate: " + fps, 10, 20);
+ 
 }
 
 void mouseClicked()
