@@ -14,4 +14,4 @@ Generic description of the classes of the program:
 
 - Scene includes an array of particles and manages their update and drawing on screen.
 
-- Stage includes an array of scenes and manages the passage from one to another.
+- Stage includes an array of scenes and manages the passage from one scene to another.
