@@ -38,7 +38,6 @@ void draw()
 {
   global_stage.updateAndTrace();
   
-  // audioFeature.update()
   
   fill(120); // for the DEBUG text
   stroke(120); // for the DEBUG text
