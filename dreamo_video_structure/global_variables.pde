@@ -8,3 +8,8 @@ long global_particlesCount = 0;
 
 //main object for display
 Stage global_stage;
+
+//main object for connections
+Connection global_connection;
+
+Gsr global_gsr;

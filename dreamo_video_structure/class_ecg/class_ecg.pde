@@ -1,12 +1,13 @@
-class Gsr extends Biosensor
+class ECG extends Biosensor
 {  
   
-
+    defaultValue = 60;
+    sensorMin = 70;
+    sensorMax = 90;
+  
   public void init()
   {
-    defaultValue = 5;
-    sensorMin = 1;
-    sensorMax = 10; 
+    
   }
   
   public int getAnInt() // takes an int out of the current connection

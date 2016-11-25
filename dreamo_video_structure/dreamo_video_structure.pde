@@ -6,7 +6,11 @@ void setup()
   size(800, 600, FX2D);
   frameRate(60);
   noSmooth();
+  
+  global_connection = new Connection( this );
+  global_gsr = new Gsr();
   global_stage = new Stage();
+  
   
   Background bk1 = new Background(color(0));
   Scene scene1 = new Scene();
@@ -38,12 +42,15 @@ void draw()
 {
   global_stage.updateAndTrace();
   
+
+  
   
   fill(120); // for the DEBUG text
   stroke(120); // for the DEBUG text
   if(frameCount%20 == 0) // print the DEBUG TEXT every 20 frames
   {
     fps = frameRate;
+       global_gsr.printDebug();
   }
   text("particles: " + global_particlesCount + "; framerate: " + fps, 10, 20);
  

@@ -2,7 +2,6 @@
 
 
 import processing.serial.*; 
-
 import java.util.Queue;
 import java.util.ArrayDeque;
 
@@ -10,17 +9,17 @@ import java.util.ArrayDeque;
 class Connection
 {
   Serial myPort;  // Create object from Serial class
-
-                    //values given by the galvanic skin response
-                      // GSR[0] is CON, GSR[1] is RES, GSR[2] is CONV
+                  //values given by the galvanic skin response  // GSR[0] is CON, GSR[1] is RES, GSR[2] is CONV
 
   private boolean wifiAvailable;
   private boolean serialAvailable;
+  private boolean anyConnectionAvailable;
+  
   private int incomingValue; // the input coming from a biosensor
   
-  public PApplet parent;
+  public PApplet parent; //needed for the Serial object istantiation
   
-  final int BUFFER_SIZE = 20;
+  final int BUFFER_SIZE = 20; //random value
   private Queue <Integer> incomingData = new ArrayDeque(); // create a queue to store the data
   
   
@@ -28,23 +27,50 @@ class Connection
   {
     wifiAvailable = false;
     serialAvailable = false;
+    anyConnectionAvailable = false;
+    
     incomingValue = 0;
     parent = p;
     
+    // DEBUG -- TEMPORARY
+    incomingData.add(7);
+    incomingData.add(8);
+    incomingData.add(7);
+    incomingData.add(6);
+    incomingData.add(10);
+    incomingData.add(7);
+    incomingData.add(7);
+    incomingData.add(6);
+    incomingData.add(6);
+    incomingData.add(7);
+    incomingData.add(7);
+    // DEBUG -- TEMPORARY
+    
+    //serial check
     if(!wifiAvailable) 
       { 
+        println("WARNING: Wifi is not available");
         if ( serialConnect() )
           serialAvailable = true;
         else
-          println("Serial port is not available");
-      }
-        
-    
+          println("WARNING: Serial port is not available");
+      } 
+     
+     if(! (!wifiAvailable && !serialAvailable) ) // logic expressions : the hard way
+       anyConnectionAvailable = true;
+       
   }
   
   private void storeFromSerial()
 {
-    if ( !serialAvailable ) println(" storeFromSerial has been called, but the port is not available");
+    if ( !serialAvailable ) println(" ERROR: storeFromSerial has been called, but the port is not available");
+    
+        if ( incomingData.size() > BUFFER_SIZE )
+        { 
+          incomingData.clear();
+          println("WARNING: queue was getting big: queue is now empty");
+        }
+
     
     while ( myPort.available() > 0 ) // while there is something on the serial buffer
       {
@@ -52,11 +78,6 @@ class Connection
           incomingData.add(incomingValue);
       }
     
-    if ( incomingData.size() > BUFFER_SIZE )
-        { 
-          incomingData.clear();
-          println("queue was getting too big: queue is now empty");
-        }
 }
   
   
@@ -68,13 +89,17 @@ class Connection
     // On Windows machines, this generally opens COM1.
     // Open whatever port is the one you're using.
     
-    boolean portAvailable;
-    String portName = Serial.list()[0]; //change the 0 to a 1 or 2 etc. to match your port
-    myPort = new Serial(parent, portName, 9600);
+    boolean portAvailable = false;
+    final String[] ports = Serial.list();
     
-    if(myPort.available() > 0) // there should be a better check than this
-        portAvailable = true; 
-    else portAvailable = false;
+    if (ports.length == 0) 
+        println("No serial port available.");
+    else
+    {
+      String portName = Serial.list()[0]; //change the 0 to a 1 or 2 etc. to match your port
+      myPort = new Serial(parent, portName, 9600);
+      portAvailable = true; 
+    }
     
     return portAvailable;   
   }
@@ -93,8 +118,14 @@ public int getAnElement()
     if (!incomingData.isEmpty() ) 
         toOutput = incomingData.remove();
      
+     // TEMPORARY
+     incomingData.add(15);
+     //TEMPORARY
+     
     return toOutput;
   }
+  
+
   
 }
 
