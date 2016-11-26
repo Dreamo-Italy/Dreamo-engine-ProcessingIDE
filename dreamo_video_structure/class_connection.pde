@@ -5,6 +5,11 @@ import processing.serial.*;
 import java.util.Queue;
 import java.util.ArrayDeque;
 
+/*  passare la Queue come argomento di una funzione:
+
+Objects are not passed to methods; rather, references to objects are passed to methods. 
+The references themselves are passed by value—a copy of a reference is passed to a method. 
+When a method receives a reference to an object, the method can manipulate the object directly.*/
 
 class Connection
 {
@@ -61,18 +66,23 @@ class Connection
        
   }
   
+  public boolean networkAvailable()
+  {
+    return anyConnectionAvailable;
+  }
+  
   private void storeFromSerial()
 {
     if ( !serialAvailable ) println(" ERROR: storeFromSerial has been called, but the port is not available");
     
-        if ( incomingData.size() > BUFFER_SIZE )
+        if ( incomingData.size() > BUFFER_SIZE ) // security check
         { 
           incomingData.clear();
           println("WARNING: queue was getting big: queue is now empty");
         }
 
     
-    while ( myPort.available() > 0 ) // while there is something on the serial buffer
+    while ( serialAvailable && myPort.available() > 0 ) // while there is something on the serial buffer
       {
           incomingValue = myPort.read();
           incomingData.add(incomingValue);
@@ -92,9 +102,7 @@ class Connection
     boolean portAvailable = false;
     final String[] ports = Serial.list();
     
-    if (ports.length == 0) 
-        println("No serial port available.");
-    else
+    if (ports.length != 0) 
     {
       String portName = Serial.list()[0]; //change the 0 to a 1 or 2 etc. to match your port
       myPort = new Serial(parent, portName, 9600);
@@ -111,7 +119,7 @@ class Connection
     return wifiAvailable;
   }
   
-public int getAnElement()
+public int getAnElement() // gives out an element from the QUEUE incomingData 
   {
     int toOutput = -1;
     
