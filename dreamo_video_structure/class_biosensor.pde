@@ -2,17 +2,20 @@
 
 abstract class Biosensor
 {
+  public String sensorName;
   private boolean connected; // connection status of the sensor
  // private float incomingValue; // the input coming from a biosensor
   private float defaultValue; // the average of the incoming values during the "calibration" process
   private boolean calibrating; // is the calibration process running?
   private float sensorMin, sensorMax; // the experimental MINIMUM and MAXIMUM values previously got from the current sensor
   public float absolute; // absolute value of the output, mapped to a 1-10 scale
-  public float value; // last value
+  public float variation; // percentage variation WRT default value
   
-  public FloatList incomingDataTime;
-  public FloatList incomingDataValue1; // vector of float
-  public FloatList incomingDataValue2; // vector of float
+  
+   public float value; // last value
+   
+ // public FloatList incomingDataTime;
+ // public FloatList incomingDataValue2; // vector of float
 
   
   
@@ -22,13 +25,14 @@ abstract class Biosensor
   
   public Biosensor()
   {
+    sensorName = "default";
    //  incomingValue = -1;
     absolute = -1;
     calibrating = false;
     connected = global_connection.networkAvailable(); // temporary
     
-    incomingDataValue1 = new FloatList();
-    incomingDataValue2 = new FloatList();
+    
+ //   incomingDataValue2 = new FloatList();
       
       // DEBUG PURPOSES
      //if (!connected)
@@ -52,34 +56,21 @@ abstract class Biosensor
     return true;
   }
   
-
-  //la differenza tra gli output... e i get... (eg outputAbsolute e getAbsolute) sta nel fatto che
-  // gli output... richiamano lastValue(), che prende un nuovo elemento dalla lista
-  
-  public float outputAbsolute() // absolute value of the output, mapped to a 1-10 scale
-  {
-    float absolute = this.normalizeValue( lastValue() );
-    return absolute;
-  }
-  
-  public float outputVariation() // percentage variation of the sensor with respect to the default value
-  {
-    float variation =  lastValue() / getDefault() ;
-
-    return variation;
-  }
-  
   public void printDebug()
   {
+    //if ( frameCount % 30 != 0 ) return;
     
-    println("absolute :"+ outputAbsolute() );
-    println("variation :"+ outputVariation() );
-    println("default value :"+ getDefault() );
+    println("absolute :"+ getAbsolute() );
+    println("variation :"+ getVariation() );
+    println("default value :" + getDefault() );
     println("");
     
-    
+    text("\n absolute : " + getAbsolute() + "; framerate: " + getVariation() + "default value : " + getDefault(), 10, 40, 60);
 
   }
+  
+ abstract void update(); // update() is called at FrameRate speed
+ 
   
   public float normalizeValue(float toNormalize) //map the value to a 1-10 scale according to the experimental min and max values
   {
@@ -89,28 +80,45 @@ abstract class Biosensor
       return normalized;
   }
   
-  public FloatList getList()
+
+  public float average(FloatList inputList)
   {
-    return incomingDataValue1;
+    long sum = 0;
+    for(short i=0; i<inputList.size();i++)
+      { sum += inputList.get(i); }
+   
+      println("sum: " + sum);
+      println("list size: " + inputList.size() );
+   return ((float)sum/inputList.size()) ;
   }
   
-  // the following methods depend on the SPECIFIC SENSOR
-  
-  abstract float lastValue(); 
-  abstract void init();
-  abstract void storeFromText();
+  public void setValue (float val) // when setValue is called, every other info is updated ( absolute, variation,... )
+  {   
+    value = val; 
+    
+    setAbsolute( normalizeValue( value ) );
+    setVariation( value / getDefault() ) ;
+    
+    return; 
+  }
   
   public void setMin( float min ) { sensorMin = min; return; }
   public void setMax ( float max ) { sensorMax = max; return; }
   public void setDefault ( float def ) { defaultValue = def; return; }
-  public void setValue (float val ) { value = val; return; }
+  public void setVariation (float var ) { variation = var; return; }
   public void setAbsolute ( float abs ) { absolute = abs; return; }
   
   public float getMin() { return sensorMin; }
   public float getMax() { return sensorMax; }
   public float getDefault() { return defaultValue; }
-  public float getValue() { return value; }
-  public float getAbsolute() { return absolute; }
+  public float getValue() { return value; }         // the useful info
+  public float getAbsolute() { return absolute; } // absolute value of the output, mapped to a 1-10 scale
+  public float getVariation() { return variation; } // percentage variation of the sensor with respect to the default value
+  public String getID() {return sensorName; }
   
-
+  
+  // the following methods depend on the SPECIFIC SENSOR
+  
+  abstract void init();
+ // abstract void storeFromText();
 }

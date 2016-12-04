@@ -1,80 +1,74 @@
 class Gsr extends Biosensor
 {  
+   public FloatList incomingCon; // vector of float
+
    public void init()
   {
-
-        
-    if ( !global_connection.networkAvailable() ) 
-    //silly way to simulate the values
-      {
-           storeFromText();
-           setMin ( getList().min() );
-           setMax ( getList().max() ); 
-           setDefault (  (getMax() + getMin()) / 2  );
+    sensorName = "conductance";
+    incomingCon = new FloatList();
+    
+    value = 0; //debug
+    
+    //debug
+    setMin ( 1.0 );
+    setMax ( 5.0 ); 
+    setDefault (  (getMax() + getMin()) / 2  );
+    
+    //if ( !global_connection.networkAvailable() ) 
+    ////silly way to simulate the values
+    //  {
+    //       storeFromText();
            
-           // setMin ( normalizeValue( getMin() ) );
-          //  setMax ( normalizeValue( getMax() ) );
+    //       setMin ( getList("conductance").min() );
+    //       setMax ( getList("conductance").max() ); 
+    //       setDefault (  (getMax() + getMin()) / 2  );
+    
+   //           value = getDefault();
+           
+    //       // setMin ( normalizeValue( getMin() ) );
+    //      //  setMax ( normalizeValue( getMax() ) );
 
            
-           println("Min: " + getMin() );
-           println("Max: " + getMax() );
-           println("Default: " + getDefault() );
-           println("");
-      }
+    //       println("Min: " + getMin() );
+    //       println("Max: " + getMax() );
+    //       println("Default: " + getDefault() );
+    //       println("");
+    //  }
+  }
+  public void update()
+   {
+    incomingCon = global_connection.extractFromBuffer("conductance"); // store the incoming conductance value from Connection to another FloatLIst
+    println("DEBUG: GSR update.");
+    println("buffer size: "+incomingCon.size() );
+    float average = average(incomingCon);
+    
+    println("average: "+average );
+    setValue  (average);
+    
   }
   
-  public float lastValue() // takes an int out of the current connection
-  {
-    float incoming = -1;
+  //  public void storeFromText()
+  //{
+  //      Table table = loadTable("log_conductance.csv", "header"); // content of log_conductance
     
+  //      println(table.getRowCount() + " total rows in table"); 
     
-    
-    if (global_connection != null )
-      {
-        if ( global_connection.networkAvailable() == true )
-          incoming = global_connection.getAnElement();  
+  //      for (TableRow row : table.rows()) {
           
-        else if ( incomingDataValue1.size() != 0 )
-               {
-                 // incoming = incomingDataValue1.get( incomingDataValue1.size() - 1 ); // the last element
-                 // incomingDataValue1.remove(incomingDataValue1.size() - 1 ); // remove the last element after the reading
-                 //println("List size: " + incomingDataValue1.size() );
-                 incoming = incomingDataValue1.get( 0 ); // the last element
-                 incomingDataValue1.remove( 0 ); // remove the last element after the reading
-                
-               }
-        if ( incomingDataValue1.size() == 0 ) storeFromText(); //debug
-       
-          
-      }
-   
-    setValue( incoming );
-    setAbsolute( normalizeValue( incoming ) );   
-    return incoming;
-  }
-  
-    public void storeFromText()
-  {
-        Table table = loadTable("log_conductance.csv", "header"); // content of log_conductance
-    
-        println(table.getRowCount() + " total rows in table"); 
-    
-        for (TableRow row : table.rows()) {
-          
-         // incomingDataTime.append ( row.getFloat("Time") );
-          incomingDataValue1.append ( row.getFloat("conductance") );
-        //  incomingDataValue2.append ( row.getFloat("ECG_filtered") );
+  //       // incomingDataTime.append ( row.getFloat("Time") );
+  //        incomingDataValue1.append ( row.getFloat("conductance") );
+  //      //  incomingDataValue2.append ( row.getFloat("ECG_filtered") );
         
-      }
+  //    }
       
-      println("Read from table process has completed. ");
-      println("");
-     // println(incomingDataValue1);
-      println("");
-      println("storeFromText function ends here. ");
-      println("");
+  //    println("Read from table process has completed. ");
+  //    println("");
+  //   // println(incomingDataValue1);
+  //    println("");
+  //    println("storeFromText function ends here. ");
+  //    println("");
       
-   }
+  // }
   
   // this function depends on the SPECIFIC SENSOR
   

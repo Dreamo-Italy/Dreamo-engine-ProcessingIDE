@@ -24,9 +24,14 @@ class Connection
   
   public PApplet parent; //needed for the Serial object istantiation
   
-  final int BUFFER_SIZE = 20; //random value
-  private Queue <Integer> incomingData = new ArrayDeque(); // create a queue to store the data
+  final int BUFFER_SIZE = 2000; //random value
   
+  
+  private FloatList incomingCon;
+  
+  //  private Queue <Integer> incomingCon = new ArrayDeque(); // create a queue to store the conductance
+  //  private Queue <Integer> incomingECG = new ArrayDeque(); // create a queue to store the data
+
   
   public Connection( PApplet p ) // p = parent is needed for the Serial myport ( -->parent<--, list[0], 9600...)
   {
@@ -34,22 +39,10 @@ class Connection
     serialAvailable = false;
     anyConnectionAvailable = false;
     
+    incomingCon = new FloatList();
+    
     incomingValue = 0;
     parent = p;
-    
-    // DEBUG -- TEMPORARY
-    incomingData.add(7);
-    incomingData.add(8);
-    incomingData.add(7);
-    incomingData.add(6);
-    incomingData.add(10);
-    incomingData.add(7);
-    incomingData.add(7);
-    incomingData.add(6);
-    incomingData.add(6);
-    incomingData.add(7);
-    incomingData.add(7);
-    // DEBUG -- TEMPORARY
     
     //serial check
     if(!wifiAvailable) 
@@ -66,34 +59,19 @@ class Connection
        
   }
   
+  private boolean wifiConnect()
+  {
+    boolean wifiAvailable = false;  
+    return wifiAvailable;
+  }
+  
   public boolean networkAvailable()
   {
     return anyConnectionAvailable;
   }
   
-  private void storeFromSerial()
+    private boolean serialConnect() // return TRUE if a serial connection is available
 {
-    if ( !serialAvailable ) println(" ERROR: storeFromSerial has been called, but the port is not available");
-    
-        if ( incomingData.size() > BUFFER_SIZE ) // security check
-        { 
-          incomingData.clear();
-          println("WARNING: queue was getting big: queue is now empty");
-        }
-
-    
-    while ( serialAvailable && myPort.available() > 0 ) // while there is something on the serial buffer
-      {
-          incomingValue = myPort.read();
-          incomingData.add(incomingValue);
-      }
-    
-}
-  
-  
-  
-  private boolean serialConnect() // return TRUE if there is data on the serial buffer
-  {
     // I know that the first port in the serial list on my mac
     // is Serial.list()[0].
     // On Windows machines, this generally opens COM1.
@@ -110,31 +88,90 @@ class Connection
     }
     
     return portAvailable;   
-  }
-
-  private boolean wifiConnect()
-  {
-    boolean wifiAvailable = false;
-    
-    return wifiAvailable;
-  }
-  
-public int getAnElement() // gives out an element from the QUEUE incomingData 
-  {
-    int toOutput = -1;
-    
-    if (!incomingData.isEmpty() ) 
-        toOutput = incomingData.remove();
-     
-     // TEMPORARY
-     incomingData.add(15);
-     //TEMPORARY
-     
-    return toOutput;
-  }
-  
+ }
 
   
+  
+  public void update()
+  {
+    //if(frameCount%30 == 1)
+    {
+      if( !serialAvailable )
+           storeFromText();
+      else if ( serialAvailable )
+          storeFromSerial();
+    }
+    
+  }
+
+  public void storeFromText()
+  {        
+         Table table_con = loadTable("log_conductance.csv", "header"); // content of log_conductance
+        //  Table table_ecg = loadTable("log_ecg.csv", "header"); // content of log_ECG
+      
+          println(table_con.getRowCount() + " total rows in table conductance"); 
+       //   println(table_ecg.getRowCount() + " total rows in table ECG");
+      
+          for (TableRow row : table_con.rows() ) {
+            incomingCon.append ( row.getFloat("conductance") ); // add the content of the table row to a LIST OF FLOAT
+          }
+            
+     //     for (TableRow row : table_ecg.rows() ) {
+     //       incomingDataValue2.append ( row.getFloat("ECG_filtered") );
+     //     }
+     
+     if ( getList("conductance").size() > table_con.getRowCount() )
+       println( " class connection, storeFromText(): reading is slower than writing.\n");
+        
+        println("Read from table process has completed. ");
+    //    println("");
+         println("incomingCon size: "+getList("conductance").size());
+        println("");
+        println("storeFromText function ends here. ");
+        println("");
+        
+        return; 
+   }
+   
+   private void storeFromSerial() // the function that reads the DATA from the SERIAL LINE BUFFER
+  {
+      if ( !serialAvailable ) println(" ERROR: storeFromSerial has been called, but the port is not available");
+      
+      if ( incomingCon.size() > BUFFER_SIZE ) // security check
+      { 
+        incomingCon.clear();
+        println("WARNING: list was getting big: list is now empty");
+      }
+      
+      while ( serialAvailable && myPort.available() > 0 ) // while there is something on the serial buffer, add the data to the "incomingCon" queue
+        {
+            incomingValue = myPort.read();
+            incomingCon.append(incomingValue);
+        }
+     
+     println( " DEBUG : incomingCon queue size: " + incomingCon.size() );
+      
+  }
+  
+  public FloatList extractFromBuffer (String listName) // gives out every element from the selected list and ERASE THOSE ELEMENTS
+    {
+      
+      FloatList toOutput = new FloatList();
+      
+      if (listName.equals("conductance"))
+        while(! (getList("conductance").size() == 0) ) 
+            toOutput.append( incomingCon.remove(0) );
+    
+      return toOutput;
+    }
+  
+  public FloatList getList(String sensorName)
+  {
+    if( sensorName.equals("conductance") )
+      return incomingCon;
+    else
+      return null;
+  }
 }
 
 

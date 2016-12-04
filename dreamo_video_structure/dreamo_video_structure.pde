@@ -40,20 +40,20 @@ void setup()
 
 void draw()
 {
+  
+   global_connection.update();
+   global_gsr.update();
+   
   global_stage.updateAndTrace();
-  
-  
-
-  
   
   fill(120); // for the DEBUG text
   stroke(120); // for the DEBUG text
-  if(frameCount%1 == 0) // print the DEBUG TEXT every 20 frames
+    if(frameCount%1 == 0) // print the DEBUG TEXT every 20 frames
   {
     fps = frameRate;
     global_gsr.printDebug();
   }
-  text("particles: " + global_particlesCount + "; framerate: " + fps, 10, 20);
+  text("particles: " + global_particlesCount + "; framerate: " + fps + "\n", 10, 20);
  
 }
 

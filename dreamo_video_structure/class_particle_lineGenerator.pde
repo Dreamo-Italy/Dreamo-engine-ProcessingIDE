@@ -26,8 +26,10 @@ class LineGenerator extends Particle
       
       {
         println("");
-        float outputVar = global_gsr.outputVariation() ;
+        
+        float outputVar = global_gsr.getVariation() ;
         println("Valore per cui vorrei moltiplicare: " + outputVar );
+        
         println( "x " + tempLine.getPosition().getX() + ", y " + tempLine.getPosition().getY() );
         tempLine.setPosition( (tempLine.getPosition().mul( outputVar) ) ); // * global_gsr.outputAbsolute()
         println( "new x " + tempLine.getPosition().getX() + ", new y " +tempLine.getPosition().getY() );
