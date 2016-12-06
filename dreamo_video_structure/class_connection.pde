@@ -24,12 +24,13 @@ class Connection
   
   public PApplet parent; //needed for the Serial object istantiation
   
-  final int BUFFER_SIZE = 2000; //random value
+  final int BUFFER_SIZE = 20000; //random value
+  final float MAX_COND = 5.0;
   
   
-  private FloatList incomingCon;
+  private FloatList incomingCond;
   
-  //  private Queue <Integer> incomingCon = new ArrayDeque(); // create a queue to store the conductance
+  //  private Queue <Integer> incomingCond = new ArrayDeque(); // create a queue to store the conductance
   //  private Queue <Integer> incomingECG = new ArrayDeque(); // create a queue to store the data
 
   
@@ -39,7 +40,7 @@ class Connection
     serialAvailable = false;
     anyConnectionAvailable = false;
     
-    incomingCon = new FloatList();
+    incomingCond = new FloatList();
     
     incomingValue = 0;
     parent = p;
@@ -79,6 +80,7 @@ class Connection
     
     boolean portAvailable = false;
     final String[] ports = Serial.list();
+    println( Serial.list() );
     
     if (ports.length != 0) 
     {
@@ -111,21 +113,25 @@ class Connection
       
           println(table_con.getRowCount() + " total rows in table conductance"); 
        //   println(table_ecg.getRowCount() + " total rows in table ECG");
+       
+       if ( getList("con").size() > BUFFER_SIZE ) getList("con").clear();
+
       
-          for (TableRow row : table_con.rows() ) {
-            incomingCon.append ( row.getFloat("conductance") ); // add the content of the table row to a LIST OF FLOAT
-          }
+          for (TableRow row : table_con.rows()) {
+            incomingCond.append ( row.getFloat("conductance") ); // add the content of the table row to a LIST OF FLOAT
+           }
+          
             
      //     for (TableRow row : table_ecg.rows() ) {
      //       incomingDataValue2.append ( row.getFloat("ECG_filtered") );
      //     }
      
-     if ( getList("conductance").size() > table_con.getRowCount() )
+     if ( getList("con").size() > table_con.getRowCount() )
        println( " class connection, storeFromText(): reading is slower than writing.\n");
         
         println("Read from table process has completed. ");
     //    println("");
-         println("incomingCon size: "+getList("conductance").size());
+        println("incomingCond size: " + getList("con").size());
         println("");
         println("storeFromText function ends here. ");
         println("");
@@ -136,39 +142,50 @@ class Connection
    private void storeFromSerial() // the function that reads the DATA from the SERIAL LINE BUFFER
   {
       if ( !serialAvailable ) println(" ERROR: storeFromSerial has been called, but the port is not available");
-      
-      if ( incomingCon.size() > BUFFER_SIZE ) // security check
+      if ( incomingCond.size() > BUFFER_SIZE ) // security check
       { 
-        incomingCon.clear();
+        incomingCond.clear();
         println("WARNING: list was getting big: list is now empty");
       }
       
-      while ( serialAvailable && myPort.available() > 0 ) // while there is something on the serial buffer, add the data to the "incomingCon" queue
+      println( " available bytes on seria buffer: " + myPort.available() );
+      
+      while ( serialAvailable && myPort.available() > 0 ) // while there is something on the serial buffer, add the data to the "incomingCond" queue
         {
             incomingValue = myPort.read();
-            incomingCon.append(incomingValue);
+            incomingCond.append(incomingValue);
         }
      
-     println( " DEBUG : incomingCon queue size: " + incomingCon.size() );
+     println( " DEBUG : incomingCond queue size: " + incomingCond.size() );
+     if ( incomingCond.size() == 0 ) println(" ERROR in storeFromSerial: incomingCondSize = 0 ");
       
   }
   
-  public FloatList extractFromBuffer (String listName) // gives out every element from the selected list and ERASE THOSE ELEMENTS
+  public FloatList extractFromBuffer (String listName, int numberOfElements) // gives out every element from the selected list and ERASE THOSE ELEMENTS
     {
       
       FloatList toOutput = new FloatList();
       
-      if (listName.equals("conductance"))
-        while(! (getList("conductance").size() == 0) ) 
-            toOutput.append( incomingCon.remove(0) );
+      int incomingCondSize = getList("con").size() ;
+      
+      println("conductance list size: "+ incomingCondSize);
+      
+      if (listName.equals("con"))
+        while(! (getList("con").size() == incomingCondSize  - numberOfElements) ) // extract numberOfElements of elements from conductance list
+            {
+              float inValue = incomingCond.remove(0);
+             // println ( "extract from buffer: inValue: " + inValue );
+              if ( inValue <= MAX_COND ) toOutput.append( inValue );
+            }
+              
     
       return toOutput;
     }
   
   public FloatList getList(String sensorName)
   {
-    if( sensorName.equals("conductance") )
-      return incomingCon;
+    if( sensorName.equals("con") )
+      return incomingCond;
     else
       return null;
   }

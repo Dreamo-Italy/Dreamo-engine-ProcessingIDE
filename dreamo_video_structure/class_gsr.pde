@@ -4,14 +4,14 @@ class Gsr extends Biosensor
 
    public void init()
   {
-    sensorName = "conductance";
+    sensorName = "con";
     incomingCon = new FloatList();
     
     value = 0; //debug
     
     //debug
     setMin ( 1.0 );
-    setMax ( 5.0 ); 
+    setMax ( 7.0 ); 
     setDefault (  (getMax() + getMin()) / 2  );
     
     //if ( !global_connection.networkAvailable() ) 
@@ -37,13 +37,18 @@ class Gsr extends Biosensor
   }
   public void update()
    {
-    incomingCon = global_connection.extractFromBuffer("conductance"); // store the incoming conductance value from Connection to another FloatLIst
+
+    incomingCon = global_connection.extractFromBuffer("con", floor (global_sampleRate/fps) ); // store the incoming conductance value from Connection to another FloatLIst
+    
+    println("Number of elements extracted: "+ floor (global_sampleRate/fps) );
     println("DEBUG: GSR update.");
-    println("buffer size: "+incomingCon.size() );
+    println("buffer size: "+ incomingCon.size() );
     float average = average(incomingCon);
     
     println("average: "+average );
     setValue  (average);
+    
+    incomingCon.clear();
     
   }
   

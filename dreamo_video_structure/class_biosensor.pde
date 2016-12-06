@@ -83,7 +83,7 @@ abstract class Biosensor
 
   public float average(FloatList inputList)
   {
-    long sum = 0;
+    float sum = 0;
     for(short i=0; i<inputList.size();i++)
       { sum += inputList.get(i); }
    
@@ -97,7 +97,7 @@ abstract class Biosensor
     value = val; 
     
     setAbsolute( normalizeValue( value ) );
-    setVariation( value / getDefault() ) ;
+    setVariation( getAbsolute() / getDefault() ) ;
     
     return; 
   }
