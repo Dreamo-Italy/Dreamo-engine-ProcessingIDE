@@ -20,21 +20,24 @@ class Connection
   private boolean serialAvailable;
   private boolean anyConnectionAvailable;
   
-  private int incomingValue; // the input coming from a biosensor
+  private float incomingValue; // the input coming from a biosensor
   
   public PApplet parent; //needed for the Serial object istantiation
   
   final int BUFFER_SIZE = 20000; //random value
-  final float MAX_COND = 5.0;
-  
-  
+  final float MAX_COND = 10.0;
+  final int lineFeed = 10;    // Linefeed in ASCII
+      
+      
+      
+  private String inputString = null;  
   private FloatList incomingCond;
   
   //  private Queue <Integer> incomingCond = new ArrayDeque(); // create a queue to store the conductance
   //  private Queue <Integer> incomingECG = new ArrayDeque(); // create a queue to store the data
 
   
-  public Connection( PApplet p ) // p = parent is needed for the Serial myport ( -->parent<--, list[0], 9600...)
+  public Connection( PApplet p ) // p = parent is needed for the Serial myport ( -->parent<--, list[0], 19200...)
   {
     wifiAvailable = false;
     serialAvailable = false;
@@ -85,7 +88,7 @@ class Connection
     if (ports.length != 0) 
     {
       String portName = Serial.list()[0]; //change the 0 to a 1 or 2 etc. to match your port
-      myPort = new Serial(parent, portName, 9600);
+      myPort = new Serial(parent, portName, 19200);
       portAvailable = true; 
     }
     
@@ -141,22 +144,33 @@ class Connection
    
    private void storeFromSerial() // the function that reads the DATA from the SERIAL LINE BUFFER
   {
+    
+      int incomingCondSize = incomingCond.size();
       if ( !serialAvailable ) println(" ERROR: storeFromSerial has been called, but the port is not available");
-      if ( incomingCond.size() > BUFFER_SIZE ) // security check
+      if ( incomingCondSize > BUFFER_SIZE ) // security check
       { 
         incomingCond.clear();
         println("WARNING: list was getting big: list is now empty");
       }
       
-      println( " available bytes on seria buffer: " + myPort.available() );
+      print( " available bytes on seria buffer: " + myPort.available() );
       
+      
+
       while ( serialAvailable && myPort.available() > 0 ) // while there is something on the serial buffer, add the data to the "incomingCond" queue
         {
-            incomingValue = myPort.read();
-            incomingCond.append(incomingValue);
+            inputString = myPort.readStringUntil(lineFeed);
+            if (inputString != null) 
+            {
+              incomingValue =float(inputString);  // Converts and prints float
+              //print( " serial: " + incomingValue );
+              incomingCond.append(incomingValue);
+            }
         }
-     
-     println( " DEBUG : incomingCond queue size: " + incomingCond.size() );
+      int added = incomingCond.size() - incomingCondSize ;
+     println("");
+     println( "DEBUG : incomingCond queue size: " + incomingCond.size() );
+     println( "DEBUG : elements added: " + added );
      if ( incomingCond.size() == 0 ) println(" ERROR in storeFromSerial: incomingCondSize = 0 ");
       
   }
@@ -167,18 +181,31 @@ class Connection
       FloatList toOutput = new FloatList();
       
       int incomingCondSize = getList("con").size() ;
-      
-      println("conductance list size: "+ incomingCondSize);
+           
+      boolean empty = false;
+      float inValue;
       
       if (listName.equals("con"))
-        while(! (getList("con").size() == incomingCondSize  - numberOfElements) ) // extract numberOfElements of elements from conductance list
+        while(! (getList("con").size() == incomingCondSize  - numberOfElements) && !empty) // extract numberOfElements of elements from conductance list
             {
-              float inValue = incomingCond.remove(0);
-             // println ( "extract from buffer: inValue: " + inValue );
-              if ( inValue <= MAX_COND ) toOutput.append( inValue );
+              if ( getList("con").size() > 0 )
+                 {
+                   inValue = incomingCond.remove(0);
+                   
+                    //println ( "[extract from buffer] inValue: " + inValue );
+                    
+                   if ( inValue < MAX_COND )
+                     {
+                       toOutput.append( inValue );
+                       //println ( "append: " + inValue );
+                     }
+                 }
+              else
+                  empty = true;
+
+             
             }
               
-    
       return toOutput;
     }
   

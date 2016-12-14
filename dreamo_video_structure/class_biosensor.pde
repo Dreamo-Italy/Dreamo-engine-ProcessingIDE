@@ -65,7 +65,7 @@ abstract class Biosensor
     println("default value :" + getDefault() );
     println("");
     
-    text("\n absolute : " + getAbsolute() + "; framerate: " + getVariation() + "default value : " + getDefault(), 10, 40, 60);
+    text("\n absolute : " + getAbsolute() + "; variation: " + getVariation() + "; default value : " + getDefault(), 10, 50, 90);
 
   }
   
@@ -83,13 +83,17 @@ abstract class Biosensor
 
   public float average(FloatList inputList)
   {
-    float sum = 0;
-    for(short i=0; i<inputList.size();i++)
-      { sum += inputList.get(i); }
-   
-      println("sum: " + sum);
-      println("list size: " + inputList.size() );
-   return ((float)sum/inputList.size()) ;
+    if ( inputList.size() == 0 ) return -1;
+    else
+    {
+      float sum = 0;
+      for(short i=0; i<inputList.size();i++)
+        { sum += inputList.get(i); }
+     
+        println("sum: " + sum);
+        println("list size: " + inputList.size() );
+     return ((float)sum/inputList.size()) ;
+    }
   }
   
   public void setValue (float val) // when setValue is called, every other info is updated ( absolute, variation,... )

@@ -25,15 +25,16 @@ class LineGenerator extends Particle
       }*/
       
       {
-        println("");
-        
-        float outputVar = global_gsr.getVariation() ;
+        //float outputVar = 1.0;
+                float outputVar = global_gsr.getVariation() ;
+                
+                tempLine.setPosition( (tempLine.getPosition().mul( outputVar ) ) ); // tempLine.getPosition() MOLTIPLICATO PER global_gsr.getVariation()
+
+    if( frameCount % 500 == 0){
         println("Valore per cui vorrei moltiplicare: " + outputVar );
-        
         println( "x " + tempLine.getPosition().getX() + ", y " + tempLine.getPosition().getY() );
-        tempLine.setPosition( (tempLine.getPosition().mul( outputVar) ) ); // * global_gsr.outputAbsolute()
         println( "new x " + tempLine.getPosition().getX() + ", new y " +tempLine.getPosition().getY() );
-        println("");
+        println("");}
       }
       
       global_stage.getCurrentScene().addParticle(tempLine);

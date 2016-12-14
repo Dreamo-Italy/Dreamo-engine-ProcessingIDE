@@ -4,7 +4,7 @@ void setup()
 {
   //fullScreen(FX2D);
   size(800, 600, FX2D);
-  frameRate(60);
+  frameRate(30);
   noSmooth();
   
   global_connection = new Connection( this );
@@ -14,10 +14,12 @@ void setup()
   
   Background bk1 = new Background(color(0));
   Scene scene1 = new Scene();
+  
   for(int i = 0; i < 1; i++)
   {
     LineGenerator tempLine = new LineGenerator();
     Vector2d tempPos = new Vector2d(width/2, height/2, false);
+    
     tempPos = tempPos.sum(new Vector2d(200, TWO_PI/5*i, true));
     tempLine.setPosition(tempPos);
     scene1.addParticle(tempLine);
@@ -43,6 +45,7 @@ void draw()
    fps = frameRate;
   
    global_connection.update();
+   
    global_gsr.update();
    
    global_stage.updateAndTrace();
@@ -53,7 +56,7 @@ void draw()
   {
     global_gsr.printDebug();
   }
-  text("particles: " + global_particlesCount + "; framerate: " + fps + "\n", 10, 20);
+  text("particles: " + global_particlesCount + "; framerate: " + fps + " \n", 10, 20);
  
 }
 
