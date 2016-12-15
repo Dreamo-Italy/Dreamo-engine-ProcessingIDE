@@ -24,10 +24,9 @@ class Connection
   
   public PApplet parent; //needed for the Serial object istantiation
   
-  final int BUFFER_SIZE = 20000; //random value
+  final int BUFFER_SIZE = 200; //random value
   final float MAX_COND = 10.0;
-  final int lineFeed = 10;    // Linefeed in ASCII
-      
+  final int lineFeed = 10;    // Linefeed in ASCII    
       
       
   private String inputString = null;  
@@ -153,21 +152,28 @@ class Connection
         println("WARNING: list was getting big: list is now empty");
       }
       
-      print( " available bytes on seria buffer: " + myPort.available() );
+      print( " available bytes on serial buffer: " + myPort.available() );
       
-      
+      short added = 0, counter = 0;
 
-      while ( serialAvailable && myPort.available() > 0 ) // while there is something on the serial buffer, add the data to the "incomingCond" queue
+//RANDOM MAX FOR added CONDITION
+
+      myPort.readStringUntil(lineFeed);
+      while ( serialAvailable && added < 12 && counter<25 && myPort.available() > 4 ) // while there is something on the serial buffer, add the data to the "incomingCond" queue
         {
             inputString = myPort.readStringUntil(lineFeed);
             if (inputString != null) 
             {
               incomingValue =float(inputString);  // Converts and prints float
-              //print( " serial: " + incomingValue );
+              print( " serial: " + incomingValue );
               incomingCond.append(incomingValue);
+              added++;
             }
+            
+            counter++;
         }
-      int added = incomingCond.size() - incomingCondSize ;
+      
+     myPort.clear();
      println("");
      println( "DEBUG : incomingCond queue size: " + incomingCond.size() );
      println( "DEBUG : elements added: " + added );
@@ -182,30 +188,42 @@ class Connection
       
       int incomingCondSize = getList("con").size() ;
            
-      boolean empty = false;
+      boolean stop = false;
       float inValue;
+      float sum = 0;
+      short added = 0;
       
       if (listName.equals("con"))
-        while(! (getList("con").size() == incomingCondSize  - numberOfElements) && !empty) // extract numberOfElements of elements from conductance list
+       {
+         while(! (getList("con").size() == incomingCondSize  - numberOfElements) && !stop) // extract numberOfElements of elements from conductance list
             {
-              if ( getList("con").size() > 0 )
+              
+              int size = getList("con").size();
+              if ( size > 0 )
+              
                  {
-                   inValue = incomingCond.remove(0);
+                   inValue = incomingCond.remove( size - 1 );
                    
                     //println ( "[extract from buffer] inValue: " + inValue );
                     
-                   if ( inValue < MAX_COND )
-                     {
+                  // if ( inValue < MAX_COND )
+                   //  {
                        toOutput.append( inValue );
+                       sum = sum + inValue;
+                       added++;
                        //println ( "append: " + inValue );
-                     }
+                       //println ( "sum: " + sum );
+                    // }
                  }
               else
-                  empty = true;
-
-             
+                  stop = true;
+                  
             }
-              
+            
+      if ( added < 1 ) added = 1;    
+      //println ( "added: " + added );
+      toOutput.append( sum / added ); // average value        
+       }
       return toOutput;
     }
   

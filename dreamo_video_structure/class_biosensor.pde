@@ -81,19 +81,24 @@ abstract class Biosensor
   }
   
 
-  public float average(FloatList inputList)
-  {
-    if ( inputList.size() == 0 ) return -1;
+  //public float average(FloatList inputList)
+  {/*
+    int listSize = inputList.size();
+    if ( listSize == 0 ) 
+      return -1;
     else
+    
     {
       float sum = 0;
-      for(short i=0; i<inputList.size();i++)
+      
+      for(short i=0; i < listSize-1 ;i++)
         { sum += inputList.get(i); }
      
         println("sum: " + sum);
-        println("list size: " + inputList.size() );
-     return ((float)sum/inputList.size()) ;
-    }
+        println("list size: " + listSize );
+     return ((float)sum/listSize) ;
+    }*/
+    
   }
   
   public void setValue (float val) // when setValue is called, every other info is updated ( absolute, variation,... )

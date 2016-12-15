@@ -6,7 +6,7 @@ long global_particlesInstanciatedNumber = 0;
 //number of particles on screen
 long global_particlesCount = 0;
 
-short global_sampleRate = 250;
+short global_sampleRate = 256;
 
 //main object for display
 Stage global_stage;

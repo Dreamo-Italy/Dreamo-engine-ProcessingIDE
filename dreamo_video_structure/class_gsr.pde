@@ -5,13 +5,12 @@ class Gsr extends Biosensor
    public void init()
   {
     sensorName = "con";
-    incomingCon = new FloatList();
     
     value = 0; //debug
     
     //debug
     setMin ( 1.0 );
-    setMax ( 6.8 ); 
+    setMax ( 3.5 ); 
     setDefault (  (getMax() + getMin()) / 2  );
     
     //if ( !global_connection.networkAvailable() ) 
@@ -37,18 +36,34 @@ class Gsr extends Biosensor
   }
   public void update()
    {
-     println("DEBUG: GSR update.");
-     println("Number of elements to extract: "+ floor (global_sampleRate/fps) );
+     incomingCon = new FloatList();
+
+    int numToExtract = ceil (global_sampleRate/fps);
+     
+    long initTimeT = System.nanoTime();     
          
-    incomingCon = global_connection.extractFromBuffer("con", floor (global_sampleRate/fps) ); // store the incoming conductance value from Connection to another FloatLIst
+    incomingCon = global_connection.extractFromBuffer("con", numToExtract ); // store the incoming conductance value from Connection to another FloatLIst
     
-    println("buffer size: "+ incomingCon.size() );
-    float average = average(incomingCon);
+    long bufT = System.nanoTime() - initTimeT; // duration of ExtractFromBuffer
+     
+    float average = incomingCon.remove( incomingCon.size() - 1 ) ;
     
-    println("average: "+average );
-    setValue  (average);
+    long avgT = System.nanoTime() - bufT - initTimeT; // duration of average
     
-    incomingCon.clear();
+    if(frameCount % 1 == 0) setValue  (average);
+    
+    long lasT = System.nanoTime()- avgT - bufT - initTimeT; // duration of setValue
+   
+     println("DEBUG: GSR update.");
+     println("FPS: "+ fps);   
+     println("buffer size: "+ incomingCon.size() );   
+     println("average: "+ average );
+     println("Number of elements to extract: " + numToExtract );
+     println("    Extract from buffer time: "+ bufT/1000 + " us");
+     println("    Average time: "+ avgT/1000 + " us");
+     println("    setValue time: "+ (lasT)/1000 + " us");
+     println("    GSR UPDATE time: " + (System.nanoTime()-initTimeT )/1000 + " us");
+     println("");
     
   }
   
