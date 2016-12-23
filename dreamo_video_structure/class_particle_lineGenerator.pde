@@ -26,7 +26,7 @@ class LineGenerator extends Particle
       
       {
         //float outputVar = 1.0;
-                float outputVar = global_gsr.getVariation() ;
+          float outputVar = global_gsr.getVariation() ;
                 
                 tempLine.setPosition( (tempLine.getPosition().mul( outputVar ) ) ); // tempLine.getPosition() MOLTIPLICATO PER global_gsr.getVariation()
 

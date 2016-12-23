@@ -51,10 +51,10 @@ class Connection
     if(!wifiAvailable) 
       { 
         println("WARNING: Wifi is not available");
-        if ( serialConnect() )
-          serialAvailable = true;
-        else
-          println("WARNING: Serial port is not available");
+        //if ( serialConnect() )
+         // serialAvailable = true;
+        //else
+          //println("WARNING: Serial port is not available");
       } 
      
      if(! (!wifiAvailable && !serialAvailable) ) // logic expressions : the hard way
@@ -82,9 +82,9 @@ class Connection
     
     boolean portAvailable = false;
     final String[] ports = Serial.list();
-    println( Serial.list() );
+    println( ports );
     
-    if (ports.length != 0) 
+    if (ports.length != 0) // DEBUG = 1 ; RIGHT ONE = 0;
     {
       String portName = Serial.list()[0]; //change the 0 to a 1 or 2 etc. to match your port
       myPort = new Serial(parent, portName, 19200);
