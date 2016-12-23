@@ -133,8 +133,8 @@ class Connection
         
         println("Read from table process has completed. ");
     //    println("");
-        println("incomingCond size: " + getList("con").size());
-        println("");
+    //    println("incomingCond size: " + getList("con").size());
+    //    println("");
         println("storeFromText function ends here. ");
         println("");
         
