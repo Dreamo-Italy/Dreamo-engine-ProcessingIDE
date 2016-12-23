@@ -5,8 +5,6 @@ _Summer 2016_ |
 *__Francesco Cretti, Nicola Ruffino, Giovanni Bologni, Luciano Prono__*.
 
 
-
-
 Generic description of the classes of the program:
 
 
