@@ -11,7 +11,7 @@ void setup()
   global_gsr = new Gsr();
   global_stage = new Stage();
   
-  
+  /*
   Background bk1 = new Background(color(0));
   Scene scene1 = new Scene();
   
@@ -35,9 +35,12 @@ void setup()
   }
   scene2.setBackground(bk1);
   scene2.enableBackground();
+  */
   
-  global_stage.addScene(scene1);
-  global_stage.addScene(scene2);
+  
+  global_stage.addScene(new SceneFireworks());
+  global_stage.addScene(new SceneDots());
+  global_stage.addScene(new ScenePerlinNoise());
 }
 
 void draw()
@@ -71,7 +74,7 @@ void draw()
   {
     global_gsr.printDebug();
   }
-   text("particles: " + global_particlesCount + "; framerate: " + fps + " \n", 10, 20);
+   text("particles: " + global_stage.getCurrentScene().getParticlesNumber() + "; framerate: " + fps + " \n", 10, 20);
    
    
    long loopT = (System.nanoTime()  - initTimeT) ;
@@ -93,5 +96,6 @@ void draw()
 
 void mouseClicked()
 {
-  global_stage.nextScene();
+  float[] defaultParameters = {random(800)-400, random(800)-400, random(800)-400};
+  global_stage.selectSceneFromParameters(defaultParameters);
 }

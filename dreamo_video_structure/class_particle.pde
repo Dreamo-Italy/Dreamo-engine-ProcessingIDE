@@ -31,7 +31,6 @@ abstract class Particle extends AgingObject
     
     id = global_particlesInstanciatedNumber;
     global_particlesInstanciatedNumber++;
-    global_particlesCount++;
     destroy = false;
   }
   
@@ -49,7 +48,6 @@ abstract class Particle extends AgingObject
     
     id = global_particlesInstanciatedNumber;
     global_particlesInstanciatedNumber++;
-    global_particlesCount++;
     destroy = false;
   }
   
