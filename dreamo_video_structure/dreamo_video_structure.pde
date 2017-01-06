@@ -45,7 +45,9 @@ void setup()
 
 void draw()
 {
-     long initTimeT = System.nanoTime();
+    long initTimeT = System.nanoTime(); // start time
+    fps = frameRate;
+
      
      println("");
      println("***************************************");
@@ -54,18 +56,17 @@ void draw()
 
    
 
-   fps = frameRate;
    global_connection.update();
    
-   long conT = System.nanoTime() - initTimeT;
+   long conT = System.nanoTime() - initTimeT; // time elapsed after CONNECTION UPDATE
     
    global_gsr.update();
 
-   long gsrT = (System.nanoTime() - conT -initTimeT );
+   long gsrT = (System.nanoTime() - conT -initTimeT ); // time elapsed after GSR UPDATE
     
    global_stage.updateAndTrace();
    
-   long viT = (System.nanoTime() - gsrT - conT -initTimeT) ;
+   long viT = (System.nanoTime() - gsrT - conT -initTimeT) ; // time elapsed after VIDEO UPDATE
    
   
   fill(120); // for the DEBUG text
@@ -77,8 +78,10 @@ void draw()
    text("particles: " + global_stage.getCurrentScene().getParticlesNumber() + "; framerate: " + fps + " \n", 10, 20);
    
    
-   long loopT = (System.nanoTime()  - initTimeT) ;
+   long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME
    
+   
+   //----------- print the durations for debug purposes------------
    
    println("    Connection update duration: "+ conT/1000 + " us");
    println("    GSR update duration: "+ gsrT/1000 + " us");
