@@ -1,25 +1,32 @@
 class NoiseDot extends Particle
 {
   color colore;
-  int alfa;
+  int alpha;
   
   void init()
   {
     setLifeTimeLeft(10);
-    alfa = 255;
+    alpha = 255;
     setPersistence(true);
   }
   
   void update()
   {
-    alfa -= 255/10;
+    alpha -= 255/10;
   }
   
   void trace()
   {
     noStroke();
-    colore = color(255, alfa);
+    colore = color(255, alpha);
     fill(colore);
     ellipse(-5, -5, 10, 10);
   }
+  
+    @Override
+  public void setAlpha(int newAlfa)
+  {
+    alpha=newAlfa;
+  }
+ 
 }

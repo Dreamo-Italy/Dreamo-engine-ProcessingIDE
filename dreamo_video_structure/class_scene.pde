@@ -6,8 +6,8 @@ abstract class Scene extends AgingObject
 {
   private final int PARTICLES_MAX = 10000;
   public final int PARAMETERS_NUMBER = 3;
-  private Particle[] particlesList;
-  private int particlesNumber; // can also decrease
+  protected Particle[] particlesList;
+  protected int particlesNumber; // can also decrease
   
   private Background sceneBackground;
   private boolean backgroundEnabled; // true -> screen refresh at every frame
