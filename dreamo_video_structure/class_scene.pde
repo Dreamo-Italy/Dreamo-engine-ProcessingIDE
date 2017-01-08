@@ -6,7 +6,6 @@ abstract class Scene extends AgingObject
 {
   private final int PARTICLES_MAX = 10000;
   public final int PARAMETERS_NUMBER = 3;
-  
   protected Particle[] particlesList;
   protected int particlesNumber; // can also decrease
   

@@ -22,7 +22,6 @@ class ParticleTracer extends Particle
     getSpeed().setDirection(angle);
     
     NoiseDot particleDot = new NoiseDot();
-    
     particleDot.setPosition(getPosition());
     particleDot.setAlpha(alpha);
     

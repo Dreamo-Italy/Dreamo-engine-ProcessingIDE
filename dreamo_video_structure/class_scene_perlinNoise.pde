@@ -39,7 +39,6 @@ class ScenePerlinNoise extends Scene
     
     
   }
-  
 }
         
     
