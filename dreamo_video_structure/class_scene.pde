@@ -2,14 +2,17 @@
 
 import java.util.Arrays;
 
-class Scene extends AgingObject
+abstract class Scene extends AgingObject
 {
   private final int PARTICLES_MAX = 10000;
+  public final int PARAMETERS_NUMBER = 3;
   private Particle[] particlesList;
   private int particlesNumber; // can also decrease
   
   private Background sceneBackground;
   private boolean backgroundEnabled; // true -> screen refresh at every frame
+  
+  private float[] parameters;
   
   //CONSTRUCTORS
   public Scene()
@@ -18,8 +21,11 @@ class Scene extends AgingObject
     particlesNumber = 0;
     sceneBackground = null;
     backgroundEnabled = false; // false -> the screen doesn't refresh at every frame
-    
-    //forse dovremmo mettere qui la specifica della scena, cioè il generatore di oggetti
+    parameters = new float[PARAMETERS_NUMBER];    
+    for(int i = 0; i < PARAMETERS_NUMBER; i++)
+    {
+      parameters[i] = 0.0;
+    }
   }
   
   //copy constructor
@@ -36,6 +42,43 @@ class Scene extends AgingObject
       {
         particlesList[i] = toCopy.particlesList[i];
       }
+    }
+    
+    parameters = new float[PARAMETERS_NUMBER];    
+    for(int i = 0; i < PARAMETERS_NUMBER; i++)
+    {
+      parameters[i] = toCopy.parameters[i];
+    }
+  }
+  
+  //
+  public int getParticlesNumber()
+  {
+    return particlesNumber;
+  }
+  
+  public float getParameter(int index)
+  {
+    if(index >= 0 && index < PARAMETERS_NUMBER)
+    {
+      return parameters[index];
+    }
+    else
+    {
+      println("Warning: trying to get a parameter out of index boudaries, returning 0\n");
+      return 0.0;
+    }
+  }
+  
+  public void setParameter(int index, float newValue)
+  {
+    if(index >= 0 && index < PARAMETERS_NUMBER)
+    {
+      parameters[index] = newValue;
+    }
+    else
+    {
+      println("Warning: trying to set a parameter out of index boundaries\n");
     }
   }
   
@@ -98,6 +141,15 @@ class Scene extends AgingObject
     }
   }
   
+  public void eraseParticles()
+  {    
+    for(int i = 0; i < particlesNumber; i++)
+    {      
+      particlesList[i] = null;      
+    }
+    particlesNumber = 0;
+  }      
+  
   private void removeParticleByListIndex(int indexToRemove)
   {
     if(indexToRemove < particlesNumber)
@@ -108,7 +160,6 @@ class Scene extends AgingObject
         particlesList[i] = particlesList[i+1];
       }
       particlesNumber--;
-      global_particlesCount--;
     }
     else
     {
@@ -176,4 +227,6 @@ class Scene extends AgingObject
       }
     }
   }
+  
+  abstract void init();
 }
