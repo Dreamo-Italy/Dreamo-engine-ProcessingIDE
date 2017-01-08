@@ -9,6 +9,10 @@ class Dot extends Particle
     setLifeTimeLeft(300);    // time left decreases each frame
    
    int i = floor(random(3));
+   
+  // colore = questapalette.prendiColore( 4 ) 
+   
+   
    switch(i)
    {
      case 0: 
@@ -39,4 +43,6 @@ class Dot extends Particle
     fill(colore);
     ellipse(-10, -10, 20, 20);
   }
+  
+  
 }

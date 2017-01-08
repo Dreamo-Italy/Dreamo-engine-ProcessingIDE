@@ -4,24 +4,24 @@ class Line extends Particle
   
   public void init()
   {
-    setSpeed(new Vector2d(5, frameCount/60.0*TWO_PI, true)); // speed changes
+    setSpeed(new Vector2d(2, frameCount/60.0*TWO_PI, true) ); // speed changes
     setPersistence(true); // keep the particle alive after a scene change
-    setLifeTimeLeft(250);
+    setLifeTimeLeft(100);
 
     int i = floor(random(3));
     switch(i)
     {
       case 0: 
-        colore = color(255, 255, 0);
+        colore = color(130, 255, 0);
         break;
       case 1:
-        colore = color(0, 255, 255);
+        colore = color(0, 255, 100);
         break;
       case 2:
-        colore = color(255, 0, 255);
+        colore = color(230, 0, 255);
         break;
       default:
-        colore = color(255);
+        colore = color(200, 80, 80);
     }
   }
   
