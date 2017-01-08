@@ -31,7 +31,6 @@ abstract class Particle extends AgingObject
     
     id = global_particlesInstanciatedNumber;
     global_particlesInstanciatedNumber++;
-    global_particlesCount++;
     destroy = false;
   }
   
@@ -49,7 +48,6 @@ abstract class Particle extends AgingObject
     
     id = global_particlesInstanciatedNumber;
     global_particlesInstanciatedNumber++;
-    global_particlesCount++;
     destroy = false;
   }
   
@@ -170,9 +168,13 @@ abstract class Particle extends AgingObject
     }
   }
   
-  abstract void init(); // it's better to implement these 3 methods in the "child classes"
+  //methods to implement in the "child classes"
+  abstract void init();
   abstract void update();
   abstract void trace();
+  
+  //methods to OVERRIDE (if needed) in the "child classes"
+  public void setAlpha(int newAlpha){};
 }
 
 class ParticleComparator implements Comparator<Particle>

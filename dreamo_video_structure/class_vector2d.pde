@@ -104,7 +104,18 @@ class Vector2d
     rotate(direction);
   }
   
-  //functions  
+  //functions 
+   public Vector2d mul(float parameter) //multiplies
+  {
+    return new Vector2d( int(getX()*parameter), int( getY()*parameter) , false);
+  }
+  
+  public Vector2d quot ( float parameter ) // quotient
+  {
+    return new Vector2d( int(getX()/parameter), int( getY()/parameter) , false);
+  }
+    
+  
   public float distance(Vector2d other)
   {
     return dist(x, y, other.getX(), other.getY());
