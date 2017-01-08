@@ -39,7 +39,6 @@ class Stage
     {
       scenesList[scenesNumber] = toAdd;
       scenesNumber++;
-      
       if(currentScene == null) // TRUE if currentScene is the first scene
       {
         currentScene = toAdd;

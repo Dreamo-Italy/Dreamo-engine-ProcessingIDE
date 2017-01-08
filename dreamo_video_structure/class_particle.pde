@@ -17,9 +17,6 @@ abstract class Particle extends AgingObject
   private boolean persistent; // the particle continues to exist even after changing scene
   private boolean initialised; // has init() been called?
   
-  
-  
-  
   //CONTRUCTORS  
   public Particle()
   {
@@ -178,14 +175,7 @@ abstract class Particle extends AgingObject
   
   //methods to OVERRIDE (if needed) in the "child classes"
   public void setAlpha(int newAlpha){};
-  
-  
 }
-
-
-
-
-
 
 class ParticleComparator implements Comparator<Particle>
 {

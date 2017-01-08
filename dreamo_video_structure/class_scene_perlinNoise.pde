@@ -1,14 +1,9 @@
 class ScenePerlinNoise extends Scene
 {
-  
-
-  
   void init()
   {
-    
     final int row = 10;
-    final int column = 10;
-     
+    final int column = 11;
     for(int i = 0; i < column; i++)
     {
       for(int j = 0; j < row; j++)
@@ -17,11 +12,7 @@ class ScenePerlinNoise extends Scene
         int y = round(height/row*(j+1));
         ParticleTracer temp = new ParticleTracer();
         temp.setPosition(new Vector2d(x, y, false));
-        
-
-        
         addParticle(temp);
-        
       }
     }
     
@@ -33,8 +24,7 @@ class ScenePerlinNoise extends Scene
     setParameter(2, -400.0);
   }
   
-  
-  public void update(){
+    public void update(){
     
    int alpha;
    //update with audio information
@@ -49,8 +39,6 @@ class ScenePerlinNoise extends Scene
     
     
   }
-  
-  
   
 }
         

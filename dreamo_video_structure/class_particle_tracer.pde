@@ -14,7 +14,6 @@ class ParticleTracer extends Particle
     setSpeed(new Vector2d(SPEED, 0, true));
     nCrossedX = 0;
     nCrossedY = 0;
-    alpha=255;
   }
     
   void update()
@@ -23,8 +22,8 @@ class ParticleTracer extends Particle
     getSpeed().setDirection(angle);
     
     NoiseDot particleDot = new NoiseDot();
-    particleDot.setPosition(getPosition());
     
+    particleDot.setPosition(getPosition());
     particleDot.setAlpha(alpha);
     
     global_stage.getCurrentScene().addParticle(particleDot);
@@ -49,11 +48,6 @@ class ParticleTracer extends Particle
       getPosition().setY(getPosition().getY() + height);
       nCrossedY--;
     }
-  }
-  
-  public void setAlpha(int newAlpha)
-  {
-    alpha=newAlpha;
   }
   
   void trace()

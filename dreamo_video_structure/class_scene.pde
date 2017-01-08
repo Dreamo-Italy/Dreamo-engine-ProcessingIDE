@@ -6,6 +6,7 @@ abstract class Scene extends AgingObject
 {
   private final int PARTICLES_MAX = 10000;
   public final int PARAMETERS_NUMBER = 3;
+  
   protected Particle[] particlesList;
   protected int particlesNumber; // can also decrease
   
@@ -13,13 +14,6 @@ abstract class Scene extends AgingObject
   private boolean backgroundEnabled; // true -> screen refresh at every frame
   
   private float[] parameters;
-  
-  //audio features extractors
-  protected float RMS;
-  //protected AudioFeatures audio;
-  //protected Dynamic dyn;
-  //protected Tone tone;
-  //protected Rhythm rhythm;
   
   //CONSTRUCTORS
   public Scene()
@@ -33,11 +27,6 @@ abstract class Scene extends AgingObject
     {
       parameters[i] = 0.0;
     }
-    
-    //audio = new AudioFeatures();
-    //dyn = new Dynamic();
-    //tone = new Tone();
-    //rhythm = new Rhythm();
   }
   
   //copy constructor
@@ -61,12 +50,6 @@ abstract class Scene extends AgingObject
     {
       parameters[i] = toCopy.parameters[i];
     }
-    
-    //audio=toCopy.audio;
-    //dyn=toCopy.dyn;
-    //tone=toCopy.tone;
-    //rhythm=toCopy.rhythm;
-    
   }
   
   //
@@ -211,13 +194,12 @@ abstract class Scene extends AgingObject
   
   //trace and update methods  
   public void update()
-  { 
+  {
     for(int i = 0; i < particlesNumber; i++)
     {
       particlesList[i].updatePhysics();
       particlesList[i].update();
     }
-    
   }
   
   public void trace()
@@ -248,5 +230,4 @@ abstract class Scene extends AgingObject
   }
   
   abstract void init();
-  
 }

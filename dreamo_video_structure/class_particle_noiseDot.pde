@@ -6,7 +6,6 @@ class NoiseDot extends Particle
   void init()
   {
     setLifeTimeLeft(10);
-    //alpha = 255;
     setPersistence(true);
   }
   
@@ -23,7 +22,7 @@ class NoiseDot extends Particle
     ellipse(-5, -5, 10, 10);
   }
   
-  @Override
+    @Override
   public void setAlpha(int newAlfa)
   {
     alpha=newAlfa;

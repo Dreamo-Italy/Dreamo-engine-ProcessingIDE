@@ -22,6 +22,4 @@ class DotGenerator extends Particle
   {
     
   }
-  
-  
 }
