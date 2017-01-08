@@ -119,6 +119,20 @@ abstract class Scene extends AgingObject
     }
   } 
   
+    
+  private Particle getParticleByListIndex(int indexToGet)
+  {
+    if(indexToGet < particlesNumber)
+    {
+      return particlesList[indexToGet]; // the object pointed by particlesList[indexToRemove] has now no reference and will be removed from memory     
+    }
+    else
+    {
+      println("Warning: cannot get particle by list index, index higher than instance number.");
+      return null;
+    }
+  }
+  
   public void sortParticlesList()
   {
     Arrays.sort(particlesList, new ParticleComparator());

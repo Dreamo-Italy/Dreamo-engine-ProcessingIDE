@@ -13,7 +13,7 @@ class DotGenerator extends Particle
       
       float outputVar = global_gsr.getVariation() ; // CONDUCTANCE VALUE - DEBUG
       
-      tempDot.setPosition ( (new Vector2d(mouseX, mouseY, false) ).mul(/*outputVar*/1) );
+      tempDot.setPosition ( (new Vector2d(width/2, height/2, false) ).mul(outputVar/3) );
       global_stage.getCurrentScene().addParticle(tempDot);
     }
   }

@@ -2,7 +2,7 @@ class ScenePerlinNoise extends Scene
 {
   void init()
   {
-    final int row = 30;
+    final int row = 5;
     final int column = 15;
     for(int i = 0; i < column; i++)
     {

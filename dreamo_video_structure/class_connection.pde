@@ -101,9 +101,9 @@ class Connection
     //if(frameCount%30 == 1)
     {
       if( !serialAvailable )
-           storeFromText();
+           storeFromText();      // read the data from an OFFLINE TABLE
       else if ( serialAvailable )
-          storeFromSerial();
+          storeFromSerial();    // read the data from the SERIAL LINE
     }
     
   }
@@ -155,11 +155,13 @@ class Connection
       print( " available bytes on serial buffer: " + myPort.available() );
       
       short added = 0, counter = 0;
+      
+      myPort.readStringUntil(lineFeed); // clean the garbage
 
-//RANDOM MAX FOR added CONDITION
-
-      myPort.readStringUntil(lineFeed);
-      while ( serialAvailable && added < 12 && counter<25 && myPort.available() > 4 ) // while there is something on the serial buffer, add the data to the "incomingCond" queue
+      // while there is something on the serial buffer, add the data to the "incomingCond" queue
+      // myPort.available() greater than 4: there's a pending FLOAT on the buffer (size: 4 bytes)
+      
+      while ( serialAvailable && added < 12 && counter < 25 && myPort.available() > 4 )
         {
             inputString = myPort.readStringUntil(lineFeed);
             if (inputString != null) 

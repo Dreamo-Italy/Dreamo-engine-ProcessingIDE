@@ -1,10 +1,11 @@
-class Dot extends Particle
+class RadialDot extends Particle
 {
-  color colore;
+  color colore = 255;
+  int alfa;
+  
   public void init()
   {
-    setSpeed(new Vector2d(5, random(TWO_PI), true));
-    setGravity(new Vector2d(0, 0.001, false));
+    //setSpeed(new Vector2d(1, random(TWO_PI), true));
     setPersistence(true);    // smoother transition from one scene to another
     setLifeTimeLeft(300);    // time left decreases each frame
    
@@ -12,21 +13,6 @@ class Dot extends Particle
    
   // colore = questapalette.prendiColore( 4 ) 
    
-   
-   switch(i)
-   {
-     case 0: 
-       colore = color(255, 0, 0);
-       break;
-     case 1:
-       colore = color(0, 255, 0);
-       break;
-     case 2:
-       colore = color(0, 0, 255);
-       break;
-     default:
-       colore = color(255);
-    }
   }
   
   public void update()
@@ -41,6 +27,6 @@ class Dot extends Particle
   {
     noStroke();
     fill(colore);
-    ellipse(-10, -10, 20, 20);
+    ellipse(-1, -1, 2, 2);
   }
 }

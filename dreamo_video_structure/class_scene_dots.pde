@@ -11,7 +11,7 @@ class SceneDots extends Scene
     enableBackground();
     
     setParameter(0, -10.0);
-    setParameter(1, 10.0);
+    setParameter(1, 1000.0);
     setParameter(2, 0.0);
   }
 }
