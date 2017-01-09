@@ -4,7 +4,7 @@ void setup()
 {
   //fullScreen(FX2D);
   size(800, 600, FX2D);
-  frameRate(60);
+  frameRate(30);
   noSmooth();
   
   global_connection = new Connection( this );
