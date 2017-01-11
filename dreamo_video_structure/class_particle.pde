@@ -16,6 +16,7 @@ abstract class Particle extends AgingObject
   
   private boolean persistent; // the particle continues to exist even after changing scene
   private boolean initialised; // has init() been called?
+  private boolean sceneChanged; //has the scene changed (while the particle is persistent)?
   
   //CONTRUCTORS  
   public Particle()
@@ -28,6 +29,7 @@ abstract class Particle extends AgingObject
   
     persistent = false;
     initialised = false;
+    sceneChanged = false;
     
     id = global_particlesInstanciatedNumber;
     global_particlesInstanciatedNumber++;
@@ -45,6 +47,7 @@ abstract class Particle extends AgingObject
     
     persistent = toCopy.persistent;
     initialised = false;
+    sceneChanged = false;
     
     id = global_particlesInstanciatedNumber;
     global_particlesInstanciatedNumber++;
@@ -93,6 +96,11 @@ abstract class Particle extends AgingObject
     return initialised;
   }
   
+  boolean getSceneChanged()
+  {
+    return sceneChanged;
+  }
+  
   //set methods  
   public void setPosition(Vector2d newPosition) 
   {
@@ -127,6 +135,11 @@ abstract class Particle extends AgingObject
   void assertInitialised()
   {
     initialised = true;
+  }
+  
+  void assertSceneChanged()
+  {
+    sceneChanged = true;
   }
   
   //apply transformations method

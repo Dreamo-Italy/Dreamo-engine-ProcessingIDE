@@ -200,6 +200,7 @@ abstract class Scene extends AgingObject
     {
       if(particlesList[i].getPersistence())
       {
+        particlesList[i].assertSceneChanged();
         targetScene.addParticle(particlesList[i]);
       }
     }

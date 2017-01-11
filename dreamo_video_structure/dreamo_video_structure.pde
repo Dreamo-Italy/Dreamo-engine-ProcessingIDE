@@ -71,6 +71,7 @@ void draw()
 
 void mouseClicked()
 {
-  float[] defaultParameters = {random(800)-400, random(800)-400, random(800)-400};
-  global_stage.selectSceneFromParameters(defaultParameters);
+  //float[] defaultParameters = {random(800)-400, random(800)-400, random(800)-400};
+  //global_stage.selectSceneFromParameters(defaultParameters);
+  global_stage.nextScene();
 }

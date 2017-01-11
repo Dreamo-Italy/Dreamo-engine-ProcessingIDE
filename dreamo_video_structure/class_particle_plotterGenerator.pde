@@ -6,50 +6,54 @@ class PlotterGenerator extends Particle
     int pointCount = 0;
     int i1 = 0;
     
+    boolean destroying = false;
+    
     // lines will be drawn ONLY between a particle and the NEAREST PARTILCLE_RADIUS number of particles (e.g. the nearest 40 particles)
     // please use EVEN NUMBERS as the number will be divided by 2
-    final int PARTICLE_RADIUS = 24; 
+    final int PARTICLE_RADIUS = 120; 
     
      // ------ initial parameters and declarations ------
 
 
-    float connectionRadius = 40;
+    float connectionRadius = 300;
     float minHueValue = 0;
     float maxHueValue = 100;
     float saturationValue = 100;
     float brightnessValue = 100;
     float lineWeight = 1;
     float lineAlpha = 200;
+    float lineAlphaWeight = 1;
     float imageAlpha = 30;
     float zoom = 1;
-
-    
-    // minimum distance to previously set point
-    float minDistance = 15;    
     
   
   public void init()
   {
      selectFileLoadPoints() ;
+     setPersistence(true);
   }
   
   public void update()
   {      
       //pseudo random variations for the printed objects
       
-      if(frameCount % 42 == 0)  lineWeight *= 3;
+      if(frameCount % 42 == 0)  lineWeight *= 2;
       //if(frameCount % 53 == 0)  zoom = 0.8;
-       if(frameCount % 5 == 0)  connectionRadius = 20;
+       if(frameCount % 5 == 0)  {connectionRadius = 50; zoom = 1;}
        if(frameCount % 7 == 0)  lineWeight = 1.5;
        if(frameCount % 11 == 0)  lineWeight = 5;    
-       if(frameCount % 40 == 0)  minHueValue = 20;
+       if(frameCount % 40 == 0)  minHueValue = 0;
        if(frameCount % 50 == 0)  minHueValue = 0;
-       if(frameCount % 60 == 0) connectionRadius = 40;
-       if(frameCount % 80 == 0) connectionRadius = 100;
+       if(frameCount % 60 == 0) {connectionRadius = 100; lineWeight = 30;}
+     //  if(frameCount % 80 == 0) {selectFileLoadPoints();}
 
        //if(frameCount % 1000 == 0) zoom *= 5;
        
-    
+    if(getSceneChanged() && !destroying)
+    {
+      destroying = true;
+      setLifeTimeLeft(80);
+    }
   }
   
   public void trace()
@@ -61,8 +65,13 @@ class PlotterGenerator extends Particle
     
     // ------ draw everything ------
     strokeWeight(lineWeight);
-    stroke(255, lineAlpha);
-    strokeCap(ROUND);
+    if(destroying)
+    {
+      lineAlphaWeight -= 1.0/50.0;
+    }
+    stroke(255, lineAlphaWeight*lineAlpha);
+    
+    //strokeCap(ROUND);
     noFill();
     //tint(255, imageAlpha);
  
@@ -92,7 +101,7 @@ class PlotterGenerator extends Particle
       }
       i1++;        
     }   
-    
+    /*
      // STEADY LINES
      i1 = 0;
      drawEndTime = millis() + 100;
@@ -109,7 +118,7 @@ class PlotterGenerator extends Particle
         drawLine(p1, p2);     
       }
       i1++;        
-    }
+    }*/
     
    colorMode(RGB, 255);
    //popMatrix();
@@ -124,16 +133,11 @@ class PlotterGenerator extends Particle
     d = p1.distance(p2);
     a = pow(1/(d/connectionRadius+1), 6);
     
-     if (d <= connectionRadius) 
+    if (d <= connectionRadius && d > 2) 
     {
       h = map(a, 0, 1, minHueValue, maxHueValue) % 360;
-      stroke(h, saturationValue, brightnessValue, a*lineAlpha + (i1%2 * 2));
-      
-     // without popMatrix() and pushMatrix() there's a WRONG TRANSLATION in the plot
-     
+      stroke(h, saturationValue, brightnessValue, a*lineAlphaWeight*lineAlpha + (i1%2 * 2));
       line(p1.getX(), p1.getY(), p2.getX(), p2.getY() );  
-      
-      
     }
   }
 
@@ -182,8 +186,9 @@ class PlotterGenerator extends Particle
           pointCount++;
           
           RadialDot newParticle = new RadialDot();
-          newParticle.setPosition( position );
-          newParticle.setSpeed( speed );
+          newParticle.setGravityCenter(position);
+          //newParticle.setPosition( position );
+          //newParticle.setSpeed( speed );
           global_stage.getCurrentScene().addParticle( newParticle ); 
           
         }

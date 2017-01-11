@@ -115,7 +115,6 @@ class Vector2d
     return new Vector2d( int(getX()/parameter), int( getY()/parameter) , false);
   }
     
-  
   public float distance(Vector2d other)
   {
     return dist(x, y, other.getX(), other.getY());
@@ -124,6 +123,11 @@ class Vector2d
   public Vector2d sum(Vector2d other)
   {
     return new Vector2d(x+other.getX(), y+other.getY(), false);
+  }
+  
+  public Vector2d subtract(Vector2d other)
+  {
+    return new Vector2d(x-other.getX(), y-other.getY(), false);
   }
   
   public Vector2d mirrorX()
