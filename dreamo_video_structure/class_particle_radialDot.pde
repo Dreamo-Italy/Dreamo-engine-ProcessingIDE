@@ -9,7 +9,7 @@ class RadialDot extends Particle
     setPersistence(true);    // smoother transition from one scene to another
     setLifeTimeLeft(300);    // time left decreases each frame
    
-   int i = floor(random(3));
+   // int i = floor(random(3));
    
   // colore = questapalette.prendiColore( 4 ) 
    

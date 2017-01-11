@@ -1,8 +1,18 @@
 class PlotterGenerator extends Particle
 {
   
-    int pointCount = 0;
     ArrayList<Vector2d> pointList = new ArrayList<Vector2d>();
+
+    int pointCount = 0;
+    int i1 = 0;
+    
+    // lines will be drawn ONLY between a particle and the NEAREST PARTILCLE_RADIUS number of particles (e.g. the nearest 40 particles)
+    // please use EVEN NUMBERS as the number will be divided by 2
+    final int PARTICLE_RADIUS = 24; 
+    
+     // ------ initial parameters and declarations ------
+
+
     float connectionRadius = 40;
     float minHueValue = 0;
     float maxHueValue = 100;
@@ -10,17 +20,13 @@ class PlotterGenerator extends Particle
     float brightnessValue = 100;
     float lineWeight = 1;
     float lineAlpha = 200;
-    int i1 = 0;
-    
-    // ------ initial parameters and declarations ------
-
     float imageAlpha = 30;
-    float eraserRadius = 20;
+    float zoom = 1;
+
     
     // minimum distance to previously set point
-    float minDistance = 10;    
+    float minDistance = 15;    
     
-    float zoom = 1;
   
   public void init()
   {
@@ -31,21 +37,26 @@ class PlotterGenerator extends Particle
   {      
       //pseudo random variations for the printed objects
       
-      if(frameCount % 42 == 0)  zoom *= 3;
-      if(frameCount % 53 == 0)  zoom = 0.8;
-       if(frameCount % 5 == 0)  connectionRadius = random(70);
+      if(frameCount % 42 == 0)  lineWeight *= 3;
+      //if(frameCount % 53 == 0)  zoom = 0.8;
+       if(frameCount % 5 == 0)  connectionRadius = 20;
        if(frameCount % 7 == 0)  lineWeight = 1.5;
        if(frameCount % 11 == 0)  lineWeight = 5;    
        if(frameCount % 40 == 0)  minHueValue = 20;
        if(frameCount % 50 == 0)  minHueValue = 0;
-       if(frameCount % 1000 == 0) zoom *= 5;
+       if(frameCount % 60 == 0) connectionRadius = 40;
+       if(frameCount % 80 == 0) connectionRadius = 100;
+
+       //if(frameCount % 1000 == 0) zoom *= 5;
        
     
   }
   
   public void trace()
   {    
-    //translate(width/6, height/4);
+    //pushMatrix();
+   // translate(-width/2, -height/2);
+   
     scale(zoom);
     
     // ------ draw everything ------
@@ -58,15 +69,23 @@ class PlotterGenerator extends Particle
     // drawing method where all points are connected with each other
     // alpha depends on distance of the points  
 
-    colorMode(HSB, 360, 100, 100, 100);
+    colorMode(HSB, 360, 100, 100, 100);  
     
-
     
-    int particlesNumber = global_stage.getCurrentScene().getParticlesNumber();
+    // MOVING LINES
+    final int particlesNumber = global_stage.getCurrentScene().getParticlesNumber() -1;
+    
     i1 = 0;
-    while (i1 < particlesNumber ) 
+    
+    // draw lines not all at once, just the next 100 milliseconds to keep performance
+    int drawEndTime = millis() + 100;
+        
+    while (i1 < particlesNumber && millis () < drawEndTime) 
     {
-      for (int i2 = 0; i2 < i1; i2++) {
+      int start_index = (i1 - PARTICLE_RADIUS/2) > 0 ?  (i1 - PARTICLE_RADIUS/2) : 0;
+      int end_index = (i1 + PARTICLE_RADIUS/2) < particlesNumber ? (i1 + PARTICLE_RADIUS/2) : particlesNumber ;
+      
+      for (int i2 = start_index; i2 < end_index; i2++) {
         Vector2d p1 = global_stage.getCurrentScene().getParticleByListIndex(i1).getPosition();
         Vector2d p2 = global_stage.getCurrentScene().getParticleByListIndex(i2).getPosition();
         drawLine(p1, p2);
@@ -74,10 +93,16 @@ class PlotterGenerator extends Particle
       i1++;        
     }   
     
+     // STEADY LINES
      i1 = 0;
-     while (i1 < pointCount) 
+     drawEndTime = millis() + 100;
+     final int pointListSize = pointList.size() -1;
+     while (i1 < pointCount && millis () < drawEndTime) 
      {
-      for (int i2 = 0; i2 < i1; i2++) 
+        int start_index = (i1 - PARTICLE_RADIUS/2) > 0 ?  (i1 - PARTICLE_RADIUS/2) : 0;
+        int end_index = (i1 + PARTICLE_RADIUS/2) < pointListSize ? (i1 + PARTICLE_RADIUS/2) : pointListSize ;
+
+      for (int i2 = start_index; i2 < end_index; i2++) 
       {       
         Vector2d p1 = pointList.get(i1);
         Vector2d p2 = pointList.get(i2);
@@ -87,6 +112,7 @@ class PlotterGenerator extends Particle
     }
     
    colorMode(RGB, 255);
+   //popMatrix();
 
   }
   
@@ -104,9 +130,9 @@ class PlotterGenerator extends Particle
       stroke(h, saturationValue, brightnessValue, a*lineAlpha + (i1%2 * 2));
       
      // without popMatrix() and pushMatrix() there's a WRONG TRANSLATION in the plot
-     popMatrix();
+     
       line(p1.getX(), p1.getY(), p2.getX(), p2.getY() );  
-      pushMatrix();
+      
       
     }
   }
@@ -122,10 +148,9 @@ class PlotterGenerator extends Particle
       pointCount = 0;
       pointList.clear();
       
-      
       for (int i=0; i<pointStrings.length; i++) 
       {
-        String[] pt = pointStrings[i].split(" "); i = i+1;
+       String[] pt = pointStrings[i].split(" "); 
         
        if (pt.length == 3 ) 
         {         
@@ -134,6 +159,8 @@ class PlotterGenerator extends Particle
          float angle = 0;
          
          // use different angle evaluation for each quarter of the screen
+         // USEFUL to implement RADIAL MOVEMENT FROM THE CENTER TO THE EDGES
+         
          if( position.getX()> width/2 && position.getY() < height/2)
            angle = - atan2(height - position.getY(), position.getX()) ;
          else if( position.getX() <  width/2 && position.getY() < height/2)
@@ -149,7 +176,7 @@ class PlotterGenerator extends Particle
           float mod = 1;
           Vector2d speed = new Vector2d ( mod , angle, true);
           
-          // Add the new particle to the list
+          // Add the new particle to the TWO LISTS: pointList and the global_stage list
                 
           pointList.add( position );
           pointCount++;
@@ -172,7 +199,7 @@ class PlotterGenerator extends Particle
     // opens file chooser
     //selectInput("Select Text File with Point Information", "loadPointPathSelected");
     
-    String path = new String( dataPath("coordinate_dreamo.txt") );
+    String path = new String( dataPath("coordinate_sole.txt") );
     File incomingText = new File(path);
     loadPointPathSelected(incomingText);
     
