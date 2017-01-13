@@ -15,6 +15,7 @@ void setup()
   global_stage.addScene(new SceneDots());
   global_stage.addScene(new ScenePerlinNoise());
   global_stage.addScene(new ScenePlotter());
+  global_stage.addScene(new SceneDynamicGrid());
 }
 
 void draw()
@@ -22,12 +23,12 @@ void draw()
     long initTimeT = System.nanoTime(); // start time
     fps = frameRate;
 
-     
+  /*   
      println("");
      println("***************************************");
      println("*****************START*****************");
      println("");
-
+*/
    
 
    global_connection.update();

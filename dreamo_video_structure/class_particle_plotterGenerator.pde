@@ -16,8 +16,8 @@ class PlotterGenerator extends Particle
 
 
     float connectionRadius = 300;
-    float minHueValue = 0;
-    float maxHueValue = 100;
+    float minHueValue = 155;
+    float maxHueValue = 255;
     float saturationValue = 100;
     float brightnessValue = 100;
     float lineWeight = 1;
@@ -42,17 +42,16 @@ class PlotterGenerator extends Particle
        if(frameCount % 5 == 0)  {connectionRadius = 50; zoom = 1;}
        if(frameCount % 7 == 0)  lineWeight = 1.5;
        if(frameCount % 11 == 0)  lineWeight = 5;    
-       if(frameCount % 40 == 0)  minHueValue = 0;
-       if(frameCount % 50 == 0)  minHueValue = 0;
-       if(frameCount % 60 == 0) {connectionRadius = 100; lineWeight = 30;}
+       //if(frameCount % 40 == 0)  minHueValue = 0;
+       //if(frameCount % 50 == 0)  minHueValue = 0;
+       if(frameCount % 60 == 0) {connectionRadius = 100; lineWeight = 15;}
      //  if(frameCount % 80 == 0) {selectFileLoadPoints();}
 
-       //if(frameCount % 1000 == 0) zoom *= 5;
        
     if(getSceneChanged() && !destroying)
     {
       destroying = true;
-      setLifeTimeLeft(80);
+      setLifeTimeLeft(60);
     }
   }
   
@@ -95,9 +94,15 @@ class PlotterGenerator extends Particle
       int end_index = (i1 + PARTICLE_RADIUS/2) < particlesNumber ? (i1 + PARTICLE_RADIUS/2) : particlesNumber ;
       
       for (int i2 = start_index; i2 < end_index; i2++) {
-        Vector2d p1 = global_stage.getCurrentScene().getParticleByListIndex(i1).getPosition();
-        Vector2d p2 = global_stage.getCurrentScene().getParticleByListIndex(i2).getPosition();
-        drawLine(p1, p2);
+        if(
+          (!(global_stage.getCurrentScene().getParticleByListIndex(i1).getSceneChanged()&&global_stage.getCurrentScene().getParticleByListIndex(i2).getSceneChanged())&&!destroying)
+          ||(global_stage.getCurrentScene().getParticleByListIndex(i1).getSceneChanged()&&global_stage.getCurrentScene().getParticleByListIndex(i2).getSceneChanged()&&destroying)
+          ) //with this condition, programs checks whether the particle is from the correct scene
+        {
+          Vector2d p1 = global_stage.getCurrentScene().getParticleByListIndex(i1).getPosition();
+          Vector2d p2 = global_stage.getCurrentScene().getParticleByListIndex(i2).getPosition();
+          drawLine(p1, p2);
+        }
       }
       i1++;        
     }   
@@ -124,8 +129,6 @@ class PlotterGenerator extends Particle
    //popMatrix();
 
   }
-  
-
   
   public void drawLine(Vector2d p1, Vector2d p2)
   {
@@ -204,7 +207,7 @@ class PlotterGenerator extends Particle
     // opens file chooser
     //selectInput("Select Text File with Point Information", "loadPointPathSelected");
     
-    String path = new String( dataPath("coordinate_sole.txt") );
+    String path = new String( dataPath("coordinate_dreamo2.txt") );
     File incomingText = new File(path);
     loadPointPathSelected(incomingText);
     
