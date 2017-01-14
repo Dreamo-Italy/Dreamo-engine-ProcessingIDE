@@ -169,9 +169,13 @@ abstract class Particle extends AgingObject
   //update and trace methods
   void updatePhysics()
   {
-    //spacial variables update
-    position = position.sum(speed);
+    //spacial variables update (Heun method)
+    Vector2d positionk1 = speed;
     speed = speed.sum(gravity);
+    Vector2d positionk2 = speed;
+    Vector2d sigma = positionk1.sum(positionk2);
+    position = position.sum(sigma.quot(2));
+    
     
     //life variables update
     updateTime();
