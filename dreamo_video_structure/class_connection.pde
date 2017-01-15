@@ -18,7 +18,7 @@ class Connection
 
   private boolean wifiAvailable;
   private boolean serialAvailable;
-  private boolean anyConnectionAvailable;
+  private boolean connectionAvailable;
   
   private float incomingValue; // the input coming from a biosensor
   
@@ -40,7 +40,7 @@ class Connection
   {
     wifiAvailable = false;
     serialAvailable = false;
-    anyConnectionAvailable = false;
+    connectionAvailable = false;
     
     incomingCond = new FloatList();
     
@@ -58,7 +58,7 @@ class Connection
       } 
      
      if(! (!wifiAvailable && !serialAvailable) ) // logic expressions : the hard way
-       anyConnectionAvailable = true;
+       connectionAvailable = true;
        
   }
   
@@ -70,7 +70,7 @@ class Connection
   
   public boolean networkAvailable()
   {
-    return anyConnectionAvailable;
+    return connectionAvailable;
   }
   
     private boolean serialConnect() // return TRUE if a serial connection is available
@@ -204,7 +204,15 @@ class Connection
               if ( size > 0 )
               
                  {
-                   inValue = incomingCond.remove( size - 1 );
+                   int randomIndex = 0;
+                   
+                   // !connectionAvailable: there aren't any connections available, we're reading the DATA from an OFFLINE TABLE
+                   // with randomIndex we pick a different set of values for each cycle
+                   
+                   if ( !connectionAvailable ) 
+                      randomIndex = round(random( incomingCondSize/5 ) ); 
+                   
+                   inValue = incomingCond.remove( size - randomIndex - 1 );
                    
                     //println ( "[extract from buffer] inValue: " + inValue );
                     
