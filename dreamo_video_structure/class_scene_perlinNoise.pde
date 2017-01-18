@@ -2,10 +2,10 @@ class ScenePerlinNoise extends Scene
 {
   void init()
   {
-    
-    
+
+
     pal.initColors();
-    
+
     final int row = 10;
     final int column = 11;
     for(int i = 0; i < column; i++)
@@ -20,30 +20,28 @@ class ScenePerlinNoise extends Scene
         addParticle(temp);
       }
     }
-    
+
     setBackground(new Background());
     enableBackground();
-    
+
     setParameter(0, -200.0);
     setParameter(1, -300.0);
     setParameter(2, -400.0);
   }
-  
+
     public void update(){
-    
+
    int alpha;
    //update with audio information
    alpha=(int)map(global_dyn.getRMS(),0,0.3,0,255);
-      
+
    for(int i = 0; i < particlesNumber; i++)
      {
        particlesList[i].updatePhysics();
        particlesList[i].setAlpha(alpha*2);
        particlesList[i].update();
    }
-    
-    
+
+
   }
 }
-        
-    

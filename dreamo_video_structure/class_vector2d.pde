@@ -72,11 +72,12 @@ class Vector2d
   public void setModDir(float newModulus, float newDirection)
   {
     modulus = newModulus;
+    direction = newDirection;
     if(modulus < 0)
     {
-      println("warning: modulus set as negative number");
+      direction -= PI;
+      modulus = -modulus;
     }
-    direction = newDirection;
     while(direction > TWO_PI) direction-=TWO_PI;
     while(direction < 0) direction+=TWO_PI;
     x = modulus*cos(direction);
@@ -107,15 +108,14 @@ class Vector2d
   //functions 
    public Vector2d mul(float parameter) //multiplies
   {
-    return new Vector2d( int(getX()*parameter), int( getY()*parameter) , false);
+    return new Vector2d( getX()*parameter, getY()*parameter , false);
   }
   
   public Vector2d quot ( float parameter ) // quotient
   {
-    return new Vector2d( int(getX()/parameter), int( getY()/parameter) , false);
+    return new Vector2d( getX()/parameter, getY()/parameter , false);
   }
     
-  
   public float distance(Vector2d other)
   {
     return dist(x, y, other.getX(), other.getY());
@@ -124,6 +124,11 @@ class Vector2d
   public Vector2d sum(Vector2d other)
   {
     return new Vector2d(x+other.getX(), y+other.getY(), false);
+  }
+  
+  public Vector2d subtract(Vector2d other)
+  {
+    return new Vector2d(x-other.getX(), y-other.getY(), false);
   }
   
   public Vector2d mirrorX()

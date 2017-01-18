@@ -18,7 +18,7 @@ class Connection
 
   private boolean wifiAvailable;
   private boolean serialAvailable;
-  private boolean anyConnectionAvailable;
+  private boolean connectionAvailable;
   
   private float incomingValue; // the input coming from a biosensor
   
@@ -40,7 +40,7 @@ class Connection
   {
     wifiAvailable = false;
     serialAvailable = false;
-    anyConnectionAvailable = false;
+    connectionAvailable = false;
     
     incomingCond = new FloatList();
     
@@ -58,7 +58,7 @@ class Connection
       } 
      
      if(! (!wifiAvailable && !serialAvailable) ) // logic expressions : the hard way
-       anyConnectionAvailable = true;
+       connectionAvailable = true;
        
   }
   
@@ -70,7 +70,7 @@ class Connection
   
   public boolean networkAvailable()
   {
-    return anyConnectionAvailable;
+    return connectionAvailable;
   }
   
     private boolean serialConnect() // return TRUE if a serial connection is available
@@ -101,9 +101,9 @@ class Connection
     //if(frameCount%30 == 1)
     {
       if( !serialAvailable )
-           storeFromText();
+           storeFromText();      // read the data from an OFFLINE TABLE
       else if ( serialAvailable )
-          storeFromSerial();
+          storeFromSerial();    // read the data from the SERIAL LINE
     }
     
   }
@@ -155,11 +155,13 @@ class Connection
       print( " available bytes on serial buffer: " + myPort.available() );
       
       short added = 0, counter = 0;
+      
+      myPort.readStringUntil(lineFeed); // clean the garbage
 
-//RANDOM MAX FOR added CONDITION
-
-      myPort.readStringUntil(lineFeed);
-      while ( serialAvailable && added < 12 && counter<25 && myPort.available() > 4 ) // while there is something on the serial buffer, add the data to the "incomingCond" queue
+      // while there is something on the serial buffer, add the data to the "incomingCond" queue
+      // myPort.available() greater than 4: there's a pending FLOAT on the buffer (size: 4 bytes)
+      
+      while ( serialAvailable && added < 12 && counter < 25 && myPort.available() > 4 )
         {
             inputString = myPort.readStringUntil(lineFeed);
             if (inputString != null) 
@@ -202,7 +204,15 @@ class Connection
               if ( size > 0 )
               
                  {
-                   inValue = incomingCond.remove( size - 1 );
+                   int randomIndex = 0;
+                   
+                   // !connectionAvailable: there aren't any connections available, we're reading the DATA from an OFFLINE TABLE
+                   // with randomIndex we pick a different set of values for each cycle
+                   
+                   if ( !connectionAvailable ) 
+                      randomIndex = round(random( incomingCondSize/5 ) ); 
+                   
+                   inValue = incomingCond.remove( size - randomIndex - 1 );
                    
                     //println ( "[extract from buffer] inValue: " + inValue );
                     
