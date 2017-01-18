@@ -1,5 +1,7 @@
 class DotGenerator extends Particle
 {
+  
+  
   public void init()
   {
     
@@ -11,6 +13,7 @@ class DotGenerator extends Particle
     {
       Dot tempDot = new Dot();
       
+      tempDot.setPalette(this.pal);
       float outputVar = global_gsr.getVariation() ; // CONDUCTANCE VALUE - DEBUG
       
       tempDot.setPosition ( (new Vector2d(mouseX, mouseY, false) ).mul(/*outputVar*/1) );
@@ -22,4 +25,7 @@ class DotGenerator extends Particle
   {
     
   }
+  
+
+  
 }

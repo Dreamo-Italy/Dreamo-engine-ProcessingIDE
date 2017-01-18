@@ -14,9 +14,15 @@ abstract class Scene extends AgingObject
   
   private float[] parameters;
   
+  protected Palette pal;
+  
   //CONSTRUCTORS
   public Scene()
   {
+    //allocate palette and init with random colors
+    pal=new Palette();
+    pal.initColors();
+    
     particlesList = new Particle[PARTICLES_MAX];
     particlesNumber = 0;
     sceneBackground = null;

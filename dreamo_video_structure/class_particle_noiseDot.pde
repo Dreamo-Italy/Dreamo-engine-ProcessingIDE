@@ -8,6 +8,7 @@ class NoiseDot extends Particle
     setLifeTimeLeft(10);
     alpha = 255;
     setPersistence(true);
+    //colore=pal.getColor();
   }
   
   void update()
@@ -18,15 +19,21 @@ class NoiseDot extends Particle
   void trace()
   {
     noStroke();
-    colore = color(255, alpha);
+    colore = color(colore, alpha);
     fill(colore);
     ellipse(-5, -5, 10, 10);
   }
   
-    @Override
+  @Override
   public void setAlpha(int newAlfa)
   {
     alpha=newAlfa;
   }
+ 
+ public void setColor(color c)
+ {  
+   colore=c;
+ 
+ }
  
 }

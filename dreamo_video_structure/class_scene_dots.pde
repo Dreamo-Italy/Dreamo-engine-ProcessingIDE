@@ -1,8 +1,17 @@
 class SceneDots extends Scene
 {
+  
+
+  
   void init()
   {
+   
+    pal.initColors();
+    
     DotGenerator generator = new DotGenerator();
+    
+    generator.setPalette(this.pal);
+    
     addParticle(generator);
     generator.setPosition(new Vector2d(width/2, height/2, false));
     
