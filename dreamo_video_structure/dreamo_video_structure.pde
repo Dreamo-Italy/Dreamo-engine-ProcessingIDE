@@ -2,6 +2,7 @@ float fps = 0;
 
 void setup()
 {
+  colorMode(HSB, 360, 100, 100);
   //fullScreen(FX2D);
   size(800, 600, FX2D);
   frameRate(60);
@@ -86,6 +87,7 @@ void draw()
 
 void mouseClicked()
 {
-  float[] defaultParameters = {random(800)-400, random(800)-400, random(800)-400};
-  global_stage.selectSceneFromParameters(defaultParameters);
+  //float[] defaultParameters = {random(800)-400, random(800)-400, random(800)-400};
+  //global_stage.selectSceneFromParameters(defaultParameters);
+  global_stage.nextScene();
 }

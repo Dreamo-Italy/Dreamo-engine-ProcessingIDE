@@ -11,6 +11,7 @@ class LineGenerator extends Particle
     {
       Vector2d LineGeneratorPosition = new Vector2d( getPosition() ) ;
       Line tempLine = new Line();
+      tempLine.setPalette(pal);
       tempLine.setPosition( LineGeneratorPosition ); // the LINE object is created where the LINE GENERATOR is
       
       //if(frameCount%1 == 0)

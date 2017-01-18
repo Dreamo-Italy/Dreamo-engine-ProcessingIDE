@@ -23,6 +23,8 @@ class ParticleTracer extends Particle
     
     NoiseDot particleDot = new NoiseDot();
     particleDot.setPosition(getPosition());
+    //particleDot.setPalette(pal);
+    particleDot.setColor(pal.getColor());
     particleDot.setAlpha(alpha);
     
     global_stage.getCurrentScene().addParticle(particleDot);

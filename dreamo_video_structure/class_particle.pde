@@ -17,6 +17,8 @@ abstract class Particle extends AgingObject
   private boolean persistent; // the particle continues to exist even after changing scene
   private boolean initialised; // has init() been called?
   
+  protected Palette pal;
+  
   //CONTRUCTORS  
   public Particle()
   {
@@ -168,6 +170,11 @@ abstract class Particle extends AgingObject
     }
   }
   
+  public void setPalette(Palette p)
+  {
+    pal=p;
+  }
+  
   //methods to implement in the "child classes"
   abstract void init();
   abstract void update();
@@ -196,4 +203,6 @@ class ParticleComparator implements Comparator<Particle>
     if(B == null) return false;
     return A.depth == B.depth;
   }
+  
+  
 }

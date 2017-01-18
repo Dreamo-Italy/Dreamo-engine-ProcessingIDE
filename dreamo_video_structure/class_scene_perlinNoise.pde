@@ -2,6 +2,10 @@ class ScenePerlinNoise extends Scene
 {
   void init()
   {
+    
+    
+    pal.initColors();
+    
     final int row = 10;
     final int column = 11;
     for(int i = 0; i < column; i++)
@@ -11,6 +15,7 @@ class ScenePerlinNoise extends Scene
         int x = round(width/column*(i+1));
         int y = round(height/row*(j+1));
         ParticleTracer temp = new ParticleTracer();
+        temp.setPalette(pal);
         temp.setPosition(new Vector2d(x, y, false));
         addParticle(temp);
       }
@@ -33,7 +38,7 @@ class ScenePerlinNoise extends Scene
    for(int i = 0; i < particlesNumber; i++)
      {
        particlesList[i].updatePhysics();
-       particlesList[i].setAlpha(alpha);
+       particlesList[i].setAlpha(alpha*2);
        particlesList[i].update();
    }
     
