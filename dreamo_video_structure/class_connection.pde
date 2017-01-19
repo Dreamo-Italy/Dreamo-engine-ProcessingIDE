@@ -6,7 +6,6 @@ import java.util.Queue;
 import java.util.ArrayDeque;
 
 /*  passare la Queue come argomento di una funzione:
-
 Objects are not passed to methods; rather, references to objects are passed to methods. 
 The references themselves are passed by value—a copy of a reference is passed to a method. 
 When a method receives a reference to an object, the method can manipulate the object directly.*/
@@ -14,7 +13,6 @@ When a method receives a reference to an object, the method can manipulate the o
 class Connection
 {
   Serial myPort;  // Create object from Serial class
-                  //values given by the galvanic skin response  // GSR[0] is CON, GSR[1] is RES, GSR[2] is CONV
 
   private boolean wifiAvailable;
   private boolean serialAvailable;
@@ -51,10 +49,10 @@ class Connection
     if(!wifiAvailable) 
       { 
         println("WARNING: Wifi is not available");
-        //if ( serialConnect() )
-         // serialAvailable = true;
-        //else
-          //println("WARNING: Serial port is not available");
+        if ( serialConnect() )
+          serialAvailable = true;
+        else
+          println("WARNING: Serial port is not available");
       } 
      
      if(! (!wifiAvailable && !serialAvailable) ) // logic expressions : the hard way
@@ -129,7 +127,7 @@ class Connection
      //     }
      
      if ( getList("con").size() > table_con.getRowCount() )
-       println( " class connection, storeFromText(): reading is slower than writing.\n");
+       println( "WARNING: class connection, storeFromText(): reading is slower than writing.\n");
         
         println("Read from table process has completed. ");
     //    println("");
@@ -203,14 +201,12 @@ class Connection
               int size = getList("con").size();
               if ( size > 0 )
               
-                 {
-                   int randomIndex = 0;
-                   
+                 {                   
                    // !connectionAvailable: there aren't any connections available, we're reading the DATA from an OFFLINE TABLE
                    // with randomIndex we pick a different set of values for each cycle
-                   
+                   int randomIndex = 0;
                    if ( !connectionAvailable ) 
-                      randomIndex = round(random( incomingCondSize/5 ) ); 
+                      randomIndex = round(random( incomingCondSize/2 ) ); 
                    
                    inValue = incomingCond.remove( size - randomIndex - 1 );
                    

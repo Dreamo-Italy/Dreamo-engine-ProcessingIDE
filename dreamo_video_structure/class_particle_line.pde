@@ -4,9 +4,9 @@ class Line extends Particle
   
   public void init()
   {
-    setSpeed(new Vector2d(2, frameCount/60.0*TWO_PI, true) ); // speed changes
+    setSpeed(new Vector2d(2, frameCount/4.111*TWO_PI, true) ); // speed changes
     setPersistence(true); // keep the particle alive after a scene change
-    setLifeTimeLeft(100);
+    setLifeTimeLeft(150);
     colore=pal.getColor();
 
   }
@@ -25,6 +25,6 @@ class Line extends Particle
     noFill();
     stroke(colore);
     strokeWeight(3);
-    line(-8, 0, 8, 0); // relative values : the new origin (0,0) is set by pushMatrix at each frame
+    line(-16, 0, 22, 0); // relative values : the new origin (0,0) is set by pushMatrix at each frame
   }
 }
