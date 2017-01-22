@@ -5,6 +5,7 @@ class ParticleTracer extends Particle
   float noiseStrength;
   float angle;
   float nCrossedX, nCrossedY;
+  int alpha;
   
   void init()
   {
@@ -22,6 +23,10 @@ class ParticleTracer extends Particle
     
     NoiseDot particleDot = new NoiseDot();
     particleDot.setPosition(getPosition());
+    //particleDot.setPalette(pal);
+    particleDot.setColor(pal.getColor());
+    particleDot.setAlpha(alpha);
+    
     global_stage.getCurrentScene().addParticle(particleDot);
     
     if(getPosition().getX() > width)

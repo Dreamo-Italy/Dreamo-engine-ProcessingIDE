@@ -13,3 +13,9 @@ Stage global_stage;
 Connection global_connection;
 
 Gsr global_gsr;
+
+//global audio objects
+AudioFeatures global_audio;
+Tone global_tone;
+Rhythm global_rhythm;
+Dynamic global_dyn;
