@@ -5,34 +5,27 @@ import processing.serial.*;
 import java.util.Queue;
 import java.util.ArrayDeque;
 
-/*  passare la Queue come argomento di una funzione:
-Objects are not passed to methods; rather, references to objects are passed to methods. 
-The references themselves are passed by value—a copy of a reference is passed to a method. 
-When a method receives a reference to an object, the method can manipulate the object directly.*/
-
 class Connection
 {
-  Serial myPort;  // Create object from Serial class
+   //********* PUBLIC MEMBERS ***********
 
+  Serial myPort;  // Create object from Serial class
+  public PApplet parent; //needed for the Serial object istantiation
+      
+  //********* PRIVATE MEMBERS ***********
+  
   private boolean wifiAvailable;
   private boolean serialAvailable;
   private boolean connectionAvailable;
-  
-  private int executionNumber; // # of times StoreFromText has been called
-  
-  private float incomingValue; // the input coming from a biosensor
-  
-  public PApplet parent; //needed for the Serial object istantiation
-  
-  final int BUFFER_SIZE = 200; //random value
-  final float MAX_COND = 10.0;
-  final int lineFeed = 10;    // Linefeed in ASCII    
-  final int numToExtract;
-      
-      
+  private int executionNumber; // # of times StoreFromText has been called 
+  private float incomingValue; // the input coming from a biosensor    
+  private final int BUFFER_SIZE = 200; // random value
+  private final int lineFeed = 10;    // Linefeed in ASCII    
+  private final int numToExtract;
   private String inputString = null;  
   private FloatList incomingCond;
   
+  //********* CONSTRUCTOR ***********
   // p = parent is needed for the Serial myport ( -->parent<--, list[0], 19200...)
   public Connection( PApplet p ) 
   {
@@ -40,17 +33,17 @@ class Connection
     serialAvailable = false;
     connectionAvailable = false;
     executionNumber = 0;
-    
+    incomingValue = 0;
+    parent = p;
+ 
     incomingCond = new FloatList();
     
     incomingValue = 0;
     parent = p;
     
-    // number of BIOMEDICAL VALUES to extract at each update() cycle
-    
+    // number of BIOMEDICAL VALUES to extract at each update() cycle   
     numToExtract = floor (global_sampleRate/global_fps);  //<>//
-
-    
+  
     //serial check
     if(!wifiAvailable) 
       { 
@@ -61,8 +54,9 @@ class Connection
           println("WARNING: Serial port is not available");
       } 
      
-     if(! (!wifiAvailable && !serialAvailable) ) // logic expressions : the hard way
-       connectionAvailable = true;
+   // IF WIFI OR SERIAL ARE AVAILABLE SET BOOLEAN TO "TRUE"
+   if(! (!wifiAvailable && !serialAvailable) ) 
+     connectionAvailable = true;
        
   }
   
@@ -122,6 +116,8 @@ class Connection
        if ( getList("con").size() > numToExtract*5 )
           { getList("con").clear(); println("List is now empty"); }
 
+
+      // INDEX IS SHIFTED TO AVOID READING ALWAYS THE SAME VALUES
       if ( executionNumber >= table_con.getRowCount()/numToExtract )
         executionNumber = 0;
       
@@ -129,8 +125,8 @@ class Connection
       int multiplier = executionNumber; //<>//
       int iStart = 0 + numToExtract*multiplier;
       int iEnd = numToExtract*( multiplier + 1); 
+      
       // add the content of the table to a LIST OF FLOAT
-
         for (TableRow row : table_con.rows()) {
           float newFloat = row.getFloat("conductance");
           count++;
@@ -145,16 +141,15 @@ class Connection
      if ( getList("con").size() > table_con.getRowCount() )
        println( "WARNING: class connection, storeFromText(): reading is slower than writing.\n");
         
-        println("Read from table process has completed. ");
-        println("storeFromText function ends here. ");
-        println("");
+      println("Read from table process has completed. ");
+      println("storeFromText function ends here. ");
+      println("");
         
      executionNumber++;
-        
-        return; 
    }
    
-   private void storeFromSerial() // the function that reads the DATA from the SERIAL LINE BUFFER
+    // the function that reads the DATA from the SERIAL LINE BUFFER
+   private void storeFromSerial()
   {
     
       int incomingCondSize = incomingCond.size();
@@ -196,7 +191,8 @@ class Connection
       
   }
   
-  public FloatList extractFromBuffer (String listName, int numberOfElements) // gives out numberOfElements elements from the selected list and ERASE THOSE ELEMENTS
+  // gives out numberOfElements elements from the selected list and ERASE THOSE ELEMENTS
+  public FloatList extractFromBuffer (String listName, int numberOfElements) 
     {
       FloatList toOutput = new FloatList();  
       boolean emptyList = false;

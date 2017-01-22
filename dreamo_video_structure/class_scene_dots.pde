@@ -1,8 +1,5 @@
 class SceneDots extends Scene
 {
-
-
-
   void init()
   {
 

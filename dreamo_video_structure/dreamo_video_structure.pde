@@ -6,8 +6,10 @@ void setup()
   frameRate(global_fps);
   noSmooth();
 
-  //connection with arduino //<>// //<>//
+  //connection //<>//
   global_connection = new Connection(this);
+  
+  //biosensors
   global_gsr = new Gsr();
 
   //audio features
@@ -30,12 +32,6 @@ void setup()
 void draw()
 {
     long initTimeT = System.nanoTime(); // start time
-  /*
-     println("");
-     println("***************************************");
-     println("*****************START*****************");
-     println("");
-*/
 
    //update samples in audio buffer
    global_audio.updateBuffer();
