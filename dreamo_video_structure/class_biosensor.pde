@@ -81,23 +81,29 @@ abstract class Biosensor
   }
   
 
-  //public float average(FloatList inputList)
-  {/*
+  public float computeAverage(FloatList inputList)
+  {
+    float average;
     int listSize = inputList.size();
     if ( listSize == 0 ) 
-      return -1;
+      return defaultValue;
     else
     
     {
       float sum = 0;
       
-      for(short i=0; i < listSize-1 ;i++)
+      for(int i=0; i < listSize ;i++)
         { sum += inputList.get(i); }
+     average = (float)sum/listSize;         
      
-        println("sum: " + sum);
-        println("list size: " + listSize );
-     return ((float)sum/listSize) ;
-    }*/
+     if( average < MAX_INT)
+       return average ;
+     else{
+       println("WARNING: AVERAGE VALUE IS NOT VALID");
+       return defaultValue;
+     }
+     
+    }
     
   }
   

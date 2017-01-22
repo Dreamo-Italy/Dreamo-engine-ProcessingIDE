@@ -29,7 +29,7 @@ class LineGenerator extends Particle
         //float outputVar = 1.0;
           float outputVar = global_gsr.getVariation() ;
                 
-                tempLine.setPosition( (tempLine.getPosition().mul( /*outputVar*/1 ) ) ); // tempLine.getPosition() MOLTIPLICATO PER global_gsr.getVariation()
+          tempLine.setPosition( (tempLine.getPosition().mul( outputVar ) ) ); // tempLine.getPosition() MOLTIPLICATO PER global_gsr.getVariation()
 
     if( frameCount % 500 == 0){
         println("Valore per cui vorrei moltiplicare: " + outputVar );

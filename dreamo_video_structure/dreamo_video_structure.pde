@@ -1,14 +1,12 @@
-float fps = 0;
-
 void setup()
 {
   colorMode(HSB, 360, 100, 100);
   //fullScreen(FX2D);
   size(800, 600, FX2D);
-  frameRate(30);
+  frameRate(global_fps);
   noSmooth();
 
-  //connection with arduino
+  //connection with arduino //<>// //<>//
   global_connection = new Connection(this);
   global_gsr = new Gsr();
 
@@ -32,8 +30,6 @@ void setup()
 void draw()
 {
     long initTimeT = System.nanoTime(); // start time
-    fps = frameRate;
-
   /*
      println("");
      println("***************************************");
@@ -43,29 +39,31 @@ void draw()
 
    //update samples in audio buffer
    global_audio.updateBuffer();
+   
    //set samples in dyn, tone and rhythm objects
    global_dyn.setSamples(global_audio.getSamples());
    global_tone.setSamples(global_audio.getSamples());
    global_rhythm.setSamples(global_audio.getSamples());
 
-   global_connection.update();
+   global_connection.update(); //<>//
 
    long conT = System.nanoTime() - initTimeT; // time elapsed after CONNECTION UPDATE
-
+   
    global_gsr.update();
+   
 
    long gsrT = (System.nanoTime() - conT -initTimeT ); // time elapsed after GSR UPDATE
 
    global_stage.updateAndTrace();
 
-   long viT = (System.nanoTime() - gsrT - conT -initTimeT) ; // time elapsed after VIDEO UPDATE
+   long viT = (System.nanoTime() - gsrT - conT - initTimeT) ; // time elapsed after VIDEO UPDATE
 
 
     fill(120); // for the DEBUG text
     stroke(120); // for the DEBUG text
 
    global_gsr.printDebug();  // print the DEBUG TEXT related to the SKIN SENSOR every 20 frames
-   text("particles: " + global_stage.getCurrentScene().getParticlesNumber() + "; framerate: " + fps + " \n", 10, 20);
+   text("particles: " + global_stage.getCurrentScene().getParticlesNumber() + "; framerate: " + global_fps + " \n", 10, 20);
 
 
    long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME
