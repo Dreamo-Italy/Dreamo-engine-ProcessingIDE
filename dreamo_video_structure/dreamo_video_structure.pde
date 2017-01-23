@@ -59,7 +59,7 @@ void draw()
     stroke(120); // for the DEBUG text
 
    global_gsr.printDebug();  // print the DEBUG TEXT related to the SKIN SENSOR every 20 frames
-   text("particles: " + global_stage.getCurrentScene().getParticlesNumber() + "; framerate: " + global_fps + " \n", 10, 20);
+   text("particles: " + global_stage.getCurrentScene().getParticlesNumber() + "; framerate: " + frameRate + " \n", 10, 20);
 
 
    long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME
