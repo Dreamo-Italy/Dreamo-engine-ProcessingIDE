@@ -26,6 +26,8 @@ class PlotterGenerator extends Particle
     float imageAlpha = 30;
     float zoom = 1;
     
+    int fromOneToTen = 1;
+    
   
   public void init()
   {
@@ -37,15 +39,13 @@ class PlotterGenerator extends Particle
   {      
       //pseudo random variations for the printed objects
       
-      if(frameCount % 42 == 0)  lineWeight *= 2;
+      if(frameCount % 42 == 0)  lineWeight *= 2.5;
       //if(frameCount % 53 == 0)  zoom = 0.8;
        if(frameCount % 5 == 0)  {connectionRadius = 50; zoom = 1;}
        if(frameCount % 7 == 0)  lineWeight = 1.5;
-       if(frameCount % 11 == 0)  lineWeight = 5;    
-       //if(frameCount % 40 == 0)  minHueValue = 0;
-       //if(frameCount % 50 == 0)  minHueValue = 0;
-       if(frameCount % 60 == 0) {connectionRadius = 100; lineWeight = 15;}
-     //  if(frameCount % 80 == 0) {selectFileLoadPoints();}
+       if(frameCount % 11 == 0)  lineWeight = 5;
+       if(frameCount % 60 == 0) {connectionRadius = 140; lineWeight = 15;}
+     //  if(frameCount % 100 == 0) {selectFileLoadPoints();}
 
        
     if(getSceneChanged() && !destroying)
@@ -83,10 +83,33 @@ class PlotterGenerator extends Particle
     // MOVING LINES
     final int particlesNumber = global_stage.getCurrentScene().getParticlesNumber() -1;
     
-    i1 = 0;
+    // automatic offset variation
+    if ( frameCount % 2 == 0 ){
+      if ( fromOneToTen < 10 )
+        fromOneToTen++;
+      else fromOneToTen = 0;
+    }  
     
-    // draw lines not all at once, just the next 100 milliseconds to keep performance
-    int drawEndTime = millis() + 100;
+    // The classic "Fixed DREAMO logo" is still available:
+    // just set indexOffset = 0, timeSpentDrawing = 10
+    
+    // "INDEX OFFSET". Range: 1 - 10 ( drawing start - drawing end )
+    
+    float indexOffset = fromOneToTen ;
+    
+    // "TIME SPENT DRAWING". Range: 1 - 10 ( short time - long time )
+    
+    float timeSpentDrawing = 2 ;
+    
+    // indexOffset MAPPING
+    indexOffset = map (indexOffset, 10.0, 0.0, 1, particlesNumber ); 
+    i1 = int ( particlesNumber - ceil(indexOffset) );
+    // timeSpentDrawing MAPPING
+    timeSpentDrawing = map (timeSpentDrawing, 10.0, 0.0, 1, 20 ); 
+    
+    // draw lines just for the next period/N milliseconds
+    int period = int ( 1000 * (1.0/30) );
+    int drawEndTime = millis() + period/round(timeSpentDrawing);
         
     while (i1 < particlesNumber && millis () < drawEndTime) 
     {
@@ -207,7 +230,7 @@ class PlotterGenerator extends Particle
     // opens file chooser
     //selectInput("Select Text File with Point Information", "loadPointPathSelected");
     
-    String path = new String( dataPath("coordinate_dreamo2.txt") );
+    String path = new String( dataPath("coordinate_dreamo.txt") );
     File incomingText = new File(path);
     loadPointPathSelected(incomingText);
     

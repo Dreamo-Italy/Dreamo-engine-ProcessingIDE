@@ -1,9 +1,11 @@
 class ScenePerlinNoise extends Scene
 {
+  
+  // "little snake" 
   void init()
   {
-    final int row = 5;
-    final int column = 15;
+    final int row = 3;
+    final int column = 3;
     for(int i = 0; i < column; i++)
     {
       for(int j = 0; j < row; j++)
