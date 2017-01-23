@@ -2,7 +2,9 @@ class SceneFireworks extends Scene
 {
   void init()
   {
+    pal.initColors();
     LineGenerator generator = new LineGenerator();
+    generator.setPalette(pal);
     addParticle(generator);
     generator.setPosition(new Vector2d(width/2, height/2, false));
     

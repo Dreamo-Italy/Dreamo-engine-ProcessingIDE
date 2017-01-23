@@ -46,7 +46,7 @@ class RadialDot extends Particle
     }*/
     setGravity(new Vector2d(1, gravityCenter.subtract(getPosition()).getDirection(), true));
     
-    getSpeed().setModulus(getSpeed().getModulus()/1.2); //THIS COMMAND SET THE DAMPING FACTOR (the more it is, the less particles orbitate)
+    getSpeed().setModulus(getSpeed().getModulus()/1.05); //THIS COMMAND SET THE DAMPING FACTOR (the more it is, the less particles orbitate)
     
     if(getSceneChanged() & !destroying)
     {

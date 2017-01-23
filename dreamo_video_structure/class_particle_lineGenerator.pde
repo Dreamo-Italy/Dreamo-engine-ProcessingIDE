@@ -11,6 +11,7 @@ class LineGenerator extends Particle
     {
       Vector2d LineGeneratorPosition = new Vector2d( getPosition() ) ;
       Line tempLine = new Line();
+      tempLine.setPalette(pal);
       tempLine.setPosition( LineGeneratorPosition ); // the LINE object is created where the LINE GENERATOR is
       
       //if(frameCount%1 == 0)
@@ -28,7 +29,7 @@ class LineGenerator extends Particle
         //float outputVar = 1.0;
           float outputVar = global_gsr.getVariation() ;
                 
-                tempLine.setPosition( (tempLine.getPosition().mul( /*outputVar*/1 ) ) ); // tempLine.getPosition() MOLTIPLICATO PER global_gsr.getVariation()
+          tempLine.setPosition( (tempLine.getPosition().mul( outputVar ) ) ); // tempLine.getPosition() MOLTIPLICATO PER global_gsr.getVariation()
 
     if( frameCount % 500 == 0){
         println("Valore per cui vorrei moltiplicare: " + outputVar );

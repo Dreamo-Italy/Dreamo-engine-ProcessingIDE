@@ -43,9 +43,11 @@ class PlotterGenerator extends Particle
       //if(frameCount % 53 == 0)  zoom = 0.8;
        if(frameCount % 5 == 0)  {connectionRadius = 50; zoom = 1;}
        if(frameCount % 7 == 0)  lineWeight = 1.5;
-       if(frameCount % 11 == 0)  lineWeight = 5;
-       if(frameCount % 60 == 0) {connectionRadius = 140; lineWeight = 15;}
-     //  if(frameCount % 100 == 0) {selectFileLoadPoints();}
+       if(frameCount % 11 == 0)  lineWeight = 5;    
+       //if(frameCount % 40 == 0)  minHueValue = 0;
+       //if(frameCount % 50 == 0)  minHueValue = 0;
+       if(frameCount % 60 == 0) {connectionRadius = 100; lineWeight = 15;}
+     //  if(frameCount % 80 == 0) {selectFileLoadPoints();}
 
        
     if(getSceneChanged() && !destroying)

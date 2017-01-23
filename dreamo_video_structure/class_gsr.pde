@@ -8,45 +8,39 @@ class Gsr extends Biosensor
     
     value = 0; //debug
     
-    //debug
-    setMin ( 1.0 );
-    setMax ( 3.5 ); 
-    setDefault (  (getMax() + getMin()) / 2  );
-    
-    //if ( !global_connection.networkAvailable() ) 
-    ////silly way to simulate the values
-    //  {
-    //       storeFromText();
+    if ( !global_connection.networkAvailable() ) 
+    //silly way to simulate the values
+      {
+           global_connection.storeFromText();
            
-    //       setMin ( getList("conductance").min() );
-    //       setMax ( getList("conductance").max() ); 
-    //       setDefault (  (getMax() + getMin()) / 2  );
+           setMin ( global_connection.getList("con").min() );
+           setMax ( global_connection.getList("con").max() ); 
+           setDefault ( 5/* (getMax() + getMin())/ 2 */  );
     
-   //           value = getDefault();
+              value = getDefault();
            
-    //       // setMin ( normalizeValue( getMin() ) );
-    //      //  setMax ( normalizeValue( getMax() ) );
+           // setMin ( normalizeValue( getMin() ) );
+          //  setMax ( normalizeValue( getMax() ) );
 
            
-    //       println("Min: " + getMin() );
-    //       println("Max: " + getMax() );
-    //       println("Default: " + getDefault() );
-    //       println("");
-    //  }
+           println("Min: " + getMin() );
+           println("Max: " + getMax() );
+           println("Default: " + (getMax() + getMin())/ 2 );
+           println("");
+      }
   }
   public void update()
    {
-     incomingCon = new FloatList();
-
-    int numToExtract = ceil (global_sampleRate/fps);
-     
+    incomingCon = new FloatList();
+    int numToExtract = ceil (global_sampleRate/frameRate); //<>//
     long initTimeT = System.nanoTime();     
-         
+
     incomingCon = global_connection.extractFromBuffer("con", numToExtract ); // store the incoming conductance value from Connection to another FloatLIst
-    
+
     long bufT = System.nanoTime() - initTimeT; // duration of ExtractFromBuffer
      
-    float average = incomingCon.remove( incomingCon.size() - 1 ) ;
+
+    float average = computeAverage(incomingCon);
     
     long avgT = System.nanoTime() - bufT - initTimeT; // duration of average
     
@@ -55,10 +49,9 @@ class Gsr extends Biosensor
     long lasT = System.nanoTime()- avgT - bufT - initTimeT; // duration of setValue
    
      println("DEBUG: GSR update.");
-     println("FPS: "+ fps);   
+     println("Number of elements to extract: " + numToExtract );
      println("buffer size: "+ incomingCon.size() );   
      println("average: "+ average );
-     println("Number of elements to extract: " + numToExtract );
      println("    Extract from buffer time: "+ bufT/1000 + " us");
      println("    Average time: "+ avgT/1000 + " us");
      println("    setValue time: "+ (lasT)/1000 + " us");
@@ -66,30 +59,5 @@ class Gsr extends Biosensor
      println("");
     
   }
-  
-  //  public void storeFromText()
-  //{
-  //      Table table = loadTable("log_conductance.csv", "header"); // content of log_conductance
-    
-  //      println(table.getRowCount() + " total rows in table"); 
-    
-  //      for (TableRow row : table.rows()) {
-          
-  //       // incomingDataTime.append ( row.getFloat("Time") );
-  //        incomingDataValue1.append ( row.getFloat("conductance") );
-  //      //  incomingDataValue2.append ( row.getFloat("ECG_filtered") );
-        
-  //    }
-      
-  //    println("Read from table process has completed. ");
-  //    println("");
-  //   // println(incomingDataValue1);
-  //    println("");
-  //    println("storeFromText function ends here. ");
-  //    println("");
-      
-  // }
-  
-  // this function depends on the SPECIFIC SENSOR
   
 }
