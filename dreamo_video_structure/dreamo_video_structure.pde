@@ -89,7 +89,8 @@ void draw()
 
 void mouseClicked()
 {
-  //float[] defaultParameters = {random(800)-400, random(800)-400, random(800)-400};
-  //global_stage.selectSceneFromParameters(defaultParameters);
+  
+  //float[] testVAParameters = {random(-1,1), random(-1,1)};
+  //global_stage.selectScenebyMood(testVAParameters);
   global_stage.nextScene();
 }

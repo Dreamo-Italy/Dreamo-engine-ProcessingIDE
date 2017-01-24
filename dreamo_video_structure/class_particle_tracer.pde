@@ -1,17 +1,17 @@
 class ParticleTracer extends Particle
 {
-  final float SPEED = 3;
+  final float SPEED = 6;
   float noiseScale;
   float noiseStrength;
   float angle;
   float nCrossedX, nCrossedY;
-  int alpha;
+  //int alpha;
   
   void init()
   {
     noiseScale = 300;
     noiseStrength = 100;
-    setSpeed(new Vector2d(SPEED, 0, true));
+    setSpeed(new Vector2d(0, 0, true));
     nCrossedX = 0;
     nCrossedY = 0;
   }
@@ -20,13 +20,13 @@ class ParticleTracer extends Particle
   {
     angle = noise((getPosition().getX() + nCrossedX*width)/noiseScale, (getPosition().getY()+nCrossedY*height)/noiseScale) * noiseStrength;
     getSpeed().setDirection(angle);
-    
+    getSpeed().setModulus(SPEED*getParameter(0));
     NoiseDot particleDot = new NoiseDot();
     particleDot.setPosition(getPosition());
     //particleDot.setPalette(pal);
     particleDot.setColor(pal.getColor());
-    particleDot.setAlpha(alpha);
-    
+    //particleDot.setAlpha(alpha);
+    //particleDot.setParameter
     global_stage.getCurrentScene().addParticle(particleDot);
     
     if(getPosition().getX() > width)

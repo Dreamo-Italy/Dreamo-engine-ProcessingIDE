@@ -1,7 +1,8 @@
 import ddf.minim.*;
 
-class AudioFeatures {
+class AudioFeatures 
 
+{
  //********* PRIVATE MEMBERS ***********
  private Minim minim;
  private AudioInput in; 
@@ -30,7 +31,11 @@ class AudioFeatures {
    setSampleRate();
    //in.enableMonitoring();
    bufferize();
+   if(in!=null)
+   {
    initialized=true;
+   }
+   else {println("AUDIO INPUT NOT AVAILABLE");}
    //samples=0; 
  }
  

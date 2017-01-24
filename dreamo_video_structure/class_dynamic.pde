@@ -28,6 +28,8 @@ class Dynamic extends AudioFeatures {
       }   
     level /= samples.length;
     level = (float) Math.sqrt(level);
+    //normalize level in 0-1 range
+    level=map(level,0,0.5,0,1);
     return level;        
   }  
   

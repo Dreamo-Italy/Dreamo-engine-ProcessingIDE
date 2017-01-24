@@ -9,10 +9,10 @@ abstract class Scene extends AgingObject
   protected Particle[] particlesList;
   protected int particlesNumber; // can also decrease
 
-  private Background sceneBackground;
-  private boolean backgroundEnabled; // true -> screen refresh at every frame
+  protected Background sceneBackground;
+  protected boolean backgroundEnabled; // true -> screen refresh at every frame
 
-  private float[] parameters;
+  protected Mood sceneMood;
 
   protected Palette pal;
 
@@ -27,11 +27,8 @@ abstract class Scene extends AgingObject
     particlesNumber = 0;
     sceneBackground = null;
     backgroundEnabled = false; // false -> the screen doesn't refresh at every frame
-    parameters = new float[PARAMETERS_NUMBER];
-    for(int i = 0; i < PARAMETERS_NUMBER; i++)
-    {
-      parameters[i] = 0.0;
-    }
+    
+    sceneMood=new Mood();
   }
 
   //copy constructor
@@ -49,12 +46,9 @@ abstract class Scene extends AgingObject
         particlesList[i] = toCopy.particlesList[i];
       }
     }
-
-    parameters = new float[PARAMETERS_NUMBER];
-    for(int i = 0; i < PARAMETERS_NUMBER; i++)
-    {
-      parameters[i] = toCopy.parameters[i];
-    }
+    
+    sceneMood = new Mood(toCopy.sceneMood);
+    
   }
 
   //
@@ -63,31 +57,7 @@ abstract class Scene extends AgingObject
     return particlesNumber;
   }
 
-  public float getParameter(int index)
-  {
-    if(index >= 0 && index < PARAMETERS_NUMBER)
-    {
-      return parameters[index];
-    }
-    else
-    {
-      println("Warning: trying to get a parameter out of index boudaries, returning 0\n");
-      return 0.0;
-    }
-  }
-
-  public void setParameter(int index, float newValue)
-  {
-    if(index >= 0 && index < PARAMETERS_NUMBER)
-    {
-      parameters[index] = newValue;
-    }
-    else
-    {
-      println("Warning: trying to set a parameter out of index boundaries\n");
-    }
-  }
-
+  
   //
   public void setBackground(Background newBackground)
   {
@@ -137,6 +107,12 @@ abstract class Scene extends AgingObject
       println("Warning: cannot get particle by list index, index higher than instance number.");
       return null;
     }
+  }
+  
+  
+  public Palette getPalette()
+  {
+    return pal;
   }
 
   public void sortParticlesList()
@@ -248,6 +224,7 @@ abstract class Scene extends AgingObject
       }
     }
   }
+  
 
   abstract void init();
 }
