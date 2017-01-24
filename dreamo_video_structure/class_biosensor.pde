@@ -2,56 +2,130 @@
 
 abstract class Biosensor
 {
-   //********* PUBLIC MEMBERS ***********
-    public String sensorName;
-    public float absolute; // absolute value of the output, mapped to a 1-10 scale
-    public float variation; // percentage variation WRT default value
-    public float value; // last value (not normalized)
+ //************ CONSTANTS **************
+ 
+  final private int CALIBRATION_TIME = 10; // duration of the CALIBRATION PROCESS, expressed in seconds
+
+  
+ //********* PUBLIC MEMBERS ***********
+  public String sensorName;
+  public float absolute; // absolute value of the output, mapped to a 1-10 scale
+  public float variation; // percentage variation WRT default value
+  public float value; // last value (not normalized)
 
 
-   //********* PRIVATE MEMBERS ***********
+  //********* PRIVATE MEMBERS ***********
 
   private boolean connected; // connection status of the sensor
   private float defaultValue; // average of the incoming values
-  private boolean calibrating; // is the calibration process running?
+  private boolean calibrating; // TRUE IF the calibration process IS RUNNING
+  private boolean calibrated; // TRUE if the calibration process HAVE BEEN RUN already
   private float sensorMin, sensorMax; // the experimental MINIMUM and MAXIMUM values previously got from the current sensor
+  private float minCal, maxCal; // calibration process min and max values
+  private int calibrationCounter;
+
+  protected FloatList incomingValues; // vector of float
+  protected FloatList calibrationValues;
+
   
-   //********* CONSTRUCTOR ***********
+  //********* CONSTRUCTOR ***********
+  
   public Biosensor()
   {
     sensorName = "default";
-   //  incomingValue = -1;
     absolute = -1;
+    
+    sensorMin = minCal = MAX_FLOAT;
+    sensorMax = maxCal = MIN_FLOAT;
+    
     calibrating = false;
+    calibrated = false;
+    calibrationCounter = 0;
+    
+    incomingValues = new FloatList();
+    
     connected = global_connection.networkAvailable(); // temporary      
     init(); // specific sensor constructor
     
   }
   
-  public boolean calibration() // set defaultValue to the initial condition of the sensor
+  //********* METHODS ***********
+  
+  public void checkCalibration() // set defaultValue to the initial condition of the sensor
   {
-    if (!connected) return false;    
-    int counter = 1;
-    while(calibrating)
-      {
-        setDefault( (getDefault() + getValue() ) / counter ); // average the incoming values to get a DEFAULT value 
-        counter++;     
-      }
-    return true;
+    if ( this.needCalibration() )
+    {
+      if ( this.isCalibrating() == false )
+        startCalibration();
+      
+      calibration();
+      
+      if ( calibrationCounter > frameRate*CALIBRATION_TIME )
+         endCalibration();      
+    }
+    
   }
   
-  public void printDebug()
+  protected void calibration()
+  {
+    if ( !calibrating )        { println("WARNING: not calibrating error"); return; }
+    else if ( calibrated )     { println("WARNING: already calibrated error"); return; }
+    else if ( incomingValues.size() == 0 ) { println("ERROR: incomingValues is empty"); return; }
+
+    calibrationValues.append( incomingValues );
+    
+    minCal = calibrationValues.min();
+    maxCal = calibrationValues.max();
+    
+    float newMin = min ( minCal, getMin() );
+    float newMax = max ( maxCal, getMax() ); 
+    
+    setMin ( newMin ); println( "new min: " + newMin );
+    setMax ( newMax ); println( "new max: " + newMax );
+    
+    calibrationCounter++;
+  }
+  
+  protected void startCalibration()
+  {
+    calibrationValues = new FloatList();
+    calibrationValues.clear();    
+    calibrating = true;
+  }
+  
+  protected void endCalibration()
   {    
-    println("absolute :"+ getAbsolute() );
-    println("variation :"+ getVariation() );
-    println("default value :" + getDefault() );
-    println("");    
-    text("\n absolute : " + getAbsolute() + "; variation: " + getVariation() + "; default value : " + getDefault(), 10, 50);
+    // expand the range by a 20% factor (experimental)
+    float newMin = getMin() - getMin()*0.15; 
+    float newMax = getMax() + getMax()*0.1;
+    
+    setMin ( newMin );
+    setMax ( newMax );
+    
+    float average = computeAverage( calibrationValues );
+    
+    setDefault( normalizeValue(average) );
+    println( "new average: " + average );
+    
+    calibrationValues.clear();
+    
+    calibrating = false;
+    calibrated = true;
   }
   
+  protected boolean isCalibrating()
+  {
+    return calibrating;
+  }
+ 
+  
+  protected boolean needCalibration()
+  {
+    return !calibrated;
+  }
  
   //map the value to a 1-10 scale according to the experimental min and max values
-  public float normalizeValue(float toNormalize) 
+  private float normalizeValue(float toNormalize) 
   {
       // map function from Processing libraries: map(value, start1, stop1, start2, stop2)
       
@@ -65,22 +139,30 @@ abstract class Biosensor
     float average;
     int listSize = inputList.size();
       if ( listSize == 0 ) 
-        return defaultValue;
+        { println("ERROR: Argument of computeAverage is an empty list. "); return defaultValue; }       
       else
       {
           float sum = 0;
           
           for(int i=0; i < listSize ;i++)
-            { sum += inputList.get(i); }
-         average = (float)sum/listSize;         
-         
-         if( average < MAX_INT)
-           return average ;
-         else{
-           println("WARNING: AVERAGE VALUE IS NOT VALID");
-           return defaultValue;}     
+            { 
+              if ( inputList.get(i) < MAX_INT )
+                sum += inputList.get(i); 
+              else
+                 println("WARNING: Found corrupted float during computeAverage");
+            }
+         average = (float)sum/listSize;       
+         return average;  
       }
-    
+  }
+  
+   public void printDebug()
+  {    
+    println("absolute :"+ getAbsolute() );
+    println("variation :"+ getVariation() );
+    println("default value :" + getDefault() );
+    println("");    
+    text("\n absolute : " + getAbsolute() + "; variation: " + getVariation() + "; default value : " + getDefault(), 10, 50);
   }
   
   //********* SET METHODS **********
