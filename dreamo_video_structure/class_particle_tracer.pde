@@ -5,6 +5,7 @@ class ParticleTracer extends Particle
   float noiseStrength;
   float angle;
   float nCrossedX, nCrossedY;
+  int indexShifting;
   //int alpha;
   
   void init()
@@ -14,22 +15,39 @@ class ParticleTracer extends Particle
     setSpeed(new Vector2d(0, 0, true));
     nCrossedX = 0;
     nCrossedY = 0;
+    indexShifting = 0;
   }
     
   void update()
   {
+    
+    if ( frameCount % 4 == 0 && indexShifting < getPalette().COLOR_NUM && round(random(1)) == 1 )     indexShifting++;              
+    else if ( indexShifting >= getPalette().COLOR_NUM)         indexShifting = 0;
+
     angle = noise((getPosition().getX() + nCrossedX*width)/noiseScale, (getPosition().getY()+nCrossedY*height)/noiseScale) * noiseStrength;
+    
     getSpeed().setDirection(angle);
-    getSpeed().setModulus(SPEED*getParameter(0));
+    getSpeed().setModulus(SPEED*getParameter(0)); 
+    
+    keepInsideTheScreen();    
+  }
+  
+  void trace()
+  {
     NoiseDot particleDot = new NoiseDot();
     particleDot.setPosition(getPosition());
-    //particleDot.setPalette(pal);
-    particleDot.setColor(pal.getColor());
+    
     //particleDot.setAlpha(alpha);
     //particleDot.setParameter
+    
+    particleDot.setColor(pal.getColor(indexShifting)); 
     global_stage.getCurrentScene().addParticle(particleDot);
     
-    if(getPosition().getX() > width)
+  }
+  
+  void keepInsideTheScreen()
+  {
+     if(getPosition().getX() > width)
     {
       getPosition().setX(getPosition().getX() - width);
       nCrossedX++;
@@ -49,9 +67,5 @@ class ParticleTracer extends Particle
       getPosition().setY(getPosition().getY() + height);
       nCrossedY--;
     }
-  }
-  
-  void trace()
-  {
   }
 }

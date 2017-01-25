@@ -115,7 +115,7 @@ private boolean initialized=false;
     }
     
   else{
-    println("ERROR");
+    println("ERROR: getColor: not initialized.");
     return color(360,100,100);
     }
   }
@@ -129,7 +129,11 @@ private boolean initialized=false;
     }
     
   else{
-    println("ERROR");
+    if (!initialized)
+      println("ERROR: getColor: not initialized");
+    else
+      println("ERROR: getColor: index out of range.");
+
     return color(360,100,100);
     }
   }

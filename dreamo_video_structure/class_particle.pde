@@ -239,6 +239,9 @@ abstract class Particle extends AgingObject
     pal=p;
   }
   
+  public Palette getPalette()
+  { return pal; }
+  
   
   public void connectParticles(int connectionRadius, int particleRadius)
   {
