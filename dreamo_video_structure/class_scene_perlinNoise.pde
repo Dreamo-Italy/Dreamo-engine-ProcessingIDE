@@ -5,10 +5,12 @@ class ScenePerlinNoise extends Scene
 
 
     pal.initColors();
+    
+    int drawEndTime = millis() + 50;
 
     final int row = 10;
     final int column = 11;
-    for(int i = 0; i < column; i++)
+    for(int i = 0; i < column && millis() < drawEndTime; i++)
     {
       for(int j = 0; j < row; j++)
       {
@@ -32,8 +34,9 @@ class ScenePerlinNoise extends Scene
     public void update(){
 
    int alpha;
+   
    //update with audio information
-   alpha=(int)map(global_dyn.getRMS(),0,0.3,0,255);
+   alpha=(int)map(global_dyn.getRMS(),0,0.3,0,255) + 30;
 
    for(int i = 0; i < particlesNumber; i++)
      {

@@ -207,7 +207,7 @@ class PlotterGenerator extends Particle
     // opens file chooser
     //selectInput("Select Text File with Point Information", "loadPointPathSelected");
     
-    String path = new String( dataPath("coordinate_dreamo2.txt") );
+    String path = new String( dataPath("coordinate_sole.txt") );
     File incomingText = new File(path);
     loadPointPathSelected(incomingText);
     
