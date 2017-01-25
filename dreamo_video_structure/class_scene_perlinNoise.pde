@@ -5,14 +5,12 @@ class ScenePerlinNoise extends Scene
   void init()
   {
 
-
     pal.initColors();
-    
-    int drawEndTime = millis() + 50;
 
     final int row = 10;
     final int column = 11;
-    for(int i = 0; i < column && millis() < drawEndTime; i++)
+    
+    for(int i = 0; i < column; i++)
     {
       for(int j = 0; j < row; j++)
       {
@@ -28,9 +26,7 @@ class ScenePerlinNoise extends Scene
     setBackground(new Background());
     enableBackground();
 
-    setParameter(0, -200.0);
-    setParameter(1, -300.0);
-    setParameter(2, -400.0);
+    sceneMood.setMood(1,0);
   }
 
     public void update(){
@@ -43,7 +39,10 @@ class ScenePerlinNoise extends Scene
    for(int i = 0; i < particlesNumber; i++)
      {
        particlesList[i].updatePhysics();
-       particlesList[i].setAlpha(alpha*2);
+       //particlesList[i].setAlpha(alpha*2);
+       //set parameter 0 equal to RMS
+       //parameter 0 will be used to control alpha value in the noiseDot particles 
+       particlesList[i].setParameter(0,global_dyn.getRMS());
        particlesList[i].update();
    }
 

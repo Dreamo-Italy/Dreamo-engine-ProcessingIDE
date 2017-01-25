@@ -6,8 +6,7 @@ class SceneDynamicGrid extends Scene
     setBackground(new Background());
     enableBackground();
     
-    setParameter(0, 0.0);
-    setParameter(1, 120.0);
-    setParameter(2, -20.0);
+    sceneMood.setMood(-0.8,0.6);
+    
   }
 }

@@ -8,16 +8,33 @@ class SceneDots extends Scene
     DotGenerator generator = new DotGenerator();
 
     generator.setPalette(this.pal);
-
-    addParticle(generator);
     generator.setPosition(new Vector2d(width/2, height/2, false));
-
+    
+    addParticle(generator);
     Background bk = new Background();
     setBackground(bk);
     enableBackground();
 
-    setParameter(0, -10.0);
-    setParameter(1, 100.0);
-    setParameter(2, 0.0);
+    sceneMood.setMood(0,1);
+
   }
+  
+  
+  //public void trace()
+  //{
+  //  if(sceneBackground != null && backgroundEnabled)
+  //  {
+  //    sceneBackground.trace();
+  //  }
+
+  //  for(int i = 0; i < particlesNumber; i++)
+  //  {
+  //    particlesList[i].beginTransformations();
+  //    particlesList[i].trace();
+  //    connectParticles(i,10);
+  //    particlesList[i].endTransformations();
+  //  }
+  //}
+  
+  
 }

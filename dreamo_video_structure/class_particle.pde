@@ -4,6 +4,9 @@ import java.util.Comparator;
 
 abstract class Particle extends AgingObject
 {
+  //CONSTANTS
+  public final int PARAMETERS_NUMBER = 5;
+    
   //PRIVATE MEMBERS
   private Vector2d position;
   private Vector2d speed;
@@ -18,6 +21,11 @@ abstract class Particle extends AgingObject
   private boolean initialised; // has init() been called?
   protected Palette pal;
   private boolean sceneChanged; //has the scene changed (while the particle is persistent)?
+
+  private float[] params; //general parameters
+  
+  //protected boolean near;
+  private boolean destroying = false;
 
   //CONTRUCTORS
   public Particle()
@@ -35,6 +43,13 @@ abstract class Particle extends AgingObject
     id = global_particlesInstanciatedNumber;
     global_particlesInstanciatedNumber++;
     destroy = false;
+   
+    params = new float[PARAMETERS_NUMBER];    
+    for(int i = 0; i < PARAMETERS_NUMBER; i++)
+    {
+      params[i] = 0.0;
+    }
+    
   }
 
   //copy constructor
@@ -53,6 +68,13 @@ abstract class Particle extends AgingObject
     id = global_particlesInstanciatedNumber;
     global_particlesInstanciatedNumber++;
     destroy = false;
+    
+    params = new float[PARAMETERS_NUMBER];    
+    for(int i = 0; i < PARAMETERS_NUMBER; i++)
+    {
+      params[i] = toCopy.params[i];
+    }
+    
   }
 
   //PUBLIC METHODS
@@ -102,7 +124,33 @@ abstract class Particle extends AgingObject
     return sceneChanged;
   }
 
+  public float getParameter(int index)
+  {
+    if(index >= 0 && index < PARAMETERS_NUMBER)
+    {
+      return params[index];
+    }
+    else
+    {
+      println("Warning: trying to get a parameter out of index boudaries, returning 0\n");
+      return 0.0;
+    }
+  }
+  
+  
   //set methods
+  public void setParameter(int index, float newValue)
+  {
+    if(index >= 0 && index < PARAMETERS_NUMBER)
+    {
+      params[index] = newValue;
+    }
+    else
+    {
+      println("Warning: trying to set a parameter out of index boundaries\n");
+    }
+  }
+ 
   public void setPosition(Vector2d newPosition)
   {
     position = new Vector2d(newPosition);
@@ -176,10 +224,10 @@ abstract class Particle extends AgingObject
     Vector2d positionk2 = speed;
     Vector2d sigma = positionk1.sum(positionk2);
     position = position.sum(sigma.quot(2));
-
-
+        
     //life variables update
     updateTime();
+        
     if(getLifeTimeIsUp())
     {
       instanceDestroy();
@@ -190,14 +238,50 @@ abstract class Particle extends AgingObject
   {
     pal=p;
   }
+  
+  public Palette getPalette()
+  { return pal; }
+  
+  
+  public void connectParticles(int connectionRadius, int particleRadius)
+  {
+    final int particlesNumber = global_stage.getCurrentScene().getParticlesNumber()-1;
+    float d, a, h;
+    
+    for(int i1=0;i1<particlesNumber;i1++){
+      
+    int start_index = (i1 - particleRadius/2) > 0 ?  (i1 - particleRadius/2) : 0;
+    int end_index = (i1 + particleRadius/2) < particlesNumber ? (i1 + particleRadius/2) : particlesNumber ;
+    
+    for (int i2 = start_index; i2 < end_index; i2++) {
+       if(
+          (!(global_stage.getCurrentScene().getParticleByListIndex(i1).getSceneChanged()&&global_stage.getCurrentScene().getParticleByListIndex(i2).getSceneChanged())&&!destroying)
+          ||(global_stage.getCurrentScene().getParticleByListIndex(i1).getSceneChanged()&&global_stage.getCurrentScene().getParticleByListIndex(i2).getSceneChanged()&&destroying)
+          ) //with this condition, programs checks whether the particle is from the correct scene
+        {
+          Vector2d p1 = global_stage.getCurrentScene().getParticleByListIndex(i1).getPosition();
+          Vector2d p2 = global_stage.getCurrentScene().getParticleByListIndex(i2).getPosition();
+                  
+          d = p1.distance(p2);
+          a = pow(1/(d/connectionRadius+1), 6);
+    
+          if (d <= connectionRadius && d > 2) 
+            {
+              color lineColor = global_stage.getCurrentScene().getPalette().getColor();
+              stroke(lineColor, a*200);
+              line(p1.getX(), p1.getY(), p2.getX(), p2.getY());  
+           }
+          }
+        }            
+     }        
+  }
 
   //methods to implement in the "child classes"
   abstract void init();
   abstract void update();
   abstract void trace();
 
-  //methods to OVERRIDE (if needed) in the "child classes"
-  public void setAlpha(int newAlpha){};
+
 }
 
 class ParticleComparator implements Comparator<Particle>
