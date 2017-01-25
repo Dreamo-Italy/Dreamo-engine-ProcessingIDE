@@ -7,6 +7,11 @@ import java.util.ArrayDeque;
 
 class Connection
 {
+     //********* CONSTANTS ***********
+     
+     final int MAX_SENSOR = 5;
+
+  
    //********* PUBLIC MEMBERS ***********
 
   Serial myPort;  // Create object from Serial class
@@ -106,7 +111,7 @@ class Connection
 
   public void storeFromText()
   {        
-    Table table_con = loadTable("log_conductance.csv", "header"); // content of log_conductance
+    Table table_con = loadTable("log_conductance2.csv", "header"); // content of log_conductance
       //  Table table_ecg = loadTable("log_ecg.csv", "header"); // content of log_ECG
       
        println(table_con.getRowCount() + " total rows in table conductance"); 
@@ -211,17 +216,17 @@ class Connection
               int currentListCondSize = getList("con").size();
               if ( currentListCondSize > 0 )
                  {                   
-                   // !connectionAvailable: there aren't any connections available, we're reading the DATA from an OFFLINE TABLE
-                   // with randomIndex we pick a different set of values for each cycle              
 
                    int index = currentListCondSize - 1;
                    if ( index >= 0 && index <= currentListCondSize )
                        {
                          inValue = incomingCond.remove( index );
-                         toOutput.append( inValue );
-                         added++;
-                         }                
-
+                         if ( inValue >= 0 && inValue <= MAX_SENSOR )
+                           {
+                             toOutput.append( inValue );
+                             added++;
+                           }                         
+                       }             
                   }
               else
                   emptyList = true;

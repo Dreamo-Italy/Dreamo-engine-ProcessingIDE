@@ -96,13 +96,13 @@ abstract class Biosensor
   protected void endCalibration()
   {    
     // expand the range by a 20% factor (experimental)
-    float newMin = getMin() - getMin()*0.15; 
-    float newMax = getMax() + getMax()*0.1;
+    float newMin = abs ( getMin() );
+    float newMax = getMax();
     
     setMin ( newMin );
     setMax ( newMax );
     
-    float average = computeAverage( calibrationValues );
+    float average = computeAverage( calibrationValues , ( newMin + newMax )/2 );
     
     setDefault( normalizeValue(average) );
     println( "new average: " + average );
@@ -134,26 +134,42 @@ abstract class Biosensor
   }
   
  // simple "average" function
-  public float computeAverage(FloatList inputList)
+  public float computeAverage(FloatList inputList, float oldAverage)
   {
-    float average;
+    if ( inputList == null )
+    {  
+        println(" ERROR: computeAverage: NULL argument ");
+       return oldAverage;
+    }
+    
+    float average = oldAverage;
     int listSize = inputList.size();
       if ( listSize == 0 ) 
-        { println("ERROR: Argument of computeAverage is an empty list. "); return defaultValue; }       
+        { println("ERROR: Argument of computeAverage is an empty list. "); 
+            return oldAverage; 
+          }       
       else
       {
           float sum = 0;
           
           for(int i=0; i < listSize ;i++)
             { 
-              if ( inputList.get(i) < MAX_INT )
-                sum += inputList.get(i); 
+              if ( inputList.get(i) < MAX_FLOAT )
+                 {
+                   sum += inputList.get(i); 
+                 }
               else
-                 println("WARNING: Found corrupted float during computeAverage");
+                 { 
+                   inputList.set(i, oldAverage);
+                   sum += inputList.get(i); 
+                   println("WARNING: corrupted float found during computeAverage. Index: "+i);
+                 }
             }
          average = (float)sum/listSize;       
-         return average;  
       }
+      
+     return average;  
+
   }
   
    public void printDebug()
