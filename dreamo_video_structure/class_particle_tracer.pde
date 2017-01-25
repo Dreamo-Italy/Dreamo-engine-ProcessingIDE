@@ -16,6 +16,8 @@ class ParticleTracer extends Particle
     nCrossedY = 0;
   }
     
+  // each ParticleTracer (little snake) creates a new NoiseDot particle at each update()
+  // ParticleTracer particles vanish with time (see setLeftTimeLeft parameter)
   void update()
   {
     angle = noise((getPosition().getX() + nCrossedX*width)/noiseScale, (getPosition().getY()+nCrossedY*height)/noiseScale) * noiseStrength;

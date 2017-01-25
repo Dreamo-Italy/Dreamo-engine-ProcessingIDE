@@ -1,5 +1,7 @@
 class ScenePerlinNoise extends Scene
 {
+  
+  // "little snake" 
   void init()
   {
 
