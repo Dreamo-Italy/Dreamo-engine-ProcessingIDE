@@ -144,12 +144,15 @@ class Connection
          }   
          
           count=0;  
+          
+      int count2 = 0;
      for (TableRow row : table_ecg.rows() ) {
        float newFloat2 =row.getFloat("ECG_filtered");
-        count++;
-     if ( count>=iStart && count<=iEnd ) 
+        count2++;
+     if ( count2>=iStart && count2<=iEnd ) 
             getList("ecg").append (newFloat2); 
-          }
+                      }
+      count2 = 0;
      
      if ( getList("con").size() > table_con.getRowCount() || getList("ecg").size() > table_con.getRowCount() )
        println( "WARNING: class connection, storeFromText(): reading is slower than writing.\n");
@@ -258,10 +261,10 @@ class Connection
       if (listName.equals("ecg"))
        {
          // extract numberOfElements of elements from conductance list
-
+         
          while(! (getList("ecg").size() <= originalListEcgSize  - numberOfElements) && !emptyList) 
             {
-              int currentListEcgSize = getList("con").size();
+              int currentListEcgSize = getList("ecg").size();
               if ( currentListEcgSize > 0 )
                  {                   
                    // !connectionAvailable: there aren't any connections available, we're reading the DATA from an OFFLINE TABLE
@@ -270,10 +273,10 @@ class Connection
                    int index = currentListEcgSize - 1;
                    if ( index >= 0 && index <= currentListEcgSize )
                        {
-                         inValue = incomingCond.remove( index );
+                         inValue = incomingEcg.remove( index );
                          toOutput.append( inValue );
                          added++;
-                         }                
+                        }                
 
                   }
               else

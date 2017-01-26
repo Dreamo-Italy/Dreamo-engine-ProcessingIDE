@@ -10,9 +10,10 @@ class Ecg extends Biosensor
         public void update()
         {     
         println("DEBUG: ECG update.");     
-        float BPM;        DSP dsp =new DSP();
+        float BPM;        
+        DSP dsp =new DSP();
         DSP bpm =new DSP();
-        if(frameCount % 3 == 0)
+        if(frameCount % 1 == 0)
         {
           int numToExtract = ceil (global_sampleRate/frameRate);
           long initTimeT = System.nanoTime();     
@@ -21,8 +22,8 @@ class Ecg extends Biosensor
           float[] Analysis= incomingValues.array();
           float[] FilteredHp = dsp.HighPass (Analysis, 50.0,256.0);
           float[] FilteredLpHp = dsp.LowPass (FilteredHp, 100.0,256.0);
-          //BPM=bpm.ECGBPM(FilteredHp);
-          BPM=60;
+          BPM=bpm.ECGBPM(FilteredLpHp);
+          //BPM=60;
            println("BPM:"+BPM );
           //long bufT = System.nanoTime() - initTimeT; // duration of ExtractFromBuffer
           
