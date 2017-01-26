@@ -16,6 +16,7 @@ Stage global_stage;
 Connection global_connection;
 
 Gsr global_gsr;
+Ecg global_ecg;
 
 //global audio objects
 AudioFeatures global_audio;

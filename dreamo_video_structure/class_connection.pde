@@ -23,15 +23,14 @@ class Connection
   private boolean serialAvailable;
   private boolean connectionAvailable;
   private int executionNumber; // # of times StoreFromText has been called 
-  private float incomingValue; // the input coming from a biosensor    
+  private float incomingValue,incomingValue2; // the input coming from a biosensor    
   private final int BUFFER_SIZE = 200; // random value
   private final int lineFeed = 10;    // Linefeed in ASCII    
   private final int numToExtract;
   private String inputString = null;  
   private FloatList incomingCond;
-  
-  private Table conductanceOfflineTable;
-  
+  private FloatList incomingEcg;
+
   //********* CONSTRUCTOR ***********
   // p = parent is needed for the Serial myport ( -->parent<--, list[0], 19200...)
   public Connection( PApplet p ) 
@@ -44,6 +43,7 @@ class Connection
     parent = p;
  
     incomingCond = new FloatList();
+    incomingEcg = new FloatList();
     
     incomingValue = 0;
     parent = p;
@@ -58,13 +58,8 @@ class Connection
         if ( serialConnect() )
           serialAvailable = true;
         else
-          {
-            println("WARNING: Serial port is not available");
-            conductanceOfflineTable = loadTable("log_conductance2.csv", "header"); // content of log_conductance
-             println(conductanceOfflineTable.getRowCount() + " total rows in table conductance"); 
-           } 
-      }
-
+          println("WARNING: Serial port is not available");
+      } 
      
    // IF WIFI OR SERIAL ARE AVAILABLE SET BOOLEAN TO "TRUE"
    if(! (!wifiAvailable && !serialAvailable) ) 
@@ -117,15 +112,23 @@ class Connection
 }
 
   public void storeFromText()
-  {
+  {        
+    Table table_con = loadTable("log_conductance.csv", "header"); // content of log_conductance
+    Table table_ecg = loadTable("log_ecg.csv", "header"); // content of log_ECG
+      
+       println(table_con.getRowCount() + " total rows in table conductance"); 
+       println(table_ecg.getRowCount() + " total rows in table ECG");
+      
        // CLEAR the list if the list SIZE is five time bigger than needed
        if ( getList("con").size() > numToExtract*5 )
           { getList("con").clear(); println("List is now empty"); }
-
+       // CLEAR the list if the list SIZE is five time bigger than needed
+       if ( getList("ecg").size() > numToExtract*5 )
+          { getList("ecg").clear(); println("List is now empty"); }
 
       // INDEX IS SHIFTED TO AVOID READING ALWAYS THE SAME VALUES
-      if ( executionNumber >= conductanceOfflineTable.getRowCount()/numToExtract )
-        executionNumber = 0;
+      if ( executionNumber >= table_con.getRowCount()/numToExtract )
+           executionNumber = 0;
       
       int count = 0;
       int multiplier = executionNumber; //<>//
@@ -133,21 +136,26 @@ class Connection
       int iEnd = numToExtract*( multiplier + 1); 
       
       // add the content of the table to a LIST OF FLOAT
-        for (TableRow row : conductanceOfflineTable.rows()) {
+        for (TableRow row : table_con.rows()) {
           float newFloat = row.getFloat("conductance");
           count++;
           if ( count>=iStart && count<=iEnd ) 
             getList("con").append (newFloat); 
-         }         
-            
-     //     for (TableRow row : table_ecg.rows() ) {
-     //       incomingDataValue2.append ( row.getFloat("ECG_filtered") );
-     //     }
+         }   
+         
+          count=0;  
+     for (TableRow row : table_ecg.rows() ) {
+       float newFloat2 =row.getFloat("ECG_filtered");
+        count++;
+     if ( count>=iStart && count<=iEnd ) 
+            getList("ecg").append (newFloat2); 
+          }
      
-     if ( getList("con").size() > conductanceOfflineTable.getRowCount() )
+     if ( getList("con").size() > table_con.getRowCount() || getList("ecg").size() > table_con.getRowCount() )
        println( "WARNING: class connection, storeFromText(): reading is slower than writing.\n");
         
-      println("Offline sensor reading completed. ");
+      println("Read from table process has completed. ");
+      println("storeFromText function ends here. ");
       println("");
         
      executionNumber++;
@@ -158,11 +166,18 @@ class Connection
   {
     
       int incomingCondSize = incomingCond.size();
+      int incomingEcgSize = incomingEcg.size();
       if ( !serialAvailable ) println(" ERROR: storeFromSerial has been called, but the port is not available");
       if ( incomingCondSize > BUFFER_SIZE ) // security check
       { 
         incomingCond.clear();
-        println("WARNING: list was getting big: list is now empty");
+        println("WARNING: list was getting big: list Cond is now empty");
+      }
+      
+      if ( incomingEcgSize > BUFFER_SIZE ) // security check
+      { 
+        incomingEcg.clear();
+        println("WARNING: list was getting big: list Ecg is now empty");
       }
       
       print( " available bytes on serial buffer: " + myPort.available() );
@@ -179,9 +194,11 @@ class Connection
             inputString = myPort.readStringUntil(lineFeed);
             if (inputString != null) 
             {
-              incomingValue =float(inputString);  // Converts and prints float
-              print( " serial: " + incomingValue );
+              incomingValue =float(inputString.substring(inputString.indexOf("c")+1,inputString.indexOf("c")+3));
+              incomingValue2 =float(inputString.substring(inputString.indexOf("e")+1,inputString.indexOf("e")+3));
+              print( " serial: " + incomingValue + "serial2:" +incomingValue2);
               incomingCond.append(incomingValue);
+              incomingEcg.append(incomingValue2);
               added++;
             }
             
@@ -191,9 +208,10 @@ class Connection
      myPort.clear();
      println("");
      println( "DEBUG : incomingCond queue size: " + incomingCond.size() );
+     println( "DEBUG : incomingCond queue size: " + incomingEcg.size() );
      println( "DEBUG : elements added: " + added );
      if ( incomingCond.size() == 0 ) println(" ERROR in storeFromSerial: incomingCondSize = 0 ");
-      
+     if ( incomingEcg.size() == 0 ) println(" ERROR in storeFromSerial: incomingEcgSize = 0 "); 
   }
   
   // gives out numberOfElements elements from the selected list and ERASE THOSE ELEMENTS
@@ -202,7 +220,9 @@ class Connection
       FloatList toOutput = new FloatList();  
       boolean emptyList = false;
 
-      int originalListCondSize = getList("con").size();     
+      int originalListCondSize = getList("con").size();   
+      int originalListEcgSize = getList("ecg").size(); 
+      
       float inValue = 0;
       short added = 0;
       
@@ -216,23 +236,51 @@ class Connection
               int currentListCondSize = getList("con").size();
               if ( currentListCondSize > 0 )
                  {                   
+                   // !connectionAvailable: there aren't any connections available, we're reading the DATA from an OFFLINE TABLE
+                   // with randomIndex we pick a different set of values for each cycle              
 
                    int index = currentListCondSize - 1;
                    if ( index >= 0 && index <= currentListCondSize )
                        {
                          inValue = incomingCond.remove( index );
-                         if ( inValue >= 0 && inValue <= MAX_SENSOR )
-                           {
-                             toOutput.append( inValue );
-                             added++;
-                           }                         
-                       }             
+                         toOutput.append( inValue );
+                         added++;
+                         }                
+
                   }
               else
                   emptyList = true;
                   
-            }                  //<>//
+            }   //<>//
+            
+            
       }
+      if (listName.equals("ecg"))
+       {
+         // extract numberOfElements of elements from conductance list
+
+         while(! (getList("ecg").size() <= originalListEcgSize  - numberOfElements) && !emptyList) 
+            {
+              int currentListEcgSize = getList("con").size();
+              if ( currentListEcgSize > 0 )
+                 {                   
+                   // !connectionAvailable: there aren't any connections available, we're reading the DATA from an OFFLINE TABLE
+                   // with randomIndex we pick a different set of values for each cycle              
+
+                   int index = currentListEcgSize - 1;
+                   if ( index >= 0 && index <= currentListEcgSize )
+                       {
+                         inValue = incomingCond.remove( index );
+                         toOutput.append( inValue );
+                         added++;
+                         }                
+
+                  }
+              else
+                  emptyList = true;
+                  
+            }
+       }
       return toOutput;
     }
   
@@ -240,7 +288,10 @@ class Connection
   {
     if( sensorName.equals("con") )
       return incomingCond;
-    else
+      
+    if(sensorName.equals("ecg"))
+      return incomingEcg;
+    else 
       return null;
   }
 }

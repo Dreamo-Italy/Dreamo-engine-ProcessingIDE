@@ -1,54 +1,45 @@
-      ///*class Ecg extends Biosensor
-      //{  
-      //  public void init()
-      //  {
-          
-      //     defaultValue = 5;
-      //    sensorMin = 1;
-      //    sensorMax = 10; 
-             
-      //  }
-        
-      //  public float getValue() // takes an int out of the current connection
-      //  {
-      //    float incoming = -1;
-          
-      //    if (global_connection != null )
-      //      {
-      //        if ( global_connection.networkAvailable() == true )
-      //          incoming = global_connection.getAnElement();  
-      //        else
-      //           {
-      //             incoming = incomingDataValue1.get(0); // the first element
-      //             incomingDataValue1.remove(0); // remove the first element after the reading
-      //           }
-                
-      //      }
+class Ecg extends Biosensor
+{
+  
+        public void init()
+        {
+              sensorName = "ecg";   
+        }
       
-      //    return incoming;
-         
-      //  }
-        
-      //   public void storeFromText()
-      //  {
-      //        Table table = loadTable("log1_notime.csv", "header"); // content of log1:  Time; ECG; ECG_filtered; ...
+    
+        public void update()
+        {     
+        println("DEBUG: ECG update.");     
+        float BPM;        DSP dsp =new DSP();
+        DSP bpm =new DSP();
+        if(frameCount % 3 == 0)
+        {
+          int numToExtract = ceil (global_sampleRate/frameRate);
+          long initTimeT = System.nanoTime();     
+      
+          incomingValues = global_connection.extractFromBuffer("ecg", numToExtract ); // store the incoming conductance value from Connection to another FloatLIst
+          float[] Analysis= incomingValues.array();
+          float[] FilteredHp = dsp.HighPass (Analysis, 50.0,256.0);
+          float[] FilteredLpHp = dsp.LowPass (FilteredHp, 100.0,256.0);
+          //BPM=bpm.ECGBPM(FilteredHp);
+          BPM=60;
+           println("BPM:"+BPM );
+          //long bufT = System.nanoTime() - initTimeT; // duration of ExtractFromBuffer
           
-      //        println(table.getRowCount() + " total rows in table"); 
-          
-      //        for (TableRow row : table.rows()) {
-                
-      //         // incomingDataTime.append ( row.getFloat("Time") );
-      //        //  incomingDataValue1.append ( row.getFloat("ECG") );
-      //         // incomingDataValue2.append ( row.getFloat("ECG_filtered") );
-              
-      //      }
-            
-      //      println("Read from table process has completed. ");
-      //      println(incomingDataTime);
-      //      println(incomingDataValue1);
-      //      println(incomingDataValue2);
-      //      println("storeFromText function ends here. ");
-            
-      //   }
+          println("Number of elements to extract: " + numToExtract );
+          println("buffer size: "+ incomingValues.size() );   
+     }
+     else
+       BPM = this.getValue();
         
-      //}*/
+     setValue  ( BPM );
+     
+     if ( ! ( incomingValues == null ) )
+       checkCalibration();
+       
+    // println("    Extract from buffer time: "+ bufT/1000 + " us");
+     println("");
+    
+  }
+  
+}
