@@ -100,9 +100,9 @@ class Stage
   }
   
   // looks for the NEAREST scene in the sense of euclidean distance.
-  // the input VAvalues[] is calculated from audio and biomedical signals analysis
+  // the input Mood m is calculated from audio and biomedical signals analysis
   
-  public void selectScenebyMood(float[] VAvalues) 
+  public void selectScenebyMood(Mood m) 
   {
     float minimumDistance = Float.MAX_VALUE;
     Scene minimumDistanceScene = null;
@@ -111,8 +111,8 @@ class Stage
     {
       float sumOfSquares = 0.0;
       
-      sumOfSquares += pow(VAvalues[0] - scenesList[i].sceneMood.getValence(), 2);
-      sumOfSquares += pow(VAvalues[1] - scenesList[i].sceneMood.getArousal(), 2);
+      sumOfSquares += pow(m.getValence() - scenesList[i].sceneMood.getValence(), 2);
+      sumOfSquares += pow(m.getArousal() - scenesList[i].sceneMood.getArousal(), 2);
            
       if(sumOfSquares < minimumDistance)
       {
