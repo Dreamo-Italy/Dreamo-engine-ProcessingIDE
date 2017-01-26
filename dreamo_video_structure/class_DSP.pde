@@ -447,13 +447,13 @@ class DSP {
       }
 
   /******************************************************************************************************/
-    //BPM ECG
+    //BPM ECG (non funziona?)
    public int ECGBPM(float[] a){
     int Beatcount=0;
     int BPM;
     int N= a.length;
     int fs=256;
-    for(int i=0;i<N-1;i++){
+    for(int i=1;i<N-1;i++){
         if( (a[i]>a[i-1]) && a[i]>a[i+1]&& a[i]>1.5){
          Beatcount++;
         }
