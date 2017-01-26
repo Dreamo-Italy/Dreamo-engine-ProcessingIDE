@@ -10,6 +10,13 @@ class Mood
     arousal=0.0;
   }
   
+  //parametric constructor
+  public Mood(float v, float a)
+  {
+    valence=v;
+    arousal=a;
+  }
+  
   //copy constructor
   public Mood(Mood toCopy)
   {
@@ -17,6 +24,7 @@ class Mood
     arousal=toCopy.arousal;
   
   }
+  
   
   //set methods
   public void setValence(float v)

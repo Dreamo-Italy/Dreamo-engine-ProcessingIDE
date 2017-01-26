@@ -77,14 +77,12 @@ void draw()
    println("*******************END*****************");
    println("***************************************");
    println("");
-
-
 }
 
 void mouseClicked()
 {
   
-  //float[] testVAParameters = {random(-1,1), random(-1,1)};
-  //global_stage.selectScenebyMood(testVAParameters);
-  global_stage.nextScene();
+  Mood m = new Mood(random(-1,1), random(-1,1));
+  global_stage.selectScenebyMood(m);
+  //global_stage.nextScene();
 }
