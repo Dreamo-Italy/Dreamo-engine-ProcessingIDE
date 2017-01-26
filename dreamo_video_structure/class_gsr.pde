@@ -5,9 +5,7 @@ class Gsr extends Biosensor
     sensorName = "con";   
   }
   public void update()
-   {     
-     println("DEBUG: GSR update.");    
-     
+   {          
     float currentValue = getAbsolute();
     int numToExtract = ceil (global_sampleRate/frameRate); //<>//
     long initTimeT = System.nanoTime();     
