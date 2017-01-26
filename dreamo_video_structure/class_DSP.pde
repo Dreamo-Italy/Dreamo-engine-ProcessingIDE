@@ -451,7 +451,7 @@ class DSP {
    public int ECGBPM(float[] a){
     int Beatcount=0;
     int BPM;
-    int N= a.length;
+    int N= a.length; 
     int fs=256;
     for(int i=1;i<N-1;i++){
         if( (a[i]>a[i-1]) && a[i]>a[i+1]&& a[i]>1.5){
@@ -459,9 +459,9 @@ class DSP {
         }
       }
         
-       int duration_second=N/fs;
-       int dur_min=duration_second/60;
-       BPM=int(Beatcount/dur_min);
+       float duration_second= (float)N/fs;
+       float dur_min=duration_second/60;
+       BPM=round(Beatcount/ dur_min );
        return BPM;
-       }
+   }
 }

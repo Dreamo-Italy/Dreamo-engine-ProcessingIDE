@@ -30,6 +30,7 @@ class Connection
   private String inputString = null;  
   private FloatList incomingCond;
   private FloatList incomingEcg;
+  private Table table_con, table_ecg;
 
   //********* CONSTRUCTOR ***********
   // p = parent is needed for the Serial myport ( -->parent<--, list[0], 19200...)
@@ -58,7 +59,10 @@ class Connection
         if ( serialConnect() )
           serialAvailable = true;
         else
+        {
           println("WARNING: Serial port is not available");
+          loadOfflineTables();
+        }
       } 
      
    // IF WIFI OR SERIAL ARE AVAILABLE SET BOOLEAN TO "TRUE"
@@ -110,7 +114,14 @@ class Connection
         storeFromSerial();    // read the data from the SERIAL LINE
 
 }
+  private void loadOfflineTables()
+  {
+    table_con = loadTable("log_conductance.csv", "header"); // content of log_conductance
+    table_ecg = loadTable("log_ecg.csv", "header"); // content of log_ECG
+    println(table_con.getRowCount() + " total rows in table conductance"); 
+    println(table_ecg.getRowCount() + " total rows in table ECG");  }
 
+<<<<<<< HEAD
   public void storeFromText()
   {        
     Table table_con = loadTable("log_conductance.csv", "header"); // content of log_conductance
@@ -119,6 +130,11 @@ class Connection
        println(table_con.getRowCount() + " total rows in table conductance"); 
        println(table_ecg.getRowCount() + " total rows in table ECG");
       
+=======
+
+  private void storeFromText()
+  { 
+>>>>>>> fcf1d58a2acfea8d42caa2135affe5e5a61fd1bf
        // CLEAR the list if the list SIZE is five time bigger than needed
        if ( getList("con").size() > numToExtract*5 )
           { getList("con").clear(); println("List is now empty"); }
@@ -141,15 +157,27 @@ class Connection
           count++;
           if ( count>=iStart && count<=iEnd ) 
             getList("con").append (newFloat); 
-         }   
+         } count=0;  
          
+<<<<<<< HEAD
           count=0;  
      for (TableRow row : table_ecg.rows() ) {
        float newFloat2 =row.getFloat("ECG_filered");
         count++;
      if ( count>=iStart && count<=iEnd ) 
+=======
+           
+          
+      int count2 = 0;
+     for (TableRow row : table_ecg.rows() ) 
+     {
+       float newFloat2 =row.getFloat("ECG_filtered");
+        count2++;
+     if ( count2>=iStart && count2<=iEnd ) 
+>>>>>>> fcf1d58a2acfea8d42caa2135affe5e5a61fd1bf
             getList("ecg").append (newFloat2); 
-          }
+       }   count2 = 0;
+    
      
      if ( getList("con").size() > table_con.getRowCount() || getList("ecg").size() > table_con.getRowCount() )
        println( "WARNING: class connection, storeFromText(): reading is slower than writing.\n");
@@ -208,7 +236,7 @@ class Connection
      myPort.clear();
      println("");
      println( "DEBUG : incomingCond queue size: " + incomingCond.size() );
-     println( "DEBUG : incomingCond queue size: " + incomingEcg.size() );
+     println( "DEBUG : incomingEcg queue size: " + incomingEcg.size() );
      println( "DEBUG : elements added: " + added );
      if ( incomingCond.size() == 0 ) println(" ERROR in storeFromSerial: incomingCondSize = 0 ");
      if ( incomingEcg.size() == 0 ) println(" ERROR in storeFromSerial: incomingEcgSize = 0 "); 
@@ -258,8 +286,13 @@ class Connection
       if (listName.equals("ecg"))
        {
          // extract numberOfElements of elements from conductance list
+<<<<<<< HEAD
 
          while(! (getList("ecg").size() <= originalListEcgSize  - numberOfElements) && !emptyList2) 
+=======
+         
+         while(! (getList("ecg").size() <= originalListEcgSize  - numberOfElements) && !emptyList) 
+>>>>>>> fcf1d58a2acfea8d42caa2135affe5e5a61fd1bf
             {
               int currentListEcgSize = getList("ecg").size();
               if ( currentListEcgSize > 0 )
@@ -270,10 +303,10 @@ class Connection
                    int index = currentListEcgSize - 1;
                    if ( index >= 0 && index <= currentListEcgSize )
                        {
-                         inValue = incomingCond.remove( index );
+                         inValue = incomingEcg.remove( index );
                          toOutput.append( inValue );
                          added++;
-                         }                
+                        }                
 
                   }
               else
