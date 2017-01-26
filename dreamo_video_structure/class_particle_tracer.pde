@@ -24,7 +24,7 @@ class ParticleTracer extends Particle
   {
     
     if ( frameCount % 4 == 0 && indexShifting < getPalette().COLOR_NUM && round(random(1)) == 1 )     indexShifting++;              
-    else if ( indexShifting >= getPalette().COLOR_NUM)         indexShifting = 0;
+    if ( indexShifting >= getPalette().COLOR_NUM)         indexShifting = 0;
 
     angle = noise((getPosition().getX() + nCrossedX*width)/noiseScale, (getPosition().getY()+nCrossedY*height)/noiseScale) * noiseStrength;
     

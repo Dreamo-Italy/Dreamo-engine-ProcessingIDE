@@ -40,19 +40,21 @@ void draw()
    global_dyn.setSamples(global_audio.getSamples());
    global_tone.setSamples(global_audio.getSamples());
    global_rhythm.setSamples(global_audio.getSamples());
+   
+   long audioTime = System.nanoTime() - initTimeT;
 
    global_connection.update(); //<>//
 
-   long conT = System.nanoTime() - initTimeT; // time elapsed after CONNECTION UPDATE
+   long conT = System.nanoTime() - audioTime - initTimeT; // time elapsed after CONNECTION UPDATE
    
    global_gsr.update();
    
 
-   long gsrT = (System.nanoTime() - conT -initTimeT ); // time elapsed after GSR UPDATE
+   long gsrT = (System.nanoTime() - conT -initTimeT - audioTime); // time elapsed after GSR UPDATE
 
    global_stage.updateAndTrace();
 
-   long viT = (System.nanoTime() - gsrT - conT - initTimeT) ; // time elapsed after VIDEO UPDATE
+   long viT = (System.nanoTime() - gsrT - conT - initTimeT - audioTime) ; // time elapsed after VIDEO UPDATE
 
 
     fill(120); // for the DEBUG text
@@ -67,6 +69,7 @@ void draw()
 
    //----------- print the durations for debug purposes------------
 
+   println("    Audio update duration: "+ audioTime/1000 + " us");
    println("    Connection update duration: "+ conT/1000 + " us");
    println("    GSR update duration: "+ gsrT/1000 + " us");
    println("    Video update duration: "+ viT/1000 + " us");
