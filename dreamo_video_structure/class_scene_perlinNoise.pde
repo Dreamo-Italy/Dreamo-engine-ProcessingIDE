@@ -30,12 +30,7 @@ class ScenePerlinNoise extends Scene
   }
 
     public void update(){
-
-   int alpha;
-   
-   //update with audio information
-   alpha=(int)map(global_dyn.getRMS(),0,0.3,0,255) + 30;
-
+      
    for(int i = 0; i < particlesNumber; i++)
      {
        particlesList[i].updatePhysics();
