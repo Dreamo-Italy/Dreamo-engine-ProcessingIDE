@@ -30,6 +30,8 @@ class Connection
   private String inputString = null;  
   private FloatList incomingCond;
   
+  private Table conductanceOfflineTable;
+  
   //********* CONSTRUCTOR ***********
   // p = parent is needed for the Serial myport ( -->parent<--, list[0], 19200...)
   public Connection( PApplet p ) 
@@ -56,8 +58,13 @@ class Connection
         if ( serialConnect() )
           serialAvailable = true;
         else
-          println("WARNING: Serial port is not available");
-      } 
+          {
+            println("WARNING: Serial port is not available");
+            conductanceOfflineTable = loadTable("log_conductance2.csv", "header"); // content of log_conductance
+             println(conductanceOfflineTable.getRowCount() + " total rows in table conductance"); 
+           } 
+      }
+
      
    // IF WIFI OR SERIAL ARE AVAILABLE SET BOOLEAN TO "TRUE"
    if(! (!wifiAvailable && !serialAvailable) ) 
@@ -110,20 +117,14 @@ class Connection
 }
 
   public void storeFromText()
-  {        
-    Table table_con = loadTable("log_conductance2.csv", "header"); // content of log_conductance
-      //  Table table_ecg = loadTable("log_ecg.csv", "header"); // content of log_ECG
-      
-       println(table_con.getRowCount() + " total rows in table conductance"); 
-       //   println(table_ecg.getRowCount() + " total rows in table ECG");
-      
+  {
        // CLEAR the list if the list SIZE is five time bigger than needed
        if ( getList("con").size() > numToExtract*5 )
           { getList("con").clear(); println("List is now empty"); }
 
 
       // INDEX IS SHIFTED TO AVOID READING ALWAYS THE SAME VALUES
-      if ( executionNumber >= table_con.getRowCount()/numToExtract )
+      if ( executionNumber >= conductanceOfflineTable.getRowCount()/numToExtract )
         executionNumber = 0;
       
       int count = 0;
@@ -132,7 +133,7 @@ class Connection
       int iEnd = numToExtract*( multiplier + 1); 
       
       // add the content of the table to a LIST OF FLOAT
-        for (TableRow row : table_con.rows()) {
+        for (TableRow row : conductanceOfflineTable.rows()) {
           float newFloat = row.getFloat("conductance");
           count++;
           if ( count>=iStart && count<=iEnd ) 
@@ -143,11 +144,10 @@ class Connection
      //       incomingDataValue2.append ( row.getFloat("ECG_filtered") );
      //     }
      
-     if ( getList("con").size() > table_con.getRowCount() )
+     if ( getList("con").size() > conductanceOfflineTable.getRowCount() )
        println( "WARNING: class connection, storeFromText(): reading is slower than writing.\n");
         
-      println("Read from table process has completed. ");
-      println("storeFromText function ends here. ");
+      println("Offline sensor reading completed. ");
       println("");
         
      executionNumber++;
