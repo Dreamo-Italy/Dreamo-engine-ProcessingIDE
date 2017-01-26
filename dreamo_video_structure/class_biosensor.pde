@@ -174,10 +174,11 @@ abstract class Biosensor
   }
   
    public void printDebug()
-  {    
-    println("absolute :"+ getAbsolute() );
-    println("variation :"+ getVariation() );
-    println("default value :" + getDefault() );
+  { 
+    println("Sensor type: " + sensorName );
+    println("  absolute :"+ getAbsolute() );
+    println("  variation :"+ getVariation() );
+    println("  default value :" + getDefault() );
     println("");    
     text("\n absolute : " + getAbsolute() + "; variation: " + getVariation() + "; default value : " + getDefault(), 10, 50);
   }
