@@ -30,6 +30,7 @@ class Connection
   private String inputString = null;  
   private FloatList incomingCond;
   private FloatList incomingEcg;
+  private Table table_con, table_ecg;
 
   //********* CONSTRUCTOR ***********
   // p = parent is needed for the Serial myport ( -->parent<--, list[0], 19200...)
@@ -58,7 +59,10 @@ class Connection
         if ( serialConnect() )
           serialAvailable = true;
         else
+        {
           println("WARNING: Serial port is not available");
+          loadOfflineTables();
+        }
       } 
      
    // IF WIFI OR SERIAL ARE AVAILABLE SET BOOLEAN TO "TRUE"
@@ -110,15 +114,16 @@ class Connection
         storeFromSerial();    // read the data from the SERIAL LINE
 
 }
+  private void loadOfflineTables()
+  {
+    table_con = loadTable("log_conductance.csv", "header"); // content of log_conductance
+    table_ecg = loadTable("log_ecg.csv", "header"); // content of log_ECG
+    println(table_con.getRowCount() + " total rows in table conductance"); 
+    println(table_ecg.getRowCount() + " total rows in table ECG");  }
 
-  public void storeFromText()
-  {        
-    Table table_con = loadTable("log_conductance.csv", "header"); // content of log_conductance
-    Table table_ecg = loadTable("log_ecg.csv", "header"); // content of log_ECG
-      
-       println(table_con.getRowCount() + " total rows in table conductance"); 
-       println(table_ecg.getRowCount() + " total rows in table ECG");
-      
+
+  private void storeFromText()
+  { 
        // CLEAR the list if the list SIZE is five time bigger than needed
        if ( getList("con").size() > numToExtract*5 )
           { getList("con").clear(); println("List is now empty"); }
@@ -141,18 +146,19 @@ class Connection
           count++;
           if ( count>=iStart && count<=iEnd ) 
             getList("con").append (newFloat); 
-         }   
+         } count=0;  
          
-          count=0;  
+           
           
       int count2 = 0;
-     for (TableRow row : table_ecg.rows() ) {
+     for (TableRow row : table_ecg.rows() ) 
+     {
        float newFloat2 =row.getFloat("ECG_filtered");
         count2++;
      if ( count2>=iStart && count2<=iEnd ) 
             getList("ecg").append (newFloat2); 
-                      }
-      count2 = 0;
+       }   count2 = 0;
+    
      
      if ( getList("con").size() > table_con.getRowCount() || getList("ecg").size() > table_con.getRowCount() )
        println( "WARNING: class connection, storeFromText(): reading is slower than writing.\n");
@@ -211,7 +217,7 @@ class Connection
      myPort.clear();
      println("");
      println( "DEBUG : incomingCond queue size: " + incomingCond.size() );
-     println( "DEBUG : incomingCond queue size: " + incomingEcg.size() );
+     println( "DEBUG : incomingEcg queue size: " + incomingEcg.size() );
      println( "DEBUG : elements added: " + added );
      if ( incomingCond.size() == 0 ) println(" ERROR in storeFromSerial: incomingCondSize = 0 ");
      if ( incomingEcg.size() == 0 ) println(" ERROR in storeFromSerial: incomingEcgSize = 0 "); 
