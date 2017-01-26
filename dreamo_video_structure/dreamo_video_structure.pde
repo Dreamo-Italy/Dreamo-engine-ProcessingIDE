@@ -64,7 +64,8 @@ void draw()
     fill(120); // for the DEBUG text
     stroke(120); // for the DEBUG text
 
-   global_gsr.printDebug();  // print the DEBUG TEXT related to the SKIN SENSOR every 20 frames
+   global_gsr.printDebug();// print the DEBUG TEXT related to the SKIN SENSOR every 20 frames
+   global_ecg.printDebug();// print the DEBUG TEXT related to the SKIN SENSOR every 20 frames
    text("particles: " + global_stage.getCurrentScene().getParticlesNumber() + "; framerate: " + frameRate + " \n", 10, 20);
 
 

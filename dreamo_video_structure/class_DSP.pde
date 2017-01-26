@@ -472,5 +472,60 @@ class DSP {
        
        BPM = round(beatcount * duration_minute / duration_second );
        return BPM;
+   }    
+/******************************************************************************************************/
+   
+   public int ECGBPM2(FloatList a){
+    int Beatcount=0;
+    int BPM;
+    int N= a.size(); 
+    int fs=256;
+    boolean flag=false;
+    //Squaring the signal to increase the peak
+    for (int i=0; i<N;i++){
+     a.set(i,sq(a.get(i)));
+    } 
+    //signal evaluation and peaks counter
+    for(int i=1;i<N-1;i++){
+        if(a.get(i)>1.5){
+          if (!flag){
+          Beatcount++;
+          flag=true;
+          }
+        }else{flag=false;}
+      }
+     // BPM detector 
+       float duration_second = 1/frameRate;
+       float dur_min=60;
+       BPM=round(Beatcount* dur_min/duration_second );
+       return BPM;
+   }
+
+ /******************************************************************************************************/
+ 
+  public int ECGBMP(float[] a){
+    int Beatcount=0;
+    int BPM;
+    int N= a.length; 
+    int fs=256;
+    boolean flag=false;
+    //Squaring the signal to increase the peak
+    for (int i=0; i<N;i++){
+      a[i]= sq(a[i]);
+    } 
+    //signal evaluation and peaks counter
+    for(int i=1;i<N-1;i++){
+        if(a[i]>1.5){
+          if (!flag){
+          Beatcount++;
+          flag=true;
+          }
+        }else{flag=false;}
+      }
+     // BPM detector 
+       float duration_second= 1/frameRate;
+       float dur_min=60;
+       BPM=round( Beatcount * dur_min / duration_second );
+       return BPM;
    }
 }

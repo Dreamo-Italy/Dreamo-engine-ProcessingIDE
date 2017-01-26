@@ -115,7 +115,7 @@ class Connection
   private void loadOfflineTables()
   {
     table_con = loadTable("log_conductance.csv", "header"); // content of log_conductance
-    table_ecg = loadTable("log_ecg.csv", "header"); // content of log_ECG
+    table_ecg = loadTable("ECG_log_LpHp.csv", "header"); // content of log_ECG
     println(table_con.getRowCount() + " total rows in table conductance"); 
     println(table_ecg.getRowCount() + " total rows in table ECG");  
   }
@@ -149,7 +149,7 @@ class Connection
      int count2 = 0;
      for (TableRow row : table_ecg.rows() ) 
      {
-       float newFloat2 =row.getFloat("ECG_filtered");
+       float newFloat2 =row.getFloat("ECG_filered");
         count2++;
      if ( count2>=iStart && count2<=iEnd ) 
             getList("ecg").append (newFloat2); 
@@ -265,7 +265,7 @@ class Connection
          // extract numberOfElements of elements from conductance list
 
          
-         while(! (getList("ecg").size() <= originalListEcgSize  - numberOfElements) && !emptyList) 
+         while(! (getList("ecg").size() <= originalListEcgSize  - numberOfElements) && !emptyList2) 
             {
               int currentListEcgSize = getList("ecg").size();
               if ( currentListEcgSize > 0 )
@@ -282,7 +282,7 @@ class Connection
                           }              
                }
               else
-                  emptyList = true;                  
+                  emptyList2 = true;                  
             }
        }
       return toOutput;
