@@ -449,19 +449,28 @@ class DSP {
   /******************************************************************************************************/
     //BPM ECG (non funziona?)
    public int ECGBPM(float[] a){
-    int Beatcount=0;
+     
+    int beatcount=0;
     int BPM;
     int N= a.length; 
     int fs=256;
+    
     for(int i=1;i<N-1;i++){
-        if( (a[i]>a[i-1]) && a[i]>a[i+1]&& a[i]>1.5){
-         Beatcount++;
+        if( (a[i]>a[i-1]) && a[i]>a[i+1] && a[i]>1.5){
+         beatcount++;
         }
       }
-        
-       float duration_second= (float)N/fs;
-       float dur_min=duration_second/60;
-       BPM=round(Beatcount/ dur_min );
+      // PER NICO: il problema è che ECGBPM viene richiamato a ogni update(), cioè TRENTA VOLTE AL SECONDO
+      // Quindi, se rileva un BEAT a ogni update(), cioè ogni 1/frameRate secondi, ECGBPM pensa che in un secondo ci siano 30 BEATS --> 1800 BPM!!
+      // L'unica soluzione è ACCUMULARE dati, tipo come si fa con la funzione CALIBRATION(), e eseguire il calcolo del bpm una volta ogni 30 update() o così
+      
+       float duration_second = 1/frameRate; 
+       float duration_minute = 60;
+       
+       //float duration_second= (float)N/fs;
+       //float dur_min=duration_second/60;
+       
+       BPM = round(beatcount * duration_minute / duration_second );
        return BPM;
    }
 }

@@ -7,12 +7,11 @@ import java.util.ArrayDeque;
 
 class Connection
 {
-     //********* CONSTANTS ***********
+  //********* CONSTANTS ***********
      
-     final int MAX_SENSOR = 5;
-
+  final int MAX_SENSOR = 5;
   
-   //********* PUBLIC MEMBERS ***********
+  //********* PUBLIC MEMBERS ***********
 
   Serial myPort;  // Create object from Serial class
   public PApplet parent; //needed for the Serial object istantiation
@@ -106,35 +105,23 @@ class Connection
   
   
   public void update()
-  {
-    
+  {   
     if( !serialAvailable ) //<>//
          storeFromText();      // read the data from an OFFLINE TABLE
     else if ( serialAvailable )
         storeFromSerial();    // read the data from the SERIAL LINE
-
-}
+ }
+ 
   private void loadOfflineTables()
   {
     table_con = loadTable("log_conductance.csv", "header"); // content of log_conductance
     table_ecg = loadTable("log_ecg.csv", "header"); // content of log_ECG
     println(table_con.getRowCount() + " total rows in table conductance"); 
-    println(table_ecg.getRowCount() + " total rows in table ECG");  }
+    println(table_ecg.getRowCount() + " total rows in table ECG");  
+  }
 
-<<<<<<< HEAD
   public void storeFromText()
-  {        
-    Table table_con = loadTable("log_conductance.csv", "header"); // content of log_conductance
-    Table table_ecg = loadTable("ECG_log_HpBp.csv", "header"); // content of log_ECG
-      
-       println(table_con.getRowCount() + " total rows in table conductance"); 
-       println(table_ecg.getRowCount() + " total rows in table ECG");
-      
-=======
-
-  private void storeFromText()
   { 
->>>>>>> fcf1d58a2acfea8d42caa2135affe5e5a61fd1bf
        // CLEAR the list if the list SIZE is five time bigger than needed
        if ( getList("con").size() > numToExtract*5 )
           { getList("con").clear(); println("List is now empty"); }
@@ -157,24 +144,14 @@ class Connection
           count++;
           if ( count>=iStart && count<=iEnd ) 
             getList("con").append (newFloat); 
-         } count=0;  
-         
-<<<<<<< HEAD
-          count=0;  
-     for (TableRow row : table_ecg.rows() ) {
-       float newFloat2 =row.getFloat("ECG_filered");
-        count++;
-     if ( count>=iStart && count<=iEnd ) 
-=======
-           
-          
-      int count2 = 0;
+         } count=0;         
+                
+     int count2 = 0;
      for (TableRow row : table_ecg.rows() ) 
      {
        float newFloat2 =row.getFloat("ECG_filtered");
         count2++;
      if ( count2>=iStart && count2<=iEnd ) 
->>>>>>> fcf1d58a2acfea8d42caa2135affe5e5a61fd1bf
             getList("ecg").append (newFloat2); 
        }   count2 = 0;
     
@@ -286,32 +263,26 @@ class Connection
       if (listName.equals("ecg"))
        {
          // extract numberOfElements of elements from conductance list
-<<<<<<< HEAD
 
-         while(! (getList("ecg").size() <= originalListEcgSize  - numberOfElements) && !emptyList2) 
-=======
          
          while(! (getList("ecg").size() <= originalListEcgSize  - numberOfElements) && !emptyList) 
->>>>>>> fcf1d58a2acfea8d42caa2135affe5e5a61fd1bf
             {
               int currentListEcgSize = getList("ecg").size();
               if ( currentListEcgSize > 0 )
-                 {                   
+              {                   
                    // !connectionAvailable: there aren't any connections available, we're reading the DATA from an OFFLINE TABLE
                    // with randomIndex we pick a different set of values for each cycle              
 
                    int index = currentListEcgSize - 1;
-                   if ( index >= 0 && index <= currentListEcgSize )
-                       {
-                         inValue = incomingEcg.remove( index );
-                         toOutput.append( inValue );
-                         added++;
-                        }                
-
-                  }
+                     if ( index >= 0 && index <= currentListEcgSize )
+                         {
+                           inValue = incomingEcg.remove( index );
+                           toOutput.append( inValue );
+                           added++;
+                          }              
+               }
               else
-                  emptyList2 = true;
-                  
+                  emptyList = true;                  
             }
        }
       return toOutput;
