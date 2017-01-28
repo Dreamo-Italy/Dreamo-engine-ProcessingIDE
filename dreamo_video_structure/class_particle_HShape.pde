@@ -7,19 +7,28 @@ class HShape extends Particle
   float radius=0;
   float angle=0;
   
-  //changing mode means cheangind update rules --> graphic behaviour
-  int MODE;
+  int NSIDES=0;
+  float RAD=0;
+  //float ANG=0;
   
-  HShape(int m)
+  //changing mode means cheangind update rules --> graphic behaviour
+  final int MODE;
+  
+  int I=0;
+  int alpha;
+  
+  HShape(int m, int intensity)
   {  
     MODE=m;
+    I=intensity;
   }
   
-  HShape(int ns, float r, float a)
+  HShape(int ns, float r, float a, int m)
   {
     nSides=ns;
     radius=r;
     angle=a;
+    MODE=m;
   }
   
   
@@ -27,47 +36,101 @@ class HShape extends Particle
   {
     colore=this.pal.getColor();
     
-    if(MODE>0 && MODE<5){
+    if(MODE>=0 && MODE<=6){
     switch(MODE) {
+      case 0:
+        nSides=(int)random(4,5);
+        radius=random(70,120);
+        break;
       case 1:
-        nSides=3;
-        radius=400;
-        angle=0.5;
+        nSides=(int)random(3,4);
+        radius=random(90,140);
         break;
       case 2:
-        nSides=4;
-        radius=180;
-        angle=-0.5;
+        nSides=5;
+        radius=random(110,160);
         break;
       case 3:
-        nSides=5;
-        radius=100;
-        angle=0.9;
+        nSides=3;
+        radius=random(130,180);
         break;
       case 4:
-        nSides=6;
-        radius=305;
-        angle=1.4;
+        nSides=(int)random(3,6);
+        radius=random(150,200);
         break; 
+      case 5:
+        nSides=5;
+        radius=random(200,250);
+        break; 
+      case 6:
+        nSides=(int)random(6,10);
+        radius=random(220,270);
+        break; 
+    }
+   }
+   else{
+     nSides=3;
+     radius=random(650,760);     
+   }
+   
+   NSIDES=nSides;
+   RAD=radius;   
+   alpha=(int)random(50,240);
+  }
+  
+  public void update()
+  {
+    if(MODE>=0 && MODE<=6){
+    switch(MODE) {
+      case 0:
+        nSides=NSIDES+(int)(I*getParameter(0));
+        radius=RAD+I*getParameter(0);
+        break;
+      case 1:
+        radius=RAD-I*getParameter(0);
+        break;
+      case 2:
+        radius=RAD-I*getParameter(0);
+        angle=0.9;
+        break;
+      case 3:
+        radius=RAD+I*getParameter(0);
+        angle=1.4;
+        break;
+      case 4:
+        radius=RAD-I*getParameter(0);
+        break;
+      case 5:
+        nSides=NSIDES+(int)(I/2*getParameter(0));
+        radius=RAD+I*getParameter(0);
+        break;
+      case 6:      
+        radius=RAD-I*getParameter(0);
+        break;
     }
    }
    else{
      
    }
-  }
-  
-  public void update()
-  {
+     
+      //alpha=(int)(255*getParameter(0))+(int)(30*getParameter(0));
+     
   }
   
   public void trace()
   {
+    
+    
+    {
+    translate(width/2,height/2);
+    //rotate(i/TWO_PI);
     noFill();
     //int circleResolution = (int)map(mouseY+100,0,height,2, 10);
     //float radius = mouseX-width/2 + 0.5;
     float angle = TWO_PI/nSides;
     strokeWeight(2);
-    stroke(colore);
+    
+    stroke(colore,alpha);
     
     beginShape();
     
@@ -77,6 +140,9 @@ class HShape extends Particle
       vertex(x, y);
     }
     endShape();
+      
+    }   
+   
   }
   
 }

@@ -5,11 +5,12 @@ class HelloShape extends Scene{
 
     pal.initColors();
 
-    for(int i=0;i<40;i++){
+    for(int i=0;i<70;i++){
     
-    HShape sh = new HShape((int)(i/10+1));  
+    HShape sh = new HShape((int)(i/10),20); 
+    //HShape sh = new HShape(6); 
     sh.setPalette(this.pal);
-    sh.setPosition(new Vector2d(width/2, height/2, false));   
+    //sh.setPosition(new Vector2d(width/2, height/2, false));   
     addParticle(sh);
    
     }
@@ -19,6 +20,16 @@ class HelloShape extends Scene{
     enableBackground();
     sceneMood.setMood(0,1);
 
+  }
+  
+   public void update()
+   {
+     
+   for(int i = 0; i < particlesNumber; i++)
+     {
+       particlesList[i].setParameter(0,global_dyn.getRMS());
+       particlesList[i].update();
+   }
   }
   
 }

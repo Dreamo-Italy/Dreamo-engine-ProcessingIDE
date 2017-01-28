@@ -29,8 +29,8 @@ class ScenePerlinNoise extends Scene
     sceneMood.setMood(1,0);
   }
 
-    public void update(){
-      
+   public void update()
+   {     
    for(int i = 0; i < particlesNumber; i++)
      {
        particlesList[i].updatePhysics();
@@ -40,7 +40,6 @@ class ScenePerlinNoise extends Scene
        particlesList[i].setParameter(0,global_dyn.getRMS());
        particlesList[i].update();
    }
-
-
   }
+  
 }
