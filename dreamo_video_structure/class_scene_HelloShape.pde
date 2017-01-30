@@ -7,7 +7,7 @@ class HelloShape extends Scene{
 
     for(int i=0;i<70;i++){
     
-    HShape sh = new HShape((int)(i/10),20); 
+    HShape sh = new HShape((int)(i/10),60); 
     //HShape sh = new HShape(6); 
     sh.setPalette(this.pal);
     //sh.setPosition(new Vector2d(width/2, height/2, false));   

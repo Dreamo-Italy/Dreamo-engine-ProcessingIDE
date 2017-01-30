@@ -101,7 +101,7 @@ class HShape extends Particle
         radius=RAD-I*getParameter(0);
         break;
       case 5:
-        nSides=NSIDES+(int)(I/2*getParameter(0));
+        //nSides=NSIDES+(int)(I/2*getParameter(0));
         radius=RAD+I*getParameter(0);
         break;
       case 6:      
