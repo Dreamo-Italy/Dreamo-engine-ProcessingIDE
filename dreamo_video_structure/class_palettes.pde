@@ -12,11 +12,11 @@ class Palette {
   
 
  //********* PRIVATE MEMBERS ***********
-private int ID;
-private String name;
-private color[] colors = new color[COLOR_NUM];
-private boolean initialized=false;
-
+ private int ID;
+ private String name;
+ private color[] colors = new color[COLOR_NUM];
+ private boolean initialized=false;
+ private DSP dsp;
  
  //********* CONTRUCTORS ***********
  public Palette(){
@@ -64,7 +64,7 @@ private boolean initialized=false;
  colorsInit[5][3] = #ffe11d;
  colorsInit[5][4] = #030300;
  
- 
+ dsp=new DSP();
  initialized=false;
  }
    
@@ -135,6 +135,44 @@ private boolean initialized=false;
       println("ERROR: getColor: index out of range.");
 
     return color(360,100,100);
+    }
+  }
+  
+  //return the darkest color in the Palette
+  public color getDarkest()
+  { 
+    if(initialized)
+    {
+      float[] b= new float[COLOR_NUM];
+      for(int i=0;i<COLOR_NUM;i++)
+        {
+          b[i]=brightness(colors[i]);
+        }
+      return colors[dsp.argmin(b)];
+    }
+    else
+    {
+      println("ERROR: getColor: not initialized.");
+      return color(360,100,100);
+    }
+  }
+  
+  //return the lightest color in the Palette
+  public color getLightest()
+  {
+    if(initialized)
+    {
+      float[] b= new float[COLOR_NUM];
+      for(int i=0;i<COLOR_NUM;i++)
+        {
+          b[i]=brightness(colors[i]);
+        }
+      return colors[dsp.argmax(b)];
+    }
+    else
+    {
+      println("ERROR: getColor: not initialized.");
+      return color(360,100,100);
     }
   }
   

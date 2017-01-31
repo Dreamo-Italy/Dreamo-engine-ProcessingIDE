@@ -37,14 +37,9 @@ class ParticleTracer extends Particle
   void trace()
   {
     NoiseDot particleDot = new NoiseDot();
-    particleDot.setPosition(getPosition());
-    
-    //particleDot.setAlpha(alpha);
-    //particleDot.setParameter
-    
-    particleDot.setColor(pal.getColor(indexShifting)); 
-    global_stage.getCurrentScene().addParticle(particleDot);
-    
+    particleDot.setPosition(getPosition());    
+    particleDot.setColor(pal.getColor(indexShifting));
+    global_stage.getCurrentScene().addParticle(particleDot);    
   }
   
   void keepInsideTheScreen()
