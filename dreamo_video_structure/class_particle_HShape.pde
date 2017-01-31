@@ -63,7 +63,7 @@ class HShape extends Particle
         radius=random(200,250);
         break; 
       case 6:
-        nSides=(int)random(6,10);
+        nSides=(int)random(6,8);
         radius=random(220,270);
         break; 
     }

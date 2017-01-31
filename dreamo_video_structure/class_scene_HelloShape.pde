@@ -1,13 +1,14 @@
-class HelloShape extends Scene{
+class HelloShape extends Scene
+{
   
   void init()
   {
     pal.initColors();
-    
-    for(int i=0;i<70;i++)
+    for(int i=0;i<60;i++)
     {    
-      HShape sh = new HShape((int)(i/10),60); 
+      HShape sh = new HShape((int)(i/10),40); 
       sh.disablePhysics();
+      //sh.setPosition(new Vector2d(width/2, height/2, false));
       sh.setPalette(this.pal);
       addParticle(sh);  
     }    

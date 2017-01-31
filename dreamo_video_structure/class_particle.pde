@@ -69,6 +69,8 @@ abstract class Particle extends AgingObject
     initialised = false;
     sceneChanged = false;
 
+    physicsEnabled = toCopy.physicsEnabled;
+    
     id = global_particlesInstanciatedNumber;
     global_particlesInstanciatedNumber++;
     destroy = false;
