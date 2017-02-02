@@ -123,6 +123,16 @@ abstract class Particle extends AgingObject
   {
     return sceneChanged;
   }
+  
+  boolean isDestroying()
+  {
+    return destroying;
+  }
+  
+  void assertDestroying()
+  {
+    destroying = true;
+  }
 
   public float getParameter(int index)
   {
@@ -254,10 +264,7 @@ abstract class Particle extends AgingObject
     int end_index = (i1 + particleRadius/2) < particlesNumber ? (i1 + particleRadius/2) : particlesNumber ;
     
     for (int i2 = start_index; i2 < end_index; i2++) {
-       if(
-          (!(global_stage.getCurrentScene().getParticleByListIndex(i1).getSceneChanged()&&global_stage.getCurrentScene().getParticleByListIndex(i2).getSceneChanged())&&!destroying)
-          ||(global_stage.getCurrentScene().getParticleByListIndex(i1).getSceneChanged()&&global_stage.getCurrentScene().getParticleByListIndex(i2).getSceneChanged()&&destroying)
-          ) //with this condition, programs checks whether the particle is from the correct scene
+       if(sameSceneParticles(i1, i2, destroying) )
         {
           Vector2d p1 = global_stage.getCurrentScene().getParticleByListIndex(i1).getPosition();
           Vector2d p2 = global_stage.getCurrentScene().getParticleByListIndex(i2).getPosition();

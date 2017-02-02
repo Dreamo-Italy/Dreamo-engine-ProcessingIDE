@@ -1,7 +1,7 @@
 class GridPlotter extends Particle
 {
-  final int rows = 40;
-  final int columns = 50;
+  final int rows = 20;
+  final int columns = 30;
   final int N = rows*columns;
   
   GridNode[] gridNodes;

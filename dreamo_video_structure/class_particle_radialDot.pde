@@ -19,18 +19,15 @@ class RadialDot extends Particle
   
   public void perturbate(float intensity)
   {
-    setSpeed(new Vector2d(random(intensity), random(TWO_PI), true)); 
+    Vector2d speed = getSpeed().mul(random(intensity));
+    setSpeed(speed);
+    //setSpeed(new Vector2d(random(intensity), random(TWO_PI), true)); 
   }
   
   public void init()
   {
     //setSpeed(new Vector2d(1, random(TWO_PI), true));
     setPersistence(true);    // smoother transition from one scene to another
-    //setLifeTimeLeft(300);    // time left decreases each frame
-   
-    // int i = floor(random(3));
-   
-    // colore = questapalette.prendiColore( 4 ) 
    
     setPosition(new Vector2d(random(width), random(height), false));
     currentMouseX = mouseX;
@@ -40,13 +37,9 @@ class RadialDot extends Particle
   public void update()
   {
     currentMouseX = mouseX;
-    /*if(getPosition().getX()<0 || getPosition().getX()>width || getPosition().getY()<0 || getPosition().getY()>height)
-    {
-      instanceDestroy();
-    }*/
     setGravity(new Vector2d(1, gravityCenter.subtract(getPosition()).getDirection(), true));
     
-    getSpeed().setModulus(getSpeed().getModulus()/1.05); //THIS COMMAND SET THE DAMPING FACTOR (the more it is, the less particles orbitate)
+    getSpeed().setModulus(getSpeed().getModulus()/1.01); //THIS COMMAND SET THE DAMPING FACTOR (the more it is, the less particles orbitate)
     
     if(getSceneChanged() & !destroying)
     {
@@ -59,7 +52,7 @@ class RadialDot extends Particle
     gravityCenter = originGravityCenter.sum(new Vector2d(width/2, height/2, false));
     lastMouseX = currentMouseX;
     
-    if(frameCount%100 == 0) perturbate(20);
+    if(frameCount%50 == 0) perturbate(1);
   }
   
   public void trace()

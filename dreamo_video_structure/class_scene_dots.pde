@@ -8,7 +8,7 @@ class SceneDots extends Scene
     DotGenerator generator = new DotGenerator();
 
     generator.setPalette(this.pal);
-    generator.setPosition(new Vector2d(width/2, height/2, false));
+    generator.setPosition(new Vector2d(0, 0, false));
     
     addParticle(generator);
     Background bk = new Background();

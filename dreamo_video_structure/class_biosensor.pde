@@ -44,7 +44,9 @@ abstract class Biosensor
     
     incomingValues = new FloatList();
     
-    connected = global_connection.networkAvailable(); // temporary      
+    if (global_connection != null)
+      connected = global_connection.networkAvailable(); 
+      
     init(); // specific sensor constructor
     
   }
@@ -66,10 +68,18 @@ abstract class Biosensor
     
   }
   
+  protected void startCalibration()
+  {
+    calibrationValues = new FloatList();
+    calibrationValues.clear();    
+    calibrating = true;
+  }
+  
+  
   protected void calibration()
   {
-    if ( !calibrating )        { println("WARNING: not calibrating error"); return; }
-    else if ( calibrated )     { println("WARNING: already calibrated error"); return; }
+    if ( !calibrating )            { println("WARNING: not calibrating error"); return; }
+    else if ( calibrated )         { println("WARNING: already calibrated error"); return; }
     else if ( incomingValues.size() == 0 ) { println("ERROR: incomingValues is empty"); return; }
 
     calibrationValues.append( incomingValues );
@@ -87,13 +97,7 @@ abstract class Biosensor
     calibrationCounter++;
   }
   
-  protected void startCalibration()
-  {
-    calibrationValues = new FloatList();
-    calibrationValues.clear();    
-    calibrating = true;
-  }
-  
+
   protected void endCalibration()
   {    
     // expand the range by a 20% factor (experimental)

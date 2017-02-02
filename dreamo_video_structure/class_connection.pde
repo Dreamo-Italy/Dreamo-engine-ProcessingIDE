@@ -7,12 +7,12 @@ import java.util.ArrayDeque;
 
 class Connection
 {
-     //********* CONSTANTS ***********
-     
-     final int MAX_SENSOR = 5;
+ //********* CONSTANTS ***********
+ 
+ final int MAX_SENSOR = 5;
 
-  
-   //********* PUBLIC MEMBERS ***********
+
+ //********* PUBLIC MEMBERS ***********
 
   Serial myPort;  // Create object from Serial class
   public PApplet parent; //needed for the Serial object istantiation

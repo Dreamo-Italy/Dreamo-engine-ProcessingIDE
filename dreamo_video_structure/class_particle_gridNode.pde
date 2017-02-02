@@ -2,8 +2,8 @@ class GridNode extends Particle
 {
   float kToCenter = 0.014;
   float kToNeighbour = 0.06;
-  float damping = 1.31;
-  float maximumDistanceFromCenter = 70;
+  float damping = 1.3;
+  float maximumDistanceFromCenter = 100;
   float maximumSpeed = 100;
   Vector2d centerPosition;
   GridNode[] neighbourGridNodes = {null, null, null, null}; //other GridNode which is at position right, up, left, down

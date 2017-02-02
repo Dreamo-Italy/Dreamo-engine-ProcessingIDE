@@ -1,5 +1,5 @@
-
-class Palette {
+class Palette 
+{
   
  //********* CONSTANTS ***********
  
