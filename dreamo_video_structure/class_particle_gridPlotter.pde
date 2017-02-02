@@ -105,6 +105,6 @@ class GridPlotter extends Particle
       }
     }
     
-    colorMode(RGB, 255);
+    colorMode(HSB,360,100,100,100);
   }
 }

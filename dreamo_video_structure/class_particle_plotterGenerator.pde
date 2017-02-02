@@ -8,17 +8,18 @@ class PlotterGenerator extends Particle
     
      // ------ initial parameters and declarations ------
 
-
     float connectionRadius = 300;
-    float minHueValue = 155;
-    float maxHueValue = 255;
-    float saturationValue = 100;
-    float brightnessValue = 100;
+    float hueValue;
+    float saturationValue;
+    float brightnessValue;
     float lineWeight = 1;
     float lineAlpha = 200;
     float lineAlphaWeight = 1;
-    float imageAlpha = 30;
+    float imageAlpha = 100;
+    
     float zoom = 1;
+    
+    color myColor;
     
     boolean gravityCenterEnabled = true;
     
@@ -27,21 +28,30 @@ class PlotterGenerator extends Particle
   
   public void init()
   {
+    colorMode(HSB, 360, 100, 100, 100);
      loadPointsFromTxt() ;
      setPersistence(true);
+     
+     myColor = pal.getBrightest();
+          
+     hueValue = hue(myColor);
+     saturationValue = saturation(myColor);
+     brightnessValue = brightness(myColor);
   }
   
   public void update()
   {      
+    
+      println("hueValue "+hueValue);
+      println("saturationValue "+saturationValue);
+      println("brightness "+brightnessValue);
+      
       //pseudo random variations for the printed objects
       
       if(frameCount % 42 == 0)  lineWeight *= 2.5;
-      //if(frameCount % 53 == 0)  zoom = 0.8;
        if(frameCount % 5 == 0)  {connectionRadius = 50; zoom = 1;}
        if(frameCount % 7 == 0)  lineWeight = 1.5;
        if(frameCount % 11 == 0)  lineWeight = 5;    
-       //if(frameCount % 40 == 0)  minHueValue = 0;
-       //if(frameCount % 50 == 0)  minHueValue = 0;
        if(frameCount % 60 == 0) {connectionRadius = 100; lineWeight = 15;}
      //  if(frameCount % 80 == 0) {loadPointsFromTxt();}
 
@@ -61,12 +71,10 @@ class PlotterGenerator extends Particle
   public void trace()
   {    
     strokeWeight(lineWeight);
-    stroke(255, lineAlphaWeight*lineAlpha);
+    stroke(myColor, lineAlphaWeight*lineAlpha);
     noFill();
     
-    //tint(255, imageAlpha);
-
-    colorMode(HSB, 360, 100, 100, 100);      
+    //tint(1, imageAlpha);
     
     final int particlesNumber = global_stage.getCurrentScene().getParticlesNumber() -1;
     
@@ -86,7 +94,8 @@ class PlotterGenerator extends Particle
     
     // "TIME SPENT DRAWING". Range: 1 - 10 ( short time - long time )
     
-    float timeSpentDrawing = 7 ;
+    float timeSpentDrawing = 9 ;
+    
     
     // indexOffset MAPPING
     indexOffset = map (indexOffset, 10.0, 0.0, 1, particlesNumber ); 
@@ -114,20 +123,18 @@ class PlotterGenerator extends Particle
       }
       i1++;        
     }   
-   colorMode(RGB, 255);
-
   }
   
   public void drawLine(Vector2d p1, Vector2d p2)
   {
-    float d, a, h;
+    float d, a;
     d = p1.distance(p2);
     a = pow(1/(d/connectionRadius+1), 6);
     
     if (d <= connectionRadius && d > 2) 
     {
-      h = map(a, 0, 1, minHueValue, maxHueValue) % 360;
-      stroke(h, saturationValue, brightnessValue, a*lineAlphaWeight*lineAlpha + (i1%2 * 2));
+      hueValue = map(a, 0, 1, hue(myColor), hue(myColor)+40 ) % 360; //<>//
+      stroke(hueValue, saturationValue, brightnessValue, a*lineAlphaWeight*lineAlpha + (i1%2 * 2));
       line(p1.getX(), p1.getY(), p2.getX(), p2.getY() );  
     }
   }

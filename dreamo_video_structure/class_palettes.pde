@@ -7,7 +7,7 @@ class Palette
  private final int COLOR_NUM = 5;
  
  
- //********* TEMPORARY PALETTES (only for initial development) ***********
+ //********* TEMPORARY PALETTES***********
   private color[][] colorsInit= new color[PALETTE_NUM][COLOR_NUM];
   
 
@@ -21,7 +21,14 @@ private boolean initialized=false;
  //********* CONTRUCTORS ***********
  public Palette(){
  
- colorMode(HSB, 360, 100, 100);
+ /* //debug palette - red
+ colorsInit[0][0] = color(359,90,100);
+ colorsInit[0][1] = color(359,100,90);
+ colorsInit[0][2] = color(359,80,100);
+ colorsInit[0][3] = color(359,100,80);
+ colorsInit[0][4] = color(359,80,100); */
+  
+ 
  //first palette - ghiaccio
  colorsInit[0][0] = color(219,18,61);
  colorsInit[0][1] = color(217,47,82);
@@ -57,7 +64,8 @@ private boolean initialized=false;
  colorsInit[4][3] = color(4, 79, 54);
  colorsInit[4][4] = color(120, 9, 89);
  
- //sixth palette - giallo
+ //sixth palette - giallo 
+ 
  colorsInit[5][0] = #db8300;
  colorsInit[5][1] = #eaa001;
  colorsInit[5][2] = #f9c700;
@@ -100,7 +108,7 @@ private boolean initialized=false;
   {
      //confronta nome palette con "name"
      
-     initialized=true;
+     // initialized=true;
     
   }
   
@@ -128,15 +136,59 @@ private boolean initialized=false;
       return colors[idx];   
     }
     
-  else{
-    if (!initialized)
-      println("ERROR: getColor: not initialized");
-    else
-      println("ERROR: getColor: index out of range.");
-
-    return color(360,100,100);
-    }
+    else{
+      if (!initialized)
+        println("ERROR: getColor: not initialized");
+      else
+        println("ERROR: getColor: index out of range.");
+  
+      return color(360,100,100);
+      }
   }
+  
+  public color getBrightest()
+  {
+    if (!initialized)
+        { println("ERROR: getColor: not initialized"); return color(360,100,100);}
+        
+    int brightestIndex = 0;
+    float brightest = MIN_FLOAT;
+    
+    for (int i=0; i<COLOR_NUM;i++)
+    {      
+      if( brightness(getColor(i)) > brightest )
+        {
+          brightest = brightness(getColor(i));
+          brightestIndex = i;
+        }
+    }
+    
+    println( "brightestindex: "+brightestIndex);
+    
+    return getColor( brightestIndex );
+  }
+  
+    public color getDarkest()
+  {
+    if (!initialized)
+        { println("ERROR: getColor: not initialized"); return color(360,100,100);}
+        
+    int darkestIndex = 0;
+    float darkest = MAX_FLOAT;
+    
+    for (int i=0; i<COLOR_NUM;i++)
+    {
+      if( brightness(getColor(i)) < darkest )
+        {
+          darkest = brightness(getColor(i));
+          darkestIndex = i;
+        }
+    }
+    
+    return getColor( darkestIndex );
+  }
+  
+    //********* SET METHODS **********
   
 
   

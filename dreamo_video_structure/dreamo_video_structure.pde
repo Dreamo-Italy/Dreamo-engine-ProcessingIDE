@@ -1,6 +1,6 @@
 void setup()
 {
-  colorMode(HSB, 360, 100, 100);
+  colorMode(HSB, 360, 100, 100, 100);
   //fullScreen(FX2D);
   size(800, 600, FX2D);
   frameRate(global_fps);
@@ -43,7 +43,7 @@ void draw()
    
    long audioTime = System.nanoTime() - initTimeT;
 
-   global_connection.update(); //<>//
+   global_connection.update();
 
    long conT = System.nanoTime() - audioTime - initTimeT; // time elapsed after CONNECTION UPDATE
    
@@ -67,7 +67,7 @@ void draw()
    long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME
 
 
-   //----------- print the durations for debug purposes------------
+   //----------- print the durations for debug purposes------------ //<>//
 
    println("    Audio update duration: "+ audioTime/1000 + " us");
    println("    Connection update duration: "+ conT/1000 + " us");

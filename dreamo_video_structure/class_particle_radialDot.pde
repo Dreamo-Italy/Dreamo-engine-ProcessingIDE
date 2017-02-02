@@ -7,6 +7,9 @@ class RadialDot extends Particle
   float lastMouseX;
   float currentMouseX;
   
+    float damping = 1.15;
+
+  
   public RadialDot()
   {
     gravityCenter = new Vector2d(0, 0, false);
@@ -39,7 +42,7 @@ class RadialDot extends Particle
     currentMouseX = mouseX;
     setGravity(new Vector2d(1, gravityCenter.subtract(getPosition()).getDirection(), true));
     
-    getSpeed().setModulus(getSpeed().getModulus()/1.01); //THIS COMMAND SET THE DAMPING FACTOR (the more it is, the less particles orbitate)
+    getSpeed().setModulus(getSpeed().getModulus()/damping); //DAMPING FACTOR : the more it is, the less particles orbitate
     
     if(getSceneChanged() & !destroying)
     {

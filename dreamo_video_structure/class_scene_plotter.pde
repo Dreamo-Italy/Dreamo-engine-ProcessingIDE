@@ -3,9 +3,15 @@ class ScenePlotter extends Scene
   
   void init()
   {
-    PlotterGenerator temp = new PlotterGenerator();
-    temp.setPosition(new Vector2d(0, 0, false));
-    addParticle(temp);
+    
+    pal.initColors();
+    
+    PlotterGenerator newPlotter = new PlotterGenerator();
+    
+    newPlotter.setPalette(pal);
+    newPlotter.setPosition(new Vector2d(0, 0, false));
+    addParticle(newPlotter);
+
 
     setBackground(new Background());
     enableBackground();
