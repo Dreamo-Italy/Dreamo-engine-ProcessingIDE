@@ -7,7 +7,7 @@ class RadialDot extends Particle
   float lastMouseX;
   float currentMouseX;
   
-    float damping = 1.15;
+    float damping = 1.07;
 
   
   public RadialDot()

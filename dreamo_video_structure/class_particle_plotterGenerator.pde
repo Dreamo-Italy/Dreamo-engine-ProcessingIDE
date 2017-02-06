@@ -1,14 +1,11 @@
 class PlotterGenerator extends Particle
 {
-    int i1 = 0;
-    
-    // lines will be drawn ONLY between a particle and the NEAREST PARTILCLE_RADIUS number of particles (e.g. the nearest 40 particles)
-    // please use EVEN NUMBERS as the number will be divided by 2
-    final int PARTICLE_RADIUS = 120; 
-    
      // ------ initial parameters and declarations ------
+     
+    // lines will be drawn ONLY between a particle and the NEAREST PARTILCLE_RADIUS number of particles (e.g. the nearest 40 particles)
+    int particleConnectionRadius; 
 
-    float connectionRadius = 300;
+    float connectionRadius;
     float hueValue;
     float saturationValue;
     float brightnessValue;
@@ -18,70 +15,74 @@ class PlotterGenerator extends Particle
     float imageAlpha = 100;
     
     float zoom = 1;
+    float rotation = 0;
     
-    color myColor;
+    float timeSpentDrawing, indexOffset;    
+    int particlesNumber;
     
-    boolean gravityCenterEnabled = true;
-    
-    int fromOneToTen = 1;
+    color myColor;    
+    boolean gravityCenterEnabled;    
+    int fromOneToTen;
+    int i1;
     
   
   public void init()
   {
-    colorMode(HSB, 360, 100, 100, 100);
-     loadPointsFromTxt() ;
-     setPersistence(true);
+      setPersistence(true);
      
-     myColor = pal.getBrightest();
-          
+     myColor = pal.getBrightest();          
      hueValue = hue(myColor);
      saturationValue = saturation(myColor);
      brightnessValue = brightness(myColor);
+     
+     fromOneToTen = 0;
+     i1 = 0;
+     gravityCenterEnabled = true;
+     
+     loadPointsFromTxt() ;
+
   }
   
   public void update()
   {      
-    
-      println("hueValue "+hueValue);
-      println("saturationValue "+saturationValue);
-      println("brightness "+brightnessValue);
-      
-      //pseudo random variations for the printed objects
-      
-      if(frameCount % 42 == 0)  lineWeight *= 2.5;
-       if(frameCount % 5 == 0)  {connectionRadius = 50; zoom = 1;}
-       if(frameCount % 7 == 0)  lineWeight = 1.5;
-       if(frameCount % 11 == 0)  lineWeight = 5;    
-       if(frameCount % 60 == 0) {connectionRadius = 100; lineWeight = 15;}
-     //  if(frameCount % 80 == 0) {loadPointsFromTxt();}
+      setParameter(0, global_dyn.getRMS() );
 
-       
-    if(getSceneChanged() && !isDestroying() )
-    {
-      assertDestroying();
-      setLifeTimeLeft(60);
-    }
+//      println("hueValue "+ hueValue);
+//      println("saturationValue "+ saturationValue);
+//      println("brightness "+ brightnessValue);
+      
+     // default values:
+      
+      connectionRadius = 40;
+      particleConnectionRadius = 200;
+      zoom = 1;
+      lineWeight = 2;
+      setRotation(0);
+      setPosition( new Vector2d (0 , 0 , false ) );
+      
+      //pseudo random variations for the printed objects:
+      
+      if(getParameter(0) > 0.85 ) 
+          setPosition( new Vector2d ( random(width/3*getParameter(0) ) , random(height*1/5) , false ) );
+      if(getParameter(0) > 0.9 )  
+          {connectionRadius = 50; zoom = 1.05*getParameter(0);  lineWeight = 7;}
+      if ( getParameter(0) > 0.98) 
+        { lineWeight = 20; connectionRadius = 10; particleConnectionRadius = 500;     setRotation(PI/8*(random(1))); }
     
-    if( isDestroying() )
-    {
-      lineAlphaWeight -= 1.0/50.0;
-    }
-  }
-  
-  public void trace()
-  {    
-    strokeWeight(lineWeight);
-    stroke(myColor, lineAlphaWeight*lineAlpha);
-    noFill();
-    
-    //tint(1, imageAlpha);
-    
-    final int particlesNumber = global_stage.getCurrentScene().getParticlesNumber() -1;
-    
-    // automatic offset variation
-    if ( frameCount % 32 == 0 ){
+     //  if(frameCount % 80 == 0) {loadPointsFromTxt();}
+     
+     println("RMS: "+ getParameter(0) );
+     
+     // automatic offset variation
+    if ( frameCount % 1 == 0 ){
+  //    if ( getParameter(0) > 0.9) {
+      
       if ( fromOneToTen < 10 )
-        fromOneToTen++;
+        { //fromOneToTen++; 
+        fromOneToTen += round(getParameter(0) * 4/7 );
+        if (getParameter(0) < 0.1 )
+          fromOneToTen = 0;        
+        }
       else fromOneToTen = 0;
     }  
     
@@ -90,28 +91,49 @@ class PlotterGenerator extends Particle
     
     // "INDEX OFFSET". Range: 1 - 10 ( drawing start - drawing end )
     
-    float indexOffset = fromOneToTen ;
+     indexOffset = fromOneToTen ;
     
     // "TIME SPENT DRAWING". Range: 1 - 10 ( short time - long time )
     
-    float timeSpentDrawing = 9 ;
-    
-    
-    // indexOffset MAPPING
-    indexOffset = map (indexOffset, 10.0, 0.0, 1, particlesNumber ); 
-    i1 = int ( particlesNumber - ceil(indexOffset) );
+     timeSpentDrawing = getParameter(0)/2 * 10 + 5;    
+        
+    particlesNumber = global_stage.getCurrentScene().getParticlesNumber() -1;
+
+    indexOffset = map (indexOffset, 10.0, 0.0, 0, particlesNumber ); 
+    i1 = int ( particlesNumber - round(indexOffset) );
     
     // timeSpentDrawing MAPPING
-    timeSpentDrawing = map (timeSpentDrawing, 10.0, 0.0, 1, 20 ); 
+    timeSpentDrawing = map (timeSpentDrawing, 10.0, 0.0, 1, 20 );
+
+       
+    if(getSceneChanged() && !this.isDestroying() )
+    {
+      assertDestroying();
+      setLifeTimeLeft(60);
+    }
     
+    if( this.isDestroying() )
+    {
+      lineAlphaWeight -= 1.0/50.0;
+    }
+  }
+  
+  public void trace()
+  {    
+    scale(zoom);
+    strokeWeight(lineWeight);
+    noFill();
+    
+    //tint(1, imageAlpha);    
+        
     // draw lines just for the next period/N milliseconds
-    int period = int ( 1000 * (1.0/30) );
+    int period = int ( 1000 * (1.0/global_fps) );
     int drawEndTime = millis() + period/round(timeSpentDrawing);
         
     while (i1 < particlesNumber && millis () < drawEndTime) 
     {
-      int start_index = (i1 - PARTICLE_RADIUS/2) > 0 ?  (i1 - PARTICLE_RADIUS/2) : 0;
-      int end_index = (i1 + PARTICLE_RADIUS/2) < particlesNumber ? (i1 + PARTICLE_RADIUS/2) : particlesNumber ;
+      int start_index = (i1 - particleConnectionRadius/2) > 0 ?  (i1 - particleConnectionRadius/2) : 0;
+      int end_index = (i1 + particleConnectionRadius/2) < particlesNumber ? (i1 + particleConnectionRadius/2) : particlesNumber ;
       
       for (int i2 = start_index; i2 < end_index; i2++) {
         if(sameSceneParticles(i1,i2, this.isDestroying() ) )
@@ -133,34 +155,12 @@ class PlotterGenerator extends Particle
     
     if (d <= connectionRadius && d > 2) 
     {
-      hueValue = map(a, 0, 1, hue(myColor), hue(myColor)+40 ) % 360; //<>//
-      stroke(hueValue, saturationValue, brightnessValue, a*lineAlphaWeight*lineAlpha + (i1%2 * 2));
+      hueValue = map(a, 0, 0.5, hue(myColor), hue(myColor)*3 )%360 ; //<>//
+      stroke(hueValue, saturationValue, brightnessValue, a*lineAlphaWeight*lineAlpha + (i1 %2 * 2));
       line(p1.getX(), p1.getY(), p2.getX(), p2.getY() );  
     }
-  }
-    
-  public void loadPointsFromFile(File inputFile)
-  {
-    if (inputFile == null ) {println("ERROR: loadPointsFromFile called with NULL argument - could not open the txt file"); return;}
-    
-    String filePath = inputFile.getAbsolutePath(); 
-    String[] fileLines = loadStrings(filePath);
-    
-    for (int i=0; i<fileLines.length; i++) 
-    {
-     String[] coordinateXY = fileLines[i].split(" "); 
-     
-     if (coordinateXY.length == 3 ) 
-        {         
-         Vector2d position = new Vector2d( float(coordinateXY[0]), float(coordinateXY[1]), false ); 
-         RadialDot newParticle = instantiateNewParticle(position);
-         
-        // Add the new particle to the global_stage list
-        global_stage.getCurrentScene().addParticle( newParticle );           
-        }
-    }
-    
-  }
+  }  
+  
   
   RadialDot instantiateNewParticle(Vector2d position)
   {
@@ -203,23 +203,47 @@ class PlotterGenerator extends Particle
   
  void loadPointsFromTxt()
  {  
-  String path = new String( dataPath("coordinate_dreamo2.txt") );
+  String path = new String( dataPath("coordinate_dreamo.txt") );
+  if ( path == null ) {println("ERROR: loadPointsFromTxt - txt file path is not valid"); return;}
+  
   File incomingFile = new File(path);  
   loadPointsFromFile(incomingFile);  
- } 
- 
+ }  
+
+
+public void loadPointsFromFile(File inputFile)
+  {
+    if (inputFile == null ) {println("ERROR: loadPointsFromFile called with NULL argument - could not open the txt file"); return;}
+    
+    String filePath = inputFile.getAbsolutePath(); 
+    String[] fileLines = loadStrings(filePath);
+    
+    for (int i=0; i<fileLines.length; i++) 
+    {
+     String[] coordinateXY = fileLines[i].split(" "); 
+     
+     if (coordinateXY.length == 3 ) 
+        {         
+         Vector2d position = new Vector2d( float(coordinateXY[0]), float(coordinateXY[1]), false ); 
+         RadialDot newParticle = instantiateNewParticle(position);
+         
+        // Add the new particle to the global_stage list
+        global_stage.getCurrentScene().addParticle( newParticle );           
+        }
+    }    
+  }  
 }
 
+
+
+
+// GLOBAL FUNCTION 
+
 boolean sameSceneParticles(int i1, int i2, boolean destroying)
-
-// the result is TRUE if:
-// the scene HAS NOT CHANGED  and both particles are from CURRENT SCENE
-// or if
-// the scene HAS CHANGED  and both particles are from PREVIOUS SCENE
-
-{
+  {
   return( 
           (
+          // the scene HAS NOT CHANGED  and both particles are from CURRENT SCENE
           !(global_stage.getCurrentScene().getParticleByListIndex(i1).getSceneChanged()&&
           global_stage.getCurrentScene().getParticleByListIndex(i2).getSceneChanged() )
           &&!destroying
@@ -227,10 +251,11 @@ boolean sameSceneParticles(int i1, int i2, boolean destroying)
           )
             ||
           (
+          // the scene HAS CHANGED  and both particles are from PREVIOUS SCENE
           (global_stage.getCurrentScene().getParticleByListIndex(i1).getSceneChanged()&&
            global_stage.getCurrentScene().getParticleByListIndex(i2).getSceneChanged() )
            && destroying
            )
            //with this condition, programs checks whether the particle is from the correct scene
       );
-}
+  }
