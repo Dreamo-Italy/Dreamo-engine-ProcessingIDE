@@ -29,7 +29,7 @@ class ScenePerlinNoise extends Scene
     sceneMood.setMood(1,0);
   }
 
-    public void update(){
+   public void update(){
 
    int alpha;
    
@@ -44,6 +44,7 @@ class ScenePerlinNoise extends Scene
        //parameter 0 will be used to control alpha value in the noiseDot particles 
        particlesList[i].setParameter(0,global_dyn.getRMS());
        particlesList[i].update();
+       println("BISCETTI UPDATE");
    }
 
 

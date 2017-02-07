@@ -195,6 +195,7 @@ abstract class Scene extends AgingObject
     {
       particlesList[i].updatePhysics();
       particlesList[i].update();
+      println("SUPERCLASS UPDATE");
     }
   }
 

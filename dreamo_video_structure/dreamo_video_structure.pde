@@ -27,6 +27,7 @@ void setup()
   global_stage.addScene(new ScenePerlinNoise());
   //global_stage.addScene(new ScenePlotter());
   //global_stage.addScene(new SceneDynamicGrid());
+  global_stage.addScene(new Spirals());
 }
 
 void draw()
