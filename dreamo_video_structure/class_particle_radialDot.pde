@@ -7,12 +7,17 @@ class RadialDot extends Particle
   float lastMouseX;
   float currentMouseX;
   
-    float damping = 1.07;
+  float damping = 1.07;
 
   
   public RadialDot()
   {
     gravityCenter = new Vector2d(0, 0, false);
+  }
+  
+  public void setDamping(float newDamping)
+  {
+    damping = map(newDamping, 0, 10, 1.0, 1.5);
   }
   
   public void setGravityCenter(Vector2d newGravityCenter)
@@ -22,9 +27,9 @@ class RadialDot extends Particle
   
   public void perturbate(float intensity)
   {
-    Vector2d speed = getSpeed().mul(random(intensity));
-    setSpeed(speed);
-    //setSpeed(new Vector2d(random(intensity), random(TWO_PI), true)); 
+    //Vector2d speed = getSpeed().mul(random(intensity));
+    //setSpeed(speed);
+    setSpeed(new Vector2d(random(intensity), random(TWO_PI), true)); 
   }
   
   public void init()
@@ -32,7 +37,10 @@ class RadialDot extends Particle
     //setSpeed(new Vector2d(1, random(TWO_PI), true));
     setPersistence(true);    // smoother transition from one scene to another
    
-    setPosition(new Vector2d(random(width), random(height), false));
+    if (round(random(1)) == 1) setPosition(new Vector2d(width, height, false));
+    else if ( ceil(random(2)) == 2)  setPosition(new Vector2d(width, 0, false) );
+    else if ( ceil(random(3)) == 3)  setPosition(new Vector2d(0, height, false) );
+
     currentMouseX = mouseX;
     lastMouseX = currentMouseX;
   }

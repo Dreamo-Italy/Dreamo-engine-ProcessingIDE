@@ -22,10 +22,10 @@ void setup()
   global_stage = new Stage();
 
   //scenes
+    global_stage.addScene(new ScenePlotter());
   global_stage.addScene(new SceneFireworks());
   global_stage.addScene(new SceneDots());
   global_stage.addScene(new ScenePerlinNoise());
-  global_stage.addScene(new ScenePlotter());
   global_stage.addScene(new SceneDynamicGrid());
 }
 

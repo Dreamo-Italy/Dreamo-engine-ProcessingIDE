@@ -19,6 +19,7 @@ class PlotterGenerator extends Particle
     
     float timeSpentDrawing, indexOffset;    
     int particlesNumber;
+    float damping;
     
     color myColor;    
     boolean gravityCenterEnabled;    
@@ -37,6 +38,7 @@ class PlotterGenerator extends Particle
      
      fromOneToTen = 0;
      i1 = 0;
+     damping = 8;
      gravityCenterEnabled = true;
      
      loadPointsFromTxt() ;
@@ -53,6 +55,7 @@ class PlotterGenerator extends Particle
       
      // default values:
       
+      damping = 1;
       connectionRadius = 40;
       particleConnectionRadius = 200;
       zoom = 1;
@@ -60,43 +63,40 @@ class PlotterGenerator extends Particle
       setRotation(0);
       setPosition( new Vector2d (0 , 0 , false ) );
       
-      //pseudo random variations for the printed objects:
+      //variations for the printed objects:     
+      if(frameCount % 15 == 0)
+      {
+        if(getParameter(0) > 0.75 ) 
+           { setPosition( new Vector2d ( random(-width/6, width/6) , random(-height/6, height/6) , false ) ); damping = 0; }
+        else if(getParameter(0) > 0.9 )  
+            {connectionRadius = 50; zoom = 1.05*getParameter(0);  lineWeight = 7; }
+        if ( getParameter(0) > 0.96) 
+          { lineWeight = 40; connectionRadius = 10; particleConnectionRadius = 500;  /*setRotation(random(PI)/8);*/ }
+        //  if(frameCount % 80 == 0) {loadPointsFromTxt();}
+      println("RMS: "+ getParameter(0) );
       
-      if(getParameter(0) > 0.85 ) 
-          setPosition( new Vector2d ( random(width/3*getParameter(0) ) , random(height*1/5) , false ) );
-      if(getParameter(0) > 0.9 )  
-          {connectionRadius = 50; zoom = 1.05*getParameter(0);  lineWeight = 7;}
-      if ( getParameter(0) > 0.98) 
-        { lineWeight = 20; connectionRadius = 10; particleConnectionRadius = 500;     setRotation(PI/8*(random(1))); }
-    
-     //  if(frameCount % 80 == 0) {loadPointsFromTxt();}
-     
-     println("RMS: "+ getParameter(0) );
-     
-     // automatic offset variation
-    if ( frameCount % 1 == 0 ){
-  //    if ( getParameter(0) > 0.9) {
-      
-      if ( fromOneToTen < 10 )
-        { //fromOneToTen++; 
-        fromOneToTen += round(getParameter(0) * 4/7 );
-        if (getParameter(0) < 0.1 )
-          fromOneToTen = 0;        
-        }
-      else fromOneToTen = 0;
-    }  
+     // index variation
+        if ( fromOneToTen < 10 )
+          { //fromOneToTen++; 
+          fromOneToTen += round(getParameter(0) * 4/7 );
+          if (getParameter(0) < 0.1 )
+            fromOneToTen = 0;        
+          }
+        else fromOneToTen = 0;
+      }  
     
     // The classic "Fixed DREAMO logo" is still available:
     // just set indexOffset = 0, timeSpentDrawing = 10
     
-    // "INDEX OFFSET". Range: 1 - 10 ( drawing start - drawing end )
-    
+    // "INDEX OFFSET". Range: 0 - 10 ( drawing start - drawing end )
+    // *********
      indexOffset = fromOneToTen ;
-    
+    // *********
     // "TIME SPENT DRAWING". Range: 1 - 10 ( short time - long time )
-    
+    // *********
      timeSpentDrawing = getParameter(0)/2 * 10 + 5;    
-        
+    // *********
+    
     particlesNumber = global_stage.getCurrentScene().getParticlesNumber() -1;
 
     indexOffset = map (indexOffset, 10.0, 0.0, 0, particlesNumber ); 
@@ -104,6 +104,15 @@ class PlotterGenerator extends Particle
     
     // timeSpentDrawing MAPPING
     timeSpentDrawing = map (timeSpentDrawing, 10.0, 0.0, 1, 20 );
+    
+   for( int i3 = 0; i3 < particlesNumber; i3++) 
+   {
+     global_stage.getCurrentScene().getParticleByListIndex(i3).setDamping(damping);
+     global_stage.getCurrentScene().getParticleByListIndex(i3).perturbate(2.2*getParameter(0));
+
+   }
+    
+    
 
        
     if(getSceneChanged() && !this.isDestroying() )
@@ -203,7 +212,7 @@ class PlotterGenerator extends Particle
   
  void loadPointsFromTxt()
  {  
-  String path = new String( dataPath("coordinate_dreamo.txt") );
+  String path = new String( dataPath("coordinate_dreamo4.txt") );
   if ( path == null ) {println("ERROR: loadPointsFromTxt - txt file path is not valid"); return;}
   
   File incomingFile = new File(path);  
