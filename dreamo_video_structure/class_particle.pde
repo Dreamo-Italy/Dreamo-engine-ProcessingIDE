@@ -26,6 +26,8 @@ abstract class Particle extends AgingObject
   
   //protected boolean near;
   private boolean destroying = false;
+  private boolean physicsEnabled;
+  
 
   //CONTRUCTORS
   public Particle()
@@ -39,7 +41,9 @@ abstract class Particle extends AgingObject
     persistent = false;
     initialised = false;
     sceneChanged = false;
-
+  
+    physicsEnabled = true;
+    
     id = global_particlesInstanciatedNumber;
     global_particlesInstanciatedNumber++;
     destroy = false;
@@ -65,6 +69,8 @@ abstract class Particle extends AgingObject
     initialised = false;
     sceneChanged = false;
 
+    physicsEnabled = toCopy.physicsEnabled;
+    
     id = global_particlesInstanciatedNumber;
     global_particlesInstanciatedNumber++;
     destroy = false;
@@ -200,6 +206,16 @@ abstract class Particle extends AgingObject
   {
     sceneChanged = true;
   }
+  
+  public void enablePhysics()
+  {
+    physicsEnabled=true;
+  }
+  
+  public void disablePhysics()
+  {
+    physicsEnabled=false;
+  }
 
   //apply transformations method
   void beginTransformations() //
@@ -228,13 +244,15 @@ abstract class Particle extends AgingObject
   //update and trace methods
   void updatePhysics()
   {
+    if(physicsEnabled)
+    {
     //spacial variables update (Heun method)
     Vector2d positionk1 = speed;
     speed = speed.sum(gravity);
     Vector2d positionk2 = speed;
     Vector2d sigma = positionk1.sum(positionk2);
     position = position.sum(sigma.quot(2));
-        
+    }    
     //life variables update
     updateTime();
         
