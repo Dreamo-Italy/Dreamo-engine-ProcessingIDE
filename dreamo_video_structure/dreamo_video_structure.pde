@@ -27,7 +27,8 @@ void setup()
   global_stage.addScene(new ScenePerlinNoise());
   global_stage.addScene(new ScenePlotter());
   //global_stage.addScene(new SceneDynamicGrid());
-  global_stage.addScene(new HelloShape());
+  global_stage.addScene(new HelloShape(0));
+  global_stage.addScene(new HelloShape(1));
   
 }
 

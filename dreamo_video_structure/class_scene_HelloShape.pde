@@ -1,14 +1,27 @@
 class HelloShape extends Scene
 {
-  int index, intensity;
-  final int SHAPE_NUM = 14;
+  private int index;
+  private final int INTENSITY=20;
+  private final int SHAPE_NUM = 64;
+  private int mode=0;
   
-  void init()
+  HelloShape(int M)
+  {
+    mode=M;
+  }
+  
+  public void init()
   {
     pal.initColors();
     index = 0;  
-    intensity = 20;
     
+    if(mode==0)
+    {
+      for(int i=0;i<SHAPE_NUM;i++)
+      {
+        instantiatePolygon((int)i/10,INTENSITY);
+      }
+    }
     Background bk = new Background();
     setBackground(bk);
     enableBackground();
@@ -18,17 +31,21 @@ class HelloShape extends Scene
   
   public void update()
   {
-    if (index < SHAPE_NUM && frameCount % 60 == 0){
+    if(mode==1)
+    {
+      if (index < SHAPE_NUM && frameCount % 60 == 0)
+      {
       int mode = round( map(index, 0, SHAPE_NUM, 0, 6));
-      instantiatePolygon(mode, intensity);
+      instantiatePolygon(mode, INTENSITY);
       index++;   
-    } 
-    /*else if(index >= SHAPE_NUM){
+      }
+     /*
+     else if(index >= SHAPE_NUM){
      disableBackground();
      if (global_dyn.getRMS() > 0.5d)
          enableBackground();
      }*/
-    
+    }
     for(int i = 0; i < particlesNumber; i++){
       particlesList[i].updatePhysics();
       particlesList[i].setParameter(0,global_dyn.getRMS());

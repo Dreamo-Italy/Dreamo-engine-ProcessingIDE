@@ -118,31 +118,24 @@ class HShape extends Particle
   }
   
   public void trace()
-  {
-    
-    
-    {
+  {      
     translate(width/2,height/2);
-    //rotate(i/TWO_PI);
     noFill();
     //int circleResolution = (int)map(mouseY+100,0,height,2, 10);
     //float radius = mouseX-width/2 + 0.5;
     float angle = TWO_PI/nSides;
-    strokeWeight(2);
     
+    strokeWeight(2);
     stroke(colore,alpha);
     
     beginShape();
     
-    for (int i=0; i<=nSides; i++){
+    for (int i=0; i<=nSides; i++)
+    {
       float x = 0 + cos(angle*i) * radius;
       float y = 0 + sin(angle*i) * radius;
       vertex(x, y);
     }
-    endShape();
-      
-    }   
-   
-  }
-  
+    endShape();  
+  }  
 }
