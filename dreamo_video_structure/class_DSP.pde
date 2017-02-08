@@ -503,19 +503,25 @@ class DSP {
 
  /******************************************************************************************************/
  
-  public int ECGBMP(float[] a){
+  public int ECGBPM3(float[] a){
     int Beatcount=0;
     int BPM;
     int N= a.length; 
     int fs=256;
     boolean flag=false;
+    
     //Squaring the signal to increase the peak
     for (int i=0; i<N;i++){
-      a[i]= sq(a[i]);
+      a[i]= a[i]*a[i];
+      if(a[i] < 0.5) 
+        a[i] = 0;
     } 
+    
+            println(a);
+
     //signal evaluation and peaks counter
-    for(int i=1;i<N-1;i++){
-        if(a[i]>1.5){
+    for(int i=0;i<N-1;i++){
+        if(a[i]>2){
           if (!flag){
           Beatcount++;
           flag=true;

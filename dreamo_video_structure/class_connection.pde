@@ -115,7 +115,7 @@ class Connection
   private void loadOfflineTables()
   {
     table_con = loadTable("log_conductance.csv", "header"); // content of log_conductance
-    table_ecg = loadTable("ECG_log_HpBp.csv", "header"); // content of log_ECG
+    table_ecg = loadTable("ecg_new_msdos.csv", "header"); // content of log_ECG
     println(table_con.getRowCount() + " total rows in table conductance"); 
     println(table_ecg.getRowCount() + " total rows in table ECG");  
   }
@@ -151,7 +151,6 @@ class Connection
      {
        float newFloat2 =row.getFloat("ECG_Filtered");
         count2++;
-        println("GUARDA QUI :"+ newFloat2);
      if ( count2>=iStart && count2<=iEnd ) 
             getList("ecg").append (newFloat2); 
        }   count2 = 0;
