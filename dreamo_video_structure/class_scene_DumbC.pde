@@ -7,6 +7,11 @@ class DumbC extends Scene
     dc.setPalette(pal);
     dc.disablePhysics();
     addParticle(dc);
+    
+    Background bk = new Background();
+    setBackground(bk);
+    enableBackground();
+    sceneMood.setMood(0,1);
   }
   
   
