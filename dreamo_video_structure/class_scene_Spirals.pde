@@ -21,7 +21,6 @@ class Spirals extends Scene
        particlesList[i].updatePhysics();
        particlesList[i].setParameter(0,global_dyn.getRMS());
        particlesList[i].update();
-       println("SPIRALI UPDATE");
      }
   }
 
