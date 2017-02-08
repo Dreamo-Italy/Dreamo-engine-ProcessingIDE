@@ -92,7 +92,7 @@ class Connection
     final String[] ports = Serial.list();
     println( ports );
     
-    if (ports.length != 0) // DEBUG = 1 ; RIGHT ONE = 0;
+    if (ports.length  == 1) // DEBUG = 1 ; RIGHT ONE = 0;
     {
       String portName = Serial.list()[0]; //change the 0 to a 1 or 2 etc. to match your port
       myPort = new Serial(parent, portName, 19200);
@@ -115,7 +115,7 @@ class Connection
   private void loadOfflineTables()
   {
     table_con = loadTable("log_conductance.csv", "header"); // content of log_conductance
-    table_ecg = loadTable("ecg_new_msdos.csv", "header"); // content of log_ECG
+    table_ecg = loadTable("ecg_new_mac.csv", "header"); // content of log_ECG
     println(table_con.getRowCount() + " total rows in table conductance"); 
     println(table_ecg.getRowCount() + " total rows in table ECG");  
   }
