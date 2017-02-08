@@ -29,15 +29,12 @@ class HelloShape extends Scene
          enableBackground();
      }*/
     
-    for(int i = 0; i < particlesNumber; i++)
+    for(int i = 0; i < particlesNumber; i++){
       particlesList[i].updatePhysics();
-    
-    if (frameCount % 4 == 0){
-      for(int i = 0; i < particlesNumber; i++){
-       particlesList[i].setParameter(0,global_dyn.getRMS());
-       particlesList[i].update();
+      particlesList[i].setParameter(0,global_dyn.getRMS());
+      particlesList[i].update();
        }
-     }
+     
      
    
   }
