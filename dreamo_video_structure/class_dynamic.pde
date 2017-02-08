@@ -3,7 +3,7 @@ class Dynamic extends AudioFeatures {
   private float[] samples;
   private boolean init=false;
   //averaging window
-  private int N=100;
+  private int N=2;
   //averaging constant
   private float tiny;
   

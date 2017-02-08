@@ -12,10 +12,11 @@ class Palette
   
 
  //********* PRIVATE MEMBERS ***********
-private int ID;
-private String name;
-private color[] colors = new color[COLOR_NUM];
-private boolean initialized=false;
+  private int ID;
+  private String name;
+  private color[] colors = new color[COLOR_NUM];
+  private boolean initialized=false;
+  private DSP dsp;
 
  
  //********* CONTRUCTORS ***********
@@ -72,7 +73,7 @@ private boolean initialized=false;
  colorsInit[5][3] = #ffe11d;
  colorsInit[5][4] = #030300;
  
- 
+ dsp=new DSP();
  initialized=false;
  }
    
@@ -146,46 +147,42 @@ private boolean initialized=false;
       }
   }
   
-  public color getBrightest()
-  {
-    if (!initialized)
-        { println("ERROR: getColor: not initialized"); return color(360,100,100);}
-        
-    int brightestIndex = 0;
-    float brightest = MIN_FLOAT;
-    
-    for (int i=0; i<COLOR_NUM;i++)
-    {      
-      if( brightness(getColor(i)) > brightest )
+  //return the darkest color in the Palette
+  public color getDarkest()
+  { 
+    if(initialized)
+    {
+      float[] b= new float[COLOR_NUM];
+      for(int i=0;i<COLOR_NUM;i++)
         {
-          brightest = brightness(getColor(i));
-          brightestIndex = i;
+          b[i]=brightness(colors[i]);
         }
+      return colors[dsp.argmin(b)];
     }
-    
-    println( "brightestindex: "+brightestIndex);
-    
-    return getColor( brightestIndex );
+    else
+    {
+      println("ERROR: getColor: not initialized.");
+      return color(360,100,100);
+    }
   }
   
-    public color getDarkest()
+  //return the lightest color in the Palette
+  public color getLightest()
   {
-    if (!initialized)
-        { println("ERROR: getColor: not initialized"); return color(360,100,100);}
-        
-    int darkestIndex = 0;
-    float darkest = MAX_FLOAT;
-    
-    for (int i=0; i<COLOR_NUM;i++)
+    if(initialized)
     {
-      if( brightness(getColor(i)) < darkest )
+      float[] b= new float[COLOR_NUM];
+      for(int i=0;i<COLOR_NUM;i++)
         {
-          darkest = brightness(getColor(i));
-          darkestIndex = i;
+          b[i]=brightness(colors[i]);
         }
+      return colors[dsp.argmax(b)];
     }
-    
-    return getColor( darkestIndex );
+    else
+    {
+      println("ERROR: getColor: not initialized.");
+      return color(360,100,100);
+    }
   }
   
     //********* SET METHODS **********

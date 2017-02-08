@@ -22,11 +22,10 @@ void setup()
   global_stage = new Stage();
 
   //scenes
-  global_stage.addScene(new SceneFireworks());
-  global_stage.addScene(new SceneDots());
   global_stage.addScene(new ScenePerlinNoise());
-  global_stage.addScene(new ScenePlotter());
-  global_stage.addScene(new SceneDynamicGrid());
+  global_stage.addScene(new Spirals());
+  global_stage.addScene(new HelloShape(0));
+  global_stage.addScene(new HelloShape(1));
 }
 
 void draw()
@@ -85,7 +84,7 @@ void draw()
 void mouseClicked()
 {
   
-  Mood m = new Mood(random(-1,1), random(-1,1));
+  //Mood m = new Mood(random(-1,1), random(-1,1));
   // global_stage.selectScenebyMood(m);
   global_stage.nextScene();
 }

@@ -32,7 +32,7 @@ class PlotterGenerator extends Particle
      loadPointsFromTxt() ;
      setPersistence(true);
      
-     myColor = pal.getBrightest();
+     myColor = pal.getLightest();
           
      hueValue = hue(myColor);
      saturationValue = saturation(myColor);
