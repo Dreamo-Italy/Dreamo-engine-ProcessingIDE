@@ -28,6 +28,9 @@ abstract class Particle extends AgingObject
   private boolean destroying = false;
   private boolean physicsEnabled;
   
+  private boolean warpAtBorders;
+  private boolean bounceAtBorders;
+  
 
   //CONTRUCTORS
   public Particle()
@@ -48,6 +51,9 @@ abstract class Particle extends AgingObject
     global_particlesInstanciatedNumber++;
     destroy = false;
    
+    warpAtBorders = false;
+    bounceAtBorders = false;
+    
     params = new float[PARAMETERS_NUMBER];    
     for(int i = 0; i < PARAMETERS_NUMBER; i++)
     {
@@ -74,6 +80,9 @@ abstract class Particle extends AgingObject
     id = global_particlesInstanciatedNumber;
     global_particlesInstanciatedNumber++;
     destroy = false;
+    
+    warpAtBorders = toCopy.warpAtBorders;
+    bounceAtBorders = toCopy.bounceAtBorders;
     
     params = new float[PARAMETERS_NUMBER];    
     for(int i = 0; i < PARAMETERS_NUMBER; i++)
@@ -196,6 +205,16 @@ abstract class Particle extends AgingObject
   {
     persistent = newPersistent;
   }
+  
+  public void setWarpAtBorders(boolean newValue)
+  {
+    warpAtBorders = newValue;
+  }
+  
+  public void setBounceAtBorders(boolean newValue)
+  {
+    bounceAtBorders = newValue;
+  }
 
   void assertInitialised()
   {
@@ -253,6 +272,38 @@ abstract class Particle extends AgingObject
     Vector2d sigma = positionk1.sum(positionk2);
     position = position.sum(sigma.quot(2));
     }    
+    
+    if(warpAtBorders)
+    {
+      if(position.getX() > width) position.setX(position.getX()-width);
+      if(position.getY() > height) position.setY(position.getY()-height);
+      if(position.getX() < 0) position.setX(position.getX()+width);
+      if(position.getY() < 0) position.setY(position.getY()+height);
+    }
+    else if(bounceAtBorders)
+    {
+      if(position.getX() > width)
+      {
+        speed = speed.mirrorX();
+        position.setXY(width, position.getY());
+      }
+      if(position.getY() > height)
+      {
+        speed = speed.mirrorY();
+        position.setXY(position.getX(), height);
+      }
+      if(position.getX() < 0)
+      {
+        speed = speed.mirrorX();
+        position.setXY(0, position.getY());
+      }
+      if(position.getY() < 0)
+      {
+        speed = speed.mirrorY();
+        position.setXY(position.getX(), 0);
+      }
+    }
+    
     //life variables update
     updateTime();
         

@@ -15,6 +15,9 @@ abstract class Scene extends AgingObject
   protected Mood sceneMood;
 
   protected Palette pal;
+  
+  private boolean reflectHorizontally;
+  private boolean reflectVertically;
 
   //CONSTRUCTORS
   public Scene()
@@ -27,6 +30,8 @@ abstract class Scene extends AgingObject
     particlesNumber = 0;
     sceneBackground = null;
     backgroundEnabled = false; // false -> the screen doesn't refresh at every frame
+    reflectHorizontally = false;
+    reflectVertically = false;
     
     sceneMood=new Mood();
   }
@@ -38,6 +43,8 @@ abstract class Scene extends AgingObject
     particlesNumber = toCopy.particlesNumber;
     sceneBackground = toCopy.sceneBackground;
     backgroundEnabled = toCopy.backgroundEnabled;
+    reflectHorizontally = toCopy.reflectHorizontally;
+    reflectVertically = toCopy.reflectVertically;
 
     for(int i = 0; i < particlesNumber; i++) // pass by reference
     {
@@ -72,6 +79,16 @@ abstract class Scene extends AgingObject
   public void disableBackground()
   {
     backgroundEnabled = false;
+  }
+  
+  public void setHorizontalReflection(boolean newValue)
+  {
+    reflectHorizontally = newValue;
+  }
+  
+  public void setVerticalReflection(boolean newValue)
+  {
+    reflectVertically = newValue;
   }
 
   public void addParticle(Particle toAdd)
@@ -210,6 +227,33 @@ abstract class Scene extends AgingObject
       particlesList[i].beginTransformations();
       particlesList[i].trace();
       particlesList[i].endTransformations();
+    }
+    
+    if(reflectHorizontally)
+    {
+      PImage reflection = get(0, 0, width/2, height);
+      pushMatrix();
+      scale(-1, 1);
+      image(reflection, -width, 0);
+      popMatrix();
+    }
+    
+    if(reflectVertically)
+    {
+      PImage reflection = get(0, 0, width, height/2);
+      pushMatrix();
+      scale(1, -1);
+      image(reflection, 0, -height);
+      popMatrix();
+    }
+    
+    if(reflectVertically&&reflectHorizontally)
+    {
+      PImage reflection = get(0, 0, width/2, height/2);
+      pushMatrix();
+      scale(-1, -1);
+      image(reflection, -width, -height);
+      popMatrix();
     }
   }
 
