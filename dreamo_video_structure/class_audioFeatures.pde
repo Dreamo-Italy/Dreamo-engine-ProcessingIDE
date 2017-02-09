@@ -29,7 +29,7 @@ class AudioFeatures
    in = minim.getLineIn();
    setBufferSize();
    setSampleRate();
-   in.enableMonitoring();
+   //in.enableMonitoring();
    bufferize();
    if(in!=null)
    {

@@ -6,7 +6,7 @@ class Dynamic extends AudioFeatures {
   private int N=2;
   //averaging constant
   private float tiny;
-  
+  private float maxRMS;
   private float s_level;
   //default constructor
   public Dynamic() {      
@@ -14,6 +14,7 @@ class Dynamic extends AudioFeatures {
   init=true;
   tiny=1f-(1f/N);
   s_level=0;
+  maxRMS = 0.5;
   }
   
   public void setSamples(float[] _samples){
@@ -34,8 +35,11 @@ class Dynamic extends AudioFeatures {
       }   
     level /= samples.length;
     level = (float) Math.sqrt(level);
+    
+    if (level > maxRMS) maxRMS = level;
+    
     //normalize level in 0-1 range
-    level=map(level,0,0.5,0,1);
+    level=map(level,0,maxRMS,0,1);
     
     //smoothing
     s_level=tiny*s_level+(1-tiny)*level;
