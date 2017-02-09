@@ -20,6 +20,7 @@ class PlotterGenerator extends Particle
     float timeSpentDrawing, indexOffset;    
     int particlesNumber;
     float damping;
+    boolean mode1, mode2;
     
     color myColor;    
     boolean gravityCenterEnabled;    
@@ -40,6 +41,8 @@ class PlotterGenerator extends Particle
      i1 = 0;
      damping = 8;
      gravityCenterEnabled = true;
+     mode1= true;
+     mode2 = false;
      
      loadPointsFromTxt() ;
 
@@ -47,7 +50,18 @@ class PlotterGenerator extends Particle
   
   public void update()
   {      
+    if (frameCount % frameRate*10 == 0){
+        mode1 = false;
+        mode2 = true;
+        
+      }
+      
       setParameter(0, global_dyn.getRMS() );
+      
+      if ( getParameter(0) > 0.05 )
+        println("PlotterParticle, RMS: "+getParameter(0));
+      else
+        println("PlotterParticle, RMS: NO incoming audio");
 
 //      println("hueValue "+ hueValue);
 //      println("saturationValue "+ saturationValue);
@@ -55,7 +69,9 @@ class PlotterGenerator extends Particle
       
      // default values:
       
-      damping = 1;
+      if(mode1) damping = 0.22;
+      else if(mode2) damping = 0.01;
+      
       connectionRadius = 40;
       particleConnectionRadius = 200;
       zoom = 1;
@@ -63,23 +79,24 @@ class PlotterGenerator extends Particle
       setRotation(0);
       setPosition( new Vector2d (0 , 0 , false ) );
       
+      
+      
       //variations for the printed objects:     
       if(frameCount % 15 == 0)
       {
         if(getParameter(0) > 0.75 ) 
-           { setPosition( new Vector2d ( random(-width/6, width/6) , random(-height/6, height/6) , false ) ); damping = 0; }
+           { setPosition( new Vector2d ( random(-width/6, width/6) , random(-height/6, height/6) , false ) ); damping = 0.001; }
         else if(getParameter(0) > 0.9 )  
             {connectionRadius = 50; zoom = 1.05*getParameter(0);  lineWeight = 7; }
-        if ( getParameter(0) > 0.96) 
+        if ( getParameter(0) > 0.92) 
           { lineWeight = 40; connectionRadius = 10; particleConnectionRadius = 500;  /*setRotation(random(PI)/8);*/ }
         //  if(frameCount % 80 == 0) {loadPointsFromTxt();}
-      println("RMS: "+ getParameter(0) );
       
      // index variation
         if ( fromOneToTen < 10 )
           { //fromOneToTen++; 
-          fromOneToTen += round(getParameter(0) * 4/7 );
-          if (getParameter(0) < 0.1 )
+          fromOneToTen += round(getParameter(0) * 4/7 + fromOneToTen/10);
+          if (getParameter(0) < 0.14 )
             fromOneToTen = 0;        
           }
         else fromOneToTen = 0;
@@ -107,8 +124,18 @@ class PlotterGenerator extends Particle
     
    for( int i3 = 0; i3 < particlesNumber; i3++) 
    {
-     global_stage.getCurrentScene().getParticleByListIndex(i3).setDamping(damping);
-     global_stage.getCurrentScene().getParticleByListIndex(i3).perturbate(2.2*getParameter(0));
+     global_stage.getCurrentScene().getParticleByListIndex(i3).setIntro(mode1);
+     
+     if ( mode1 == true ){
+       global_stage.getCurrentScene().getParticleByListIndex(i3).setDamping(damping);
+       global_stage.getCurrentScene().getParticleByListIndex(i3).perturbate(2.2*getParameter(0));
+     }
+     else if ( mode2 == true){
+       if( frameCount % 500 == 0 ){
+        global_stage.getCurrentScene().getParticleByListIndex(i3).setDamping(damping/2);
+        global_stage.getCurrentScene().getParticleByListIndex(i3).perturbate(400*(getParameter(0)+0.3));
+       }
+     }
 
    }
     

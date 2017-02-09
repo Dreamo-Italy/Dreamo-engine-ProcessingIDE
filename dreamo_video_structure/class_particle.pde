@@ -291,6 +291,7 @@ abstract class Particle extends AgingObject
   //methods to override
   void setDamping(float newDamping){}
   void perturbate(float intensity) {}
+  void setIntro(boolean introduction){}
 
 
 }
