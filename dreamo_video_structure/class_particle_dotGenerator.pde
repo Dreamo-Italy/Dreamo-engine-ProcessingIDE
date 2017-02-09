@@ -9,11 +9,12 @@ class DotGenerator extends Particle
 
   public void update()
   {
-    if(frameCount%2 == 0)
+    if(frameCount%8 == 0)
     {
       Dot tempDot = new Dot();
       tempDot.setPalette(this.pal);
       float outputVar = global_gsr.getVariation()/3 ; // CONDUCTANCE VALUE - DEBUG   
+      tempDot.setBounceAtBorders(true);
       tempDot.setPosition ( (new Vector2d(width/2, height/2, false) ).mul(outputVar) );
       global_stage.getCurrentScene().addParticle(tempDot);
     }

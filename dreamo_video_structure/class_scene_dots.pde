@@ -10,6 +10,8 @@ class SceneDots extends Scene
     generator.setPalette(this.pal);
     generator.setPosition(new Vector2d(0, 0, false));
     
+    setVerticalReflection(true);
+    
     addParticle(generator);
     Background bk = new Background();
     setBackground(bk);
