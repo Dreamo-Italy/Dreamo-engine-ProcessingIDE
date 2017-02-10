@@ -18,6 +18,8 @@ Connection global_connection;
 Gsr global_gsr;
 Ecg global_ecg;
 
+short global_sensorNumber = 2;
+
 //global audio objects
 AudioFeatures global_audio;
 Tone global_tone;

@@ -21,7 +21,7 @@ class Connection
   private boolean wifiAvailable;
   private boolean serialAvailable;
   private boolean connectionAvailable;
-  private int executionNumber; // # of times StoreFromText has been called 
+  private int executionNumberCon, executionNumberEcg; // # of times StoreFromText has been called 
   private float incomingValue,incomingValue2; // the input coming from a biosensor    
   private final int BUFFER_SIZE = 200; // random value
   private final int lineFeed = 10;    // Linefeed in ASCII    
@@ -38,7 +38,8 @@ class Connection
     wifiAvailable = false;
     serialAvailable = false;
     connectionAvailable = false;
-    executionNumber = 0;
+    executionNumberCon = 0;
+    executionNumberEcg = 0;
     incomingValue = 0;
     parent = p;
  
@@ -98,7 +99,7 @@ class Connection
       myPort = new Serial(parent, portName, 19200);
       portAvailable = true; 
     }
-    
+    println("Serial connection is available.");
     return portAvailable;   
  }
 
@@ -130,11 +131,11 @@ class Connection
           { getList("ecg").clear(); println("List is now empty"); }
 
       // INDEX IS SHIFTED TO AVOID READING ALWAYS THE SAME VALUES
-      if ( executionNumber >= table_con.getRowCount()/numToExtract )
-           executionNumber = 0;
+      if ( executionNumberCon >= table_con.getRowCount()/numToExtract )
+           executionNumberCon = 0;
       
       int count = 0;
-      int multiplier = executionNumber; //<>//
+      int multiplier = executionNumberCon; //<>//
       int iStart = 0 + numToExtract*multiplier;
       int iEnd = numToExtract*( multiplier + 1); 
       
@@ -145,13 +146,21 @@ class Connection
           if ( count>=iStart && count<=iEnd ) 
             getList("con").append (newFloat); 
          } count=0;         
+         
+     // INDEX IS SHIFTED TO AVOID READING ALWAYS THE SAME VALUES
+      if ( executionNumberEcg >= table_ecg.getRowCount()/numToExtract )
+           executionNumberEcg = 0;
+      
+      int count2 = 0;
+      int multiplier2 = executionNumberEcg;
+      int iStart2 = 0 + numToExtract*multiplier2;
+      int iEnd2 = numToExtract*( multiplier2 + 1); 
                 
-     int count2 = 0;
      for (TableRow row : table_ecg.rows() ) 
      {
        float newFloat2 =row.getFloat("ECG_Filtered");
         count2++;
-     if ( count2>=iStart && count2<=iEnd ) 
+     if ( count2>=iStart2 && count2<=iEnd2 ) 
             getList("ecg").append (newFloat2); 
        }   count2 = 0;
     
@@ -163,7 +172,8 @@ class Connection
       println("storeFromText function ends here. ");
       println("");
         
-     executionNumber++;
+     executionNumberCon++;
+     executionNumberEcg++;
    }
    
     // the function that reads the DATA from the SERIAL LINE BUFFER
@@ -257,14 +267,10 @@ class Connection
                   emptyList = true;
                   
             }   //<>//
-            
-            
       }
       if (listName.equals("ecg"))
        {
-         // extract numberOfElements of elements from conductance list
-
-         
+         // extract numberOfElements of elements from ECG list
          while(! (getList("ecg").size() <= originalListEcgSize  - numberOfElements) && !emptyList2) 
             {
               int currentListEcgSize = getList("ecg").size();

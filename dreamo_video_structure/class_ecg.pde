@@ -24,7 +24,7 @@ class Ecg extends Biosensor
 
         if(frameCount % 1 == 0)
         {
-          int numToExtract = ceil (global_sampleRate/frameRate);
+          //int numToExtract = ceil (global_sampleRate/frameRate);
       // Per GIOVA: la connessione offline sembra non funzionare, la Floatlist incomingValues è sempre vuota,
       // come segnalato dal println sottostante.
       
@@ -33,11 +33,13 @@ class Ecg extends Biosensor
                  
           println("Number of ECG elements to extract: " + numToExtract );
           println("ECG buffer size: "+ incomingValues.size() );  
+          println("Highest ECG peak: "+ max(StoreEcg.array()) );
+
           
        }
      
      println("StoreEcg size: "+StoreEcg.size() );
-      if(StoreEcg.size()> 300){
+      if(StoreEcg.size()> numToExtract*frameRate*5){
         
         float[] Analysis= StoreEcg.array();
         float[] FilteredHp = dsp.HighPass (Analysis, 50.0,256.0);
