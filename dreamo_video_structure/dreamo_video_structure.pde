@@ -6,7 +6,7 @@ void setup()
   frameRate(global_fps);
   noSmooth();
 
-  //connection //<>//
+  //connection //<>// //<>//
   global_connection = new Connection(this);
   
   //biosensors
@@ -22,7 +22,8 @@ void setup()
   global_stage = new Stage();
 
   //scenes
-    global_stage.addScene(new ScenePlotter());
+  global_stage.addScene(new CrazyL());
+  global_stage.addScene(new ScenePlotter());
   global_stage.addScene(new SceneFireworks());
   global_stage.addScene(new SceneDots());
   global_stage.addScene(new ScenePerlinNoise());
@@ -66,7 +67,7 @@ void draw()
    text("particles: " + global_stage.getCurrentScene().getParticlesNumber() + "; framerate: " + frameRate + " \n", 10, 20);
 
 
-   long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME
+   long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME //<>//
 
 
    //----------- print the durations for debug purposes------------ //<>//
