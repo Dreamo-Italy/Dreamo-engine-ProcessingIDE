@@ -19,7 +19,7 @@ class AudioFeatures
    /* //<>// //<>//
    * @param fileSystemHandler
    *        The Object that will be used for file operations.
-   *        When using Processing, simply pass <strong>this</strong> to AudioFeatures constructor.
+   *        When using Processing, simply pass 'this' to AudioFeatures constructor.
    */
  //TODO: monitoring audio input from Raspberry sound card
  //temporary: use pc input  
@@ -29,7 +29,7 @@ class AudioFeatures
    in = minim.getLineIn();
    setBufferSize();
    setSampleRate();
-   in.enableMonitoring();
+   //in.enableMonitoring();
    bufferize();
    if(in!=null)
    {
