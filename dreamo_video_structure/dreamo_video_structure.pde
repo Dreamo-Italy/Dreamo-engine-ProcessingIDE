@@ -29,7 +29,8 @@ void setup()
   global_stage.addScene(new ScenePerlinNoise());
   global_stage.addScene(new Spirals());
   global_stage.addScene(new HelloShape(0));
-  global_stage.addScene(new HelloShape(1));
+  //global_stage.addScene(new HelloShape(1));
+  //global_stage.addScene(new DumbC());
 }
 
 void draw()
@@ -70,7 +71,7 @@ void draw()
    long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME //<>//
 
 
-   //----------- print the durations for debug purposes------------ //<>//
+   //----------- print the durations for debug purposes------------ //<>// //<>//
 
    println("    Audio update duration: "+ audioTime/1000 + " us");
    println("    Connection update duration: "+ conT/1000 + " us");

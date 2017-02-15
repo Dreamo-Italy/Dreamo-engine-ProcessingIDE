@@ -29,7 +29,7 @@ class ParticleTracer extends Particle
     angle = noise((getPosition().getX() + nCrossedX*width)/noiseScale, (getPosition().getY()+nCrossedY*height)/noiseScale) * noiseStrength;
     
     getSpeed().setDirection(angle);
-    getSpeed().setModulus(SPEED*3*getParameter(0)); 
+    getSpeed().setModulus(SPEED*2*getParameter(0)); 
     
     keepInsideTheScreen();    
   }
