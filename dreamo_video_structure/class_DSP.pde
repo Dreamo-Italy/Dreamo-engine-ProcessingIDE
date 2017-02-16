@@ -487,7 +487,7 @@ class DSP {
     } 
     //signal evaluation and peaks counter
     for(int i=1;i<N-1;i++){
-        if(a.get(i)>1.5){
+        if(a.get(i)>1.8){
           if (!flag){
           Beatcount++;
           flag=true;
@@ -531,7 +531,7 @@ class DSP {
      // BPM detector 
        float duration_second= 1/frameRate;
        float dur_min=60;
-       BPM = round( (float) Beatcount*500 / dur_min );
+       BPM = Beatcount;
        return BPM;
    }
 }

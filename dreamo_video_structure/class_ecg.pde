@@ -39,7 +39,7 @@ class Ecg extends Biosensor
        }
      
      println("StoreEcg size: "+StoreEcg.size() );
-      if(StoreEcg.size()> numToExtract*frameRate*5){
+      if(StoreEcg.size()> global_sampleRate*60){
         
         float[] Analysis= StoreEcg.array();
         float[] FilteredHp = dsp.HighPass (Analysis, 50.0,256.0);
