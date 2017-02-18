@@ -21,14 +21,15 @@ void setup()
   //init stage
   global_stage = new Stage();
 
-  //scenes
-    global_stage.addScene(new ScenePlotter());
-  global_stage.addScene(new SceneFireworks());
-  global_stage.addScene(new SceneDots());
-  global_stage.addScene(new ScenePerlinNoise());
-  global_stage.addScene(new Spirals());
-  global_stage.addScene(new HelloShape(0));
+  ////scenes
+  //global_stage.addScene(new ScenePlotter());
+  //global_stage.addScene(new SceneFireworks());
+  //global_stage.addScene(new SceneDots());
+  //global_stage.addScene(new ScenePerlinNoise());
+  //global_stage.addScene(new Spirals());
+  //global_stage.addScene(new HelloShape(0));
   global_stage.addScene(new HelloShape(1));
+  global_stage.addScene(new SceneDynamicGrid() );
 }
 
 void draw()

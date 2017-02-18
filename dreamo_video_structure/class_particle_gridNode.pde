@@ -2,7 +2,7 @@ class GridNode extends Particle
 {
   float kToCenter = 0.014;
   float kToNeighbour = 0.06;
-  float damping = 1.3;
+  float damping = 1.5;
   float maximumDistanceFromCenter = 100;
   float maximumSpeed = 100;
   Vector2d centerPosition;
@@ -34,7 +34,16 @@ class GridNode extends Particle
   }
   
   void update()
-  {
+  {    
+    // 0-10 RANGE
+    float forceToCenter = 10*getParameter(0);
+    float forceToNeighbour = 8*getParameter(0);
+    
+    //update elastic constants with audio infos
+    
+    kToCenter = map(forceToCenter, 0, 10, 0.01, 0.2);
+    kToNeighbour = map(forceToNeighbour, 0, 10, 0.06, 0.25);
+    
     //calculate elastic force due to neighbour nodes
     Vector2d elasticForceToNeighbours = new Vector2d(0, 0, false);
     for(int i = 0; i < 4; i++)

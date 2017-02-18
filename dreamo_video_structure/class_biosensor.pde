@@ -91,6 +91,7 @@ abstract class Biosensor
     float newMax = max ( maxCal, getMax() ); 
     
     println("Calibration process is running...");
+    println("Sensor type: " + sensorName );
     setMin ( newMin ); println( "new min: " + newMin );
     setMax ( newMax ); println( "new max: " + newMax );
     
@@ -100,7 +101,6 @@ abstract class Biosensor
 
   protected void endCalibration()
   {    
-    // expand the range by a 20% factor (experimental)
     float newMin = abs ( getMin() );
     float newMax = getMax();
     
@@ -134,7 +134,7 @@ abstract class Biosensor
   {
       // map function from Processing libraries: map(value, start1, stop1, start2, stop2)
       
-      float normalized = map ( toNormalize, getMin(), getMax(), 1, 10 );
+      float normalized = map ( toNormalize, getMin(), getMax(), 0, 1 );
       return normalized;
   }
   
