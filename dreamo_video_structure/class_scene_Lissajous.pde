@@ -5,7 +5,7 @@ class Lissajous extends Scene
     pal.initColors();
     LShape shape = new LShape();
     shape.setPalette(pal);
-    //shape.disablePhysics();
+    shape.disablePhysics();
     addParticle(shape);
     
     Background bk = new Background();

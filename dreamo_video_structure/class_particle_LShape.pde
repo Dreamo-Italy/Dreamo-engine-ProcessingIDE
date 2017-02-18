@@ -3,34 +3,36 @@ class LShape extends Particle
   
 // ------ initial parameters and declarations ------
 
-  int pointCount = 200;
+  int pointCount = 4200;
   Vector2d[] lissajousPoints = new Vector2d[0];
   
-  int freqX = 7;
-  int freqY = 4;
+  float freqX = 7;
+  float freqY = 4;
   float phi = 97;
   
-  int modFreqX = 1;
-  int modFreqY = 0;
+  float modFreqX = 1;
+  float modFreqY = 0;
   
-  int modFreq2X = 11;
-  int modFreq2Y = 17;
-  float modFreq2Strength = 0.5;
+  float modFreq2X = 11;
+  float modFreq2Y = 17;
+  float modFreq2Strength = 2;
   
-  float randomOffset = 2;
+  float randomOffset = 0;
   
   boolean invertBackground = false;
-  float lineWeight = 3;
-  float lineAlpha = 40;
+  float lineWeight = 10;
+  float lineAlpha = 50;
   float lineAlphaWeight = 1;
   
-  boolean connectAllPoints = true;
+  boolean connectAllPoints = false;
   float connectionRadius = 110;
   int particleRadius = 500;
   int i1 = 0;
-  float saturation = 80;
-  float brightness = 0;
+  float saturation;
+  float brightness;
   boolean invertHue = false;
+  
+  int pointCountEnd;
   
   
   color myColor;
@@ -38,13 +40,14 @@ class LShape extends Particle
     
   public void init()
   {
+    pointCountEnd = 500;
     
-    freqX = round ( random ( 10 ) );
-    freqY = round ( random ( 10 ) );
+    freqX = round ( random ( 5 ) );
+    freqY = round ( random ( 8 ) );
     
     setPersistence(true);
      
-    myColor = pal.getLightest();          
+    myColor = pal.getColor();          
     hue = hue(myColor);
     saturation = saturation(myColor);
     brightness = brightness(myColor);
@@ -56,13 +59,17 @@ class LShape extends Particle
   
   public void update()
   {
-    if ( frameCount % 30 == 0 )
-      freqX = round(freqX+getParameter(0));
-    if ( frameCount % 1 == 0 ){
-    modFreq2Strength = getParameter(0)/2;  
-    modFreqY = round(modFreqY+getParameter(0)+0.4); 
-    randomOffset = round(randomOffset+getParameter(0));
-    }
+    if (pointCountEnd < 4200 && frameCount % 1 == 0)
+      pointCountEnd = pointCountEnd + 1;
+      
+    freqX = freqX + getParameter(0)/2;
+    freqY = freqY + getParameter(0)/20;
+    modFreq2Strength = modFreq2Strength -getParameter(0)/80;  
+    modFreqY = (modFreqY+getParameter(0)/6); 
+    modFreqX = (modFreqX+getParameter(0)/6); 
+    
+   // randomOffset += getParameter(0)/100;
+    
     
     
     if(getSceneChanged() && !this.isDestroying() )
@@ -89,7 +96,7 @@ class LShape extends Particle
   
       if (!connectAllPoints) 
       {
-        for (int i=0; i<=pointCount-1; i++) {
+        for (int i=0; i<=pointCountEnd-1; i++) {
           drawLine(lissajousPoints[i], lissajousPoints[i+1]);
           i1++;
         }
@@ -105,7 +112,7 @@ class LShape extends Particle
     lissajousPoints = new Vector2d[pointCount+1];
   }
 
-  randomSeed(0);
+  //randomSeed(0);
 
   float t, x, y, rx, ry;
 
@@ -133,7 +140,7 @@ class LShape extends Particle
   {
     float d, a, h;
     
-    for(int i1=0;i1<pointCount;i1++){
+    for(i1=0; i1<pointCount; i1++){
       
     int start_index = (i1 - particleRadius/2) > 0 ?  (i1 - particleRadius/2) : 0;
     int end_index = (i1 + particleRadius/2) < pointCount ? (i1 + particleRadius/2) : pointCount ;
