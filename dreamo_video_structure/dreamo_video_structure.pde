@@ -56,7 +56,7 @@ void draw()
 
    long gsrT = (System.nanoTime() - conT -initTimeT - audioTime); // time elapsed after GSR UPDATE
 
-   global_stage.updateAndTrace();
+   global_stage.updateAndTrace(); //<>//
 
    long viT = (System.nanoTime() - gsrT - conT - initTimeT - audioTime) ; // time elapsed after VIDEO UPDATE
 
