@@ -9,7 +9,18 @@ By participating, you are expected to uphold this code. To learn more, you can w
 
 Repository for "Dreamo" project | _Polytechnic of Turin_ |.
 
-Actual team *__Francesco Cretti, Giovanni Bologni, Luciano Prono, Nicola Ruffino, Andrea Gambedotti, Lorenzo de Luca __*.
+Current team *Francesco Cretti, Giovanni Bologni, Luciano Prono, Nicola Ruffino, Andrea Gambedotti, Lorenzo de Luca*.
+
+
+## Installing
+
+### Prerequisites
+- [Processing 3 or higher] (https://processing.org/download/)
+- Minim library installed on Processing ( Processing -> Sketch -> Import Library... -> Add Library... -> Search for "Minim" )
+- [Java 8 or higher](https://www.java.com/it/)
+
+### Windows
+Download the latest unstable [Dreamo release](https://github.com/Dreamo-Italy/Dreamo-engine/tree/develop), with "*Clone or Download*"->"*Download ZIP*"
 
 
 ## Documentation
@@ -22,13 +33,3 @@ Here follows a generic description of the classes of the program:
 - *Scene* includes an array of particles and manages their update and drawing on screen.
 
 - *Stage* includes an array of scenes and manages the passage from one scene to another.
-
-## Installing
-
-### Prerequisites
-- [Processing 3 or higher] (https://processing.org/download/)
-- Minim library installed on Processing ( Processing -> Sketch -> Import Library... -> Add Library... -> Search for "Minim" )
-- [Java 8 or higher](https://www.java.com/it/)
-
-### Windows
-Download the latest unstable [Dreamo release](https://github.com/Dreamo-Italy/Dreamo-engine/tree/develop).
