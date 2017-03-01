@@ -51,7 +51,7 @@ class Connection
     
     // number of BIOMEDICAL VALUES to extract at each update() cycle   
     numToExtract = floor (global_sampleRate/global_fps);  //<>//
-  
+   //<>//
     //serial check
     if(!wifiAvailable) 
       { 
@@ -96,7 +96,7 @@ class Connection
     if (ports.length  == 1) // DEBUG = 1 ; RIGHT ONE = 0;
     {
       String portName = Serial.list()[0]; //change the 0 to a 1 or 2 etc. to match your port
-      myPort = new Serial(parent, portName, 19200);
+      myPort = new Serial(parent, portName, 38400);
       portAvailable = true; 
     }
     println("Serial connection is available.");
@@ -106,7 +106,7 @@ class Connection
   
   
   public void update()
-  {   
+  {    //<>//
     if( !serialAvailable ) //<>//
          storeFromText();      // read the data from an OFFLINE TABLE
     else if ( serialAvailable )
@@ -134,7 +134,7 @@ class Connection
       if ( executionNumberCon >= table_con.getRowCount()/numToExtract )
            executionNumberCon = 0;
       
-      int count = 0;
+      int count = 0; //<>//
       int multiplier = executionNumberCon; //<>//
       int iStart = 0 + numToExtract*multiplier;
       int iEnd = numToExtract*( multiplier + 1); 
@@ -197,7 +197,7 @@ class Connection
       
       print( " available bytes on serial buffer: " + myPort.available() );
       
-      short added = 0, counter = 0;
+      short added = 0, counter = 0; //<>//
       
       myPort.readStringUntil(lineFeed); // clean the garbage
 
@@ -209,12 +209,19 @@ class Connection
             inputString = myPort.readStringUntil(lineFeed);
             if (inputString != null) 
             {
-              incomingValue =float(inputString.substring(inputString.indexOf("c")+1,inputString.indexOf("c")+3));
-              incomingValue2 =float(inputString.substring(inputString.indexOf("e")+1,inputString.indexOf("e")+3));
-              print( " serial: " + incomingValue + "serial2:" +incomingValue2);
-              incomingCond.append(incomingValue);
-              incomingEcg.append(incomingValue2);
-              added++;
+              inputString = trim(inputString); // removes "\t"
+              float inputValues[] = float(split(inputString, '\t') );
+              
+              if ( inputValues.length == 2 )
+              {
+                  incomingValue = inputValues[0];
+                  incomingValue2 = inputValues[1];
+                  
+                  print( " serial: " + incomingValue + "serial2:" +incomingValue2);
+                  incomingCond.append(incomingValue);
+                  incomingEcg.append(incomingValue2);
+                  added++;
+              }
             }
             
             counter++;
@@ -224,7 +231,7 @@ class Connection
      println("");
      println( "DEBUG : incomingCond queue size: " + incomingCond.size() );
      println( "DEBUG : incomingEcg queue size: " + incomingEcg.size() );
-     println( "DEBUG : elements added: " + added );
+     println( "DEBUG : elements added: " + added*2 );
      if ( incomingCond.size() == 0 ) println(" ERROR in storeFromSerial: incomingCondSize = 0 ");
      if ( incomingEcg.size() == 0 ) println(" ERROR in storeFromSerial: incomingEcgSize = 0 "); 
   }
@@ -235,7 +242,7 @@ class Connection
       FloatList toOutput = new FloatList();  
       boolean emptyList = false;
       boolean emptyList2 = false;
-      int originalListCondSize = getList("con").size();   
+      int originalListCondSize = getList("con").size();    //<>//
       int originalListEcgSize = getList("ecg").size(); 
       
       float inValue = 0;
@@ -258,7 +265,7 @@ class Connection
                    if ( index >= 0 && index <= currentListCondSize )
                        {
                          inValue = incomingCond.remove( index );
-                         toOutput.append( inValue );
+                         toOutput.append( inValue ); //<>//
                          added++;
                          }                
 
