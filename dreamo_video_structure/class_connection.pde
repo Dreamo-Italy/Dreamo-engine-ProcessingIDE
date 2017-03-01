@@ -51,7 +51,7 @@ class Connection
     
     // number of BIOMEDICAL VALUES to extract at each update() cycle   
     numToExtract = floor (global_sampleRate/global_fps);  //<>//
-   //<>//
+   //<>// //<>//
     //serial check
     if(!wifiAvailable) 
       { 
@@ -106,7 +106,7 @@ class Connection
   
   
   public void update()
-  {    //<>//
+  {    //<>// //<>//
     if( !serialAvailable ) //<>//
          storeFromText();      // read the data from an OFFLINE TABLE
     else if ( serialAvailable )
@@ -134,7 +134,7 @@ class Connection
       if ( executionNumberCon >= table_con.getRowCount()/numToExtract )
            executionNumberCon = 0;
       
-      int count = 0; //<>//
+      int count = 0; //<>// //<>//
       int multiplier = executionNumberCon; //<>//
       int iStart = 0 + numToExtract*multiplier;
       int iEnd = numToExtract*( multiplier + 1); 
@@ -194,17 +194,15 @@ class Connection
         incomingEcg.clear();
         println("WARNING: list was getting big: list Ecg is now empty");
       }
-      
-      print( " available bytes on serial buffer: " + myPort.available() );
-      
+            
       short added = 0, counter = 0; //<>//
       
-      myPort.readStringUntil(lineFeed); // clean the garbage
+      myPort.readStringUntil(lineFeed); // clean the garbage //<>//
 
       // while there is something on the serial buffer, add the data to the "incomingCond" queue
       // myPort.available() greater than 4: there's a pending FLOAT on the buffer (size: 4 bytes)
       
-      while ( serialAvailable && added < numToExtract && counter < numToExtract*3 && myPort.available() > 4 )
+      while ( serialAvailable && added < numToExtract && counter < numToExtract*3) //&& myPort.available() > 4 )
         {
             inputString = myPort.readStringUntil(lineFeed);
             if (inputString != null) 
@@ -217,7 +215,9 @@ class Connection
                   incomingValue = inputValues[0];
                   incomingValue2 = inputValues[1];
                   
-                  print( " serial: " + incomingValue + "serial2:" +incomingValue2);
+                  println( " cond: " + incomingValue);
+                  println( " ecg: " +incomingValue2);
+                  
                   incomingCond.append(incomingValue);
                   incomingEcg.append(incomingValue2);
                   added++;
@@ -242,7 +242,7 @@ class Connection
       FloatList toOutput = new FloatList();  
       boolean emptyList = false;
       boolean emptyList2 = false;
-      int originalListCondSize = getList("con").size();    //<>//
+      int originalListCondSize = getList("con").size();    //<>// //<>//
       int originalListEcgSize = getList("ecg").size(); 
       
       float inValue = 0;
@@ -265,7 +265,7 @@ class Connection
                    if ( index >= 0 && index <= currentListCondSize )
                        {
                          inValue = incomingCond.remove( index );
-                         toOutput.append( inValue ); //<>//
+                         toOutput.append( inValue ); //<>// //<>//
                          added++;
                          }                
 
