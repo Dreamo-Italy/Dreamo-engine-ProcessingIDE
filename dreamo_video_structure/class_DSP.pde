@@ -303,6 +303,47 @@ class DSP {
         return y;
     }
     
+    /******************************************************************************************************/
+    
+    //Tarsos IIR filter 
+    public float[] TarsosFilter(float[] b, float[] a, float[] input)
+    {
+      float[] x = new float[input.length];
+      System.arraycopy(input,0,x,0,input.length);  
+      
+      float[] in = new float[b.length];
+      float[] out = new float[a.length];
+      
+      for (int i = 0; i < x.length; i++) 
+      {
+        //shift the in array
+        System.arraycopy(in, 0, in, 1, in.length - 1);
+        in[0] = x[i];
+    
+        //calculate y based on a and b coefficients
+        //and in and out.
+        float y = 0;
+        for(int j = 0 ; j < b.length ; j++)
+        {
+          y += b[j] * in[j];
+        }
+        
+        for(int j = 0 ; j < a.length ; j++)
+        {
+          y += a[j] * out[j];
+        }
+        
+        //shift the out array
+        System.arraycopy(out, 0, out, 1, out.length - 1);
+        out[0] = y;
+        
+        x[i] = y;
+        
+      }
+      
+    return x;
+        
+  }
     
     /******************************************************************************************************/
     
@@ -313,28 +354,60 @@ class DSP {
         //calculate coefficients
         float fracFreq=freq/sampleRate;
         float x = (float)Math.exp(-2*Math.PI*fracFreq);        
-        float[] a = {(1+x)/2, -(1+x)/2};
-        float[] b = {x};       
+        float[] b = {(1+x)/2, -(1+x)/2};
+        float[] a = {x};       
         
-        //NB INVERT COIFFICIENTS a AND b DUE TO IMPLEMENTATION OF IIR FUNCTION
-        return IIRfilter(a,b,in);
+        return TarsosFilter(b,a,in);
         
       }   
 
     /******************************************************************************************************/
     
     //low pass filtering (Tarsos coefficients calculation)
-    public float[] LowPass(float[] in, float freq, float sampleRate)
+    public float[] LowPassSP(float[] in, float freq, float sampleRate)
     {
         //calculate coefficients
         float fracFreq=freq/sampleRate;
         float x = (float)Math.exp(-2*Math.PI*fracFreq);        
-        float[] a = {1 - x};
-        float[] b = {x};  
-      
-        //N.B.: INVERT COIFFICIENTS a AND b DUE TO IMPLEMENTATION OF IIR FUNCTION    
-        return IIRfilter(a,b,in);
+        float[] b = {1 - x};
+        float[] a = {x};  
+   
+        return TarsosFilter(b,a,in);
     }
+    
+    /******************************************************************************************************/
+    
+    //low pass filtering (Tarsos coefficients calculation)
+    public float[] LowPassFS(float[] in, float freq, float sampleRate)
+    { 
+      //minimum frequency is 60Hz!
+      freq=freq>60?freq:60;
+        
+      //calculate coefficients
+      float fracFreq=freq/sampleRate;
+      float x = (float) Math.exp(-14.445 * fracFreq);
+      float[] b={ (float) Math.pow(1 - x, 4) };
+      float[] a={ 4 * x, -6 * x * x, 4 * x * x * x, -x * x * x * x };
+    
+      return TarsosFilter(b,a,in);
+      
+    }
+    
+    /******************************************************************************************************/
+    
+    public float[] BandPass(float[] in, float freq, float bandWidth, float sampleRate)
+      {
+        float bw = bandWidth / sampleRate;
+        float fracFreq=freq/sampleRate;
+        float R = 1 - 3 * bw;
+
+        float T = 2 * (float) Math.cos(2 * Math.PI * fracFreq);
+        float K = (1 - R * T + R * R) / (2 - T);
+        float[] b = new float[] { 1 - K, (K - R) * T, R * R - K };
+        float[] a = new float[] { R * T, -R * R };
+        
+        return TarsosFilter(b,a,in);
+      }
     
     /******************************************************************************************************/
     
