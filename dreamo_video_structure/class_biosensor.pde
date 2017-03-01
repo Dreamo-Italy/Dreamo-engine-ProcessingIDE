@@ -4,7 +4,7 @@ abstract class Biosensor
 {
  //************ CONSTANTS **************
  
-  final private int CALIBRATION_TIME = 3; // duration of the CALIBRATION PROCESS, expressed in seconds
+  final private int CALIBRATION_TIME = 10; // duration of the CALIBRATION PROCESS, expressed in seconds
 
   
  //********* PUBLIC MEMBERS ***********
@@ -23,7 +23,8 @@ abstract class Biosensor
   private float sensorMin, sensorMax; // the experimental MINIMUM and MAXIMUM values previously got from the current sensor
   private float minCal, maxCal; // calibration process min and max values
   private int calibrationCounter;
-
+  
+  protected int numToExtract;
   protected FloatList incomingValues; // vector of float
   protected FloatList calibrationValues;
 
@@ -41,6 +42,9 @@ abstract class Biosensor
     calibrating = false;
     calibrated = false;
     calibrationCounter = 0;
+    
+    // number of BIOMEDICAL VALUES to extract at each update() cycle   
+    numToExtract = floor (global_sampleRate/global_fps); 
     
     incomingValues = new FloatList();
     
@@ -178,12 +182,15 @@ abstract class Biosensor
   }
   
    public void printDebug()
-  {    
-    println("absolute :"+ getAbsolute() );
-    println("variation :"+ getVariation() );
-    println("default value :" + getDefault() );
-    println("");    
-    text("\n absolute : " + getAbsolute() + "; variation: " + getVariation() + "; default value : " + getDefault(), 10, 50);
+  {     
+    //println("Sensor type: " + sensorName );
+    //println("  absolute :"+ getAbsolute() );
+    //println("  variation :"+ getVariation() );
+    //println("  default value :" + getDefault() );
+    //println("");    
+    int yOffset = 35;
+    if ( sensorName == "ecg") yOffset += 13;
+    text("Type: "+ sensorName+ " absolute : " + getAbsolute() + "; variation: " + getVariation() + "; default value : " + getDefault(), 10, yOffset);
   }
   
   //********* SET METHODS **********

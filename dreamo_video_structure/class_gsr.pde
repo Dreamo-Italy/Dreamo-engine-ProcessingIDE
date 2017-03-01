@@ -7,7 +7,7 @@ class Gsr extends Biosensor
   public void update()
    {          
     float currentValue = getAbsolute();
-    int numToExtract = ceil (global_sampleRate/frameRate); //<>//
+    //int numToExtract = ceil (global_sampleRate/frameRate); //<>//
     long initTimeT = System.nanoTime();     
 
     incomingValues = global_connection.extractFromBuffer("con", numToExtract ); // store the incoming conductance value from Connection to another FloatLIst

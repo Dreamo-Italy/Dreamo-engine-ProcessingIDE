@@ -11,6 +11,7 @@ void setup()
   
   //biosensors
   global_gsr = new Gsr();
+  global_ecg= new Ecg();
 
   //audio features
   global_audio = new AudioFeatures(this);
@@ -52,18 +53,22 @@ void draw()
    
    global_gsr.update();
    
-
-   long gsrT = (System.nanoTime() - conT -initTimeT - audioTime); // time elapsed after GSR UPDATE
+   long gsrT= (System.nanoTime() - conT -initTimeT - audioTime);// time elapsed after GSR UPDATE
+   
+   global_ecg.update();
+   
+   long ecgT = (System.nanoTime() - conT -initTimeT - audioTime- gsrT); // time elapsed after ECG UPDATE
 
    global_stage.updateAndTrace();
 
-   long viT = (System.nanoTime() - gsrT - conT - initTimeT - audioTime) ; // time elapsed after VIDEO UPDATE
+   long viT = (System.nanoTime() - gsrT - conT - initTimeT - audioTime-ecgT) ; // time elapsed after VIDEO UPDATE
 
 
     fill(120); // for the DEBUG text
     stroke(120); // for the DEBUG text
 
-   global_gsr.printDebug();  // print the DEBUG TEXT related to the SKIN SENSOR every 20 frames
+   global_gsr.printDebug();// print the DEBUG TEXT related to the SKIN SENSOR every 20 frames
+   global_ecg.printDebug();// print the DEBUG TEXT related to the SKIN SENSOR every 20 frames
    text("particles: " + global_stage.getCurrentScene().getParticlesNumber() + "; framerate: " + frameRate + " \n", 10, 20);
 
 
