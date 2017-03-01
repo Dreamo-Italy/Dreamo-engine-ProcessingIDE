@@ -1,7 +1,7 @@
 void setup()
 { 
 	int i; //<>// //<>//
-	colorMode(HSB, 360, 100, 100, 100); //<>// //<>// //<>// //<>// //<>//
+	colorMode(HSB, 360, 100, 100, 100);  //<>//
 	size(800, 600, FX2D);//fullScreen(FX2D);
 	frameRate(global_fps);
 	noSmooth();
@@ -11,7 +11,7 @@ void setup()
 		scene_score[i] = 0;
 	}
 	//connection //<>// //<>// //<>//
-	global_connection = new Connection(this);  //<>// //<>// //<>// //<>// //<>// //<>//
+	global_connection = new Connection(this);   //<>//
 
 	//biosensors
 	global_gsr = new Gsr();  
@@ -40,14 +40,14 @@ void draw() //<>// //<>// //<>// //<>//
 {   
 	float gsr_Val, ecg_Val, q_ecg, q_gsr;
 	int i, scene_num, scene_sel, max, max_sel;
-	//////////////////////////////////////////////////////////////////////////////////
+	 
 	//update samples in audio buffer //<>// //<>//
 	global_audio.updateBuffer();
 	//set samples in dyn, tone and rhythm objects //<>// //<>//
 	global_dyn.setSamples(global_audio.getSamples());
 	global_tone.setSamples(global_audio.getSamples());
 	global_rhythm.setSamples(global_audio.getSamples());
-	////////////////////////////////////////////////////////////////////////////////// //<>// //<>// //<>// //<>// //<>//
+	  //<>// //<>// //<>// //<>// //<>//
 	global_connection.update();
 	//<>// //<>// //<>//
 	global_gsr.update(); 
@@ -55,7 +55,7 @@ void draw() //<>// //<>// //<>// //<>//
 	
 	global_ecg.update();
 	ecg_Val = global_ecg.getValue(); 
-	//////////////////////////////////////////////////////////////////////////////////
+	 
 	scene_num = global_stage.getNumberOfScenes();
 	 //<>// //<>//
 	q_gsr = map ( gsr_Val, 1, 10, 0, scene_num - 1 );
@@ -92,8 +92,8 @@ void draw() //<>// //<>// //<>// //<>//
 	}
 	
 	global_stage_change_cnt = global_stage_change_cnt + 1;
-	////////////////////////////////////////////////////////////////////////////////// 
-	global_stage.updateAndTrace();  //<>// //<>// //<>//
+
+	global_stage.updateAndTrace(); //<>//
 	
 	fill(120); // for the DEBUG text
 	stroke(120); // for the DEBUG text
@@ -101,13 +101,12 @@ void draw() //<>// //<>// //<>// //<>//
 	global_gsr.printDebug();  // print the DEBUG TEXT related to the SKIN SENSOR every 20 frames
 	global_ecg.printDebug();  // print the DEBUG TEXT related to the SKIN SENSOR every 20 frames
 	
-	//<>//delay(500);
 }
-//////////////////////////////////////////////////////////////////////////////////
+ 
 /*void mouseClicked()
 { //<>// //<>//
 	//Mood m = new Mood(random(-1,1), random(-1,1));
 	// global_stage.selectScenebyMood(m); //<>//
 	global_stage.nextScene();
 }*/
-//////////////////////////////////////////////////////////////////////////////////void setup()
+ void setup()

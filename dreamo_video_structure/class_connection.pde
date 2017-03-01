@@ -90,7 +90,7 @@ class Connection
 		final String[] ports = Serial.list();
 		println( ports );
 		
-		if (ports.length != 0) // DEBUG = 1 ; RIGHT ONE = 0;
+		if (ports.length != 0 && ports.length != 3) // DEBUG = 1 ; RIGHT ONE = 0;
 		{
 			String portName = Serial.list()[0]; //change the 0 to a 1 or 2 etc. to match your port
 			myPort = new Serial(parent, portName, 19200);
@@ -110,7 +110,7 @@ class Connection
 	
 	public void storeFromText()
 	{ //<>//
-		//////////////////////////////////////////////////////////////////////////////////  
+		   
 		int multiplier = executionNumber; //<>//
 		int iStart = 0 + numToExtract*multiplier;
 		int iEnd = numToExtract*( multiplier + 1); 
@@ -119,7 +119,7 @@ class Connection
 		// INDEX IS SHIFTED TO AVOID READING ALWAYS THE SAME VALUES
 		if ( executionNumber >= conductanceOfflineTable.getRowCount()/numToExtract )
 			executionNumber = 0;
-		//////////////////////////////////////////////////////////////////////////////////
+
 		// CLEAR the list if the list SIZE is five time bigger than needed
 		if ( getList("con").size() > numToExtract*5 )
 		{ 
@@ -136,7 +136,7 @@ class Connection
 		
 		if ( getList("con").size() > conductanceOfflineTable.getRowCount() )
 		println( "WARNING: class connection, storeFromText(): reading is slower than writing.\n");
-		//////////////////////////////////////////////////////////////////////////////////
+		 
 		count = 0; 
 		// CLEAR the list
 		if ( getList("ecg").size() > numToExtract*5 )
@@ -151,7 +151,7 @@ class Connection
 			if ( count>=iStart && count<=iEnd ) 
 				getList("ecg").append (newFloat); 
 		}
-		////////////////////////////////////////////////////////////////////////////////// 
+		  
 		/*println("Offline sensor reading completed. ");
 		println("");
 		*/
