@@ -18,7 +18,7 @@ class LShape extends Particle
   float modFreq2Y = 0;
   float modFreq2Strength = 0;
   
-  float randomOffset = 300; //600 default
+  float randomOffset = 250; //600 default
   
   boolean invertBackground = false;
   float lineWeight = 11;
@@ -64,7 +64,7 @@ class LShape extends Particle
     if (pointCountEnd < pointMax && frameCount % 1 == 0)
       pointCountEnd = pointCountEnd + 1;
     
-    if ( freqX < 4 && raisingFreqX ){
+    if ( freqX < 6 && raisingFreqX ){
     freqX = freqX + getParameter(0)/100; //<>//
     raisingFreqX = true;
   }
@@ -102,18 +102,17 @@ class LShape extends Particle
           modFreq2Strength = modFreq2Strength - getParameter(0)/150; 
           raisingModFreq = false;
           
-          if ( modFreqY < 1.4) 
+          if ( modFreqY < 1.2) 
             raisingModFreq = true;
         }
-      }
+    }
          
-    if(randomOffset > 7 )
+    if(randomOffset > 20 )
       randomOffset = randomOffset-getParameter(0)/3;
     else
     {   
       phi += getParameter(0)/500;
-      randomOffset *= 3*getParameter(0); 
-
+      //randomOffset *= 1.5*(0.5+getParameter(0)); 
       //modFreqX = (modFreqX-getParameter(0)/580); 
     }
     
@@ -207,7 +206,7 @@ class LShape extends Particle
     if (d <= connectionRadius && d > 2) 
     {
       hue = map(a, 0, 0.5, hue(colore), hue(colore)*1.5 )%360 ;
-      stroke(hue, saturation(colore), brightness(colore), a*lineAlphaWeight*lineAlpha);
+      stroke(hue, saturation(colore), brightness(colore), a*lineAlphaWeight*lineAlpha*random(0.95,1.05));
       line(p1.getX(), p1.getY(), p2.getX(), p2.getY() );  
     }
   }
