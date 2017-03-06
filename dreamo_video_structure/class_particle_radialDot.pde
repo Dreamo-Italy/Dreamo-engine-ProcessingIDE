@@ -53,12 +53,12 @@ class RadialDot extends Particle
   public void update()
   {
     if(intro){
-      if( (frameCount % frameRate*10 == 0 || gravityRotation == 0) && getParameter(0) > 0.9)
-        {gravityRotation = random(2);}
+      if( (/*frameCount % global_fps*10 == 0 || */gravityRotation == 0) || getParameter(0) > 0.5)
+        {gravityRotation = 0;}
     }
     else if(!intro){
-      if( (frameCount % frameRate*5 == 0 || gravityRotation == 0) && getParameter(0) > 0.8)
-        {gravityRotation = random(360);}
+      if( /*(frameCount % global_fps*5 == 0 || gravityRotation == 0) ||*/ getParameter(0) > 0.2)
+        {gravityRotation = 100;}
     }
       
     setGravity(new Vector2d(1, gravityCenter.subtract(getPosition()).getDirection(), true));

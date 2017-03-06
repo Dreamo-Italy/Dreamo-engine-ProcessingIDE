@@ -2,21 +2,21 @@ class Gsr extends Biosensor
 {
    public void init()
   {
-    sensorName = "con";   
+    sensorName = "gsr";   
   }
   public void update()
    {          
     float currentValue = getAbsolute();
-    int numToExtract = ceil (global_sampleRate/frameRate); //<>//
+    //int sampleToExtract = ceil (global_sampleRate/frameRate); //<>//
     long initTimeT = System.nanoTime();     
 
-    incomingValues = global_connection.extractFromBuffer("con", numToExtract ); // store the incoming conductance value from Connection to another FloatLIst
+    incomingValues = global_connection.extractFromBuffer("gsr", sampleToExtract ); // store the incoming conductance value from Connection to another FloatLIst
 
     //long bufT = System.nanoTime() - initTimeT; // duration of ExtractFromBuffer
 
     currentValue = computeAverage(incomingValues, getDefault() );
     
-    //println("Number of elements to extract: " + numToExtract );
+    //println("Number of elements to extract: " + sampleToExtract );
     //println("buffer size: "+ incomingValues.size() );   
      
         

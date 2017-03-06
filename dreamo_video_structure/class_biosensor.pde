@@ -4,7 +4,7 @@ abstract class Biosensor
 {
  //************ CONSTANTS **************
  
-  final private int CALIBRATION_TIME = 3; // duration of the CALIBRATION PROCESS, expressed in seconds
+  final private int CALIBRATION_TIME = 5; // duration of the CALIBRATION PROCESS, expressed in seconds
 
   
  //********* PUBLIC MEMBERS ***********
@@ -23,7 +23,9 @@ abstract class Biosensor
   private float sensorMin, sensorMax; // the experimental MINIMUM and MAXIMUM values previously got from the current sensor
   private float minCal, maxCal; // calibration process min and max values
   private int calibrationCounter;
-
+  
+  
+  protected int sampleToExtract;
   protected FloatList incomingValues; // vector of float
   protected FloatList calibrationValues;
 
@@ -41,6 +43,9 @@ abstract class Biosensor
     calibrating = false;
     calibrated = false;
     calibrationCounter = 0;
+    
+    // number of BIOMEDICAL VALUES to extract at each update() cycle   
+    sampleToExtract = floor (global_sampleRate/(global_fps*global_sensorNumber)); 
     
     incomingValues = new FloatList();
     
@@ -74,7 +79,7 @@ abstract class Biosensor
     calibrationValues.clear();    
     calibrating = true;
   }
-  
+
   
   protected void calibration()
   {
@@ -91,8 +96,9 @@ abstract class Biosensor
     float newMax = max ( maxCal, getMax() ); 
     
     println("Calibration process is running...");
-    setMin ( newMin ); println( "new min: " + newMin );
-    setMax ( newMax ); println( "new max: " + newMax );
+    setMin( newMin ); println( "new min: " + newMin );
+    setMax( newMax ); println( "new max: " + newMax );
+    println();
     
     calibrationCounter++;
   }
@@ -100,7 +106,6 @@ abstract class Biosensor
 
   protected void endCalibration()
   {    
-    // expand the range by a 20% factor (experimental)
     float newMin = abs ( getMin() );
     float newMax = getMax();
     
@@ -116,25 +121,30 @@ abstract class Biosensor
     
     calibrating = false;
     calibrated = true;
+    calibrationCounter = 0;
   }
   
   protected boolean isCalibrating()
   {
     return calibrating;
   }
- 
   
   protected boolean needCalibration()
   {
     return !calibrated;
   }
+    
+  protected void restartCalibration()
+  {
+    calibrated = false;
+  } 
  
   //map the value to a 1-10 scale according to the experimental min and max values
   private float normalizeValue(float toNormalize) 
   {
       // map function from Processing libraries: map(value, start1, stop1, start2, stop2)
       
-      float normalized = map ( toNormalize, getMin(), getMax(), 1, 10 );
+      float normalized = map ( toNormalize, getMin(), getMax(), 0, 1);
       return normalized;
   }
   
@@ -178,17 +188,21 @@ abstract class Biosensor
   }
   
    public void printDebug()
-  {    
-    println("absolute :"+ getAbsolute() );
-    println("variation :"+ getVariation() );
-    println("default value :" + getDefault() );
-    println("");    
-    text("\n absolute : " + getAbsolute() + "; variation: " + getVariation() + "; default value : " + getDefault(), 10, 50);
+  {     
+    int xOffset = 10;
+    int yOffset = 35;
+    if ( sensorName == "ecg") yOffset += 13;
+    
+    text("Type: "+ sensorName+ " absolute : " + nf(getAbsolute(),1,2) + "; variation: " + nf(getVariation(),1,2) + 
+    "; default value : " + nf(getDefault(),2,2) + "; not normalized: "+nf(getValue(),1,2), xOffset, yOffset);
+    if(isCalibrating() && sensorName == "gsr")
+      text("Calibration is running", xOffset, yOffset+26);
+    
   }
   
   //********* SET METHODS **********
  
-  // set the sensor CURRENT VALUE ( sensor output useful for video generation )
+  // set the sensor CURRENT VALUE
   // when setValue is called, every other info is updated ( absolute, variation,... )
   public void setValue (float val) 
   {   
@@ -213,14 +227,14 @@ abstract class Biosensor
   public float getMin() { return sensorMin; }
   public float getMax() { return sensorMax; }
   public float getDefault() { return defaultValue; }
-  public float getValue() { return value; }         // the useful info
-  public float getAbsolute() { return absolute; } // absolute value of the output, mapped to a 1-10 scale
+  public float getValue() { return value; }
+  public float getAbsolute() { return absolute; } // absolute value of the output, mapped to a 0-1 scale
   public float getVariation() { return variation; } // percentage variation of the sensor with respect to the default value
   public String getID() {return sensorName; }
   
   
-  // the following methods depend on the SPECIFIC SENSOR
-  //********* ABSTRACT METHODS ***********
+ // the following methods depend on the SPECIFIC SENSOR
+ //********* ABSTRACT METHODS ***********
 
   abstract void init();
   abstract void update(); // update() is called at FrameRate speed
