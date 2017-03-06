@@ -67,9 +67,9 @@ void draw()
     fill(120); // for the DEBUG text
     stroke(120); // for the DEBUG text
 
-   global_gsr.printDebug();// print the DEBUG TEXT related to the SKIN SENSOR every 20 frames
-   global_ecg.printDebug();// print the DEBUG TEXT related to the SKIN SENSOR every 20 frames
-   text("particles: " + global_stage.getCurrentScene().getParticlesNumber() + "; framerate: " + frameRate + " \n", 10, 20);
+   global_gsr.printDebug();// print the DEBUG TEXT related to the SKIN SENSOR
+   global_ecg.printDebug();// print the DEBUG TEXT related to the ECG SENSOR
+   text("particles: " + global_stage.getCurrentScene().getParticlesNumber() + "; framerate: " + nf(frameRate,2,1) + " \n", 10, 20);
 
 
    long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME
@@ -96,4 +96,14 @@ void mouseClicked()
   //Mood m = new Mood(random(-1,1), random(-1,1));
   // global_stage.selectScenebyMood(m);
   global_stage.nextScene();
+}
+
+void keyPressed() 
+{    
+     if (true)
+     {
+       global_gsr.restartCalibration();
+       global_ecg.restartCalibration();
+       println("key pressed");
+     }
 }

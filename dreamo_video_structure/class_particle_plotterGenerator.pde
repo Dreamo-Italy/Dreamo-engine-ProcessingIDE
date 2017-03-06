@@ -50,35 +50,24 @@ class PlotterGenerator extends Particle
   
   public void update()
   {      
-    if (frameCount % frameRate*10 == 0){
-        mode1 = false;
-        mode2 = true;
-        
+    if (frameCount % (global_fps*15) == 0){ // switch between mode1 and mode2, with different damping factors
+        mode2 = mode1;
+        mode1 = !mode1;
       }
       
       setParameter(0, global_dyn.getRMS() );
       
-      if ( getParameter(0) > 0.05 )
-        println("PlotterParticle, RMS: "+getParameter(0));
-      else
-        println("PlotterParticle, RMS: NO incoming audio");
-
-//      println("hueValue "+ hueValue);
-//      println("saturationValue "+ saturationValue);
-//      println("brightness "+ brightnessValue);
-      
      // default values:
       
       if(mode1) damping = 0.22;
-      else if(mode2) damping = 0.01;
+      else if(mode2) damping = 0.1;
       
       connectionRadius = 40;
       particleConnectionRadius = 200;
       zoom = 1;
-      lineWeight = 2;
+      lineWeight = 2.5;
       setRotation(0);
-      setPosition( new Vector2d (0 , 0 , false ) );
-      
+      setPosition( new Vector2d (0 , 0 , false ) );   
       
       
       //variations for the printed objects:     
@@ -131,9 +120,8 @@ class PlotterGenerator extends Particle
        global_stage.getCurrentScene().getParticleByListIndex(i3).perturbate(2.2*getParameter(0));
      }
      else if ( mode2 == true){
-       if( frameCount % 500 == 0 ){
-        global_stage.getCurrentScene().getParticleByListIndex(i3).setDamping(damping/2);
-        global_stage.getCurrentScene().getParticleByListIndex(i3).perturbate(400*(getParameter(0)+0.3));
+       if( frameCount % 3 == 0 ){ //500
+        global_stage.getCurrentScene().getParticleByListIndex(i3).perturbate(50*(getParameter(0)-0.1));
        }
      }
 
