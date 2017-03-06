@@ -6,7 +6,7 @@ short global_fps = 30;
 //keeps count of the number of particles that have been instantiated from the beginning of the program
 long global_particlesInstanciatedNumber = 0;
 
-short global_sampleRate = 256;
+short global_sampleRate = 100;
 
 
 //main object for display

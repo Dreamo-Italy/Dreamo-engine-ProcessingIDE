@@ -19,24 +19,19 @@ class Ecg extends Biosensor
     
         public void update()
         {     
-        println("DEBUG: ECG update.");     
+        println("DEBUG: ECG update.");  
 
-
-        if(frameCount % 1 == 0)
-        {
-          //int numToExtract = ceil (global_sampleRate/frameRate);
-      // Per GIOVA: la connessione offline sembra non funzionare, la Floatlist incomingValues è sempre vuota,
-      // come segnalato dal println sottostante.
       
-          incomingValues = global_connection.extractFromBuffer("ecg", numToExtract ); // store the incoming conductance value from Connection to another FloatLIst
-          StoreEcg.append(incomingValues);
-                 
-          println("Number of ECG elements to extract: " + numToExtract );
-          println("ECG buffer size: "+ incomingValues.size() );  
-          println("Highest ECG peak: "+ max(StoreEcg.array()) );
+      incomingValues = global_connection.extractFromBuffer("ecg", numToExtract ); // store the incoming conductance value from Connection to another FloatLIst
+      
+      if(incomingValues != null && incomingValues.size() != 0)
+      {
+        StoreEcg.append(incomingValues);                         
+        println("Number of ECG elements to extract: " + numToExtract );
+        println("ECG buffer size: "+ incomingValues.size() );  
+        println("Highest ECG peak: "+ max(StoreEcg.array()) );
+      }
 
-          
-       }
      
      println("StoreEcg size: "+StoreEcg.size() );
       if(StoreEcg.size()> global_sampleRate*60){
