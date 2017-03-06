@@ -22,14 +22,15 @@ void setup()
   global_stage = new Stage();
 
   //scenes
-    global_stage.addScene(new ScenePlotter());
+  global_stage.addScene(new Lissajous() );
+  global_stage.addScene(new ScenePlotter());
   global_stage.addScene(new SceneFireworks());
   global_stage.addScene(new SceneDots());
   global_stage.addScene(new ScenePerlinNoise());
   global_stage.addScene(new Spirals());
   global_stage.addScene(new HelloShape(0));
-  //global_stage.addScene(new HelloShape(1));
-  //global_stage.addScene(new DumbC());
+  global_stage.addScene(new HelloShape(1));
+  global_stage.addScene(new DumbC());
 }
 
 void draw()
@@ -55,7 +56,7 @@ void draw()
 
    long gsrT = (System.nanoTime() - conT -initTimeT - audioTime); // time elapsed after GSR UPDATE
 
-   global_stage.updateAndTrace();
+   global_stage.updateAndTrace(); //<>//
 
    long viT = (System.nanoTime() - gsrT - conT - initTimeT - audioTime) ; // time elapsed after VIDEO UPDATE
 

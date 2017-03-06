@@ -58,7 +58,7 @@ class PlotterGenerator extends Particle
       
       setParameter(0, global_dyn.getRMS() );
       
-      if ( getParameter(0) > 0.05 )
+      if ( getParameter(0) > 0.01 )
         println("PlotterParticle, RMS: "+getParameter(0));
       else
         println("PlotterParticle, RMS: NO incoming audio");
@@ -132,13 +132,12 @@ class PlotterGenerator extends Particle
      }
      else if ( mode2 == true){
        if( frameCount % 500 == 0 ){
-        global_stage.getCurrentScene().getParticleByListIndex(i3).setDamping(damping/2);
+        global_stage.getCurrentScene().getParticleByListIndex(i3).setDamping(damping/15);
         global_stage.getCurrentScene().getParticleByListIndex(i3).perturbate(400*(getParameter(0)+0.3));
        }
      }
 
    }
-    
     
 
        
@@ -192,7 +191,7 @@ class PlotterGenerator extends Particle
     if (d <= connectionRadius && d > 2) 
     {
       hueValue = map(a, 0, 0.5, hue(myColor), hue(myColor)*3 )%360 ; //<>//
-      stroke(hueValue, saturationValue, brightnessValue, a*lineAlphaWeight*lineAlpha + (i1 %2 * 2));
+      stroke(hueValue, saturationValue, brightnessValue, a*lineAlphaWeight*lineAlpha + (i1 %3 * 2));
       line(p1.getX(), p1.getY(), p2.getX(), p2.getY() );  
     }
   }  
