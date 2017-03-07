@@ -9,7 +9,8 @@ class Connection
 {
   //********* CONSTANTS ***********
      
-  final int MAX_SENSOR = 5;
+  private final int lineFeed = 10;    // Linefeed in ASCII    
+  private final int totSampleToExtract, sampleToExtract;
   
   //********* PUBLIC MEMBERS ***********
 
@@ -21,39 +22,32 @@ class Connection
   private boolean wifiAvailable;
   private boolean serialAvailable;
   private boolean connectionAvailable;
-  private int executionNumberGsr, executionNumberEcg; // # of times StoreFromText has been called 
-  private float incomingValue,incomingValue2; // the input coming from a biosensor    
-  private final int BUFFER_SIZE = 200; // random value
-  private final int lineFeed = 10;    // Linefeed in ASCII    
-  private final int totSampleToExtract, sampleToExtract;
-  private String inputString = null;  
-  private FloatList incomingGsr;
-  private FloatList incomingEcg;
+  private int [] executionNumber; // # of times StoreFromText has been called 
+
+  private FloatList incomingGsr, incomingEcg;
   private Table table_gsr, table_ecg;
 
   //********* CONSTRUCTOR ***********
-  // p = parent is needed for the Serial myport ( -->parent<--, list[0], 19200...)
+  
+  // p = parent is needed for the Serial myport ( -->parent<--, list[0], baudRate...)
   public Connection( PApplet p ) 
   {
     wifiAvailable = false;
     serialAvailable = false;
     connectionAvailable = false;
-    executionNumberGsr = 0;
-    executionNumberEcg = 0;
-    incomingValue = 0;
     parent = p;
+    
+    executionNumber = new int[global_sensorNumber];
  
     incomingGsr = new FloatList();
     incomingEcg = new FloatList();
     
-    incomingValue = 0;
     parent = p;
     
     // number of BIOMEDICAL VALUES to extract at each update() cycle   
     totSampleToExtract = round (global_sampleRate/global_fps);  //<>//
-    sampleToExtract = totSampleToExtract/2;
-    
-   //<>// //<>//
+    sampleToExtract = totSampleToExtract/global_sensorNumber;
+     //<>//
     //serial check
     if(!wifiAvailable) 
       { 
@@ -108,7 +102,7 @@ class Connection
   
   
   public void update()
-  {    //<>// //<>//
+  {     //<>//
     if( !serialAvailable ) //<>//
          storeFromText();      // read the data from an OFFLINE TABLE
     else if ( serialAvailable )
@@ -125,182 +119,145 @@ class Connection
 
   public void storeFromText()
   { 
-       // CLEAR the list if the list SIZE is five time bigger than needed
-       if ( getList("gsr").size() > sampleToExtract*5 )
-          { getList("gsr").clear(); println("List is now empty"); }
-       // CLEAR the list if the list SIZE is five time bigger than needed
-       if ( getList("ecg").size() > sampleToExtract*5 )
-          { getList("ecg").clear(); println("List is now empty"); }
+    storeOfflineSamples("gsr");
+    storeOfflineSamples("ecg");  
+    println("Offline sensor reading OK");
+  }
+  
+  void storeOfflineSamples(String sensorName)
+    {
+      int sensorIndex = 0;
+      String tableHeaderName = null;
 
-      // INDEX IS SHIFTED TO AVOID READING ALWAYS THE SAME VALUES
-      if ( executionNumberGsr >= table_gsr.getRowCount()/sampleToExtract )
-           executionNumberGsr = 0;
-                
-      int count = 0; //<>// //<>//
-      int multiplier = executionNumberGsr; //<>//
+      if( !(sensorName.equals("gsr") || sensorName.equals("ecg") ) )
+        { 
+          println("ERROR in storeFromText: couldn't recognize the name of the sensor");
+          return;
+        }
+      else
+        { 
+          if( sensorName.equals("gsr") )
+              {sensorIndex = 0;
+              tableHeaderName = "conductance";}
+           else if ( sensorName.equals("ecg") )
+             {sensorIndex = 1;
+              tableHeaderName = "ECG_Filtered";}             
+        }            
+        
+      // CLEAR the list if the list SIZE is five time bigger than needed
+       if ( getList(sensorName).size() > sampleToExtract*5 )
+          { getList(sensorName).clear(); println("List"+sensorName+" is now empty"); }          
+          
+       // INDEX IS SHIFTED TO AVOID READING ALWAYS THE SAME VALUES
+      if ( executionNumber[sensorIndex] >= getTable(sensorName).getRowCount()/sampleToExtract )
+           executionNumber[sensorIndex] = 0;
+      
+      int count = 0;
+      int multiplier = executionNumber[sensorIndex];
       int iStart = 0 + sampleToExtract*multiplier;
-      int iEnd = sampleToExtract*( multiplier + 1); 
+      int iEnd = sampleToExtract*( multiplier + 1);  //index range [sampleToExtract*multiplier, sampleToExtract*( multiplier + 1)]
       
       // add the content of the table to a LIST OF FLOAT
-        for (TableRow row : table_gsr.rows()) {
-          float newFloat = row.getFloat("conductance");
+        for (TableRow row : getTable(sensorName).rows()) {
+          float newFloat = row.getFloat(tableHeaderName);
           if ( count>=iStart && count<iEnd ) 
-            getList("gsr").append (newFloat); 
+            getList(sensorName).append (newFloat); 
           count++;
-         }         
-         
-     // INDEX IS SHIFTED TO AVOID READING ALWAYS THE SAME VALUES
-      if ( executionNumberEcg >= table_ecg.getRowCount()/sampleToExtract )
-           executionNumberEcg = 0;
-      
-      int count2 = 0;
-      int multiplier2 = executionNumberEcg;
-      int iStart2 = 0 + sampleToExtract*multiplier2;
-      int iEnd2 = sampleToExtract*( multiplier2 + 1); 
-                
-     for (TableRow row : table_ecg.rows() ) 
-     {
-       float newFloat2 =row.getFloat("ECG_Filtered");
-     if ( count2>=iStart2 && count2<iEnd2 ) 
-            getList("ecg").append (newFloat2); 
-     count2++;
-
-       }  
-    
+         }                           
      
-     if ( getList("gsr").size() > table_gsr.getRowCount() || getList("ecg").size() > table_gsr.getRowCount() )
-       println( "WARNING: class connection, storeFromText(): reading is slower than writing.\n");
+     if ( getList(sensorName).size() > getTable(sensorName).getRowCount() )
+       println( "WARNING: class connection, storeFromText(): reading is slower than writing for sensor "+sensorName+"\n");
         
-      println("Read from table process has completed. ");
-      println("");
+      //println("Read from table "+sensorName+" has completed.");
         
-     executionNumberGsr++;
-     executionNumberEcg++;
-   }
+     executionNumber[sensorIndex]++;
+   } //<>// //<>//
    
     // the function that reads the DATA from the SERIAL LINE BUFFER
    private void storeFromSerial()
-  {
-    
-      int incomingGsrSize = incomingGsr.size();
-      int incomingEcgSize = incomingEcg.size();
-      if ( !serialAvailable ) println(" ERROR: storeFromSerial has been called, but the port is not available");
-      if ( incomingGsrSize > BUFFER_SIZE ) // security check
-      { 
-        incomingGsr.clear();
-        println("WARNING: list was getting big: list Gsr is now empty");
-      }
+  {      
+      if ( !serialAvailable ) 
+        println(" ERROR: storeFromSerial has been called, but the port is not available");
       
-      if ( incomingEcgSize > BUFFER_SIZE ) // security check
-      { 
-        incomingEcg.clear();
-        println("WARNING: list was getting big: list Ecg is now empty");
-      }
+      checkBufferSize("gsr");
+      checkBufferSize("ecg");        
             
       short added = 0, counter = 0; //<>//
       
       myPort.readStringUntil(lineFeed); // clean the garbage //<>//
 
-      // while there is something on the serial buffer, add the data to the "incomingGsr" queue
-      // myPort.available() greater than 4: there's a pending FLOAT on the buffer (size: 4 bytes)
-      
-      while ( serialAvailable && added < totSampleToExtract && counter < totSampleToExtract*3) //&& myPort.available() > 4 )
+      // while there is something on the serial buffer, add the data to the "getList(sensorName)" queue      
+      while ( serialAvailable && added < totSampleToExtract && counter < totSampleToExtract*3)
         {
-            inputString = myPort.readStringUntil(lineFeed);
+            String inputString = myPort.readStringUntil(lineFeed);
             if (inputString != null) 
             {
               inputString = trim(inputString); // removes "\t"
               float inputValues[] = float(split(inputString, '\t') );
               
               if ( inputValues.length == 2 )
-              {
-                  incomingValue = inputValues[0];
-                  incomingValue2 = inputValues[1];
+              {                  
+                  println( " cond: " + inputValues[0]);
+                  println( " ecg: " + inputValues[1]);
                   
-                  println( " cond: " + incomingValue);
-                  println( " ecg: " +incomingValue2);
+                  getList("gsr").append(inputValues[0]);
+                  getList("ecg").append(inputValues[1]);
                   
-                  incomingGsr.append(incomingValue);
-                  incomingEcg.append(incomingValue2);
                   added++;
               }
-            }
-            
+            }            
             counter++;
         }
       
      myPort.clear();
      println("");
-     println( "DEBUG : incomingGsr queue size: " + incomingGsr.size() );
-     println( "DEBUG : incomingEcg queue size: " + incomingEcg.size() );
-     println( "DEBUG : elements added: " + added*2 );
-     if ( incomingGsr.size() == 0 ) println(" ERROR in storeFromSerial: incomingGsrSize = 0 ");
-     if ( incomingEcg.size() == 0 ) println(" ERROR in storeFromSerial: incomingEcgSize = 0 "); 
+     println( "DEBUG : incomingGsr queue size: " + getList("gsr").size() );
+     println( "DEBUG : incomingEcg queue size: " + getList("ecg").size() );
+     println( "DEBUG : added elements: " + added*2 );
+     if ( getList("gsr").size() == 0 ) println(" ERROR in storeFromSerial: incomingGsrSize = 0 ");
+     if ( getList("ecg").size() == 0 ) println(" ERROR in storeFromSerial: incomingEcgSize = 0 "); 
+  }
+  
+  private void checkBufferSize(String sensorName)
+  {
+      if ( getList(sensorName).size() > sampleToExtract*global_fps ) // security check
+      { 
+        getList(sensorName).clear();
+        println("WARNING: list was getting big: list "+sensorName+" is now empty");
+      }
   }
   
   // gives out numberOfElements elements from the selected list and ERASE THOSE ELEMENTS
-  public FloatList extractFromBuffer (String listName, int numberOfElements) 
+  public FloatList extractFromBuffer (String sensorName, int numberOfElements) 
     {
       FloatList toOutput = new FloatList();  
       boolean emptyList = false;
-      boolean emptyList2 = false;
-      int originalListGsrSize = getList("gsr").size();    //<>// //<>//
-      int originalListEcgSize = getList("ecg").size(); 
+      int originalListSize = getList(sensorName).size();   //<>//
       
       float inValue = 0;
-      short added = 0;
-      
+ //<>//
+     // extract numberOfElements of elements from conductance list
 
-      if (listName.equals("gsr")) //<>//
-       {
-         // extract numberOfElements of elements from conductance list
+     while(! (getList(sensorName).size() <= originalListSize  - numberOfElements) && !emptyList) 
+     {
+          int currentListSize = getList(sensorName).size();
+          if ( currentListSize > 0 )
+             {                   
+               // !connectionAvailable: there aren't any connections available, we're reading the DATA from an OFFLINE TABLE
+               // with randomIndex we pick a different set of values for each cycle              
 
-         while(! (getList("gsr").size() <= originalListGsrSize  - numberOfElements) && !emptyList) 
-            {
-              int currentListGsrSize = getList("gsr").size();
-              if ( currentListGsrSize > 0 )
-                 {                   
-                   // !connectionAvailable: there aren't any connections available, we're reading the DATA from an OFFLINE TABLE
-                   // with randomIndex we pick a different set of values for each cycle              
-
-                   int index = currentListGsrSize - 1;
-                   if ( index >= 0 && index <= currentListGsrSize )
-                       {
-                         inValue = incomingGsr.remove( index );
-                         toOutput.append( inValue ); //<>// //<>//
-                         added++;
-                         }                
-
-                  }
-              else
-                  emptyList = true;
-                  
-            }   //<>//
-      }
-      if (listName.equals("ecg"))
-       {
-         // extract numberOfElements of elements from ECG list
-         while(! (getList("ecg").size() <= originalListEcgSize  - numberOfElements) && !emptyList2) 
-            {
-              int currentListEcgSize = getList("ecg").size();
-              if ( currentListEcgSize > 0 )
-              {                   
-                   // !connectionAvailable: there aren't any connections available, we're reading the DATA from an OFFLINE TABLE
-                   // with randomIndex we pick a different set of values for each cycle              
-
-                   int index = currentListEcgSize - 1;
-                     if ( index >= 0 && index <= currentListEcgSize )
-                         {
-                           inValue = incomingEcg.remove( index );
-                           toOutput.append( inValue );
-                           added++;
-                          }              
-               }
-              else
-                  emptyList2 = true;                  
-            }
-       }
-      return toOutput;
+               int index = currentListSize - 1;
+               if ( index >= 0 && index <= currentListSize )
+                   {
+                     inValue = getList(sensorName).remove( index );
+                     toOutput.append( inValue ); //<>//
+                     }               
+              }
+          else
+              emptyList = true; 
+     }  //<>//
+    
+     return toOutput;
     }
   
   public FloatList getList(String sensorName)
@@ -310,6 +267,16 @@ class Connection
       
     if(sensorName.equals("ecg"))
       return incomingEcg;
+    else 
+      return null;
+  }
+  public Table getTable(String sensorName)
+  {
+    if( sensorName.equals("gsr") )
+      return table_gsr;
+      
+    if(sensorName.equals("ecg"))
+      return table_ecg;
     else 
       return null;
   }

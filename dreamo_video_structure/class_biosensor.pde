@@ -83,21 +83,21 @@ abstract class Biosensor
   
   protected void calibration()
   {
-    if ( !calibrating )            { println("WARNING: not calibrating error"); return; }
-    else if ( calibrated )         { println("WARNING: already calibrated error"); return; }
-    else if ( incomingValues.size() == 0 ) { println("ERROR: incomingValues is empty"); return; }
+    if ( !calibrating )                    { println("WARNING: not calibrating error");     return; }
+    else if ( calibrated )                 { println("WARNING: already calibrated error");  return; }
+    else if ( incomingValues.size() == 0 ) { println("ERROR: incomingValues is empty");     return; }
 
     calibrationValues.append( incomingValues );
     
     minCal = calibrationValues.min();
-    maxCal = calibrationValues.max();
-    
     float newMin = min ( minCal, getMin() );
-    float newMax = max ( maxCal, getMax() ); 
+    setMin( newMin ); println( "min: " + newMin );
     
-    println("Calibration process is running...");
-    setMin( newMin ); println( "new min: " + newMin );
-    setMax( newMax ); println( "new max: " + newMax );
+    maxCal = calibrationValues.max();
+    float newMax = max ( maxCal, getMax() ); 
+    setMax( newMax ); println( "max: " + newMax );
+ 
+    println("Calibrating sensor: "+getID());
     println();
     
     calibrationCounter++;
@@ -105,17 +105,12 @@ abstract class Biosensor
   
 
   protected void endCalibration()
-  {    
-    float newMin = abs ( getMin() );
-    float newMax = getMax();
-    
-    setMin ( newMin );
-    setMax ( newMax );
-    
-    float average = computeAverage( calibrationValues , ( newMin + newMax )/2 );
+  {          
+    float average = computeAverage( calibrationValues , ( getMin() + getMax() )/2 );
+    println( "new average: "+ average);
     
     setDefault( normalizeValue(average) );
-    println( "new average: " + average );
+    println( "new normalized average: " + average );
     
     calibrationValues.clear();
     
