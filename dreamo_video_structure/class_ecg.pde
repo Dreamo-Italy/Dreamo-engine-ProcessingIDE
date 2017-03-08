@@ -42,10 +42,10 @@ class Ecg extends Biosensor
       if(StoreEcg.size()> global_sampleRate*60){
         
         float[] Analysis= StoreEcg.array();
-        float[] FilteredHp = dsp.HighPass (Analysis, 50.0,256.0);
-        //float[] FilteredLpHp = dsp.LowPass (Analysis, 100.0,256.0);
+        float[] FilteredHp = dsp.HighPass (Analysis, 50.0,global_sampleRate);
+        float[] FilteredLpHp = dsp.LowPassFS (FilteredHp, 100.0,global_sampleRate);
         println("BPM:"+ BPM );
-        BPM = bpm.ECGBPM3(Analysis);    
+        BPM = bpm.ECGBPM3(FilteredLpHp);    
         StoreEcg.clear();
      }else
        BPM = this.getValue();

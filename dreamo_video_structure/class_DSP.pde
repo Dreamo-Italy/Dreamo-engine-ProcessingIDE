@@ -580,21 +580,19 @@ class DSP {
     int Beatcount=0;
     int BPM;
     int N= a.length; //numToExtract*frameRate*5 
-    int fs=256;
     boolean flag=false;
     
     //Squaring the signal to increase the peak
     for (int i=0; i<N;i++){
       a[i]= a[i]*a[i];
-      if(a[i] < 0.5) 
+      if(a[i] < 0.2) 
         a[i] = 0;
     } 
-    
-    println(a);
+
 
     //signal evaluation and peaks counter
     for(int i=0;i<N-1;i++){
-        if(a[i]> sq(1.5)){
+        if(a[i]> sq(0.45)){
           if (!flag){
           Beatcount++;
           flag=true;
@@ -602,8 +600,6 @@ class DSP {
         }else{flag=false;}
       }
      // BPM detector 
-       float duration_second= 1/frameRate;
-       float dur_min=60;
        BPM = Beatcount;
        return BPM;
    }

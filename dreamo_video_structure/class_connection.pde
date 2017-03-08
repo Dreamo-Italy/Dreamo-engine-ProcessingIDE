@@ -116,7 +116,7 @@ class Connection
   private void loadOfflineTables()
   {
     table_con = loadTable("log_conductance.csv", "header"); // content of log_conductance
-    table_ecg = loadTable("ecg_new_mac.csv", "header"); // content of log_ECG
+    table_ecg = loadTable("Log_ecgdito.csv", "header"); // content of log_ECG
     println(table_con.getRowCount() + " total rows in table conductance"); 
     println(table_ecg.getRowCount() + " total rows in table ECG");  
   }
@@ -158,7 +158,7 @@ class Connection
                 
      for (TableRow row : table_ecg.rows() ) 
      {
-       float newFloat2 =row.getFloat("ECG_Filtered");
+       float newFloat2 =row.getFloat("ECG_filtered");
         count2++;
      if ( count2>=iStart2 && count2<=iEnd2 ) 
             getList("ecg").append (newFloat2); 
