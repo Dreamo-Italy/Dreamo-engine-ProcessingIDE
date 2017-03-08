@@ -32,6 +32,9 @@ void setup()
   global_stage.addScene(new HelloShape(0));
   global_stage.addScene(new HelloShape(1));
   global_stage.addScene(new DumbC());
+  
+  //debug plots
+  global_debugPlots = new DebugPlot(this);
 }
 
 void draw()
@@ -63,6 +66,8 @@ void draw()
    global_stage.updateAndTrace();
 
    long viT = (System.nanoTime() - gsrT - conT - initTimeT - audioTime-ecgT) ; // time elapsed after VIDEO UPDATE
+   
+   global_debugPlots.update();
 
 
     fill(120); // for the DEBUG text
