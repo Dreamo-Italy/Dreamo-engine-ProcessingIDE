@@ -13,10 +13,15 @@
   private GPointsArray surfacePoints;
   private GPlot [] plots;
   
+  private color bgColor,red,green;
+  
   //********* CONSTRUCTOR ***********
   
   public DebugPlot(PApplet p)
-  {   
+  { 
+    bgColor = color(1,1,1,10);
+    red = color(0,60,60,50);
+    green = color(50,50,50,50);
    
    // Prepare the points for the plots 
    points = new GPointsArray[plotNumber+1]; 
@@ -30,7 +35,7 @@
      
    points[i] = new GPointsArray(nPoints);
    plots[i] = new GPlot(p);
-   plots[i].setPos(0, height-(i*130)-100);
+   plots[i].setPos(0, height-(i*130)-90);
   
    // Set the plots title and the axis labels
    plots[i].setMar(new float[] {50, 20, 50, 0});
@@ -40,20 +45,19 @@
    //plots[i].getYAxis().setAxisLabelText("y ");
    
    // Set the colors
-   color bgColor = color(1,1,1,20);
-   color red = color(0,60,60,60);
    plots[i].setFixedYLim(true);
    plots[i].setYLim(0, 1);
    plots[i].getYAxis().setAxisLabelText("y axis");
    plots[i].setPointSize(1);
    plots[i].setBoxBgColor(bgColor);
    plots[i].setBgColor(bgColor);
-   plots[i].setLabelBgColor(bgColor);
+   plots[i].setLabelBgColor(red);
    plots[i].setBoxLineColor(bgColor);
    plots[i].setLineColor(red);
    plots[i].setPointColor(red);
-   plots[i].getXAxis().setLineColor(red);
-   plots[i].getYAxis().setLineColor(red);
+   plots[i].getXAxis().setLineColor(green);
+   plots[i].getYAxis().setLineColor(green);
+
 
    for(int j=0; j<nPoints;j++)   
       points[i].add(frameCount, 0);
@@ -72,10 +76,10 @@
    plots[2].addLayer("AvgRMS", surfacePoints);
    plots[2].getLayer("AvgRMS").setPoints( surfacePoints );
    plots[2].getLayer("AvgRMS").setPointSize(1);
-   plots[2].getLayer("AvgRMS").setPointColor( color(50,50,50,50) );
+   plots[2].getLayer("AvgRMS").setPointColor( green );
 
   // Change the second layer line color
-  plots[2].getLayer("AvgRMS").setLineColor(color(50,50,50,50));
+  plots[2].getLayer("AvgRMS").setLineColor(green);
   
   }
   
@@ -94,7 +98,7 @@
     
       
        for(int i=0; i<plotNumber;i++)
-      {                 
+      {             
         plots[i].removePoint(0);
       
         // Draw it!
