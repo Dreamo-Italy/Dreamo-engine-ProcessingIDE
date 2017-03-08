@@ -8,13 +8,25 @@ class Stage
 	private Scene currentScene;
 	private int currentSceneIndex;
 
+
+  private int global_stage_change_cnt;
+  private int[] scene_score ;
+  
 	//CONSTRUCTORS
 	public Stage()
 	{
+    int i;
 		scenesList = new Scene[SCENES_MAX];
 		scenesNumber = 0;
 		currentScene = null;
 		currentSceneIndex = -1;
+    global_stage_change_cnt = 0;
+    scene_score = new int[SCENES_MAX];
+    
+    for(i = 0; i < SCENES_MAX; i ++) //<>//
+    {
+      scene_score[i] = 0;
+    }
 	}
 
 	//copy constructor
@@ -97,7 +109,7 @@ class Stage
 			println("Warning: there are no scenes in the stage.");
 		}
 	}
-
+  /*
 	// looks for the NEAREST scene in the sense of euclidean distance.
 	// the input Mood m is calculated from audio and biomedical signals analysis 
 	public void selectScenebyMood(Mood m) 
@@ -123,7 +135,46 @@ class Stage
 			changeScene(minimumDistanceScene);
 		}
 	} 
-	
+	*/
+
+  public int selectSceneByVote(float q_gsr, float q_ecg, int scene_num)
+  { 
+    int i, scene_sel, max, max_sel;
+    
+    scene_sel = (int)round((q_gsr + q_ecg)/2);
+    scene_score[scene_sel] = scene_score[scene_sel] + 1;
+    
+    if(global_stage_change_cnt == CHANGE_CHECK)
+    {
+      max_sel = - 1;
+      max = 0;
+      
+      for(i = 0; i < scene_num; i ++)  
+      {
+        if(scene_score[i] > SOGLIA_SEL )
+        {  
+          if(scene_score[i] > max)
+          {
+            max = scene_score[i];
+            max_sel = i;
+          }
+          
+          scene_score[i] = 0;
+        }
+      }
+      
+      global_stage_change_cnt = 1; 
+      
+      if(!(max_sel < 0))
+      {
+        return max_sel;
+      }     
+    }
+    
+    global_stage_change_cnt = global_stage_change_cnt + 1;
+    return - 1;
+  }
+  
 	private void changeScene(Scene newScene)  
 	{
 		if(newScene != currentScene)
