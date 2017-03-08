@@ -1,6 +1,8 @@
 //package dreamo.display;
 //GLOBAL VARIABLES
 
+import grafica.*;
+
 short global_fps = 30;
 
 //keeps count of the number of particles that have been instantiated from the beginning of the program
@@ -25,3 +27,5 @@ AudioFeatures global_audio;
 Tone global_tone;
 Rhythm global_rhythm;
 Dynamic global_dyn;
+
+DebugPlot global_debugPlots;

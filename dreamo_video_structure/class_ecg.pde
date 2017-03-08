@@ -45,7 +45,7 @@ class Ecg extends Biosensor
      }else
        BPM = this.getValue();
      
-     setValue  ( BPM );
+     setValue  ( incomingValues.get(0) );
      println("BPM:"+ BPM );
 
      

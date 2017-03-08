@@ -13,7 +13,7 @@ class Dynamic extends AudioFeatures {
   private float maxRMS;
 
   //keep track of 0.25 seconds of music and average RMS values
-  private final int AVG=11025;
+  private final int AVG=129; // 43 _ 1s
   private float[] averages;
   private float RMSsum;
   private int aidx;
