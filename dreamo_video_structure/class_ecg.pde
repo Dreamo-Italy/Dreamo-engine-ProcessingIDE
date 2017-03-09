@@ -73,9 +73,9 @@ class Ecg extends Biosensor
         
      setValue  ( BPM );
      println("BPM:"+ BPM );
-     println("BPM:"+ BPM2 );
+     println("NEW BPM:"+ BPM2 );
      
-     //if (flag1==1) exit();
+    if (flag1==1) exit();
      
      // segnala lo stato dell'utente
      if (FlagTachy)  

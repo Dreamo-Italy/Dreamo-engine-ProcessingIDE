@@ -663,7 +663,7 @@ class DSP {
     float index=0,lastPeak=0, nSample=0;
     float RRdistanceSecond=0;
     int N= a.length; //numToExtract*frameRate*5 
-    boolean flag=false, flag2=false;
+    boolean flag=false, flag2=true;
     
     // Differentiator
     for (int i=0; i<N;i++){
@@ -679,19 +679,33 @@ class DSP {
 
     //signal evaluation and peaks counter
     for(int i=1;i<N-1;i++){
-        if(a[i]> 36000 && a[i]>a[i-1] && a[i+1]>a[i] ){
-         if(!flag){
+       
+      if(a[i]> 36000 && a[i]>a[i-1] && a[i+1]>a[i] ){
+    
+          if(flag2){
           Beatcount++;
+          index=i;
+          flag2=false;
+          println("qui");
+          }
+          
+          if(!flag){
           flag=true;
           index=i;
+          
+          if(lastPeak!=0){
           nSample=index-lastPeak;
           RRdistanceSecond=nSample/global_sampleRate;
-          if (RRdistanceSecond < 0.2) {
-             Beatcount=Beatcount-1;
-          } 
+          println("RRbefore " +RRdistanceSecond);
+          println("BCbefore " +Beatcount);
+          if (RRdistanceSecond > 0.12) {
+             Beatcount++;
+             println("after " +Beatcount);  
+          }
+        }
         }
         } else {
-        flag=false; lastPeak=index;
+        flag=false; flag2=false; lastPeak=index;
       }
     }
      
