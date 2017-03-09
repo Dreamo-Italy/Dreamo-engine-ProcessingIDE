@@ -122,9 +122,10 @@ void keyPressed()
        global_ecg.restartCalibration();
        println("key pressed");
      }
+}
+
 
 void stop()
      {
        global_audio.stop();    
      }
-}

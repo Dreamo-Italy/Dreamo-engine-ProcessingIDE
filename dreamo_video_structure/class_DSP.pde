@@ -521,7 +521,7 @@ public final static class DSP {
 
   /******************************************************************************************************/
     //BPM ECG (non funziona?)
-   public int ECGBPM(float[] a){
+   public static int ECGBPM(float[] a){
      
     int beatcount=0;
     int BPM;
@@ -533,11 +533,8 @@ public final static class DSP {
          beatcount++;
         }
       }
-      // PER NICO: il problema è che ECGBPM viene richiamato a ogni update(), cioè TRENTA VOLTE AL SECONDO
-      // Quindi, se rileva un BEAT a ogni update(), cioè ogni 1/frameRate secondi, ECGBPM pensa che in un secondo ci siano 30 BEATS --> 1800 BPM!!
-      // L'unica soluzione è ACCUMULARE dati, tipo come si fa con la funzione CALIBRATION(), e eseguire il calcolo del bpm una volta ogni 30 update() o così
       
-       float duration_second = 1/frameRate; 
+       float duration_second = 1/30; //replace 30 with global_fps
        float duration_minute = 60;
        
        //float duration_second= (float)N/fs;
@@ -548,7 +545,7 @@ public final static class DSP {
    }    
 /******************************************************************************************************/
    
-   public int ECGBPM2(FloatList a){
+   public static int ECGBPM2(FloatList a){
     int Beatcount=0;
     int BPM;
     int N= a.size(); 
@@ -568,7 +565,7 @@ public final static class DSP {
         }else{flag=false;}
       }
      // BPM detector 
-       float duration_second = 1/frameRate;
+       float duration_second = 1/30;
        float dur_min=60;
        BPM=round(Beatcount* dur_min/duration_second );
        return BPM;
@@ -576,7 +573,7 @@ public final static class DSP {
 
  /******************************************************************************************************/
  
-  public int ECGBPM3(float[] a){
+  public static int ECGBPM3(float[] a){
     int Beatcount=0;
     int BPM;
     int N= a.length; //numToExtract*frameRate*5 
@@ -614,7 +611,7 @@ public final static class DSP {
    }
 /******************************************************************************************************/
  
-  public float RRdistance(float[] a){
+  public static float RRdistance(float[] a){
     
     float indexs=0, indexsold=0, RRdist=0;
     int N= a.length; //numToExtract*frameRate*5 
@@ -657,7 +654,7 @@ public final static class DSP {
  // il trend è sempre lo stesso i valori cambiano a seconda della threshold per
  // RRdistanceSecond
  // riguardare potenziali errori
-  public int ECGBPMLAST(float[] a){
+  public static int ECGBPMLAST(float[] a){
     int Beatcount=0;
     int BPM;
     float index=0,lastPeak=0, nSample=0;
@@ -694,7 +691,7 @@ public final static class DSP {
           
           if(lastPeak!=0){
           nSample=index-lastPeak;
-          RRdistanceSecond=nSample/global_sampleRate;
+          RRdistanceSecond=nSample/30;
           //println("RRbefore " +RRdistanceSecond);
           //println("BCbefore " +Beatcount);
           if (RRdistanceSecond > 0.12) {

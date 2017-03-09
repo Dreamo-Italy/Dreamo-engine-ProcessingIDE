@@ -7,7 +7,6 @@ class Dynamic extends FeaturesExtractor
   //averaging window
   private final int N=5;
   //averaging constant
-  private float tiny;
   private float maxRMS;
 
 
@@ -18,8 +17,6 @@ class Dynamic extends FeaturesExtractor
   private float RMSsum;
   private int aidx;
 
-  private float s_level;
-
 
   //CONSTRUCTOR
   public Dynamic(int bSize, float sRate)
@@ -27,8 +24,6 @@ class Dynamic extends FeaturesExtractor
     buffSize=bSize;
     sampleRate=sRate;
     maxRMS = 0.5;
-    tiny=1f-(1f/N);
-    s_level=0;
     averages=new float[AVG];
     RMSsum=0;
     aidx=0;
@@ -40,6 +35,7 @@ class Dynamic extends FeaturesExtractor
   {
    return RMS;
   }
+
 
   public float getAvgRMS()
   {
@@ -76,11 +72,9 @@ class Dynamic extends FeaturesExtractor
       RMSsum+=averages[aidx]; //update the total
       aidx++; //next position
       if(aidx>=AVG){aidx=0;} //if at the end go back
-
+      
       //smoothing
-      s_level=tiny*s_level+(1-tiny)*level;
-      RMS=s_level;
-      //TODO: try with RMS=expSmooth(level,RMS,5);
+      RMS=expSmooth(level,RMS,5);
       }
   
 

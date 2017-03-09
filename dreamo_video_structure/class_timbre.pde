@@ -41,12 +41,14 @@ class Timbre extends FeaturesExtractor
   {
     float num=0;
     float denom=0;
+    float sc=0;
     for(int i=0;i<specSize;i++)
     {
       num+=(centerFreqHz(i)*FFTcoeffs[i]);
       denom+=FFTcoeffs[i];    
     }
-    spectralCentroidHz = num/denom;    
+    sc = num/denom;
+    spectralCentroidHz = expSmooth(sc, spectralCentroidHz, 5);
   }
   
   private float centerFreqHz(int idx)
