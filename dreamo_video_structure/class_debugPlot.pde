@@ -45,8 +45,8 @@
    //plots[i].getYAxis().setAxisLabelText("y ");
    
    // Set the colors
-   plots[i].setFixedYLim(true);
-   plots[i].setYLim(0, 1);
+   //plots[i].setFixedYLim(true);
+   //plots[i].setYLim(0, 1);
    plots[i].getYAxis().setAxisLabelText("y axis");
    plots[i].setPointSize(1);
    plots[i].setBoxBgColor(bgColor);
@@ -87,7 +87,7 @@
   {
     if ( global_gsr.isCalibrating() == false ){
     plots[0].addPoint( frameCount, global_gsr.getAbsolute() );
-    plots[1].addPoint( frameCount, global_ecg.getAbsolute() );
+    plots[1].addPoint( frameCount, global_ecg.getValue() );
     plots[2].addPoint( frameCount, global_dyn.getRMS() );
     
     plots[2].getLayer("AvgRMS").addPoint( frameCount, global_dyn.getAvgRMS() );

@@ -4,7 +4,7 @@ abstract class Biosensor
 {
  //************ CONSTANTS **************
  
-  final private int CALIBRATION_TIME = 1; // duration of the CALIBRATION PROCESS, expressed in seconds
+  final private int CALIBRATION_TIME = 10; // duration of the CALIBRATION PROCESS, expressed in seconds
 
   
  //********* PUBLIC MEMBERS ***********
@@ -23,8 +23,8 @@ abstract class Biosensor
   private float sensorMin, sensorMax; // the experimental MINIMUM and MAXIMUM values previously got from the current sensor
   private float minCal, maxCal; // calibration process min and max values
   private int calibrationCounter;
-  
-  
+  private DSP dspcal, bpmcal;
+  private int BPMcal;
   protected int sampleToExtract;
   protected FloatList incomingValues; // vector of float
   protected FloatList calibrationValues;
@@ -34,6 +34,9 @@ abstract class Biosensor
   
   public Biosensor()
   {
+    dspcal =new DSP();
+    bpmcal = new DSP();
+    
     sensorName = "default";
     absolute = -1;
     
@@ -65,13 +68,17 @@ abstract class Biosensor
       if ( this.isCalibrating() == false )
         startCalibration();
       
+    
       calibration();
       
       if ( calibrationCounter > frameRate*CALIBRATION_TIME )
          endCalibration();      
-    }
     
+    
+   }
   }
+    
+  
   
   protected void startCalibration()
   {
@@ -105,11 +112,32 @@ abstract class Biosensor
   
 
   protected void endCalibration()
-  {          
-    float average = computeAverage( calibrationValues , ( getMin() + getMax() )/2 );
-    println( "new average: "+ average);
+  {    
+  
+    float newMin = abs ( getMin() );
+    float newMax = getMax();
     
-    setDefault( normalizeValue(average) );
+    setMin ( newMin );
+    setMax ( newMax );
+    
+    float average = computeAverage( calibrationValues , ( newMin + newMax )/2 );
+     
+    if( sensorName == "ecg")
+    {         
+      float[] Analysiscal = calibrationValues.array();
+      float[] FilteredHpcal = dspcal.HighPass (Analysiscal, 50.0,global_sampleRate);
+      float[] amplical = dspcal.times(FilteredHpcal,100);
+      float[] FilteredLpHpcal = dspcal.LowPassFS (amplical, 100.0,global_sampleRate);
+      float[] ampli2cal = dspcal.times(FilteredLpHpcal,100);
+      
+      BPMcal = bpmcal.ECGBPM3(ampli2cal);          
+      setValue  ( BPMcal*2 );
+      setDefault(normalizeValue( BPMcal*2));
+    }         
+    
+    if ( getID() == "gsr") 
+      setDefault( normalizeValue(average) );
+    
     println( "new normalized average: " + average );
     
     calibrationValues.clear();

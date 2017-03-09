@@ -580,31 +580,138 @@ class DSP {
     int Beatcount=0;
     int BPM;
     int N= a.length; //numToExtract*frameRate*5 
-    int fs=256;
     boolean flag=false;
+    
+    // Differentiator
+    for (int i=0; i<N;i++){
+      if(i>3){a[i]= 0.1*(2*a[i] + a[i-1] -a[i-3]-2*a[i-4]);}
+     }
     
     //Squaring the signal to increase the peak
     for (int i=0; i<N;i++){
       a[i]= a[i]*a[i];
-      if(a[i] < 0.5) 
-        a[i] = 0;
+      //if(a[i] < 0.05) 
+      //  a[i] = 0;
     } 
-    
-    println(a);
+     float newMax = max ( a); 
+     println("max filtered"+ newMax);
 
     //signal evaluation and peaks counter
-    for(int i=0;i<N-1;i++){
-        if(a[i]> sq(1.5)){
+    for(int i=1;i<N-1;i++){
+        if(a[i]> 36000 && a[i]>a[i-1] && a[i+1]>a[i]){
           if (!flag){
-          Beatcount++;
+          Beatcount++; 
           flag=true;
           }
         }else{flag=false;}
       }
+     
+     
      // BPM detector 
-       float duration_second= 1/frameRate;
-       float dur_min=60;
+     
        BPM = Beatcount;
        return BPM;
    }
+/******************************************************************************************************/
+ 
+  public float RRdistance(float[] a){
+    
+    float indexs=0, indexsold=0, RRdist=0;
+    int N= a.length; //numToExtract*frameRate*5 
+    boolean flag=false;
+
+    // Differentiator
+    for (int i=0; i<N;i++){
+      if(i>3){a[i]= 0.1*(2*a[i] + a[i-1] -a[i-3]-2*a[i-4]);}
+     }
+    
+    //Squaring the signal to increase the peak
+    for (int i=0; i<N;i++){
+      a[i]= a[i]*a[i];
+      //if(a[i] < 0.05) 
+      //  a[i] = 0;
+    }
+    
+    //signal evaluation and peaks counter
+    for(int i=1;i<N-1;i++){
+        if(a[i]> 36000 && a[i]>a[i-1] && a[i+1]>a[i]){
+          if (!flag){
+          indexs=i/100;
+          flag=true;
+          }
+        }else{flag=false;}
+        indexs=indexsold;
+        if (indexs>indexsold && indexs!=0 && indexsold!=0){
+           RRdist=indexs-indexsold;
+          
+        }
+      
+      }
+      return RRdist;
+       
+   }
+
+/******************************************************************************************************/
+ // strani errori nel log se ECGBPM sopra 80 bpm circa 60 bpm per ECGBPMLAST
+ // invece se ECGBPM sotto 40 bpm circa 80 bpm per ECGBPMLAST
+ // il trend è sempre lo stesso i valori cambiano a seconda della threshold per
+ // RRdistanceSecond
+ // riguardare potenziali errori
+  public int ECGBPMLAST(float[] a){
+    int Beatcount=0;
+    int BPM;
+    float index=0,lastPeak=0, nSample=0;
+    float RRdistanceSecond=0;
+    int N= a.length; //numToExtract*frameRate*5 
+    boolean flag=false, flag2=true;
+    
+    // Differentiator
+    for (int i=0; i<N;i++){
+      if(i>3){a[i]= 0.1*(2*a[i] + a[i-1] -a[i-3]-2*a[i-4]);}
+     }
+    
+    //Squaring the signal to increase the peak
+    for (int i=0; i<N;i++){
+      a[i]= a[i]*a[i];
+      //if(a[i] < 0.05) 
+      //  a[i] = 0;
+    } 
+
+    //signal evaluation and peaks counter
+    for(int i=1;i<N-1;i++){
+       
+      if(a[i]> 36000 && a[i]>a[i-1] && a[i+1]>a[i] ){
+    
+          if(flag2){
+          Beatcount++;
+          index=i;
+          flag2=false;
+          }
+          
+          if(!flag){
+          flag=true;
+          index=i;
+          
+          if(lastPeak!=0){
+          nSample=index-lastPeak;
+          RRdistanceSecond=nSample/global_sampleRate;
+          //println("RRbefore " +RRdistanceSecond);
+          //println("BCbefore " +Beatcount);
+          if (RRdistanceSecond > 0.12) {
+             Beatcount++;
+             println("after " +Beatcount);  
+          }
+        }
+        }
+        } else {
+        flag=false; flag2=false; lastPeak=index;
+      }
+    }
+     
+     
+     // BPM detector 
+       BPM = Beatcount;
+       return BPM;
+   }
+/******************************************************************************************************/
 }

@@ -112,7 +112,7 @@ class Connection
   private void loadOfflineTables()
   {
     table_gsr = loadTable("log_conductance.csv", "header"); // content of log_conductance
-    table_ecg = loadTable("ecg_new_mac.csv", "header"); // content of log_ECG
+    table_ecg = loadTable("LastLogEcg.csv", "header"); // content of log_ECG
     println(table_gsr.getRowCount() + " total rows in table conductance"); 
     println(table_ecg.getRowCount() + " total rows in table ECG");  
   }
