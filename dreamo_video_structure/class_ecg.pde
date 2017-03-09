@@ -44,7 +44,7 @@ class Ecg extends Biosensor
        }
      
      println("StoreEcg size: "+StoreEcg.size() );
-      if(StoreEcg.size()> global_sampleRate*10){
+      if(StoreEcg.size()> global_sampleRate*60){
         
         float[] Analysis= StoreEcg.array();
         float[] FilteredHp = dsp.HighPass (Analysis, 50.0,global_sampleRate);
@@ -75,7 +75,7 @@ class Ecg extends Biosensor
      println("BPM:"+ BPM );
      println("BPM:"+ BPM2 );
      
-     if (flag1==1) exit();
+     //if (flag1==1) exit();
      
      // segnala lo stato dell'utente
      if (FlagTachy)  

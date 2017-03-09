@@ -652,7 +652,11 @@ class DSP {
    }
 
 /******************************************************************************************************/
- 
+ // strani errori nel log se ECGBPM sopra 80 bpm circa 60 bpm per ECGBPMLAST
+ // invece se ECGBPM sotto 40 bpm circa 80 bpm per ECGBPMLAST
+ // il trend è sempre lo stesso i valori cambiano a seconda della threshold per
+ // RRdistanceSecond
+ // riguardare potenziali errori
   public int ECGBPMLAST(float[] a){
     int Beatcount=0;
     int BPM;
@@ -676,17 +680,14 @@ class DSP {
     //signal evaluation and peaks counter
     for(int i=1;i<N-1;i++){
         if(a[i]> 36000 && a[i]>a[i-1] && a[i+1]>a[i] ){
-         
-          if(!flag){
+         if(!flag){
           Beatcount++;
           flag=true;
           index=i;
-          
           nSample=index-lastPeak;
           RRdistanceSecond=nSample/global_sampleRate;
-          
-          if (RRdistanceSecond < 0.1) {
-             Beatcount--;
+          if (RRdistanceSecond < 0.2) {
+             Beatcount=Beatcount-1;
           } 
         }
         } else {
