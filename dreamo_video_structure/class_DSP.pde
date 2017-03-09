@@ -1,8 +1,8 @@
 import java.util.Arrays;
 
-class DSP {
+public final static class DSP {
 
-   public DSP(){}
+   private DSP(){}
   
   
   //*********** DSP algorithms methods *********************
@@ -13,7 +13,7 @@ class DSP {
  */
     
     //CONVOLVES SEQUENCES a AND b.The resulting convolution has length (a.length+b.length-1)
-    public float[] conv(float[] a, float[] b)
+    public static float[] conv(float[] a, float[] b)
     {
         float[] y = new float[a.length+b.length-1];
 
@@ -54,7 +54,7 @@ class DSP {
     /******************************************************************************************************/
     
     //COMPUTES CROSS CORRELATION BETWEEN a AND b. maxlag IS THE MAXIMUM LAG
-    public float[] xcorr(float[] a, float[] b, int maxlag)
+    public static float[] xcorr(float[] a, float[] b, int maxlag)
     {
         float[] y = new float[2*maxlag+1];
         Arrays.fill(y, 0);
@@ -100,7 +100,7 @@ class DSP {
     /******************************************************************************************************/
     
     //COMPUTES AUTOCORRELATION OF a (time domain)
-    public float[] autocorr(float[] a, int maxlag)
+    public static float[] autocorr(float[] a, int maxlag)
     {
         return xcorr(a, a, maxlag);
     }
@@ -108,7 +108,7 @@ class DSP {
     /******************************************************************************************************/
     
     //SUBTRACT MEMBER TO MEMEBER
-    public float[] minus(float[] a, float[] b)
+    public static float[] minus(float[] a, float[] b)
      {       
      //if(a.length==b.length) {
        float[] y = new float[a.length];
@@ -126,7 +126,7 @@ class DSP {
    /******************************************************************************************************/
    
     //SUM MEMBER TO MEMBER
-    public float[] plus(float[] a, float[] b)
+    public static float[] plus(float[] a, float[] b)
      {       
        //if(a.length==b.length) {
          float[] y = new float[a.length];
@@ -144,7 +144,7 @@ class DSP {
    /******************************************************************************************************/
    
    //HALF WAVE RECTIFICATION (clipping to positive values)
-   public float[] HWR(float[] a){
+   public static float[] HWR(float[] a){
    
      //float[] b = new float[a.length];
      for(int i=0;i<a.length;i++)
@@ -157,7 +157,7 @@ class DSP {
     /******************************************************************************************************/ 
     
     //UPSAMPLING BY FACTOR n WITH ZERO INSERTION
-    public float[] upsample(float[] x, int n)
+    public static float[] upsample(float[] x, int n)
       {
        
      float[] y = new float[x.length*n];
@@ -177,7 +177,7 @@ class DSP {
     /******************************************************************************************************/
     
     //FIND MAX VALUE IN a
-    public float vmax(float[] a)
+    public static float vmax(float[] a)
     {        
         float y = Float.MIN_VALUE;
 
@@ -191,7 +191,7 @@ class DSP {
     /******************************************************************************************************/
     
     //FIND THE MIN VALUE IN a
-    public float vmin(float[] a)
+    public static float vmin(float[] a)
     {        
         float y = Float.MAX_VALUE;
 
@@ -205,7 +205,7 @@ class DSP {
     /******************************************************************************************************/
     
     //FIND THE INDEX OF THE MAX VALUE IN a
-    public int argmax(float[] a)
+    public static int argmax(float[] a)
     {        
         float y = Float.MIN_VALUE;
         int idx = -1;
@@ -225,7 +225,7 @@ class DSP {
     /******************************************************************************************************/
     
     //FIND THE INDEX OF THE MIN VALUE IN a
-    public int argmin(float[] a)
+    public static int argmin(float[] a)
     {        
         float y = Float.MAX_VALUE;
         int idx = -1;
@@ -245,7 +245,7 @@ class DSP {
     /******************************************************************************************************/
     
     //SIMPLE MOVING AVERAGE FILTER WITH WIDOW SIZE = M
-    public float[] MAfilter(float[] x, int M)
+    public static float[] MAfilter(float[] x, int M)
     {
      float[] y = new float[x.length];
      float[] b = new float[M];
@@ -270,7 +270,7 @@ class DSP {
     /******************************************************************************************************/
     
     //IIR filter
-    public float[] IIRfilter(float[] b, float[] a, float[] x)
+    public static float[] IIRfilter(float[] b, float[] a, float[] x)
     {
         float[] y = new float[x.length];
 
@@ -306,7 +306,7 @@ class DSP {
     /******************************************************************************************************/
     
     //Tarsos IIR filter 
-    public float[] TarsosFilter(float[] b, float[] a, float[] input)
+    public static float[] TarsosFilter(float[] b, float[] a, float[] input)
     {
       float[] x = new float[input.length];
       System.arraycopy(input,0,x,0,input.length);  
@@ -348,7 +348,7 @@ class DSP {
     /******************************************************************************************************/
     
     //high pass filtering (Tarsos coefficients calculation)
-    public float[] HighPass(float[] in, float freq, float sampleRate)
+    public static float[] HighPass(float[] in, float freq, float sampleRate)
       {
         
         //calculate coefficients
@@ -364,7 +364,7 @@ class DSP {
     /******************************************************************************************************/
     
     //low pass filtering (Tarsos coefficients calculation)
-    public float[] LowPassSP(float[] in, float freq, float sampleRate)
+    public static float[] LowPassSP(float[] in, float freq, float sampleRate)
     {
         //calculate coefficients
         float fracFreq=freq/sampleRate;
@@ -378,7 +378,7 @@ class DSP {
     /******************************************************************************************************/
     
     //low pass filtering (Tarsos coefficients calculation)
-    public float[] LowPassFS(float[] in, float freq, float sampleRate)
+    public static float[] LowPassFS(float[] in, float freq, float sampleRate)
     { 
       //minimum frequency is 60Hz!
       freq=freq>60?freq:60;
@@ -395,7 +395,7 @@ class DSP {
     
     /******************************************************************************************************/
     
-    public float[] BandPass(float[] in, float freq, float bandWidth, float sampleRate)
+    public static float[] BandPass(float[] in, float freq, float bandWidth, float sampleRate)
       {
         float bw = bandWidth / sampleRate;
         float fracFreq=freq/sampleRate;
@@ -412,7 +412,7 @@ class DSP {
     /******************************************************************************************************/
     
     //TIME SCALING BY FACTOR K(2-7) (upsampling-> interpolation->delay compensation)
-    public float[] timeScale(float[] in, int k)
+    public static float[] timeScale(float[] in, int k)
     {
       if(k<2 || k>7){      
       println("TIME SCALING FACTOR MUT BE BETWEEN 2-7");
@@ -509,7 +509,7 @@ class DSP {
   /******************************************************************************************************/
   
    //MULTIPLIES EACH ELEMENT OF a BY THE SCALAR k
-   public float[] times(float[] a, float k)
+   public static float[] times(float[] a, float k)
       {
           float[] y = new float[a.length];
 

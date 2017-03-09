@@ -1,33 +1,38 @@
 void setup()
 {
-  colorMode(HSB, 360, 100, 100, 100);
-  //fullScreen(FX2D);
+  
+  //****** VIDEO ******
+  colorMode(HSB, 360, 100, 100, 100); 
   size(800, 600, FX2D);
   frameRate(global_fps);
   noSmooth();
 
-  //connection //<>// //<>//
+  //****** CONNECTION //<>// ****** //<>//
   global_connection = new Connection(this);
   
-  //biosensors
+  //****** BIOSENSORS ******
   global_gsr = new Gsr();
 
-  //audio features
-  global_audio = new AudioFeatures(this);
-  global_tone = new Tone();
-  global_rhythm = new Rhythm();
-  global_dyn = new Dynamic();
-
-  //init stage
+  //****** AUDIO ******
+  global_audio = new AudioManager(this); //new audio manager
+  audio_proc = new AudioProcessor(global_audio.getBufferSize(),global_audio.getSampleRate()); //new audio processor
+  global_audio.addListener(audio_proc); //attach processor to manager
+  global_dyn = new Dynamic(global_audio.getBufferSize(),global_audio.getSampleRate()); //new dynamic features extractor
+  global_timbre = new Timbre(global_audio.getBufferSize(),global_audio.getSampleRate()); //new timbric features extractor
+  //add features extractors to our audio processor
+  audio_proc.addDyn(global_dyn); 
+  audio_proc.addTimbre(global_timbre);
+  
+  //****** STAGE ******
   global_stage = new Stage();
 
-  //scenes
-    global_stage.addScene(new ScenePlotter());
-  global_stage.addScene(new SceneFireworks());
-  global_stage.addScene(new SceneDots());
+  //****** SCENES ******
+  global_stage.addScene(new ScenePlotter());
+  //global_stage.addScene(new SceneFireworks());
+  //global_stage.addScene(new SceneDots());
   global_stage.addScene(new ScenePerlinNoise());
   global_stage.addScene(new Spirals());
-  global_stage.addScene(new HelloShape(0));
+  //global_stage.addScene(new HelloShape(0));
   //global_stage.addScene(new HelloShape(1));
   //global_stage.addScene(new DumbC());
 }
@@ -36,6 +41,7 @@ void draw()
 {
     long initTimeT = System.nanoTime(); // start time
 
+  /*
    //update samples in audio buffer
    global_audio.updateBuffer();
    
@@ -43,6 +49,8 @@ void draw()
    global_dyn.setSamples(global_audio.getSamples());
    global_tone.setSamples(global_audio.getSamples());
    global_rhythm.setSamples(global_audio.getSamples());
+   
+   */
    
    long audioTime = System.nanoTime() - initTimeT;
 
@@ -80,6 +88,8 @@ void draw()
    println("    LOOP duration: "+ loopT/1000 + " us");
    println("    MAX duration for framerate "+ int(frameRate) +": "+(1/frameRate*1000000)+" us");
    println("");
+   
+   println("SPECTRAL CENTROID: "+global_timbre.getCentroidHz()+" Hz");
    println("*******************END*****************");
    println("***************************************");
    println("");
@@ -91,4 +101,9 @@ void mouseClicked()
   //Mood m = new Mood(random(-1,1), random(-1,1));
   // global_stage.selectScenebyMood(m);
   global_stage.nextScene();
+}
+
+void stop()
+{
+  global_audio.stop();
 }

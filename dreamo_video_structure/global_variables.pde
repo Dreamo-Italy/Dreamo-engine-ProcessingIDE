@@ -18,7 +18,9 @@ Connection global_connection;
 Gsr global_gsr;
 
 //global audio objects
-AudioFeatures global_audio;
-Tone global_tone;
-Rhythm global_rhythm;
+AudioManager global_audio;
+AudioProcessor audio_proc;
+//Tone global_tone;
+//Rhythm global_rhythm;
 Dynamic global_dyn;
+Timbre global_timbre;
