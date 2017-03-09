@@ -69,9 +69,16 @@ class GridPlotter extends Particle
   
   void update()
   {
+    float perturbationIntensity = getParameter(0);
+    float xTrans = (width/2)*perturbationIntensity;
+    float yTrans = (height/2)*perturbationIntensity;
+
     
-    if(frameCount%120 == 0 ) 
-      perturbate(new Vector2d((height/10*4)*sin(frameCount/500.0*TWO_PI), (frameCount%22)/21.0*TWO_PI, true).sum(new Vector2d(width/2, height/2, false)), 150);
+    if( frameCount%4 == 0)
+    {
+      perturbate(new Vector2d(width/2, height/2, false).sum( new Vector2d( random(-xTrans,xTrans), random(-yTrans,yTrans), false) ),
+      perturbationIntensity*2500);
+    }
     
     if(getSceneChanged() && !destroying)
     {
