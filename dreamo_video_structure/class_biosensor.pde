@@ -48,7 +48,7 @@ abstract class Biosensor
     calibrationCounter = 0;
     
     // number of BIOMEDICAL VALUES to extract at each update() cycle   
-    sampleToExtract = floor (global_sampleRate/(global_fps*global_sensorNumber)); 
+    sampleToExtract = floor (global_sampleRate/(global_fps)); 
     
     incomingValues = new FloatList();
     
