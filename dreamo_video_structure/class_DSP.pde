@@ -582,24 +582,33 @@ class DSP {
     int N= a.length; //numToExtract*frameRate*5 
     boolean flag=false;
     
+    // Differentiator
+    for (int i=0; i<N;i++){
+      if(i>3){a[i]= 0.1*(2*a[i] + a[i-1] -a[i-3]-2*a[i-4]);}
+     }
+    
     //Squaring the signal to increase the peak
     for (int i=0; i<N;i++){
       a[i]= a[i]*a[i];
-      if(a[i] < 0.2) 
-        a[i] = 0;
+      //if(a[i] < 0.05) 
+      //  a[i] = 0;
     } 
-
+     float newMax = max ( a); 
+     println("max filtered"+ newMax);
 
     //signal evaluation and peaks counter
-    for(int i=0;i<N-1;i++){
-        if(a[i]> sq(0.45)){
+    for(int i=1;i<N-1;i++){
+        if(a[i]> 36000 && a[i]>a[i-1] && a[i+1]>a[i]){
           if (!flag){
-          Beatcount++;
+          Beatcount++; 
           flag=true;
           }
         }else{flag=false;}
       }
+     
+     
      // BPM detector 
+     
        BPM = Beatcount;
        return BPM;
    }

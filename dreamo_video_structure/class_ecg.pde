@@ -3,7 +3,9 @@ class Ecg extends Biosensor
   
   private FloatList StoreEcg;
   DSP dsp, bpm;
-  float BPM;
+  public float BPM;
+  public Boolean FlagTachy=false;
+  public Boolean FlagBrad=false;
   //StoreEcg = new FloatList();
   
         public void init()
@@ -14,13 +16,14 @@ class Ecg extends Biosensor
               StoreEcg = new FloatList();
               dsp =new DSP();
               bpm = new DSP();
+              
         }
       
     
         public void update()
         {     
         println("DEBUG: ECG update.");     
-
+        
 
         if(frameCount % 1 == 0)
         {
@@ -43,16 +46,38 @@ class Ecg extends Biosensor
         
         float[] Analysis= StoreEcg.array();
         float[] FilteredHp = dsp.HighPass (Analysis, 50.0,global_sampleRate);
-        float[] FilteredLpHp = dsp.LowPassFS (FilteredHp, 100.0,global_sampleRate);
-        println("BPM:"+ BPM );
-        BPM = bpm.ECGBPM3(FilteredLpHp);    
+        float[] ampli = dsp.times(FilteredHp,100);
+        float[] FilteredLpHp = dsp.LowPassFS (ampli, 100.0,global_sampleRate);
+        float[] ampli2 = dsp.times(FilteredLpHp,100);
+        
+        BPM = bpm.ECGBPM3(ampli2);  
+        if (BPM<60){ 
+          println("BRADYCARDIA");
+          FlagBrad=true;
+          // rallentare le scene
+        }else{FlagBrad=false;}
+        if (BPM>110){
+          
+          FlagTachy=true;
+          //agitare le scene 
+        }else{FlagTachy=false;}
         StoreEcg.clear();
      }else
        BPM = this.getValue();
      
+        
      setValue  ( BPM );
      println("BPM:"+ BPM );
-
+     
+     // segnala lo stato dell'utente
+     if (FlagTachy)  
+     println("THACYCARDIA");
+     if (FlagBrad)  
+     println("BRADYCARDIA");
+     if ((!FlagBrad) &&(!FlagTachy))
+     println("NORMAL MOOD");
+     if ((FlagBrad) &&(FlagTachy))
+     println("ERROR MOOD");
      
      if ( ! ( incomingValues == null ) )
        checkCalibration();    
