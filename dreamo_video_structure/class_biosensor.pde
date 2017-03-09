@@ -68,22 +68,15 @@ abstract class Biosensor
       if ( this.isCalibrating() == false )
         startCalibration();
       
-      if( sensorName == "gsr"){
+    
       calibration();
       
       if ( calibrationCounter > frameRate*CALIBRATION_TIME )
          endCalibration();      
-                              }
-  
-      if( sensorName == "ecg"){
-      calibration();
-      
-      if ( calibrationCounter > frameRate*CALIBRATION_TIME*3 )
-         endCalibration();      
-                              }
     
-    }
+    
    }
+  }
     
   
   
@@ -102,43 +95,24 @@ abstract class Biosensor
     else if ( incomingValues.size() == 0 ) { println("ERROR: incomingValues is empty"); return; }
 
     calibrationValues.append( incomingValues );
-    if ( sensorName == "gsr") {
+    
     minCal = calibrationValues.min();
     maxCal = calibrationValues.max();
     
     float newMin = min ( minCal, getMin() );
     float newMax = max ( maxCal, getMax() ); 
     
-    println("Calibration GSR process is running...");
+    println("Calibration "+ this.getID() +" process is running...");
     setMin ( newMin ); println( "new min: " + newMin );
     setMax ( newMax ); println( "new max: " + newMax );
     
     calibrationCounter++;
-  }
-    if ( sensorName == "ecg"){
-      minCal = calibrationValues.min();
-      maxCal = calibrationValues.max();
-    
-    float newMin = min ( minCal, getMin() );
-    float newMax = max ( maxCal, getMax() ); 
-    
-    println("Calibration ECG process is running...");
-    setMin ( newMin ); println( "new min: " + newMin );
-    setMax ( newMax ); println( "new max: " + newMax );
-    
-    
-    
-    calibrationCounter++;
-    
-    }
   }
   
 
   protected void endCalibration()
   {    
-     if( sensorName == "gsr"){
   
-    // expand the range by a 20% factor (experimental)
     float newMin = abs ( getMin() );
     float newMax = getMax();
     
@@ -146,6 +120,18 @@ abstract class Biosensor
     setMax ( newMax );
     
     float average = computeAverage( calibrationValues , ( newMin + newMax )/2 );
+     
+    if( sensorName == "ecg")
+    {         
+      float[] Analysiscal = calibrationValues.array();
+      float[] FilteredHpcal = dspcal.HighPass (Analysiscal, 50.0,global_sampleRate);
+      float[] amplical = dspcal.times(FilteredHpcal,100);
+      float[] FilteredLpHpcal = dspcal.LowPassFS (amplical, 100.0,global_sampleRate);
+      float[] ampli2cal = dspcal.times(FilteredLpHpcal,100);
+      
+      BPMcal = bpmcal.ECGBPM3(ampli2cal);          
+      setValue  ( BPMcal*2 );
+    }         
     
     setDefault( normalizeValue(average) );
     println( "new average: " + average );
@@ -154,41 +140,6 @@ abstract class Biosensor
     
     calibrating = false;
     calibrated = true;
-     }
-    if( sensorName == "ecg"){
-  
-    // expand the range by a 20% factor (experimental)
-    float newMin = abs ( getMin() );
-    float newMax = getMax();
-    
-    setMin ( newMin );
-    setMax ( newMax );
-    
-    float average = computeAverage( calibrationValues , ( newMin + newMax )/2 );
-    
-     
-        float[] Analysiscal = calibrationValues.array();
-        float[] FilteredHpcal = dspcal.HighPass (Analysiscal, 50.0,global_sampleRate);
-        float[] amplical = dspcal.times(FilteredHpcal,100);
-        float[] FilteredLpHpcal = dspcal.LowPassFS (amplical, 100.0,global_sampleRate);
-        float[] ampli2cal = dspcal.times(FilteredLpHpcal,100);
-        
-       BPMcal = bpmcal.ECGBPM3(ampli2cal);
-        
-       setValue  ( BPMcal*2 );
-        
-    
-    
-    setDefault( normalizeValue(average) );
-    println( "new average: " + average );
-    
-    calibrationValues.clear();
-    
-    calibrating = false;
-    calibrated = true;
-    }
-     
-     
   }
   
   protected boolean isCalibrating()

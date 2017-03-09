@@ -686,7 +686,6 @@ class DSP {
           Beatcount++;
           index=i;
           flag2=false;
-          println("qui");
           }
           
           if(!flag){
@@ -696,8 +695,8 @@ class DSP {
           if(lastPeak!=0){
           nSample=index-lastPeak;
           RRdistanceSecond=nSample/global_sampleRate;
-          println("RRbefore " +RRdistanceSecond);
-          println("BCbefore " +Beatcount);
+          //println("RRbefore " +RRdistanceSecond);
+          //println("BCbefore " +Beatcount);
           if (RRdistanceSecond > 0.12) {
              Beatcount++;
              println("after " +Beatcount);  

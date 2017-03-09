@@ -28,11 +28,7 @@ class Ecg extends Biosensor
         
 
         if(frameCount % 1 == 0)
-        {
-          //int numToExtract = ceil (global_sampleRate/frameRate);
-      // Per GIOVA: la connessione offline sembra non funzionare, la Floatlist incomingValues è sempre vuota,
-      // come segnalato dal println sottostante.
-      
+        {      
           incomingValues = global_connection.extractFromBuffer("ecg", numToExtract ); // store the incoming conductance value from Connection to another FloatLIst
           StoreEcg.append(incomingValues);
                  
@@ -75,7 +71,6 @@ class Ecg extends Biosensor
      println("BPM:"+ BPM );
      println("NEW BPM:"+ BPM2 );
      
-    if (flag1==1) exit();
      
      // segnala lo stato dell'utente
      if (FlagTachy)  
