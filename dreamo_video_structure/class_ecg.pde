@@ -2,10 +2,11 @@ class Ecg extends Biosensor
 {
   
   private FloatList StoreEcg;
-  DSP dsp, bpm;
-  public float BPM;
+  DSP dsp, bpm,bpm2, RR;
+  public float BPM,RRdist,BPM2;
   public Boolean FlagTachy=false;
   public Boolean FlagBrad=false;
+  int flag1=0;
   //StoreEcg = new FloatList();
   
         public void init()
@@ -16,6 +17,7 @@ class Ecg extends Biosensor
               StoreEcg = new FloatList();
               dsp =new DSP();
               bpm = new DSP();
+              bpm2 = new DSP();
               
         }
       
@@ -42,7 +44,7 @@ class Ecg extends Biosensor
        }
      
      println("StoreEcg size: "+StoreEcg.size() );
-      if(StoreEcg.size()> global_sampleRate*60){
+      if(StoreEcg.size()> global_sampleRate*10){
         
         float[] Analysis= StoreEcg.array();
         float[] FilteredHp = dsp.HighPass (Analysis, 50.0,global_sampleRate);
@@ -50,7 +52,10 @@ class Ecg extends Biosensor
         float[] FilteredLpHp = dsp.LowPassFS (ampli, 100.0,global_sampleRate);
         float[] ampli2 = dsp.times(FilteredLpHp,100);
         
-        BPM = bpm.ECGBPM3(ampli2);  
+        BPM  = bpm.ECGBPM3(ampli2);
+        BPM2 = bpm2.ECGBPMLAST(ampli2);
+        flag1=1;
+        
         if (BPM<60){ 
           println("BRADYCARDIA");
           FlagBrad=true;
@@ -68,6 +73,9 @@ class Ecg extends Biosensor
         
      setValue  ( BPM );
      println("BPM:"+ BPM );
+     println("BPM:"+ BPM2 );
+     
+     if (flag1==1) exit();
      
      // segnala lo stato dell'utente
      if (FlagTachy)  
