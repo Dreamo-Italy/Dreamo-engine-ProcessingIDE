@@ -12,18 +12,19 @@ abstract class Biosensor
   public float absolute; // absolute value of the output, mapped to a 1-10 scale
   public float variation; // percentage variation WRT default value
   public float value; // last value (not normalized)
+  
+  protected float physicalMin, physicalMax; // the theoretical MINIMUM and MAXIMUM values of the current sensor
 
 
   //********* PRIVATE MEMBERS ***********
 
+  private float bpm;
   private boolean connected; // connection status of the sensor
   private float defaultValue; // average of the incoming values
   private boolean calibrating; // TRUE IF the calibration process IS RUNNING
   private boolean calibrated; // TRUE if the calibration process HAVE BEEN RUN already
-  private float sensorMin, sensorMax; // the experimental MINIMUM and MAXIMUM values previously got from the current sensor
-  private float minCal, maxCal; // calibration process min and max values
   private int calibrationCounter;
-  private DSP dspcal, bpmcal;
+  private DSP bpmCal;
   private int BPMcal;
   protected int sampleToExtract;
   protected FloatList incomingValues; // vector of float
@@ -33,15 +34,13 @@ abstract class Biosensor
   //********* CONSTRUCTOR ***********
   
   public Biosensor()
-  {
-    dspcal =new DSP();
-    bpmcal = new DSP();
-    
+  {    
     sensorName = "default";
-    absolute = -1;
+    absolute = -1;    
+    physicalMin = -1;
+    physicalMax = -1;
     
-    sensorMin = minCal = MAX_FLOAT;
-    sensorMax = maxCal = MIN_FLOAT;
+    bpmCal = new DSP();
     
     calibrating = false;
     calibrated = false;
@@ -66,14 +65,12 @@ abstract class Biosensor
     if ( this.needCalibration() )
     {
       if ( this.isCalibrating() == false )
-        startCalibration();
-      
+        startCalibration();      
     
       calibration();
       
       if ( calibrationCounter > frameRate*CALIBRATION_TIME )
-         endCalibration();      
-    
+         endCalibration();        
     
    }
   }
@@ -95,16 +92,8 @@ abstract class Biosensor
     else if ( incomingValues.size() == 0 ) { println("ERROR: incomingValues is empty");     return; }
 
     calibrationValues.append( incomingValues );
-    
-    minCal = calibrationValues.min();
-    float newMin = min ( minCal, getMin() );
-    setMin( newMin ); println( "min: " + newMin );
-    
-    maxCal = calibrationValues.max();
-    float newMax = max ( maxCal, getMax() ); 
-    setMax( newMax ); println( "max: " + newMax );
  
-    println("Calibrating sensor: "+getID());
+    println("Calibrating sensor: " + getID());
     println();
     
     calibrationCounter++;
@@ -112,28 +101,19 @@ abstract class Biosensor
   
 
   protected void endCalibration()
-  {    
-  
-    float newMin = abs ( getMin() );
-    float newMax = getMax();
+  {
     
-    setMin ( newMin );
-    setMax ( newMax );
-    
-    float average = computeAverage( calibrationValues , ( newMin + newMax )/2 );
+    float average = computeAverage( calibrationValues , ( min(calibrationValues.array() ) + max(calibrationValues.array() ) )/2 );
      
-    if( sensorName == "ecg")
+    if( sensorName == "ecg" && calibrationValues != null)
     {         
-      float[] Analysiscal = calibrationValues.array();
-      float[] FilteredHpcal = dspcal.HighPass (Analysiscal, 50.0,global_sampleRate);
-      float[] amplical = dspcal.times(FilteredHpcal,100);
-      float[] FilteredLpHpcal = dspcal.LowPassFS (amplical, 100.0,global_sampleRate);
-      float[] ampli2cal = dspcal.times(FilteredLpHpcal,100);
+      float [] ecgFiltered = this.filterEcgData( calibrationValues.array() );
       
-      BPMcal = bpmcal.ECGBPM3(ampli2cal);          
-      setValue  ( BPMcal*2 );
-      setDefault(normalizeValue( BPMcal*2));
-    }         
+      BPMcal = bpmCal.ECGBPM3( ecgFiltered ); 
+      setBpm ( BPMcal );
+      setValue  ( BPMcal );
+      setDefault( BPMcal );
+    }
     
     if ( getID() == "gsr") 
       setDefault( normalizeValue(average) );
@@ -162,12 +142,12 @@ abstract class Biosensor
     calibrated = false;
   } 
  
-  //map the value to a 1-10 scale according to the experimental min and max values
+  //map the value to a 0-1 scale according to the experimental min and max values
   private float normalizeValue(float toNormalize) 
   {
       // map function from Processing libraries: map(value, start1, stop1, start2, stop2)
       
-      float normalized = map ( toNormalize, getMin(), getMax(), 0, 1);
+      float normalized = map ( toNormalize, getPhysicalMin(), getPhysicalMax(), 0, 1);
       return normalized;
   }
   
@@ -210,14 +190,24 @@ abstract class Biosensor
 
   }
   
+  protected float [] filterEcgData(float [] arrayIn)
+  {
+      DSP dsp = new DSP();
+      float[] FilteredHp = dsp.HighPass (arrayIn, 50.0, global_sampleRate);
+      float[] ampli = dsp.times(FilteredHp,100);
+      float[] FilteredLpHp = dsp.LowPassFS (ampli, 100.0, global_sampleRate);
+      float[] ampli2 = dsp.times(FilteredLpHp,100);
+      return ampli2;
+  }
+  
    public void printDebug()
   {     
     int xOffset = 10;
     int yOffset = 35;
     if ( sensorName == "ecg") yOffset += 13;
     
-    text("Type: "+ sensorName+ " absolute : " + nf(getAbsolute(),1,2) + "; variation: " + nf(getVariation(),1,2) + 
-    "; default value : " + nf(getDefault(),2,2) + "; not normalized: "+nf(getValue(),1,2), xOffset, yOffset);
+    text(sensorName+ " absolute : " + nf(getAbsolute(),2,2) + "; variation: " + nf(getVariation(),1,2) + 
+    "; default value : " + nf(getDefault(),1,2) + "; not normalized: "+nf(getValue(),1,2), xOffset, yOffset);
     if(isCalibrating() && sensorName == "gsr")
       text("Calibration is running", xOffset, yOffset+26);
     
@@ -238,17 +228,16 @@ abstract class Biosensor
   }
   
   // when setValue is called, every other info is updated ( absolute, variation,... )
-  public void setMin( float min ) { sensorMin = min; return; }
-  public void setMax ( float max ) { sensorMax = max; return; }
   public void setDefault ( float def ) { defaultValue = def; return; }
   public void setVariation (float var ) { variation = var; return; }
   public void setAbsolute ( float abs ) { absolute = abs; return; }
+  public void setBpm ( float newBpm ) { bpm = newBpm; return; }
   
   //********* GET METHODS ***********
 
-  
-  public float getMin() { return sensorMin; }
-  public float getMax() { return sensorMax; }
+  public float getBpm() { return bpm; }
+  public float getPhysicalMin() { return physicalMin; }
+  public float getPhysicalMax() { return physicalMax; }
   public float getDefault() { return defaultValue; }
   public float getValue() { return value; }
   public float getAbsolute() { return absolute; } // absolute value of the output, mapped to a 0-1 scale
