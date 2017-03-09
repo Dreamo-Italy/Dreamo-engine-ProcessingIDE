@@ -1,21 +1,16 @@
 import ddf.minim.*;
 
-class AudioFeatures 
+class AudioManager
 
 {
  //********* PRIVATE MEMBERS ***********
  private Minim minim;
- private AudioInput in; 
+ private AudioInput in=null; 
  private float[] buffer;
  private boolean initialized = false;
- 
- //********* PROTECTED MEMBERS ***********
- protected int buffSize;
- protected float sampleRate;
- //protected DSP dsp;
- 
+  
  //********* CONTRUCTORS ***********
- public AudioFeatures(){}
+ public AudioManager(){}
    /* //<>// //<>//
    * @param fileSystemHandler
    *        The Object that will be used for file operations.
@@ -23,24 +18,41 @@ class AudioFeatures
    */
  //TODO: monitoring audio input from Raspberry sound card
  //temporary: use pc input  
- public AudioFeatures(Object fileSystemHandler)
+ public AudioManager(Object fileSystemHandler)
  {
    minim = new Minim(fileSystemHandler);
-   in = minim.getLineIn();
-   setBufferSize();
-   setSampleRate();
+   in = minim.getLineIn(Minim.STEREO,1024,44100); //mono stream, 2048 samples of buffer size
    //in.enableMonitoring();
    bufferize();
+   
    if(in!=null)
    {
    initialized=true;
    }
    else {println("AUDIO INPUT NOT AVAILABLE");}
-   //samples=0; 
+   
+ }
+
+ //********* PUBLIC METHODS ***********
+ public void addListener(AudioListener l)
+ { 
+   if (isInitialized())
+    { 
+       in.addListener(l);
+    }
+    else{println("AUDIO FEATURE OBJECT NOT INITIALIZED");} 
  }
  
- //********* PUBLIC METHODS ***********
-  public void updateBuffer()
+ public void enableMonitoring()
+ {
+    if (isInitialized())
+    { 
+      in.enableMonitoring();
+    }
+    else{println("AUDIO FEATURE OBJECT NOT INITIALIZED");}   
+ }
+  
+ public void updateBuffer()
   {       
     if (isInitialized())
     { 
@@ -51,7 +63,7 @@ class AudioFeatures
   
   public float[] getSamples()
   {
-  return buffer;
+    return buffer;
   }
   
   public void stop(){
@@ -63,14 +75,23 @@ class AudioFeatures
   //********* PRIVATE METHODS ***********
   private void bufferize()
   {
-    buffer = new float[buffSize];    
+    buffer = new float[in.bufferSize()];    
     buffer=in.mix.toArray();
   }
   
-  private boolean isInitialized(){return initialized;}  
+  private boolean isInitialized()
+  {
+    return initialized;
+  }    
   
-  private void setBufferSize(){buffSize=in.bufferSize();}
+  private int getBufferSize()
+  {
+    return in.bufferSize();
+  }
   
-  private void setSampleRate(){sampleRate=in.sampleRate();}
+  private float getSampleRate()
+  {
+    return in.sampleRate();
+  }
   
 }

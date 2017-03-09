@@ -22,10 +22,12 @@ Ecg global_ecg;
 
 short global_sensorNumber = 2;
 
-//global audio objects
-AudioFeatures global_audio;
-Tone global_tone;
-Rhythm global_rhythm;
-Dynamic global_dyn;
-
 DebugPlot global_debugPlots;
+
+//global audio objects
+AudioManager global_audio;
+AudioProcessor audio_proc;
+//Tone global_tone;
+//Rhythm global_rhythm;
+Dynamic global_dyn;
+Timbre global_timbre;

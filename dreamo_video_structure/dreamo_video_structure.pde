@@ -1,25 +1,30 @@
 void setup()
 {
+
+  //****** VIDEO ******
   colorMode(HSB, 360, 100, 100, 100);
-  //fullScreen(FX2D);
   size(800, 600, FX2D);
   frameRate(global_fps);
   noSmooth();
 
-  //connection //<>// //<>//
+  //****** CONNECTION //<>// ****** //<>//
   global_connection = new Connection(this);
-  
-  //biosensors
+
+  //****** BIOSENSORS ******
   global_gsr = new Gsr();
   global_ecg= new Ecg();
 
-  //audio features
-  global_audio = new AudioFeatures(this);
-  global_tone = new Tone();
-  global_rhythm = new Rhythm();
-  global_dyn = new Dynamic();
+  //****** AUDIO ******
+  global_audio = new AudioManager(this); //new audio manager
+  audio_proc = new AudioProcessor(global_audio.getBufferSize(),global_audio.getSampleRate()); //new audio processor
+  global_audio.addListener(audio_proc); //attach processor to manager
+  global_dyn = new Dynamic(global_audio.getBufferSize(),global_audio.getSampleRate()); //new dynamic features extractor
+  global_timbre = new Timbre(global_audio.getBufferSize(),global_audio.getSampleRate()); //new timbric features extractor
+  //add features extractors to our audio processor
+  audio_proc.addDyn(global_dyn);
+  audio_proc.addTimbre(global_timbre);
 
-  //init stage
+  //****** STAGE ******
   global_stage = new Stage();
 
   //scenes
@@ -32,7 +37,7 @@ void setup()
   global_stage.addScene(new HelloShape(0));
   global_stage.addScene(new HelloShape(1));
   global_stage.addScene(new DumbC());
-  
+
   //debug plots
   global_debugPlots = new DebugPlot(this);
 }
@@ -41,32 +46,35 @@ void draw()
 {
     long initTimeT = System.nanoTime(); // start time
 
+  /*
    //update samples in audio buffer
    global_audio.updateBuffer();
-   
+
    //set samples in dyn, tone and rhythm objects
    global_dyn.setSamples(global_audio.getSamples());
    global_tone.setSamples(global_audio.getSamples());
    global_rhythm.setSamples(global_audio.getSamples());
-   
+
+   */
+
    long audioTime = System.nanoTime() - initTimeT;
 
    global_connection.update();
 
    long conT = System.nanoTime() - audioTime - initTimeT; // time elapsed after CONNECTION UPDATE
-   
+
    global_gsr.update();
-   
+
    long gsrT= (System.nanoTime() - conT -initTimeT - audioTime);// time elapsed after GSR UPDATE
-   
+
    global_ecg.update();
-   
+
    long ecgT = (System.nanoTime() - conT -initTimeT - audioTime- gsrT); // time elapsed after ECG UPDATE
 
    global_stage.updateAndTrace();
 
    long viT = (System.nanoTime() - gsrT - conT - initTimeT - audioTime-ecgT) ; // time elapsed after VIDEO UPDATE
-   
+
    global_debugPlots.update();
 
 
@@ -91,6 +99,8 @@ void draw()
    println("    LOOP duration: "+ loopT/1000 + " us");
    println("    MAX duration for framerate "+ int(frameRate) +": "+(1/frameRate*1000000)+" us");
    println("");
+
+   println("SPECTRAL CENTROID: "+global_timbre.getCentroidHz()+" Hz");
    println("*******************END*****************");
    println("***************************************");
    println("");
@@ -98,18 +108,23 @@ void draw()
 
 void mouseClicked()
 {
-  
+
   //Mood m = new Mood(random(-1,1), random(-1,1));
   // global_stage.selectScenebyMood(m);
   global_stage.nextScene();
 }
 
-void keyPressed() 
-{    
+void keyPressed()
+{
      if (true)
      {
        global_gsr.restartCalibration();
        global_ecg.restartCalibration();
        println("key pressed");
+     }
+
+void stop()
+     {
+       global_audio.stop();    
      }
 }

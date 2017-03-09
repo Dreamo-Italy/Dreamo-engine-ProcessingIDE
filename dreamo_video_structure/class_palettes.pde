@@ -16,7 +16,7 @@ class Palette
   private String name;
   private color[] colors = new color[COLOR_NUM];
   private boolean initialized=false;
-  private DSP dsp;
+  //private DSP dsp;
 
  
  //********* CONTRUCTORS ***********
@@ -73,7 +73,6 @@ class Palette
  colorsInit[5][3] = #ffe11d;
  colorsInit[5][4] = #030300;
  
- dsp=new DSP();
  initialized=false;
  }
    
@@ -157,7 +156,7 @@ class Palette
         {
           b[i]=brightness(colors[i]);
         }
-      return colors[dsp.argmin(b)];
+      return colors[DSP.argmin(b)];
     }
     else
     {
@@ -176,7 +175,7 @@ class Palette
         {
           b[i]=brightness(colors[i]);
         }
-      return colors[dsp.argmax(b)];
+      return colors[DSP.argmax(b)];
     }
     else
     {
