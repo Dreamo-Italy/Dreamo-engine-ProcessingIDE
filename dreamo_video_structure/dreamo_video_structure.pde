@@ -82,7 +82,7 @@ void draw()
     stroke(120); // for the DEBUG text
 
    global_gsr.printDebug();// print the DEBUG TEXT related to the SKIN SENSOR
-   global_ecg.printDebug();// print the DEBUG TEXT related to the ECG SENSOR
+   //global_ecg.printDebug();// print the DEBUG TEXT related to the ECG SENSOR
    text("particles: " + global_stage.getCurrentScene().getParticlesNumber() + "; framerate: " + nf(frameRate,2,1) + " \n", 10, 20);
 
 

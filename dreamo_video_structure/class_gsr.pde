@@ -5,6 +5,9 @@ class Gsr extends Biosensor
    public void init()
   {
     sensorName = "gsr";   
+    physicalMin = 0;
+    physicalMax = 20;
+    setBpm(0);
   }
   public void update()
    {     //<>//

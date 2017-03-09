@@ -46,7 +46,7 @@ class Connection
     
     // number of BIOMEDICAL VALUES to extract at each update() cycle   
     totSampleToExtract = round (global_sampleRate/global_fps);  //<>//
-    sampleToExtract = totSampleToExtract/global_sensorNumber;
+    sampleToExtract = totSampleToExtract; /*/global_sensorNumber*/
      //<>//
     //serial check
     if(!wifiAvailable) 
@@ -161,9 +161,9 @@ class Connection
         for (TableRow row : getTable(sensorName).rows()) {
           float newFloat = row.getFloat(tableHeaderName);
           if ( count>=iStart && count<iEnd ) 
-            getList(sensorName).append (newFloat); 
+              getList(sensorName).append (newFloat);
           count++;
-         }                           
+         }    
      
      if ( getList(sensorName).size() > getTable(sensorName).getRowCount() )
        println( "WARNING: class connection, storeFromText(): reading is slower than writing for sensor "+sensorName+"\n");
@@ -233,6 +233,7 @@ class Connection
       FloatList toOutput = new FloatList();  
       boolean emptyList = false;
       int originalListSize = getList(sensorName).size();   //<>//
+
       
       float inValue = 0;
  //<>//
