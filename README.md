@@ -36,7 +36,7 @@ Here follows a generic description of the classes of the program:
 - *Stage* includes an array of scenes and manages the passage from one scene to another.
 
 ###Audio Managing
-- *DSP* is now a static class containing digital signal processing methods
+- *DSP* is a static class containing digital signal processing methods
 - *AudioManager* manages the input stream properties
 - *AudioProcessor* manages the samples buffer and does common calculations (FFT, xcorr,...)
 - *FeaturesExtractor* is a superclass with utilities methods for features extractors
