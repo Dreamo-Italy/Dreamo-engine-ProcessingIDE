@@ -24,7 +24,6 @@ abstract class Biosensor
   private boolean calibrating; // TRUE IF the calibration process IS RUNNING
   private boolean calibrated; // TRUE if the calibration process HAVE BEEN RUN already
   private int calibrationCounter;
-  private DSP bpmCal;
   private int BPMcal;
   protected int sampleToExtract;
   protected FloatList incomingValues; // vector of float
@@ -39,8 +38,6 @@ abstract class Biosensor
     absolute = -1;    
     physicalMin = -1;
     physicalMax = -1;
-    
-    bpmCal = new DSP();
     
     calibrating = false;
     calibrated = false;
@@ -109,7 +106,7 @@ abstract class Biosensor
     {         
       float [] ecgFiltered = this.filterEcgData( calibrationValues.array() );
       
-      BPMcal = bpmCal.ECGBPM3( ecgFiltered ); 
+      BPMcal = ECGBPM3( ecgFiltered ); 
       setBpm ( BPMcal );
       setValue  ( BPMcal );
       setDefault( BPMcal );
@@ -190,13 +187,13 @@ abstract class Biosensor
 
   }
   
+  //TODO: move this into ECG class
   protected float [] filterEcgData(float [] arrayIn)
   {
-      DSP dsp = new DSP();
-      float[] FilteredHp = dsp.HighPass (arrayIn, 50.0, global_sampleRate);
-      float[] ampli = dsp.times(FilteredHp,100);
-      float[] FilteredLpHp = dsp.LowPassFS (ampli, 100.0, global_sampleRate);
-      float[] ampli2 = dsp.times(FilteredLpHp,100);
+      float[] FilteredHp = DSP.HighPass (arrayIn, 50.0, global_sampleRate);
+      float[] ampli = DSP.times(FilteredHp,100);
+      float[] FilteredLpHp = DSP.LowPassFS (ampli, 100.0, global_sampleRate);
+      float[] ampli2 = DSP.times(FilteredLpHp,100);
       return ampli2;
   }
   
@@ -224,9 +221,206 @@ abstract class Biosensor
     setAbsolute( normalizeValue( value ) );
     setVariation( getAbsolute() / getDefault() ) ;
     
-    return; 
   }
   
+ /******************************************************************************************************/
+ //TODO: move this into ECG class
+ // strani errori nel log se ECGBPM sopra 80 bpm circa 60 bpm per ECGBPMLAST
+ // invece se ECGBPM sotto 40 bpm circa 80 bpm per ECGBPMLAST
+ // il trend è sempre lo stesso i valori cambiano a seconda della threshold per
+ // RRdistanceSecond
+ // riguardare potenziali errori
+ public int ECGBPMLAST(float[] a)
+ {
+    int Beatcount=0;
+    int BPM;
+    float index=0,lastPeak=0, nSample=0;
+    float RRdistanceSecond=0;
+    int N = a.length; //numToExtract*frameRate*5 
+    boolean flag=false, flag2=true;
+    
+    // Differentiator
+    for (int i=0; i<N;i++){
+      if(i>3){a[i]= 0.1*(2*a[i] + a[i-1] -a[i-3]-2*a[i-4]);}
+     }
+    
+    //Squaring the signal to increase the peak
+    for (int i=0; i<N;i++){
+      a[i]= a[i]*a[i];
+      //if(a[i] < 0.05) 
+      //  a[i] = 0;
+    } 
+
+    //signal evaluation and peaks counter
+    for(int i=1;i<N-1;i++){
+       
+      if(a[i]> 36000 && a[i]>a[i-1] && a[i+1]>a[i] ){
+    
+          if(flag2){
+          Beatcount++;
+          index=i;
+          flag2=false;
+          }
+          
+          if(!flag){
+          flag=true;
+          index=i;
+          
+          if(lastPeak!=0){
+          nSample=index-lastPeak;
+          RRdistanceSecond=nSample/30;
+          //println("RRbefore " +RRdistanceSecond);
+          //println("BCbefore " +Beatcount);
+          if (RRdistanceSecond > 0.12) {
+             Beatcount++;
+             println("after " +Beatcount);  
+          }
+        }
+        }
+        } else {
+        flag=false; flag2=false; lastPeak=index;
+      }
+    }
+     // BPM detector 
+     BPM = Beatcount;
+     return BPM;
+   }
+  
+ /******************************************************************************************************/
+ 
+  //TODO: move this into ECG class
+  public int ECGBPM3(float[] a)
+  {
+    int Beatcount=0;
+    int BPM;
+    int N= a.length; //numToExtract*frameRate*5 
+    boolean flag=false;
+    
+    // Differentiator
+    for (int i=0; i<N;i++){
+      if(i>3){a[i]= 0.1*(2*a[i] + a[i-1] -a[i-3]-2*a[i-4]);}
+     }
+    
+    //Squaring the signal to increase the peak
+    for (int i=0; i<N;i++){
+      a[i]= a[i]*a[i];
+      //if(a[i] < 0.05) 
+      //  a[i] = 0;
+    } 
+     float newMax = max ( a); 
+     println("max filtered"+ newMax);
+
+    //signal evaluation and peaks counter
+    for(int i=1;i<N-1;i++){
+        if(a[i]> 36000 && a[i]>a[i-1] && a[i+1]>a[i]){
+          if (!flag){
+          Beatcount++; 
+          flag=true;
+          }
+        }else{flag=false;}
+      }
+     
+     
+     // BPM detector 
+     
+       BPM = Beatcount;
+       return BPM;
+   }
+   
+   /******************************************************************************************************/
+   //TODO: move this into ECG class
+   //BPM ECG (non funziona?)
+   public int ECGBPM(float[] a){
+     
+    int beatcount=0;
+    int BPM;
+    int N= a.length; 
+    int fs=256;
+    
+    for(int i=1;i<N-1;i++){
+        if( (a[i]>a[i-1]) && a[i]>a[i+1] && a[i]>1.5){
+         beatcount++;
+        }
+      }
+      
+       float duration_second = 1/30; //replace 30 with global_fps
+       float duration_minute = 60;
+       
+       //float duration_second= (float)N/fs;
+       //float dur_min=duration_second/60;
+       
+       BPM = round(beatcount * duration_minute / duration_second );
+       return BPM;
+   }    
+/******************************************************************************************************/
+   //TODO: move this into ECG class
+   public int ECGBPM2(FloatList a){
+    int Beatcount=0;
+    int BPM;
+    int N= a.size(); 
+    int fs=256;
+    boolean flag=false;
+    //Squaring the signal to increase the peak
+    for (int i=0; i<N;i++){
+     a.set(i,sq(a.get(i)));
+    } 
+    //signal evaluation and peaks counter
+    for(int i=1;i<N-1;i++){
+        if(a.get(i)>1.8){
+          if (!flag){
+          Beatcount++;
+          flag=true;
+          }
+        }else{flag=false;}
+      }
+     // BPM detector 
+       float duration_second = 1/30;
+       float dur_min=60;
+       BPM=round(Beatcount* dur_min/duration_second );
+       return BPM;
+   }
+
+
+/******************************************************************************************************/
+ //TODO: move this into ECG class
+  public float RRdistance(float[] a){
+    
+    float indexs=0, indexsold=0, RRdist=0;
+    int N= a.length; //numToExtract*frameRate*5 
+    boolean flag=false;
+
+    // Differentiator
+    for (int i=0; i<N;i++){
+      if(i>3){a[i]= 0.1*(2*a[i] + a[i-1] -a[i-3]-2*a[i-4]);}
+     }
+    
+    //Squaring the signal to increase the peak
+    for (int i=0; i<N;i++){
+      a[i]= a[i]*a[i];
+      //if(a[i] < 0.05) 
+      //  a[i] = 0;
+    }
+    
+    //signal evaluation and peaks counter
+    for(int i=1;i<N-1;i++){
+        if(a[i]> 36000 && a[i]>a[i-1] && a[i+1]>a[i]){
+          if (!flag){
+          indexs=i/100;
+          flag=true;
+          }
+        }else{flag=false;}
+        indexs=indexsold;
+        if (indexs>indexsold && indexs!=0 && indexsold!=0){
+           RRdist=indexs-indexsold;
+          
+        }
+      
+      }
+      return RRdist;
+       
+   }
+   
+  /******************************************************************************************************/ 
   // when setValue is called, every other info is updated ( absolute, variation,... )
   public void setDefault ( float def ) { defaultValue = def; return; }
   public void setVariation (float var ) { variation = var; return; }

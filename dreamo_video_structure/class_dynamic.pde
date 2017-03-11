@@ -3,19 +3,15 @@ class Dynamic extends FeaturesExtractor
 
   //features
   private float RMS;
-
-  //averaging window
-  private final int N=5;
-  //averaging constant
   private float maxRMS;
 
-
-  //keep track of 0.25 seconds of music and average RMS values
-  private final int AVG=129; // 43 _ 1s
+  //keep track of ~3 seconds of music and average RMS values
+  private final int AVG=129; // 43=~1s
 
   private float[] averages;
   private float RMSsum;
   private int aidx;
+  
 
 
   //CONSTRUCTOR
@@ -35,13 +31,12 @@ class Dynamic extends FeaturesExtractor
   {
    return RMS;
   }
-
-
+  
   public float getAvgRMS()
   {
     return RMSsum/AVG;
   }
-
+  
   //OVERRIDE METHODS
   public void calcFeatures()
   {
@@ -65,7 +60,7 @@ class Dynamic extends FeaturesExtractor
 
       //normalize level in 0-1 range
       level=map(level,0,maxRMS,0,1);
-
+      
       //average
       RMSsum-=averages[aidx]; //subtract last value
       averages[aidx]=level; //update the value
@@ -75,7 +70,8 @@ class Dynamic extends FeaturesExtractor
       
       //smoothing
       RMS=expSmooth(level,RMS,5);
-      }
+      
+  }
   
 
 

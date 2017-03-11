@@ -12,6 +12,7 @@ class Timbre extends FeaturesExtractor
   {
     buffSize=bSize;
     sampleRate=sRate; 
+    spectralCentroidHz=0;
   }
   
   public void setFFTCoeffs(float[] coeffs)
@@ -47,8 +48,10 @@ class Timbre extends FeaturesExtractor
       num+=(centerFreqHz(i)*FFTcoeffs[i]);
       denom+=FFTcoeffs[i];    
     }
-    sc = num/denom;
-    spectralCentroidHz = expSmooth(sc, spectralCentroidHz, 5);
+    if(denom!=0){sc = num/denom;}
+    else{sc=0;}
+    spectralCentroidHz=expSmooth(sc, spectralCentroidHz, 5);
+    //spectralCentroidHz=sc;
   }
   
   private float centerFreqHz(int idx)

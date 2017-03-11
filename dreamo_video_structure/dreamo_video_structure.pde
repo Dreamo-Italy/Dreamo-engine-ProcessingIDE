@@ -3,11 +3,11 @@ void setup()
 
   //****** VIDEO ******
   colorMode(HSB, 360, 100, 100, 100);
-  size(800, 600, FX2D);
+  size(800, 600, FX2D); 
   frameRate(global_fps);
   noSmooth();
 
-  //****** CONNECTION //<>// ****** //<>//
+  //****** CONNECTION //<>// ****** //<>// //<>//
   global_connection = new Connection(this);
 
   //****** BIOSENSORS ******
@@ -30,6 +30,7 @@ void setup()
   //scenes
   global_stage.addScene(new Lissajous() );
   global_stage.addScene(new ScenePlotter());
+  /*
   global_stage.addScene(new SceneFireworks());
   global_stage.addScene(new SceneDots());
   global_stage.addScene(new ScenePerlinNoise());
@@ -37,7 +38,7 @@ void setup()
   global_stage.addScene(new HelloShape(0));
   global_stage.addScene(new HelloShape(1));
   global_stage.addScene(new DumbC());
-
+  */
   //debug plots
   global_debugPlots = new DebugPlot(this);
 }
@@ -89,7 +90,7 @@ void draw()
    long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME
 
 
-   //----------- print the durations for debug purposes------------ //<>// //<>//
+   //----------- print the durations for debug purposes------------ //<>// //<>// //<>//
 
    println("    Audio update duration: "+ audioTime/1000 + " us");
    println("    Connection update duration: "+ conT/1000 + " us");

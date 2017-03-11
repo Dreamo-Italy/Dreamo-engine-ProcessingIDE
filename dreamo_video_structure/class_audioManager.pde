@@ -11,7 +11,7 @@ class AudioManager
   
  //********* CONTRUCTORS ***********
  public AudioManager(){}
-   /* //<>// //<>//
+   /* //<>// //<>// //<>//
    * @param fileSystemHandler
    *        The Object that will be used for file operations.
    *        When using Processing, simply pass 'this' to AudioFeatures constructor.
@@ -21,7 +21,7 @@ class AudioManager
  public AudioManager(Object fileSystemHandler)
  {
    minim = new Minim(fileSystemHandler);
-   in = minim.getLineIn(Minim.STEREO,1024,44100); //mono stream, 2048 samples of buffer size
+   in = minim.getLineIn(Minim.STEREO,1024,44100); //stereo stream, 2048 samples of buffer size
    //in.enableMonitoring();
    bufferize();
    

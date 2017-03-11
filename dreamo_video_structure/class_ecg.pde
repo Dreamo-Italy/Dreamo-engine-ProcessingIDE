@@ -13,7 +13,6 @@ class Ecg extends Biosensor
           BPM = 20;
           setValue( BPM );
           StoreEcg = new FloatList();
-          bpm = new DSP();
           
           physicalMin = 0;
           physicalMax = 5;          
@@ -36,8 +35,8 @@ class Ecg extends Biosensor
     
     if(StoreEcg.size()> global_sampleRate*60) 
     {           
-        BPM  =  bpm.ECGBPM3(ecgPostFilter);
-        BPM2 =  bpm.ECGBPMLAST(ecgPostFilter);
+        BPM = ECGBPM3(ecgPostFilter);
+        BPM2 = ECGBPMLAST(ecgPostFilter);
           
         flag1 = 1;
         

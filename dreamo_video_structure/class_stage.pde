@@ -162,7 +162,7 @@ class Stage
   //update and trace methods
   public void updateAndTrace()
   {
-    currentScene.update(); //<>//
+    currentScene.update(); //<>// //<>//
     currentScene.trace();
     currentScene.trashDeadParticles();
   }
