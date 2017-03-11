@@ -101,7 +101,7 @@ void draw()
    println("    MAX duration for framerate "+ int(frameRate) +": "+(1/frameRate*1000000)+" us");
    println("");
 
-   println("SPECTRAL CENTROID: "+global_timbre.getCentroidHz()+" Hz");
+   println("SPECTRAL CENTROID: "+global_timbre.getCentroidAvg()+" Hz");
    println("*******************END*****************");
    println("***************************************");
    println("");

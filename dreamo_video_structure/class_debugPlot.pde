@@ -83,7 +83,7 @@
    plots[2].setTitleText("RMS");
    plots[3].setTitleText("Spectral Centroid");
    //plots[4].setTitleText("Frequency spectrum");
-   //plots[3].startHistograms(GPlot.VERTICAL);
+   //plots[4].startHistograms(GPlot.VERTICAL);
 
    
    for(int j=0; j<nPoints;j++)
@@ -95,6 +95,14 @@
    plots[2].getLayer("AvgRMS").setPointSize(1);
    plots[2].getLayer("AvgRMS").setPointColor( green ); 
    plots[2].getLayer("AvgRMS").setLineColor(green);
+   
+      // Change the second layer options - RMS
+   
+   plots[3].addLayer("AvgCentroid", surfacePoints);
+   plots[3].getLayer("AvgCentroid").setPoints( surfacePoints );
+   plots[3].getLayer("AvgCentroid").setPointSize(1);
+   plots[3].getLayer("AvgCentroid").setPointColor( green ); 
+   plots[3].getLayer("AvgCentroid").setLineColor(white);
   
   }
   
@@ -116,6 +124,7 @@
     //debug
     //plots[4].addPoint( frameCount, global_dyn.getRMS() );
     plots[3].addPoint( frameCount, global_timbre.getCentroidHz());
+    plots[3].getLayer("AvgCentroid").addPoint(frameCount, global_timbre.getCentroidAvg());
 
 
   }
@@ -127,6 +136,7 @@
       plots[i].removePoint(0);
     }    
     plots[2].getLayer("AvgRMS").removePoint(0);
+    plots[3].getLayer("AvgCentroid").removePoint(0);
     
   }
   
@@ -137,6 +147,7 @@
       if(i!=4) plots[i].defaultDraw();
     }
     plots[2].getLayer("AvgRMS").drawPoints();
+    plots[3].getLayer("AvgCentroid").drawPoints();
     
     /*
     plots[4].beginDraw();
