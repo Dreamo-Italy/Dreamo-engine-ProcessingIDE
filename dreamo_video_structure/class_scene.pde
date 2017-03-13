@@ -137,6 +137,11 @@ abstract class Scene extends AgingObject
   {
     return pal;
   }
+  
+  public void setPalette(Palette p)
+  {
+    this.pal=p;
+  }
 
   public void sortParticlesList()
   {
@@ -278,7 +283,7 @@ abstract class Scene extends AgingObject
 
   public void colorFadeTo(Palette p, int seconds)
   {
-    if(this.pal.getID()!=p.getID())
+    if(this.pal.getID()!=p.getID()) //if it's not the same palette
     {
       //if the scene is not already fading
       if(!isFading) //set starting and ending frames
@@ -300,7 +305,7 @@ abstract class Scene extends AgingObject
         }
         else 
         { 
-          this.pal.setID(p.getID());
+          this.setPalette(p); //overwrite palette
           isFading=false;
         }
       }

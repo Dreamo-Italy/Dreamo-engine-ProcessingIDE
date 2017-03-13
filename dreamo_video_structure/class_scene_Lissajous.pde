@@ -21,12 +21,21 @@ class Lissajous extends Scene
   
   public void update()
   {
-   if(global_timbre.getCentroidAvg()>2900)
+    
+   //example of usage
+   //TODO: implement histeresis cycle to change status
+   //TODO: implement reliable decision algorithm (na parola)
+   if(global_timbre.getCentroidAvg()>5000)
    {
      change=true;
    }
+   if(global_timbre.getCentroidAvg()<4000)
+   {
+     change=false;
+   }
    
-   if(change) {colorFadeTo(new Palette(1),35);}
+   if(change) {colorFadeTo(new Palette(1),5);}
+   else {colorFadeTo(new Palette(4),5);}
    
    for(int i = 0; i < particlesNumber; i++)
      {
