@@ -3,7 +3,7 @@ import ddf.minim.analysis.*;
 class Timbre extends FeaturesExtractor
 {
   //window
-  private final int W=215  ; // 43=~1s
+  private final int W=129  ; // 43=~1s
   
   private float[] FFTcoeffs;
   private int specSize;

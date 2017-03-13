@@ -34,7 +34,8 @@ class HShape extends Particle
   
   public void init()
   {
-    colore=this.pal.getColor();
+    setColorIndex((int)random(0,5));
+    colore=this.pal.getColor(getColorIndex());
     
     if(MODE>=0 && MODE<=6){
     switch(MODE) {
@@ -121,7 +122,8 @@ class HShape extends Particle
   }
   
   public void trace()
-  {      
+  {  
+    colore = this.pal.getColor(getColorIndex());
     translate(width/2,height/2);
     noFill();
     //int circleResolution = (int)map(mouseY+100,0,height,2, 10);

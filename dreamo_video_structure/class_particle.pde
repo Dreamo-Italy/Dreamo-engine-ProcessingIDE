@@ -19,7 +19,10 @@ abstract class Particle extends AgingObject
 
   private boolean persistent; // the particle continues to exist even after changing scene
   private boolean initialised; // has init() been called?
+  
   protected Palette pal;
+  private int colorindex;
+  
   private boolean sceneChanged; //has the scene changed (while the particle is persistent)?
 
   private float[] params; //general parameters
@@ -30,6 +33,7 @@ abstract class Particle extends AgingObject
   
   private boolean warpAtBorders;
   private boolean bounceAtBorders;
+  
   
 
   //CONTRUCTORS
@@ -312,7 +316,17 @@ abstract class Particle extends AgingObject
       instanceDestroy();
     }
   }
-
+  
+  public void setColorIndex(int i)
+  {
+    colorindex=i;
+  }
+  
+  public int getColorIndex()
+  {
+    return colorindex;
+  }
+  
   public void setPalette(Palette p)
   {
     pal=p;

@@ -49,7 +49,8 @@ class LShape extends Particle
     
     setPersistence(true);
      
-    myColor = pal.getColor();          
+    setColorIndex((int)random(0,5));
+    myColor = pal.getColor(getColorIndex());     
     hue = hue(myColor);
     saturation = saturation(myColor);
     brightness = brightness(myColor);
@@ -61,6 +62,10 @@ class LShape extends Particle
   
   public void update()
   {
+    //update color if palette is changed
+    myColor = pal.getColor(getColorIndex());     
+    hue = hue(myColor);
+     //<>//
     if (pointCountEnd < pointMax && frameCount % 1 == 0)
       pointCountEnd = pointCountEnd + 1;
     

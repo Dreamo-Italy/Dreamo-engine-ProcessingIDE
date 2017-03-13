@@ -7,7 +7,7 @@ void setup()
   frameRate(global_fps);
   noSmooth();
 
-  //****** CONNECTION //<>// ****** //<>// //<>//
+  //****** CONNECTION //<>// ****** //<>// //<>// //<>//
   global_connection = new Connection(this);
 
   //****** BIOSENSORS ******
@@ -29,7 +29,8 @@ void setup()
 
   //scenes
   global_stage.addScene(new Lissajous() );
-  global_stage.addScene(new ScenePlotter());
+  //global_stage.addScene(new ScenePlotter());
+  
   /*
   global_stage.addScene(new SceneFireworks());
   global_stage.addScene(new SceneDots());
@@ -85,10 +86,11 @@ void draw()
    global_gsr.printDebug();// print the DEBUG TEXT related to the SKIN SENSOR
    //global_ecg.printDebug();// print the DEBUG TEXT related to the ECG SENSOR
    text("particles: " + global_stage.getCurrentScene().getParticlesNumber() + "; framerate: " + nf(frameRate,2,1) + " \n", 10, 20);
+   text("                                                                     Frame Count: "+frameCount,10,20);
 
 
    long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME
-
+ //<>//
 
    //----------- print the durations for debug purposes------------ //<>// //<>// //<>//
 
@@ -104,7 +106,7 @@ void draw()
    println("SPECTRAL CENTROID: "+global_timbre.getCentroidAvg()+" Hz");
    println("*******************END*****************");
    println("***************************************");
-   println("");
+   
 }
 
 void mouseClicked()
