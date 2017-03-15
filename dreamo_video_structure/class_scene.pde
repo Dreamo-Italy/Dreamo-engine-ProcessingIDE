@@ -303,7 +303,7 @@ abstract class Scene extends AgingObject
             this.pal.setColor(lerpColor(this.pal.getColor(i), p.getColor(i), map(frameCount,startFading,endFading,0,1)),i);
           }
         }
-        else 
+        else //finished 
         { 
           this.setPalette(p); //overwrite palette
           isFading=false;
@@ -311,6 +311,14 @@ abstract class Scene extends AgingObject
       }
      }
      //println(map(frameCount,startFading,endFading,0,1));
+  }
+
+  //temporary solution - TODO: implement 
+  public int histeresis(float value, float upper, float lower)
+  {
+    if(value>upper){return 1;} 
+    else if(value<lower){return 0;}
+    else {return -1;}
   }
 
   abstract void init();
