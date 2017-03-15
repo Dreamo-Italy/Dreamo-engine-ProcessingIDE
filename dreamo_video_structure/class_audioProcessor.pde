@@ -22,6 +22,10 @@ class AudioProcessor implements AudioListener
     left = null; 
     right = null;
     
+    if ( bSize == 0 || sRate == 0)
+        println("ERROR: Impossible to initialize AudioProcessor");
+    else
+    {
     //bufferSize=bSize;
     //sampleRate=sRate;
     
@@ -31,6 +35,7 @@ class AudioProcessor implements AudioListener
     //the calculation of the spectroid won't be in Hz -> check it!
     //see http://code.compartmental.net/minim/fft_method_logaverages.html
     //EXAMPLE: fft.logAverages( 5, 1 ); - 13 band
+    }
   }
   
    

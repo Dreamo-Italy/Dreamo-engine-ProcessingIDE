@@ -104,7 +104,7 @@ void draw()
    println("");
 
    println("SPECTRAL CENTROID: "+global_timbre.getCentroidAvg()+" Hz");
-   println("SILENCE?: "+ global_dyn.isSilence());
+   println("SILENCE: "+ global_dyn.isSilence());
    println("*******************END*****************");
    println("***************************************");
    
