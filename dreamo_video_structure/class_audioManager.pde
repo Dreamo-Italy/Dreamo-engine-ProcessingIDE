@@ -23,7 +23,7 @@ class AudioManager
    minim = new Minim(fileSystemHandler);
    in = minim.getLineIn(Minim.STEREO,1024,44100); //stereo stream, 2048 samples of buffer size
    //in.enableMonitoring();
-   bufferize();
+   //bufferize();
    
    if(in!=null)
    {
@@ -73,11 +73,6 @@ class AudioManager
   
   
   //********* PRIVATE METHODS ***********
-  private void bufferize()
-  {
-    buffer = new float[in.bufferSize()];    
-    buffer=in.mix.toArray();
-  }
   
   private boolean isInitialized()
   {
@@ -86,12 +81,14 @@ class AudioManager
   
   private int getBufferSize()
   {
-    return in.bufferSize();
+    if(isInitialized()){return in.bufferSize();}
+    else return 0;
   }
   
   private float getSampleRate()
   {
-    return in.sampleRate();
+    if(isInitialized()){return in.sampleRate();}
+    else return 0;
   }
   
 }

@@ -19,11 +19,11 @@ abstract class Scene extends AgingObject
   private boolean reflectHorizontally;
   private boolean reflectVertically;
   
+  //fading 
   private boolean isFading;
-  private boolean fadingOver;
   private int startFading;
   private int endFading;
-
+  
   //CONSTRUCTORS
   public Scene()
   {
@@ -311,14 +311,6 @@ abstract class Scene extends AgingObject
       }
      }
      //println(map(frameCount,startFading,endFading,0,1));
-  }
-
-  //temporary solution - TODO: implement 
-  public int histeresis(float value, float upper, float lower)
-  {
-    if(value>upper){return 1;} 
-    else if(value<lower){return 0;}
-    else {return -1;}
   }
 
   abstract void init();
