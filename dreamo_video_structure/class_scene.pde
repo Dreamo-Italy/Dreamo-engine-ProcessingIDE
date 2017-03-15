@@ -18,6 +18,11 @@ abstract class Scene extends AgingObject
   
   private boolean reflectHorizontally;
   private boolean reflectVertically;
+  
+  private boolean isFading;
+  private boolean fadingOver;
+  private int startFading;
+  private int endFading;
 
   //CONSTRUCTORS
   public Scene()
@@ -33,6 +38,7 @@ abstract class Scene extends AgingObject
     reflectHorizontally = false;
     reflectVertically = false;
     
+    isFading=false;
     sceneMood=new Mood();
   }
 
@@ -130,6 +136,11 @@ abstract class Scene extends AgingObject
   public Palette getPalette()
   {
     return pal;
+  }
+  
+  public void setPalette(Palette p)
+  {
+    this.pal=p;
   }
 
   public void sortParticlesList()
@@ -269,6 +280,38 @@ abstract class Scene extends AgingObject
     }
   }
   
+
+  public void colorFadeTo(Palette p, int seconds)
+  {
+    if(this.pal.getID()!=p.getID()) //if it's not the same palette
+    {
+      //if the scene is not already fading
+      if(!isFading) //set starting and ending frames
+      {
+        startFading=frameCount;
+        endFading=frameCount+seconds*global_fps;
+        isFading=true; //now scene is fading    
+      }
+    
+      else  //continue fading
+      {
+        if(frameCount<=endFading)//fading finished?
+        {
+          //set the colors of the palette
+          for(int i=0;i<this.pal.paletteSize();i++)
+          {
+            this.pal.setColor(lerpColor(this.pal.getColor(i), p.getColor(i), map(frameCount,startFading,endFading,0,1)),i);
+          }
+        }
+        else 
+        { 
+          this.setPalette(p); //overwrite palette
+          isFading=false;
+        }
+      }
+     }
+     //println(map(frameCount,startFading,endFading,0,1));
+  }
 
   abstract void init();
 }
