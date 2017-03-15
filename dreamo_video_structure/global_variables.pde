@@ -4,7 +4,7 @@ short global_fps = 30;
 
 //keeps count of the number of particles that have been instantiated from the beginning of the program
 long global_particlesInstanciatedNumber = 0; 
-short global_sampleRate = 256; 
+short global_sampleRate = 100; 
 //////////////////////////////////////////////////////////////////////////////////
 String global_table_con = "log_conductance2.csv";///"log_conductance_SIM.csv";////
 String global_table_ecg = "log_ecg.csv";///"log_ecg_SIM.csv";////

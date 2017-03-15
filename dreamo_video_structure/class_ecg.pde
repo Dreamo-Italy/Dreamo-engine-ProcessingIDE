@@ -5,13 +5,14 @@ class Ecg extends Biosensor
   public float BPM,RRdist,BPM2;
   public Boolean FlagTachy = false;
   public Boolean FlagBrad = false;
+  public final int filteredMax = 10000;
   int flag1=0;
   
     public void init()
     {
           sensorName = "ecg";   
           BPM = 20;
-          setValue( BPM );
+          setBpm( BPM );
           StoreEcg = new FloatList();
           
           physicalMin = 0;
@@ -22,10 +23,9 @@ class Ecg extends Biosensor
     public void update()
     {     
     incomingValues = global_connection.extractFromBuffer("ecg", sampleToExtract ); // store the incoming conductance value from Connection to another FloatLIst
-    println(incomingValues.size() );
     for (int i = (incomingValues.size()-1); i > 0; i--) {
           float newFloat = incomingValues.get(i);
-          if ( value < physicalMin )
+          if ( value < physicalMax )
               StoreEcg.append(newFloat);
           incomingValues.remove(i);
          }    
@@ -68,8 +68,9 @@ class Ecg extends Biosensor
      else
        BPM = this.getBpm();
      
-        
-     setValue  ( ecgPostFilter[ ecgPostFilter.length -1] );
+     float newValue = ecgPostFilter[ ecgPostFilter.length -1];
+     if ( newValue < filteredMax )
+       setValue  ( newValue );
      setBpm( BPM );
      println("BPM:"+ BPM );
      println("NEW BPM:"+ BPM2 );
