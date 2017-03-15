@@ -1,3 +1,5 @@
+ import grafica.*;
+ 
  class DebugPlot
 {
  //************ CONSTANTS **************
@@ -39,7 +41,7 @@
      //else points[i] = new GPointsArray(nBars); //bars for histogram
    
      plots[i] = new GPlot(p);
-     plots[i].setPos(10, height-(i*220)+150);
+     plots[i].setPos(10, height-(i*220)-30);
   
      // Set the plots title and the axis labels
      plots[i].setMar(new float[] {50, 20, 50, 0});

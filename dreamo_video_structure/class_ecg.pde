@@ -22,6 +22,14 @@ class Ecg extends Biosensor
     public void update()
     {     
     incomingValues = global_connection.extractFromBuffer("ecg", sampleToExtract ); // store the incoming conductance value from Connection to another FloatLIst
+    println(incomingValues.size() );
+    for (int i = (incomingValues.size()-1); i > 0; i--) {
+          float newFloat = incomingValues.get(i);
+          if ( value < physicalMin )
+              StoreEcg.append(newFloat);
+          incomingValues.remove(i);
+         }    
+         
     StoreEcg.append(incomingValues);
            
     //println("Number of ECG elements to extract: " + sampleToExtract );
