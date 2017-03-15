@@ -49,7 +49,6 @@ class HelloShape extends Scene
     for(int i = 0; i < particlesNumber; i++){
       particlesList[i].updatePhysics();
       particlesList[i].setParameter(0,global_dyn.getRMS());
-      particlesList[i].setParameter(1,global_dyn.getAvgRMS());
       particlesList[i].update();
        }
      

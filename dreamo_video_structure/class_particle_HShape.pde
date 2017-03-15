@@ -64,7 +64,7 @@ class HShape extends Particle
         break; 
       case 6:
         nSides=(int)random(4,7);
-        radius=random(220,270);
+        radius=random(220,570);
         break; 
     }
    }
@@ -80,9 +80,6 @@ class HShape extends Particle
   
   public void update()
   {
-    
-    if(getParameter(1)>0.4){I=40;}
-    else {I=20;}
     if(MODE>=0 && MODE<=6){
     switch(MODE) {
       case 0:

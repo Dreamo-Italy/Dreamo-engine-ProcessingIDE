@@ -1,5 +1,4 @@
-class Dynamic extends FeaturesExtractor
-{
+class Dynamic extends AudioFeatures {
 
   //features
   private float RMS;
@@ -7,6 +6,7 @@ class Dynamic extends FeaturesExtractor
   //averaging window
   private final int N=5;
   //averaging constant
+  private float tiny;
   private float maxRMS;
 
 

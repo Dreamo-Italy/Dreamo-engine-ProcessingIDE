@@ -16,7 +16,7 @@ abstract class Biosensor
   protected float physicalMin, physicalMax; // the theoretical MINIMUM and MAXIMUM values of the current sensor
 
 
-  //********* PRIVATE MEMBERS ***********
+	//********* PRIVATE MEMBERS ***********
 
   private float bpm;
   private boolean connected; // connection status of the sensor
@@ -248,8 +248,8 @@ abstract class Biosensor
  // the following methods depend on the SPECIFIC SENSOR
  //********* ABSTRACT METHODS ***********
 
-  abstract void init();
-  abstract void update(); // update() is called at FrameRate speed
+	abstract void init();
+	abstract void update(); // update() is called at FrameRate speed
 
- // abstract void storeFromText();
+	// abstract void storeFromText();
 }

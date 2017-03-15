@@ -229,7 +229,7 @@ abstract class Scene extends AgingObject
       particlesList[i].endTransformations();
     }
     
-    if(reflectHorizontally)
+    if(reflectHorizontally) //<>//
     {
       PImage reflection = get(0, 0, width/2, height);
       pushMatrix();
