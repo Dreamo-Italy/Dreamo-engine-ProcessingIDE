@@ -31,6 +31,7 @@ class HelloShape extends Scene
   
   public void update()
   {
+   
     if(mode==1)
     {
       if (index < SHAPE_NUM && frameCount % 60 == 0)
@@ -46,6 +47,8 @@ class HelloShape extends Scene
          enableBackground();
      }*/
     }
+    
+    
     for(int i = 0; i < particlesNumber; i++){
       particlesList[i].updatePhysics();
       particlesList[i].setParameter(0,global_dyn.getRMS());

@@ -2,16 +2,20 @@ import ddf.minim.analysis.*;
 
 class Timbre extends FeaturesExtractor
 {
-  //private float[] samples;
+  //window
+  private final int W=129  ; // 43=~1s
   
   private float[] FFTcoeffs;
   private int specSize;
   private float spectralCentroidHz;
+  private Statistics CentroidStats;
   
   public Timbre(int bSize, float sRate)
   {
     buffSize=bSize;
     sampleRate=sRate; 
+    spectralCentroidHz=0;
+    CentroidStats=new Statistics(W);
   }
   
   public void setFFTCoeffs(float[] coeffs)
@@ -25,6 +29,11 @@ class Timbre extends FeaturesExtractor
   public void setSpecSize(int sz)
   {
     specSize=sz;
+  }
+  
+  public float getCentroidAvg()
+  {
+    return CentroidStats.getAverage();
   }
   
   public float getCentroidHz()
@@ -47,8 +56,15 @@ class Timbre extends FeaturesExtractor
       num+=(centerFreqHz(i)*FFTcoeffs[i]);
       denom+=FFTcoeffs[i];    
     }
-    sc = num/denom;
-    spectralCentroidHz = expSmooth(sc, spectralCentroidHz, 5);
+    if(denom!=0){sc = num/denom;}
+    else{sc=0;}
+    
+    //accumulate for statistcs
+    CentroidStats.accumulate(sc);
+    
+    //smoothing
+    spectralCentroidHz=expSmooth(sc, spectralCentroidHz, 5);
+    //spectralCentroidHz=sc;
   }
   
   private float centerFreqHz(int idx)

@@ -1,4 +1,4 @@
-//class Tone extends AudioProcessor {
+//class Tone extends FeaturesExtractor {
 
 //  private float[] samples;
 //  private boolean init=false;

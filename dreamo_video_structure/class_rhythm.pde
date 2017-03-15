@@ -1,6 +1,6 @@
 //import ddf.minim.analysis.*;
 
-//class Rhythm extends AudioProcessor {
+//class Rhythm extends FeaturesExtractor {
 
 //  private float[] samples;
 //  private boolean init=false;
