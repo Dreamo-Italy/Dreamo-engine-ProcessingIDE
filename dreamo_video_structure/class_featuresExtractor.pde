@@ -64,6 +64,12 @@ abstract class FeaturesExtractor
    
   }
   
+  //UTILITY METHODS
+  public float linearToDecibel(final float value)
+  {
+    return 20.0 * (float) Math.log10(value);
+  }
+  
   //ABSTRACT METHODS  
   abstract void calcFeatures();
 
