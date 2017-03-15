@@ -97,9 +97,9 @@ class AudioProcessor implements AudioListener
   
 
   
-  //features calc methods
+  //FEATURES CALC METHODS
   //FFT
-  private void calcFFT(float[] samples)
+  private void calcFFT(final float[] samples)
   {
     fft.forward(samples);
     FFTcoeffs = new float[fft.specSize()];
@@ -108,19 +108,10 @@ class AudioProcessor implements AudioListener
       FFTcoeffs[i]=fft.getBand(i);
     }
   }
-  
-  
+   
   //autocorr
   //zerocrossing rate?
-  
-  
-  //utility methods
-  //linear to decibel
-  //decibel to linear
-  //is silence
-  
-  //is silence?
-  
+    
   private void runDyn()
   { 
     if(dyn.isInitialized()){dyn.setSamples(left);}

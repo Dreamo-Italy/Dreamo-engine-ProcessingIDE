@@ -19,11 +19,11 @@ abstract class Scene extends AgingObject
   private boolean reflectHorizontally;
   private boolean reflectVertically;
   
+  //fading 
   private boolean isFading;
-  private boolean fadingOver;
   private int startFading;
   private int endFading;
-
+  
   //CONSTRUCTORS
   public Scene()
   {
@@ -303,7 +303,7 @@ abstract class Scene extends AgingObject
             this.pal.setColor(lerpColor(this.pal.getColor(i), p.getColor(i), map(frameCount,startFading,endFading,0,1)),i);
           }
         }
-        else 
+        else //finished 
         { 
           this.setPalette(p); //overwrite palette
           isFading=false;

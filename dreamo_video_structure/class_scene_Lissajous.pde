@@ -1,6 +1,7 @@
 class Lissajous extends Scene
 {
-  private boolean change;
+  private int change;
+  private Hysteresis centroidControl;
   
   public void init()
   {
@@ -15,7 +16,8 @@ class Lissajous extends Scene
     enableBackground();
     sceneMood.setMood(0,1);
     
-    change=false;
+    centroidControl = new Hysteresis(4000,6000);
+    
   }
   
   
@@ -25,17 +27,9 @@ class Lissajous extends Scene
    //example of usage
    //TODO: implement histeresis cycle to change status
    //TODO: implement reliable decision algorithm (na parola)
-   if(global_timbre.getCentroidAvg()>5000)
-   {
-     change=true;
-   }
-   if(global_timbre.getCentroidAvg()<4000)
-   {
-     change=false;
-   }
-   
-   if(change) {colorFadeTo(new Palette(1),5);}
-   else {colorFadeTo(new Palette(4),5);}
+   //change=histeresis(global_timbre.getCentroidAvg(),4000,5000);
+   if(centroidControl.check(global_timbre.getCentroidAvg())) {colorFadeTo(new Palette(1),10);}
+   else if (!centroidControl.check(global_timbre.getCentroidAvg())) {colorFadeTo(new Palette(4),10);}
    
    for(int i = 0; i < particlesNumber; i++)
      {

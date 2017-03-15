@@ -1,7 +1,8 @@
 class Dynamic extends FeaturesExtractor
 {
 
-  //features
+  public static final double DEFAULT_SILENCE_THRESHOLD = -70.0;//db
+  
   private float RMS;
   private float maxRMS;
 
@@ -17,6 +18,7 @@ class Dynamic extends FeaturesExtractor
     sampleRate=sRate;
     maxRMS = 0.5;
     RMSstats=new Statistics(W);
+    
   }
 
 
@@ -31,7 +33,12 @@ class Dynamic extends FeaturesExtractor
     return RMSstats.getAverage();
   }
   
-  //OVERRIDE METHODS
+  public float getSPL()
+  {
+    return soundPressureLevel(RMS);
+  }
+  
+  //OVERRIDE CALC FEATURES METHOD
   public void calcFeatures()
   {
     calcRMS();
@@ -46,7 +53,8 @@ class Dynamic extends FeaturesExtractor
       for(int i=0;i<samples.length;i++)
       {
         level += (samples[i]*samples[i]);
-       }
+       }       
+      
       level /= samples.length;
       level = (float) Math.sqrt(level);
 
@@ -61,6 +69,22 @@ class Dynamic extends FeaturesExtractor
       //smoothing
       RMS=expSmooth(level,RMS,5);
       
+  }
+  
+  public boolean isSilence(final float silenceThreshold) 
+  {
+    return soundPressureLevel(RMS) < silenceThreshold;
+  }
+  
+  public boolean isSilence() 
+  {
+    return soundPressureLevel(RMS) < DEFAULT_SILENCE_THRESHOLD;
+  }
+
+  /******** PRIVATE METHODS ********/
+  private float soundPressureLevel(final float RMS)
+  {
+    return linearToDecibel(RMS);
   }
   
 
