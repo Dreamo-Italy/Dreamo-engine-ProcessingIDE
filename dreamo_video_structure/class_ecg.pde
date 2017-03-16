@@ -5,8 +5,10 @@ class Ecg extends Biosensor
   public float BPM,RRdist,BPM2;
   public Boolean FlagTachy = false;
   public Boolean FlagBrad = false;
-  public final int filteredMax = 10000;
+  public final int filteredMax = 15;
   int flag1=0;
+  
+  private final float minBufferSize = global_sampleRate*60;
   
     public void init()
     {
@@ -22,15 +24,21 @@ class Ecg extends Biosensor
 
     public void update()
     {     
-    incomingValues = global_connection.extractFromBuffer("ecg", sampleToExtract ); // store the incoming conductance value from Connection to another FloatLIst
-    for (int i = (incomingValues.size()-1); i > 0; i--) {
+      int added = 0;
+     incomingValues = global_connection.extractFromBuffer("ecg", sampleToExtract ); // store the incoming conductance value from Connection to another FloatLIst
+     for (int i = (incomingValues.size()-1); i > 0; i--) {
           float newFloat = incomingValues.get(i);
-          if ( value < physicalMax )
-              StoreEcg.append(newFloat);
-          incomingValues.remove(i);
+          if ( newFloat < physicalMax )
+              {
+                StoreEcg.append(newFloat);
+                added++;
+              }
          }    
-         
-    StoreEcg.append(incomingValues);
+    
+    if(StoreEcg.size()> minBufferSize) {
+      for(int i =0; i<added; i++)
+         StoreEcg.remove(i);
+    }
            
     //println("Number of ECG elements to extract: " + sampleToExtract );
     //println("ECG buffer size: "+ incomingValues.size() );  
@@ -39,10 +47,11 @@ class Ecg extends Biosensor
     println("StoreEcg size: "+StoreEcg.size() );
     
     float [] ecgPreFilter = StoreEcg.array();
-    float [] ecgPostFilter = filterEcgData( ecgPreFilter);
+    float [] ecgPostFilter = filterEcgData(ecgPreFilter);
     
-    if(StoreEcg.size()> global_sampleRate*60) 
-    {           
+    if(StoreEcg.size()> minBufferSize-1) 
+    {
+        
         BPM = ECGBPM3(ecgPostFilter);
         BPM2 = ECGBPMLAST(ecgPostFilter);
           
@@ -62,18 +71,16 @@ class Ecg extends Biosensor
         }
         else
           FlagTachy=false;
-          
-       StoreEcg.clear();
-    }
+     }
      else
        BPM = this.getBpm();
      
-     float newValue = ecgPostFilter[ ecgPostFilter.length -1];
+     float newValue = DSP.vmax(filterEcgData(incomingValues.array()));
      if ( newValue < filteredMax )
        setValue  ( newValue );
      setBpm( BPM );
      println("BPM:"+ BPM );
-     println("NEW BPM:"+ BPM2 );
+     //println("NEW BPM:"+ BPM2 );
      
      
      // segnala lo stato dell'utente

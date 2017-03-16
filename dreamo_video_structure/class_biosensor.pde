@@ -4,7 +4,7 @@ abstract class Biosensor
 {
  //************ CONSTANTS **************
  
-  final private int CALIBRATION_TIME = 10; // duration of the CALIBRATION PROCESS, expressed in seconds
+  final private int CALIBRATION_TIME = 90; // duration of the CALIBRATION PROCESS, expressed in seconds
 
   
  //********* PUBLIC MEMBERS ***********
@@ -188,14 +188,41 @@ abstract class Biosensor
   }
   
   //TODO: move this into ECG class
-  protected float [] filterEcgData(float [] arrayIn)
+  protected float [] filterEcgData(float...arrayIn)
   {
-      float[] FilteredHp = DSP.HighPass (arrayIn, 50.0, global_sampleRate);
-      float[] ampli = DSP.times(FilteredHp,100);
-      float[] FilteredLpHp = DSP.LowPassFS (ampli, 100.0, global_sampleRate);
-      float[] ampli2 = DSP.times(FilteredLpHp,100);
-      return ampli2;
+      //System.arraycopy(Object src, int srcPos, Object dest, int destPos, int length)
+
+      float [] filtered = new float[arrayIn.length];
+      filtered = Arrays.copyOf(arrayIn,arrayIn.length );
+      //System.arraycopy(arrayIn, 0, filtered, 0, arrayIn.length);
+      
+      filtered = DSP.HighPass (filtered, 5.0, global_sampleRate);
+      filtered = DSP.HWR(filtered);
+      //filtered = DSP.MAfilter(filtered, arrayIn.length);
+      filtered = DSP.times(filtered,5);
+      filtered = DSP.LowPassFS (filtered, 45.0, global_sampleRate);
+      filtered = DSP.times(filtered,10);
+      filtered = differentiateArray(filtered);      
+      return filtered;
   }
+  
+  public float [] squareArray(float [] a)
+  {
+  //Squaring the signal to increase the peak
+    for (int i=0; i< a.length;i++){
+      a[i]= a[i]*a[i];
+    }
+          return a;
+  }
+  
+  public float [] differentiateArray(float [] a)
+  {
+  // Differentiator
+    for (int i=0; i<a.length;i++){
+      if(i>3){a[i]= 0.1*(2*a[i] + a[i-1] -a[i-3]-2*a[i-4]);}
+     }
+    return a;
+ }
   
    public void printDebug()
   {     
@@ -230,8 +257,11 @@ abstract class Biosensor
  // il trend è sempre lo stesso i valori cambiano a seconda della threshold per
  // RRdistanceSecond
  // riguardare potenziali errori
- public int ECGBPMLAST(float[] a)
+ public int ECGBPMLAST(float[] input)
  {
+   float a [] = new float[input.length];
+    a = Arrays.copyOf(input, input.length);
+    
     int Beatcount=0;
     int BPM;
     float index=0,lastPeak=0, nSample=0;
@@ -239,22 +269,22 @@ abstract class Biosensor
     int N = a.length; //numToExtract*frameRate*5 
     boolean flag=false, flag2=true;
     
-    // Differentiator
-    for (int i=0; i<N;i++){
-      if(i>3){a[i]= 0.1*(2*a[i] + a[i-1] -a[i-3]-2*a[i-4]);}
-     }
+    //// Differentiator
+    //for (int i=0; i<N;i++){
+    //  if(i>3){a[i]= 0.1*(2*a[i] + a[i-1] -a[i-3]-2*a[i-4]);}
+    // }
     
-    //Squaring the signal to increase the peak
-    for (int i=0; i<N;i++){
-      a[i]= a[i]*a[i];
-      //if(a[i] < 0.05) 
-      //  a[i] = 0;
-    } 
+    ////Squaring the signal to increase the peak
+    //for (int i=0; i<N;i++){
+    //  a[i]= a[i]*a[i];
+    //  //if(a[i] < 0.05) 
+    //  //  a[i] = 0;
+    //} 
 
     //signal evaluation and peaks counter
     for(int i=1;i<N-1;i++){
        
-      if(a[i]> 36000 && a[i]>a[i-1] && a[i+1]>a[i] ){
+      if(a[i]> 3 && a[i]>a[i-1] && a[i+1]>a[i] ){
     
           if(flag2){
           Beatcount++;
@@ -273,7 +303,6 @@ abstract class Biosensor
           //println("BCbefore " +Beatcount);
           if (RRdistanceSecond > 0.12) {
              Beatcount++;
-             println("after " +Beatcount);  
           }
         }
         }
@@ -289,35 +318,39 @@ abstract class Biosensor
  /******************************************************************************************************/
  
   //TODO: move this into ECG class
-  public int ECGBPM3(float[] a)
+  public int ECGBPM3(float[] input)
   {
+    float a [] = new float[input.length];
+    a = Arrays.copyOf(input, input.length);
+    
     int Beatcount=0;
     int BPM;
-    int N= a.length; //numToExtract*frameRate*5 
+    int N = a.length; //numToExtract*frameRate*5 
     boolean flag=false;
     
-    // Differentiator
-    for (int i=0; i<N;i++){
-      if(i>3){a[i]= 0.1*(2*a[i] + a[i-1] -a[i-3]-2*a[i-4]);}
-     }
+    ////Squaring the signal to increase the peak
+    //for (int i=0; i<N;i++){
+    //  a[i]= a[i]*a[i];
+    //  //if(a[i] < 0.05) 
+    //  //  a[i] = 0;
+    //} 
     
-    //Squaring the signal to increase the peak
-    for (int i=0; i<N;i++){
-      a[i]= a[i]*a[i];
-      //if(a[i] < 0.05) 
-      //  a[i] = 0;
-    } 
      float newMax = max ( a); 
-     println("max filtered"+ newMax);
+     println("max filtered " + newMax);
 
     //signal evaluation and peaks counter
-    for(int i=1;i<N-1;i++){
-        if(a[i]> 36000 && a[i]>a[i-1] && a[i+1]>a[i]){
-          if (!flag){
-          Beatcount++; 
-          flag=true;
+    for(int i=1;i<N-1;i++)
+    {
+        if(a[i]> 3 /*&& a[i]>a[i-1] */&& a[i]>a[i+1])
+        {
+          if (!flag)
+          {
+            Beatcount++; 
+            //flag=true;
           }
-        }else{flag=false;}
+        }
+        else
+          flag = false;
       }
      
      
