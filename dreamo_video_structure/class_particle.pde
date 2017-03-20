@@ -13,6 +13,7 @@ abstract class Particle extends AgingObject
   private Vector2d gravity;
   private Vector2d rotation; //image rotation
   private int depth; //layers; small depth => near layer
+  private int fadingAlpha; //users can use this value for fading effects during scene changes
 
   private long id; //number of particles
   private boolean destroy; // to be destroyed?
@@ -44,6 +45,7 @@ abstract class Particle extends AgingObject
     gravity = new Vector2d(0, 0, false);
     rotation = new Vector2d(1, 0, true);
     depth = 0;
+    fadingAlpha = 0;
 
     persistent = false;
     initialised = false;
@@ -74,6 +76,7 @@ abstract class Particle extends AgingObject
     gravity = new Vector2d(toCopy.gravity);
     rotation = new Vector2d(toCopy.rotation);
     depth = toCopy.depth;
+    fadingAlpha = toCopy.fadingAlpha;
 
     persistent = toCopy.persistent;
     initialised = false;
@@ -121,6 +124,11 @@ abstract class Particle extends AgingObject
   public int getDepth()
   {
     return depth;
+  }
+  
+  public int getFadingAlpha()
+  {
+    return fadingAlpha;
   }
 
   public long getId()
@@ -314,6 +322,19 @@ abstract class Particle extends AgingObject
     if(getLifeTimeIsUp())
     {
       instanceDestroy();
+    }
+    
+    //alpha update
+    if(fadingAlpha < 255 &&!isDestroying())
+    {
+      fadingAlpha += 5;
+    }
+    if(isDestroying())
+    {
+      if(fadingAlpha > 0)
+      {
+        fadingAlpha -= 5;
+      }
     }
   }
   
