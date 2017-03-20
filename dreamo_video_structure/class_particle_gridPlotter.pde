@@ -1,16 +1,19 @@
 class GridPlotter extends Particle
 {
-  final int rows = 20;
-  final int columns = 30;
+  final int rows = 15;
+  final int columns = 20;
   final int N = rows*columns;
   
   GridNode[] gridNodes;
   
-  float hue = 100;
-  float saturation = 255;
-  float brightness = 255;
-  float alpha = 0;
-  float alphaWeight = 1;
+  float hue ;
+  float saturation ;
+  float brightness ;
+  color colore;
+      
+
+  float alpha;
+  float alphaWeight = 0.05;
   float strokeWeight = 1;
   
   boolean destroying = false;
@@ -29,6 +32,11 @@ class GridPlotter extends Particle
   
   void init()
   {
+     colore = pal.getLightest();          
+     hue = hue(colore);
+     saturation = saturation(colore);
+     brightness = brightness(colore);   
+     alpha = 2;
     setPersistence(true);
     
     gridNodes = new GridNode[N];
@@ -61,7 +69,16 @@ class GridPlotter extends Particle
   
   void update()
   {
-    if(frameCount%7 == 0) perturbate(new Vector2d((height/10*4)*sin(frameCount/500.0*TWO_PI), (frameCount%22)/21.0*TWO_PI, true).sum(new Vector2d(width/2, height/2, false)), 150);
+    float perturbationIntensity = getParameter(0);
+    float xTrans = (width/2)*perturbationIntensity;
+    float yTrans = (height/2)*perturbationIntensity;
+
+    
+    if( frameCount%4 == 0)
+    {
+      perturbate(new Vector2d(width/2, height/2, false).sum( new Vector2d( random(-xTrans,xTrans), random(-yTrans,yTrans), false) ),
+      perturbationIntensity*2500);
+    }
     
     if(getSceneChanged() && !destroying)
     {
@@ -74,26 +91,25 @@ class GridPlotter extends Particle
       alphaWeight -= 1/50.0;
     }
     
-    hue++;
-    if(hue > 255) hue = 0;
+    //hue++;
+    //if(hue > 360) hue = 0;
   }
   
   void trace()
   {
     noFill();
-    colorMode(HSB, 255); 
     
     for(int i = 0; i < N; i++)
     {
-      int hshift = round(gridNodes[i].getSpeed().getDirection()/TWO_PI*20);
-      if(hshift < 0) hshift += 255;
-      if(hshift > 255) hshift -= 255;
-      int ashift = round(gridNodes[i].getSpeed().getModulus()*100);
+      //int hshift = round(gridNodes[i].getSpeed().getDirection()/TWO_PI*20);
+      //if(hshift < 0) hshift += 360;
+      //if(hshift > 360) hshift -= 360;
+      int ashift = round(gridNodes[i].getSpeed().getModulus()*100 );
       int swshift = round(gridNodes[i].getSpeed().getModulus()*0.1);
-      if(ashift > 255) ashift = 255;
+      if(ashift > 360) ashift = 360;
       if(swshift > 5) swshift = 5;
       
-      stroke(hue+hshift, saturation, brightness, round((alpha+ashift)*alphaWeight));
+      stroke(hue +0 , saturation, brightness, round((alpha+ashift)*alphaWeight));
       strokeWeight(strokeWeight + swshift);
       if((i%columns) < columns-1)
       {
@@ -105,6 +121,5 @@ class GridPlotter extends Particle
       }
     }
     
-    colorMode(HSB,360,100,100,100);
   }
 }

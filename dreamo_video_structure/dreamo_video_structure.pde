@@ -29,9 +29,9 @@ void setup()
 
   //scenes
   global_stage.addScene(new Lissajous() );
-  //global_stage.addScene(new ScenePlotter());
+  global_stage.addScene(new SceneDynamicGrid() );
   
-  /*
+  /*global_stage.addScene(new ScenePlotter());
   global_stage.addScene(new SceneFireworks());
   global_stage.addScene(new SceneDots());
   global_stage.addScene(new ScenePerlinNoise());
@@ -40,6 +40,7 @@ void setup()
   global_stage.addScene(new HelloShape(1));
   global_stage.addScene(new DumbC());
   */
+  
   //debug plots
   global_debugPlots = new DebugPlot(this);
 }
