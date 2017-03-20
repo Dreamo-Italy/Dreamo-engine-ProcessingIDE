@@ -5,8 +5,6 @@ Visit [dreamo-italy.io](https://dreamo-italy.github.io/dreamo/) to learn more.
 
 Follow [Dreamo](https://www.facebook.com/dreamoItaly/) on Facebook for important announcements.
 
-By participating, you are expected to uphold this code. To learn more, you can write to dreamoitaly@gmail.com
-
 Repository for "Dreamo" project | _Polytechnic of Turin_ |.
 
 Current team *Francesco Cretti, Giovanni Bologni, Luciano Prono, Nicola Ruffino, Andrea Gambedotti, Lorenzo de Luca*.
@@ -26,7 +24,7 @@ Download the latest unstable [Dreamo release](https://github.com/Dreamo-Italy/Dr
 ## Documentation
 If you want to know more about using Dreamo or developing code for Dreamo, keep reading this readme.
 
-###Video plotting
+### Video plotting
 Here follows a generic description of the classes of the program:
 
 - *Particle* is the core visual-object class, from which a great number of different classes can be inherited (particles, stars, bubbles, squares...).
@@ -35,11 +33,11 @@ Here follows a generic description of the classes of the program:
 
 - *Stage* includes an array of scenes and manages the passage from one scene to another.
 
-###Audio Managing
+### Audio Managing
 - *DSP* is a static class containing digital signal processing methods
 - *AudioManager* manages the input stream properties
 - *AudioProcessor* manages the samples buffer and does common calculations (FFT, xcorr,...)
 - *FeaturesExtractor* is a superclass with utilities methods for features extractors
 - actual features extractor are inherited from FeaturesExtractor and contain the actual computational methods (ex: Dynamic, Timbre...)
 
-
+By participating, you are expected to uphold this code. To learn more, you can write to dreamoitaly@gmail.com
