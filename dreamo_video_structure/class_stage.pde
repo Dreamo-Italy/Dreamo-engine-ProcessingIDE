@@ -215,16 +215,46 @@ class Stage
 	{ //<>//
 		return currentScene;
 	}
+ 
 	//update and trace methods
 	public void updateAndTrace()
 	{
 		currentScene.update(); //<>//
 		currentScene.trace();
 		currentScene.trashDeadParticles();
+
+    selectScene( computeBiometricScore() );
+
 	}
 	
 	public int getNumberOfScenes()
 	{
 		return scenesNumber;
 	}
+
+  private int computeBiometricScore()
+  {
+     int nextSceneIndex = 0;
+     int scenesNumber = getNumberOfScenes();
+     
+     float gsrVal = global_gsr.getAbsolute(); 
+     float ecgVal = global_ecg.getBpm();
+     
+     println("Gsr val: "+gsrVal+" Ecg val: "+ecgVal);
+     
+     if ( ecgVal < 40 ) ecgVal = 60;
+    
+     float gsrScore =  map ( gsrVal, 0, 1, 0, scenesNumber - 1 );     
+     float ecgScore = map ( ecgVal, 40, 100, 0, scenesNumber - 1 );
+     
+     nextSceneIndex = selectSceneByVote(gsrScore, ecgScore, scenesNumber);
+     
+     println("Gsr score: "+gsrScore+" Ecg score: "+ecgScore+" resulting index: "+nextSceneIndex);
+     
+     // check lower and upper bounds
+     if (nextSceneIndex < 0 ) nextSceneIndex = 0;
+     else if ( nextSceneIndex >= scenesNumber ) nextSceneIndex = scenesNumber-1;
+     
+     return nextSceneIndex;
+  }
 }

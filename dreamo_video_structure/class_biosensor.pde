@@ -24,7 +24,6 @@ abstract class Biosensor
   private boolean calibrating; // TRUE IF the calibration process IS RUNNING
   private boolean calibrated; // TRUE if the calibration process HAVE BEEN RUN already
   private int calibrationCounter;
-  private int BPMcal;
   protected int sampleToExtract;
   protected FloatList incomingValues; // vector of float
   protected FloatList calibrationValues;

@@ -13,7 +13,7 @@ class Ecg extends Biosensor
     public void init()
     {
           sensorName = "ecg";   
-          BPM = 20;
+          BPM = 60;
           setBpm( BPM );
           StoreEcg = new FloatList();
           
