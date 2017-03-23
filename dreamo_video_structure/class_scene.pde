@@ -281,36 +281,38 @@ abstract class Scene extends AgingObject
   }
   
 
-  public void colorFadeTo(Palette p, int seconds)
+  public void colorFadeTo(Palette p, int seconds, boolean activate)
   {
     if(this.pal.getID()!=p.getID()) //if it's not the same palette
     {
-      //if the scene is not already fading
-      if(!isFading) //set starting and ending frames
-      {
-        startFading=frameCount;
-        endFading=frameCount+seconds*global_fps;
-        isFading=true; //now scene is fading    
-      }
-    
-      else  //continue fading
-      {
-        if(frameCount<=endFading)//fading finished?
+      if(activate || isFading){
+        //if the scene is not already fading
+        if(!isFading) //set starting and ending frames
         {
-          //set the colors of the palette
-          for(int i=0;i<this.pal.paletteSize();i++)
+          startFading=frameCount;
+          endFading=frameCount+seconds*global_fps;
+          isFading=true; //now scene is fading    
+        }
+    
+        else  //continue fading
+        {
+          if(frameCount<=endFading)//fading finished?
           {
-            this.pal.setColor(lerpColor(this.pal.getColor(i), p.getColor(i), map(frameCount,startFading,endFading,0,1)),i);
+            //set the colors of the palette
+            for(int i=0;i<this.pal.paletteSize();i++)
+            {
+              this.pal.setColor(lerpColor(this.pal.getColor(i), p.getColor(i), map(frameCount,startFading,endFading,0,1)),i);
+            }
           }
+          else //finished 
+          { 
+            this.setPalette(p); //overwrite palette
+            isFading=false;
+          }
+         }
         }
-        else //finished 
-        { 
-          this.setPalette(p); //overwrite palette
-          isFading=false;
-        }
-      }
-     }
-     //println(map(frameCount,startFading,endFading,0,1));
+       }
+       
   }
 
   abstract void init();

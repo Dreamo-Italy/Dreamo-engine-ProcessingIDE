@@ -7,6 +7,8 @@ class AudioProcessor implements AudioListener
   private float[] mix;
  
   private float[] FFTcoeffs;
+  
+  private boolean log;
  
   //private int bufferSize;
   //private float sampleRate;
@@ -28,13 +30,17 @@ class AudioProcessor implements AudioListener
     {
     //bufferSize=bSize;
     //sampleRate=sRate;
+    log=false;
     
     fft = new FFT(bSize,sRate);
-    fft.noAverages();
+    
+    if(!log) {fft.noAverages(); }   
+    
     //TODO: implement logarithmic spectrum. 
     //the calculation of the spectroid won't be in Hz -> check it!
     //see http://code.compartmental.net/minim/fft_method_logaverages.html
-    //EXAMPLE: fft.logAverages( 5, 1 ); - 13 band
+    //EXAMPLE: 
+    else {fft.logAverages(  86, 3 );} //- 13 band
     }
   }
   
@@ -100,18 +106,38 @@ class AudioProcessor implements AudioListener
     mix=DSP.plus(left,right); 
   }
   
-
+  public float getFFTcoeff(int i)
+  {
+    return FFTcoeffs[i];
+  }
+  
+  public int getSpecSize()
+  {
+    if(!log){return fft.specSize();}
+    else{return fft.avgSize();}
+  }
   
   //FEATURES CALC METHODS
   //FFT
   private void calcFFT(final float[] samples)
   {
     fft.forward(samples);
-    FFTcoeffs = new float[fft.specSize()];
-    for(int i = 0; i < fft.specSize(); i++)
-    {
-      FFTcoeffs[i]=fft.getBand(i);
+    if(!log){
+      FFTcoeffs = new float[fft.specSize()];
+      for(int i = 0; i < fft.specSize(); i++)
+       {
+          FFTcoeffs[i]=fft.getBand(i);
+       }
     }
+    
+    else
+    {
+      FFTcoeffs = new float[fft.avgSize()];
+      for(int i = 0; i < fft.avgSize(); i++)
+       {
+          FFTcoeffs[i]=fft.getAvg(i);
+       }
+    }   
   }
    
   //autocorr
@@ -127,8 +153,9 @@ class AudioProcessor implements AudioListener
   { 
     if(timb.isInitialized())
     {
-      timb.setSpecSize(fft.specSize());
-      timb.setFFTCoeffs(FFTcoeffs);     
+      if(!log){timb.setSpecSize(fft.specSize());}
+      else{timb.setSpecSize(fft.avgSize());}
+      timb.setFFTCoeffs(FFTcoeffs);
     }
     else{println("TIMBRE OBJECT HAS TO BE ADDED TO AUDIO PROCESSOR");}
   }

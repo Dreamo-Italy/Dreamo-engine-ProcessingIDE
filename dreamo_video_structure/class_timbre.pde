@@ -36,6 +36,11 @@ class Timbre extends FeaturesExtractor
     return CentroidStats.getAverage();
   }
   
+  public float getCentroidStdDev()
+  {
+    return CentroidStats.getStdDev();
+  }
+  
   public float getCentroidHz()
   {
     return spectralCentroidHz;
