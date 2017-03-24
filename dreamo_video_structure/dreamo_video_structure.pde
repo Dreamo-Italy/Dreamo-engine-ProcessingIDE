@@ -32,7 +32,9 @@ void setup()
   //scenes
   //global_stage.addScene(new Lissajous() );
   //global_stage.addScene(new ScenePlotter());
-  global_stage.addScene(new AudioDebug());
+  //global_stage.addScene(new AudioDebug());
+  global_stage.addScene(new Cyclo1());
+  
   /*
   global_stage.addScene(new SceneFireworks());
   global_stage.addScene(new SceneDots());
