@@ -13,6 +13,11 @@ void setup()
   //****** BIOSENSORS ******
   global_gsr = new Gsr();
   global_ecg= new Ecg();
+  
+  //****** BIOLOGICAL MOOD ******
+  
+  global_bioMood = new BioMood(); 
+  
 
   //****** AUDIO ******
   global_audio = new AudioManager(this); //new audio manager
@@ -62,6 +67,8 @@ void draw()
    long gsrT= (System.nanoTime() - conT -initTimeT - audioTime);// time elapsed after GSR UPDATE
 
    global_ecg.update();
+   
+   global_bioMood.update();
 
    long ecgT = (System.nanoTime() - conT -initTimeT - audioTime- gsrT); // time elapsed after ECG UPDATE
 
