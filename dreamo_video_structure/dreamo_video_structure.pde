@@ -20,17 +20,19 @@ void setup()
   global_audio.addListener(audio_proc); //attach processor to manager
   global_dyn = new Dynamic(global_audio.getBufferSize(),global_audio.getSampleRate()); //new dynamic features extractor
   global_timbre = new Timbre(global_audio.getBufferSize(),global_audio.getSampleRate()); //new timbric features extractor
+  global_rhythm = new Rhythm(global_audio.getBufferSize(),global_audio.getSampleRate()); //new rhythmic features extractor
   //add features extractors to our audio processor
   audio_proc.addDyn(global_dyn);
   audio_proc.addTimbre(global_timbre);
-
+  audio_proc.addRhythm(global_rhythm);
+  
   //****** STAGE ******
   global_stage = new Stage();
 
   //scenes
-  global_stage.addScene(new Lissajous() );
+  //global_stage.addScene(new Lissajous() );
   //global_stage.addScene(new ScenePlotter());
-  
+  global_stage.addScene(new AudioDebug());
   /*
   global_stage.addScene(new SceneFireworks());
   global_stage.addScene(new SceneDots());
@@ -46,18 +48,7 @@ void setup()
 
 void draw()
 {
-    long initTimeT = System.nanoTime(); // start time
-
-  /*
-   //update samples in audio buffer
-   global_audio.updateBuffer();
-
-   //set samples in dyn, tone and rhythm objects
-   global_dyn.setSamples(global_audio.getSamples());
-   global_tone.setSamples(global_audio.getSamples());
-   global_rhythm.setSamples(global_audio.getSamples());
-
-   */
+   long initTimeT = System.nanoTime(); // start time
 
    long audioTime = System.nanoTime() - initTimeT;
 
@@ -80,8 +71,8 @@ void draw()
    global_debugPlots.update();
 
 
-    fill(120); // for the DEBUG text
-    stroke(120); // for the DEBUG text
+   fill(120); // for the DEBUG text
+   stroke(120); // for the DEBUG text
 
    global_gsr.printDebug();// print the DEBUG TEXT related to the SKIN SENSOR
    //global_ecg.printDebug();// print the DEBUG TEXT related to the ECG SENSOR

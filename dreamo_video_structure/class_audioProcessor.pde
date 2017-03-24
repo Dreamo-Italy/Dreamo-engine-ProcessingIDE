@@ -10,64 +10,71 @@ class AudioProcessor implements AudioListener
   
   private boolean log;
  
-  //private int bufferSize;
-  //private float sampleRate;
-  
+  private int frameCounter;
+  private final int FRAMES_NUMBER=43;
+    
   private FFT fft;
   
   private Dynamic dyn;
   private Timbre timb;
+  private Rhythm rhy;
   
   //********* CONSTRUCTOR ***********
   AudioProcessor(int bSize, float sRate)
   {
+    
     left = null; 
     right = null;
+    log=false;    
+    frameCounter=0;
     
-    if ( bSize == 0 || sRate == 0)
-        println("ERROR: Impossible to initialize AudioProcessor");
+    if ( bSize == 0 || sRate == 0) {println("ERROR: Impossible to initialize AudioProcessor");}
+    
     else
-    {
-    //bufferSize=bSize;
-    //sampleRate=sRate;
-    log=false;
-    
-    fft = new FFT(bSize,sRate);
-    
-    if(!log) {fft.noAverages(); }   
-    
-    //TODO: implement logarithmic spectrum. 
-    //the calculation of the spectroid won't be in Hz -> check it!
-    //see http://code.compartmental.net/minim/fft_method_logaverages.html
-    //EXAMPLE: 
-    else {fft.logAverages(  86, 3 );} //- 13 band
+    { 
+      fft = new FFT(bSize,sRate);
+      if(!log) {fft.noAverages();}     
+      //TODO: implement logarithmic spectrum. 
+      //the calculation of the spectroid won't be in Hz -> check it!
+      //see http://code.compartmental.net/minim/fft_method_logaverages.html
+      //EXAMPLE: 
+      else {fft.logAverages(  86, 3 );}
     }
+    
   }
   
    
   //********* SYNCHRONIZED METHODS ***********
   public synchronized void samples(float[] samp)
   {
+    //update samples
     left = samp;
     
+    //calculate fourier transform
     calcFFT(samp);
-    runDyn();
-    runTimbre();
-    //process features
+    
+    //run features extractors
+    extractFeatures(); 
+    
+    frameCounter++;
+    if(frameCounter>FRAMES_NUMBER){frameCounter=0;}
+    
   }
   
   public synchronized void samples(float[] sampL, float[] sampR)
   {
+    //update samples - TODO: verify if is mix() could be useful
     left = sampL;
-    right = sampR;
- 
-    //process features (FFT, autocorr...)
-    //this.mix();
-    calcFFT(sampL);  
-    //run extractors
-    runDyn();
-    runTimbre();
+    right = sampR; 
     
+    //calculate fourier transform
+    calcFFT(sampL);  
+    
+    //run features extractors
+    extractFeatures();
+    
+    frameCounter++;
+    if(frameCounter>FRAMES_NUMBER){frameCounter=0;}
   }
   
   //********* PUBLIC METHODS ***********
@@ -81,6 +88,12 @@ class AudioProcessor implements AudioListener
   {
     timb=t;
     timb.setInitialized();
+  }
+  
+  public void addRhythm(Rhythm r)
+  {
+    rhy=r;
+    rhy.setInitialized();
   }
   
   //get methods
@@ -142,7 +155,25 @@ class AudioProcessor implements AudioListener
    
   //autocorr
   //zerocrossing rate?
+  
+  private void extractFeatures()
+  {
+    runRhythm();
+    runDyn();
+    runTimbre();
     
+  }
+    
+  private void runRhythm()
+  {
+    if(rhy.isInitialized()){
+      rhy.setSamples(left);
+      rhy.setCounter(frameCounter);
+    }
+    else{println("RHYTHM OBJECT HAS TO BE ADDED TO AUDIO PROCESSOR");}
+    
+  }
+  
   private void runDyn()
   { 
     if(dyn.isInitialized()){dyn.setSamples(left);}
