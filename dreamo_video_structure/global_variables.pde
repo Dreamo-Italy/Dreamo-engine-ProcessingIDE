@@ -6,18 +6,13 @@ int global_fps = 30;
 long global_particlesInstanciatedNumber = 0; 
 float global_sampleRate = 100; 
 //////////////////////////////////////////////////////////////////////////////////
-String global_table_con = "log_conductance2.csv";///"log_conductance_SIM.csv";////
-String global_table_ecg = "log_ecg.csv";///"log_ecg_SIM.csv";////
+String globalGsrTable = "LastLogGsr.csv";///"log_conductance_SIM.csv";////
+String globalEcgTable = "LastLogEcg.csv";///"log_ecg_SIM.csv";////
 //////////////////////////////////////////////////////////////////////////////////	
 final int SCENES_MAX = 100; 
 final int SOGLIA_SEL = 12;
 final int CHANGE_CHECK = 4*8;
-// sensor related...
-boolean dont_normalize = true;
 
-float global_max = 5.0;
-float global_min = 0.0;
-//////////////////////////////////////////////////////////////////////////////////
 //main object for display
 Stage global_stage; 
 //main object for connections
@@ -25,6 +20,8 @@ Connection global_connection;
 
 Gsr global_gsr;
 Ecg global_ecg;
+
+BioMood global_bioMood;
 
 short global_sensorNumber = 2;
 

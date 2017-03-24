@@ -1,7 +1,7 @@
 class Ecg extends Biosensor
 {
   private FloatList StoreEcg;
-  DSP bpm;
+  //DSP bpm;
   public float BPM,RRdist,BPM2;
   public Boolean FlagTachy = false;
   public Boolean FlagBrad = false;
@@ -13,7 +13,7 @@ class Ecg extends Biosensor
     public void init()
     {
           sensorName = "ecg";   
-          BPM = 20;
+          BPM = 60;
           setBpm( BPM );
           StoreEcg = new FloatList();
           
