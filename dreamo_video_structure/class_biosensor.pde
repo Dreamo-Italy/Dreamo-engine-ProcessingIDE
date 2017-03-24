@@ -9,7 +9,7 @@ abstract class Biosensor
   
  //********* PUBLIC MEMBERS ***********
   public String sensorName;
-  public float absolute; // absolute value of the output, mapped to a 1-10 scale
+  public float normalized; // absolute value of the output, normalized to a 1-10 scale
   public float variation; // percentage variation WRT default value
   public float value; // last value (not normalized)
   
@@ -24,7 +24,6 @@ abstract class Biosensor
   private boolean calibrating; // TRUE IF the calibration process IS RUNNING
   private boolean calibrated; // TRUE if the calibration process HAVE BEEN RUN already
   private int calibrationCounter;
-  private int BPMcal;
   protected int sampleToExtract;
   protected FloatList incomingValues; // vector of float
   protected FloatList calibrationValues;
@@ -35,7 +34,7 @@ abstract class Biosensor
   public Biosensor()
   {    
     sensorName = "default";
-    absolute = -1;    
+    normalized = -1;    
     physicalMin = -1;
     physicalMax = -1;
     
@@ -194,10 +193,15 @@ abstract class Biosensor
   {     
     int xOffset = 10;
     int yOffset = 35;
-    if ( sensorName == "ecg") yOffset += 13;
+    if ( sensorName == "ecg") 
+    {  
+        yOffset += 13;
+        text(sensorName+ " BPM: "+nf(getBpm(),2,0), xOffset, yOffset);
+    }    
+    else   
+      text(sensorName+ " normalized : " + nf(getNormalized(),2,2) + "; variation: " + nf(getVariation(),1,2) + 
+      "; default value : " + nf(getDefault(),1,2) + "; not normalized: "+nf(getValue(),1,2), xOffset, yOffset);
     
-    text(sensorName+ " absolute : " + nf(getAbsolute(),2,2) + "; variation: " + nf(getVariation(),1,2) + 
-    "; default value : " + nf(getDefault(),1,2) + "; not normalized: "+nf(getValue(),1,2), xOffset, yOffset);
     if(isCalibrating() && sensorName == "gsr")
       text("Calibration is running", xOffset, yOffset+26);
     
@@ -206,13 +210,13 @@ abstract class Biosensor
   //********* SET METHODS **********
  
   // set the sensor CURRENT VALUE
-  // when setValue is called, every other info is updated ( absolute, variation,... )
+  // when setValue is called, every other info is updated ( normalized, variation,... )
   public void setValue (float val) 
   {   
     value = val; 
     
-    setAbsolute( normalizeValue( value ) );
-    setVariation( getAbsolute() / getDefault() ) ;
+    setNormalized( normalizeValue( value ) );
+    setVariation( getNormalized() / getDefault() ) ;
     
   }
   
@@ -238,10 +242,10 @@ abstract class Biosensor
  }
    
   /******************************************************************************************************/ 
-  // when setValue is called, every other info is updated ( absolute, variation,... )
+  // when setValue is called, every other info is updated ( normalized, variation,... )
   public void setDefault ( float def ) { defaultValue = def; return; }
   public void setVariation (float var ) { variation = var; return; }
-  public void setAbsolute ( float abs ) { absolute = abs; return; }
+  public void setNormalized ( float abs ) { normalized = abs; return; }
   public void setBpm ( float newBpm ) { bpm = newBpm; return; }
   
   //********* GET METHODS ***********
@@ -251,7 +255,7 @@ abstract class Biosensor
   public float getPhysicalMax() { return physicalMax; }
   public float getDefault() { return defaultValue; }
   public float getValue() { return value; }
-  public float getAbsolute() { return absolute; } // absolute value of the output, mapped to a 0-1 scale
+  public float getNormalized() { return normalized; } // normalized value of the output, mapped to a 0-1 scale
   public float getVariation() { return variation; } // percentage variation of the sensor with respect to the default value
   public String getID() {return sensorName; }
   

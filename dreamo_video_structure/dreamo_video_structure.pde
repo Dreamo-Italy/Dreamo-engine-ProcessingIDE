@@ -37,7 +37,8 @@ void setup()
   //scenes
   //global_stage.addScene(new Lissajous() );
   //global_stage.addScene(new ScenePlotter());
-  global_stage.addScene(new AudioDebug());
+  //global_stage.addScene(new AudioDebug());
+  global_stage.addScene(new ScenePresentation() );
   /*
   global_stage.addScene(new SceneFireworks());
   global_stage.addScene(new SceneDots());
@@ -83,7 +84,7 @@ void draw()
    stroke(120); // for the DEBUG text
 
    global_gsr.printDebug();// print the DEBUG TEXT related to the SKIN SENSOR
-   //global_ecg.printDebug();// print the DEBUG TEXT related to the ECG SENSOR
+   global_ecg.printDebug();// print the DEBUG TEXT related to the ECG SENSOR
    text("particles: " + global_stage.getCurrentScene().getParticlesNumber() + "; framerate: " + nf(frameRate,2,1) + " \n", 10, 20);
    text("                                                                     Frame Count: "+frameCount,10,20);
 
@@ -119,7 +120,7 @@ void mouseClicked()
 
 void keyPressed()
 {
-     if (true)
+     if (key == 'c')
      {
        global_gsr.restartCalibration();
        global_ecg.restartCalibration();

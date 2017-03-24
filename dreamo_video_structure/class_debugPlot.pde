@@ -41,12 +41,12 @@
      //else points[i] = new GPointsArray(nBars); //bars for histogram
    
      plots[i] = new GPlot(p);
-     plots[i].setPos(10, height-(i*220)-30);
+     plots[i].setPos(10, height-(i*160)-60);
   
      // Set the plots title and the axis labels
      plots[i].setMar(new float[] {50, 20, 50, 0});
-     plots[i].setOuterDim(281,91);
-     plots[i].setDim(280,160);
+     plots[i].setOuterDim(261,101);
+     plots[i].setDim(260,100);
      //plots[i].getXAxis().setAxisLabelText("x ");
      //plots[i].getYAxis().setAxisLabelText("y ");
    
@@ -117,7 +117,7 @@
   
   public void addNewPoints()
   {
-    plots[0].addPoint( frameCount, global_gsr.getAbsolute());
+    plots[0].addPoint( frameCount, global_gsr.getNormalized());
     plots[1].addPoint( frameCount, global_ecg.getValue());
     
     plots[2].addPoint( frameCount, global_dyn.getRMS());    
@@ -134,7 +134,7 @@
   public void removeOldestPoints()
   {
     for(int i=0; i<plotNumber;i++)
-    {             
+    {
       plots[i].removePoint(0);
     }    
     plots[2].getLayer("AvgRMS").removePoint(0);

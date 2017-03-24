@@ -38,6 +38,9 @@ class Connection
     parent = p;
     
     executionNumber = new int[global_sensorNumber];
+    
+    executionNumber[0] = round( random ( 1000 ) );
+    executionNumber[1] = executionNumber[0];
  
     incomingGsr = new FloatList();
     incomingEcg = new FloatList();
@@ -148,10 +151,10 @@ class Connection
        if ( getList(sensorName).size() > sampleToExtract*5 )
           { getList(sensorName).clear(); println("List"+sensorName+" is now empty"); }          
           
-       // INDEX IS SHIFTED TO AVOID READING ALWAYS THE SAME VALUES
       if ( executionNumber[sensorIndex] >= getTable(sensorName).getRowCount()/sampleToExtract )
            executionNumber[sensorIndex] = 0;
       
+      // INDEX IS SHIFTED TO AVOID READING ALWAYS THE SAME VALUES
       int count = 0;
       int multiplier = executionNumber[sensorIndex];
       int iStart = 0 + sampleToExtract*multiplier;

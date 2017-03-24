@@ -1,7 +1,7 @@
 class BioMood 
 {
   private float [] arousal;
-  //private float arousalTot;
+  private float arousalTot;
   
   //default constructor
   public BioMood()
@@ -22,6 +22,7 @@ class BioMood
     {
       arousal[0] = computeGsrArousal();
       arousal[1] = computeEcgArousal();
+      arousalTot = (arousal[0]+arousal[1])/2;
     }
     
     println("gsr arousal: "+arousal[0]);
@@ -45,8 +46,8 @@ class BioMood
   {
     float absAr=0;
     
-    absAr = global_gsr.getAbsolute();
-    absAr = map(absAr, 0.2, 1, 0, 1);
+    absAr = global_gsr.getNormalized();
+    //absAr = map(absAr, 0.2, 1, 0, 1);
     
     if (absAr < 0) absAr = 0;
     else if (absAr > 1) absAr = 1;
@@ -61,7 +62,7 @@ class BioMood
     varAr = global_gsr.getVariation();
     
     // GalvanicSkinResponse "variation" range: 0.8 (relaxed), 5 (excited)
-    varAr = map(varAr, 0.8, 5, 0, 1);
+    varAr = map(varAr, 0.7, 5, 0, 1);
     
     if(varAr<0) varAr = 0;
     else if(varAr > 1) varAr = 1;
@@ -81,9 +82,9 @@ class BioMood
   }
   
   
-  public float [] getArousal()
+  public float getArousal()
   {
-    return arousal;
+    return arousalTot;
   }
 
 }

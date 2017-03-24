@@ -22,7 +22,7 @@ class SceneDynamicGrid extends Scene
        particlesList[i].updatePhysics();
        particlesList[i].setParameter(0,global_dyn.getRMS());
        //particlesList[i].setParameter(1,global_dyn.getAvgRMS());
-       particlesList[i].setParameter(2,global_gsr.getAbsolute() );
+       particlesList[i].setParameter(2,global_gsr.getNormalized() );
        particlesList[i].update();
      }
   }
