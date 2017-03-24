@@ -121,7 +121,7 @@
     plots[1].addPoint( frameCount, global_ecg.getValue());
     
     plots[2].addPoint( frameCount, global_dyn.getRMS());    
-    plots[2].getLayer("AvgRMS").addPoint( frameCount, global_dyn.getAvgRMS());
+    plots[2].getLayer("AvgRMS").addPoint( frameCount, global_dyn.getRMSAvg());
     
     //debug
     //plots[4].addPoint( frameCount, global_dyn.getRMS() );

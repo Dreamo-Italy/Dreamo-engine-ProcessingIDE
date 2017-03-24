@@ -10,7 +10,7 @@ class Dynamic extends FeaturesExtractor
   private final int W=129; // 43=~1s
   
   private Statistics RMSstats;
-
+  
   //CONSTRUCTOR
   public Dynamic(int bSize, float sRate)
   {
@@ -18,7 +18,7 @@ class Dynamic extends FeaturesExtractor
     sampleRate=sRate;
     maxRMS = 0.5;
     RMSstats=new Statistics(W);
-    
+
   }
 
 
@@ -28,9 +28,19 @@ class Dynamic extends FeaturesExtractor
    return RMS;
   }
     
-  public float getAvgRMS()
+  public float getRMSAvg()
   {
     return RMSstats.getAverage();
+  }
+  
+  public float getRMSStdDev()
+  {
+    return RMSstats.getStdDev();
+  }
+  
+  public float getRMSVariance()
+  {
+    return RMSstats.getVariance();
   }
   
   public float getSPL()

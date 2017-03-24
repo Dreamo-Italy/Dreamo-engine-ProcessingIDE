@@ -37,3 +37,4 @@ AudioProcessor audio_proc;
 //Rhythm global_rhythm;
 Dynamic global_dyn;
 Timbre global_timbre;
+Rhythm global_rhythm;

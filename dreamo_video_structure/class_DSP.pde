@@ -157,7 +157,7 @@ public final static class DSP {
     /******************************************************************************************************/ 
     
     //UPSAMPLING BY FACTOR n WITH ZERO INSERTION
-    public static float[] upsample(float[] x, int n)
+    public static float[] upsample(final float[] x, int n)
       {
        
      float[] y = new float[x.length*n];
@@ -245,7 +245,7 @@ public final static class DSP {
     /******************************************************************************************************/
     
     //SIMPLE MOVING AVERAGE FILTER WITH WIDOW SIZE = M
-    public static float[] MAfilter(float[] x, int M)
+    public static float[] MAfilter(final float[] x, int M)
     {
      float[] y = new float[x.length];
      float[] b = new float[M];
@@ -270,9 +270,9 @@ public final static class DSP {
     /******************************************************************************************************/
     
     //IIR filter
-    public static float[] IIRfilter(float[] b, float[] a, float[] x)
+    public static float[] IIRfilter(float[] b, float[] a, final float[] input)
     {
-        float[] y = new float[x.length];
+        float[] y = new float[input.length];
 
         // factor out a[0]
         if(a[0] != 1)
@@ -284,14 +284,14 @@ public final static class DSP {
                 b[ib] = b[ib]/a[0];
         }
 
-        for(int t = 0; t < x.length; t++)
+        for(int t = 0; t < input.length; t++)
         {
             y[t] = 0;
 
             // input terms
             int len = b.length-1 < t ? b.length-1 : t;
             for(int ib = 0; ib <= len; ib++)
-                y[t] += b[ib]*x[t-ib];
+                y[t] += b[ib]*input[t-ib];
 
             // output terms
             len = a.length-1 < t ? a.length-1 : t;
@@ -306,7 +306,7 @@ public final static class DSP {
     /******************************************************************************************************/
     
     //Tarsos IIR filter 
-    public static float[] TarsosFilter(float[] b, float[] a, float[] input)
+    public static float[] TarsosFilter(float[] b, float[] a, final float[] input)
     {
       float[] x = new float[input.length];
       System.arraycopy(input,0,x,0,input.length);  
@@ -348,7 +348,7 @@ public final static class DSP {
     /******************************************************************************************************/
     
     //high pass filtering (Tarsos coefficients calculation)
-    public static float[] HighPass(float[] in, float freq, float sampleRate)
+    public static float[] HighPass(final float[] in, float freq, float sampleRate)
       {
         
         //calculate coefficients
@@ -364,7 +364,7 @@ public final static class DSP {
     /******************************************************************************************************/
     
     //low pass filtering (Tarsos coefficients calculation)
-    public static float[] LowPassSP(float[] in, float freq, float sampleRate)
+    public static float[] LowPassSP(final float[] in, float freq, float sampleRate)
     {
         //calculate coefficients
         float fracFreq=freq/sampleRate;
@@ -378,7 +378,7 @@ public final static class DSP {
     /******************************************************************************************************/
     
     //low pass filtering (Tarsos coefficients calculation)
-    public static float[] LowPassFS(float[] in, float freq, float sampleRate)
+    public static float[] LowPassFS(final float[] in, float freq, float sampleRate)
     { 
       //minimum frequency is 60Hz!
       freq=freq>60?freq:60;
@@ -509,7 +509,7 @@ public final static class DSP {
   /******************************************************************************************************/
   
    //MULTIPLIES EACH ELEMENT OF a BY THE SCALAR k
-   public static float[] times(float[] a, float k)
+   public static float[] times(final float[] a, float k)
       {
           float[] y = new float[a.length];
 
