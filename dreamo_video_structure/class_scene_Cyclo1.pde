@@ -8,10 +8,13 @@ class Cyclo1 extends Scene
     cp.setPalette(pal);
     cp.disablePhysics();
     
+    cp.setPosition(new Vector2d(-100, 0, false));
+
     CycloParticle cp2 = new CycloParticle();
     cp2.setPalette(pal);
     cp2.disablePhysics(); 
-    cp2.setPosition(new Vector2d(width/5, height/5, false));
+    cp2.setPosition(new Vector2d(+100, 0, false));
+
        
     addParticle(cp);
     addParticle(cp2);
