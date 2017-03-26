@@ -99,7 +99,7 @@ class simpleLShape extends Particle
       float ry = random(-offset,offset);
       
       Vector2d pointPosition = new Vector2d(radius, angle, true); 
-      pointPosition = pointPosition.sum( new Vector2d(width/2, height/2,false) );   // translate point to the center of the screen  
+      //pointPosition = pointPosition.sum( new Vector2d(width/2, height/2,false) );   // translate point to the center of the screen  
       pointPosition = pointPosition.sum( new Vector2d(rx,ry,false) ); // add offset
       
       lissajousPoints[i] = pointPosition;      

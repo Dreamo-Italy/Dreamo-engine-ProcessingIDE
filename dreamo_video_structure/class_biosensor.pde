@@ -188,14 +188,13 @@ abstract class Biosensor
   
   //TODO: move this into ECG class
   
-  
    public void printDebug()
   {     
-    int xOffset = 10;
-    int yOffset = 35;
+    int xOffset = marginSpace;
+    int yOffset = interlineSpace*2;
     if ( sensorName == "ecg") 
     {  
-        yOffset += 13;
+        yOffset = interlineSpace*3;
         text(sensorName+ " BPM: "+nf(getBpm(),2,0), xOffset, yOffset);
     }    
     else   
@@ -203,8 +202,7 @@ abstract class Biosensor
       "; default value : " + nf(getDefault(),1,2) + "; not normalized: "+nf(getValue(),1,2), xOffset, yOffset);
     
     if(isCalibrating() && sensorName == "gsr")
-      text("Calibration is running", xOffset, yOffset+26);
-    
+      text("Calibration is running", xOffset, interlineSpace*4);
   }
   
   //********* SET METHODS **********

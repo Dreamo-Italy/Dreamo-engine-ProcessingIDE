@@ -155,18 +155,18 @@ class Connection
            executionNumber[sensorIndex] = 0;
       
       // INDEX IS SHIFTED TO AVOID READING ALWAYS THE SAME VALUES
-      int count = 0;
       int multiplier = executionNumber[sensorIndex];
       int iStart = 0 + sampleToExtract*multiplier;
       int iEnd = sampleToExtract*( multiplier + 1);  //index range [sampleToExtract*multiplier, sampleToExtract*( multiplier + 1)]
       
       // add the content of the table to a LIST OF FLOAT
-        for (TableRow row : getTable(sensorName).rows()) {
-          float newFloat = row.getFloat(tableHeaderName);
-          if ( count>=iStart && count<iEnd ) 
-              getList(sensorName).append (newFloat);
-          count++;
-         }    
+      TableRow row;
+      for (int i = iStart; i<iEnd; i++)
+      {
+        row = getTable(sensorName).getRow(i);
+        float newFloat = row.getFloat(tableHeaderName);
+        getList(sensorName).append (newFloat);
+      }       
      
      if ( getList(sensorName).size() > getTable(sensorName).getRowCount() )
        println( "WARNING: class connection, storeFromText(): reading is slower than writing for sensor "+sensorName+"\n");
@@ -236,7 +236,6 @@ class Connection
       FloatList toOutput = new FloatList();  
       boolean emptyList = false;
       int originalListSize = getList(sensorName).size();   //<>//
-
       
       float inValue = 0;
  //<>//

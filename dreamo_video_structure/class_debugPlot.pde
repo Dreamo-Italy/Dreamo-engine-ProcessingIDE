@@ -12,6 +12,7 @@
   //********* PRIVATE MEMBERS ***********
   private int nPoints = 300;
   private int nBars = 512;
+  private int xSize, ySize;
   private GPointsArray [] points;
   private GPointsArray surfacePoints;
   private GPlot [] plots;
@@ -31,8 +32,12 @@
    points = new GPointsArray[plotNumber+1]; 
    // Create new plots 
    plots = new GPlot[plotNumber];
-   
    surfacePoints = new GPointsArray(nPoints);
+   
+   ySize = (height - interlineSpace*6)/plotNumber;
+   xSize = width/3;
+   
+
 
    for(int i=0; i<plotNumber;i++)
    { 
@@ -41,14 +46,16 @@
      //else points[i] = new GPointsArray(nBars); //bars for histogram
    
      plots[i] = new GPlot(p);
-     plots[i].setPos(10, height-(i*160)-60);
   
      // Set the plots title and the axis labels
-     plots[i].setMar(new float[] {50, 20, 50, 0});
-     plots[i].setOuterDim(261,101);
-     plots[i].setDim(260,100);
+     //plots[i].setMar(new float[] {20, 20, 20, 20});
+     //plots[i].setOuterDim(261,101);
      //plots[i].getXAxis().setAxisLabelText("x ");
      //plots[i].getYAxis().setAxisLabelText("y ");
+     
+     plots[i].setDim(xSize,ySize); 
+     plots[i].setPos(-marginSpace*4, height-(i*(ySize+interlineSpace*2))-interlineSpace*5); 
+
    
      // Set the colors
      //plots[i].setFixedYLim(true);
@@ -65,17 +72,20 @@
      plots[i].getYAxis().setLineColor(green);
      plots[i].setAllFontProperties("",white,11);
 
-    if(i!=4)
-    {
+    if(i!=4){ //default behaviour
      for(int j=0; j<nPoints;j++)   
-      points[i].add(frameCount, 0);
+        points[i].add(frameCount, 0);
     }
     else{
       for(int j=0; j<nBars;j++)   
-      points[i].add(j, j/nBars);
+        points[i].add(j, j/nBars);
     }
     
-    plots[i].setPoints(points[i]);
+   plots[i].setPoints(points[i]);
+   plots[i].getTitle().setOffset(-interlineSpace);
+   plots[i].setFixedYLim(true);
+
+
      
    }
     
@@ -86,6 +96,15 @@
    plots[3].setTitleText("Spectral Centroid");
    //plots[4].setTitleText("Frequency spectrum");
    //plots[4].startHistograms(GPlot.VERTICAL);
+   
+   plots[0].setYLim(0, 1);
+   plots[1].setYLim(-1, 15);
+   plots[2].setYLim(0, 1);
+   plots[3].setYLim(20, 20000);
+   
+   plots[3].getYAxis().setLog(true);
+   
+
 
    
    for(int j=0; j<nPoints;j++)

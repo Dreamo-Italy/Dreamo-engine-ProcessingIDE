@@ -8,6 +8,7 @@ class ScenePresentation extends Scene
     pal.initColors(0);
     simpleLShape shape = new simpleLShape();
     
+    shape.setPosition( new Vector2d(width/2,height/2,false) );
     shape.setPalette(pal);
     shape.disablePhysics();
     
