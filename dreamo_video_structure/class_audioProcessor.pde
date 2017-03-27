@@ -25,6 +25,11 @@ class AudioProcessor implements AudioListener
     
     left = null; 
     right = null;
+    
+    dyn=null;
+    timb=null;
+    rhy=null;
+    
     log=false;    
     frameCounter=0;
     
@@ -33,12 +38,21 @@ class AudioProcessor implements AudioListener
     else
     { 
       fft = new FFT(bSize,sRate);
-      if(!log) {fft.noAverages();}     
+      
+      if(!log) 
+      {
+        fft.noAverages();
+        FFTcoeffs = new float[fft.specSize()];
+      }     
       //TODO: implement logarithmic spectrum. 
       //the calculation of the spectroid won't be in Hz -> check it!
       //see http://code.compartmental.net/minim/fft_method_logaverages.html
       //EXAMPLE: 
-      else {fft.logAverages(  86, 3 );}
+      else 
+      {
+        fft.logAverages(  86, 3 );
+        FFTcoeffs = new float[fft.avgSize()];
+      }
     }
     
   }
@@ -135,8 +149,9 @@ class AudioProcessor implements AudioListener
   private void calcFFT(final float[] samples)
   {
     fft.forward(samples);
-    if(!log){
-      FFTcoeffs = new float[fft.specSize()];
+    
+    if(!log)
+    {     
       for(int i = 0; i < fft.specSize(); i++)
        {
           FFTcoeffs[i]=fft.getBand(i);
@@ -145,30 +160,33 @@ class AudioProcessor implements AudioListener
     
     else
     {
-      FFTcoeffs = new float[fft.avgSize()];
       for(int i = 0; i < fft.avgSize(); i++)
        {
           FFTcoeffs[i]=fft.getAvg(i);
        }
-    }   
+    }
+   
   }
+  
+
    
   //autocorr
   //zerocrossing rate?
   
-  private void extractFeatures()
+  private synchronized void extractFeatures()
   {
     runRhythm();
     runDyn();
-    runTimbre();
-    
+    runTimbre(); 
   }
     
   private void runRhythm()
   {
-    if(rhy.isInitialized()){
+    if(rhy!=null){
       rhy.setSamples(left);
       rhy.setCounter(frameCounter);
+      rhy.setFFTCoeffs(FFTcoeffs,fft.specSize());
+      rhy.calcFeatures();
     }
     else{println("RHYTHM OBJECT HAS TO BE ADDED TO AUDIO PROCESSOR");}
     
@@ -176,17 +194,27 @@ class AudioProcessor implements AudioListener
   
   private void runDyn()
   { 
-    if(dyn.isInitialized()){dyn.setSamples(left);}
+    if(dyn!=null)
+    {
+      dyn.setSamples(left);
+      dyn.calcFeatures();
+    }
     else{println("DYN OBJECT HAS TO BE ADDED TO AUDIO PROCESSOR");}
   }
   
   private void runTimbre()
   { 
-    if(timb.isInitialized())
+    if(timb!=null)
     {
-      if(!log){timb.setSpecSize(fft.specSize());}
-      else{timb.setSpecSize(fft.avgSize());}
-      timb.setFFTCoeffs(FFTcoeffs);
+      if(!log) 
+      {
+        timb.setFFTCoeffs(FFTcoeffs,fft.specSize());        
+      }
+      else 
+      {  
+        timb.setFFTCoeffs(FFTcoeffs,fft.avgSize());
+      }
+      timb.calcFeatures();
     }
     else{println("TIMBRE OBJECT HAS TO BE ADDED TO AUDIO PROCESSOR");}
   }

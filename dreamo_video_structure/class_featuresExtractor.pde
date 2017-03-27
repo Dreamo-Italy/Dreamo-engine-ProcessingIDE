@@ -26,7 +26,7 @@ abstract class FeaturesExtractor
   public void setSamples(float[] _samples)
   {   
       samples=_samples.clone();
-      calcFeatures();   
+      //calcFeatures();   
   }
   
   //public void setBufferSize

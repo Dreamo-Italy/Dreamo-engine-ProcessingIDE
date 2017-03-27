@@ -1,7 +1,7 @@
 class Dynamic extends FeaturesExtractor
 {
 
-  public static final double DEFAULT_SILENCE_THRESHOLD = -70.0;//db
+  public static final double DEFAULT_SILENCE_THRESHOLD = -60.0;//db
   
   private float RMS;
   private float maxRMS;

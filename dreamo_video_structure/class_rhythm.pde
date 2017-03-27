@@ -4,12 +4,24 @@ class Rhythm extends FeaturesExtractor {
 
   private FloatList longWindow;
   private float[] processed;
-     
+  
+  public static final float DEFAULT_THRESHOLD = 8;
+  
+  public static final float DEFAULT_SENSITIVITY = 20;
+  
+  private float[] currentFFTmagnitudes;  
+  private float[] priorFFTmagnitudes;
+  private int FFTsize;
+  private float dfMinus1, dfMinus2;
+  private float threshold;
+  private float sensitivity;
+  private boolean percOnset;
+  
   //temporary for minim onset implementation
   private BeatDetect beat;
   
-  private int counter;
-  private final int FRAMES_NUMBER=43;
+  private int counter; //audio frames counter (passed by AudioProcessor object)
+  private static final int FRAMES_NUMBER=43;
   
   private boolean process_ok;
   
@@ -18,10 +30,21 @@ class Rhythm extends FeaturesExtractor {
   {
     buffSize=bSize;
     sampleRate=sRate;
-    beat = new BeatDetect();
+    counter=0; 
+    
+    //energy onset detector
     longWindow = new FloatList(bSize*FRAMES_NUMBER);
-    //beat.setSensitivity(30); 
-    counter=0;
+    processed = new float[bSize*FRAMES_NUMBER];
+    
+    priorFFTmagnitudes=new float[bSize/2+1];
+    currentFFTmagnitudes=new float[bSize/2+1];
+    
+    //percussive onset detector
+    this.threshold=DEFAULT_THRESHOLD;
+    this.sensitivity=DEFAULT_SENSITIVITY;
+    
+    percOnset=false;
+    
     process_ok=false;
   }
  
@@ -30,10 +53,78 @@ class Rhythm extends FeaturesExtractor {
     counter=c;
   }
   
- 
-  public void calcFeatures()
+  public void setFFTCoeffs(float[] coeffs, int size)
   {
+    FFTsize=size;
+    currentFFTmagnitudes=coeffs.clone();
+  }
+ 
+ public void setThreshold(float th)
+ {
+   threshold=th;
+ }
+ 
+ public void setSensitivity(float sens)
+ {
+   sensitivity=sens;
+ }
+ 
+ public synchronized void calcFeatures()
+ {        
+   percussiveOnsetDetection();
+   //energyOnsetDetection();  
+ }
+  
+  private void percussiveOnsetDetection()
+  {
+    //debug
+    //for(int i=100;i<120;i++){println(priorFFTmagnitudes[i]);}
     
+    int binsOverThreshold=0;
+    for(int i=0;i<FFTsize;i++)
+    {
+     if(priorFFTmagnitudes[i]>0)
+     {
+       float diff = 10*(float)Math.log10(currentFFTmagnitudes[i]/priorFFTmagnitudes[i]);
+       if ( diff >= threshold) {binsOverThreshold++;}
+     }
+     priorFFTmagnitudes[i]=currentFFTmagnitudes[i];   
+    }
+    
+    //println("BINS OVER TH: "+binsOverThreshold);
+    
+   //check if is onset 
+   if(dfMinus2<dfMinus1 && dfMinus1 >= binsOverThreshold && dfMinus1 > ((100 - sensitivity) * buffSize) / 200)
+   {
+     percOnset=true;
+   }
+   else{percOnset=false;}
+   
+   dfMinus2=dfMinus1;
+   dfMinus1=binsOverThreshold;
+   
+  }
+  
+  public boolean isPercOnset()
+  {
+    return percOnset;
+  }
+  
+  
+  private void energyOnsetDetection()
+  {
+    updateLongWindow();
+    
+    //when counter is at the end
+    if(counter>=FRAMES_NUMBER)
+    {
+      detectEnergyOnsets();     
+    }
+  }
+  
+  
+  private void updateLongWindow()
+  {
     //if the FloatList is full
     if(longWindow.size()>(buffSize*FRAMES_NUMBER))
     {
@@ -43,39 +134,30 @@ class Rhythm extends FeaturesExtractor {
     
     //put the last buffer at the top of the list with append(float[] values)
     longWindow.append(samples);
-    
-    //when counter is at the end
-    if(counter>=FRAMES_NUMBER)
-    {
-      process();
-      
-    }
-     
+  
   }
   
-  public void process()
+  public synchronized void detectEnergyOnsets()
   {
     //process to extract peaks
     //see http://mziccard.me/2015/05/28/beats-detection-algorithms-1/
-    /*
-    DSP.HWR(longWindow.values());
-    processed=DSP.LowPassSP(longWindow.values(),1000,sampleRate);
-    */
+    processed=longWindow.values().clone();
+    DSP.HWR(processed);
+    processed=DSP.LowPassSP(processed,1000,sampleRate);
+    //processed=DSP.times(processed,10);
     process_ok = true;
     
   }
 
-  public float getLongWindowSamples(int idx)
+  public synchronized float getLongWindowSamples(int idx)
   {
     //return longWindow.get(idx);
     return processed[idx];
   }  
   
-  public int getLongWindowSize()
+  public int getLongWindowMaxSize()
   {
-    //text("RHYTHM WINDOW SIZE: "+global_rhythm.getLongWindowSize(),200,200);
-    return longWindow.size();
-    
+    return buffSize*FRAMES_NUMBER;
   }
   
   public boolean isProcessed()
@@ -89,7 +171,7 @@ class Rhythm extends FeaturesExtractor {
     beat.detect(samples);
     return beat.isOnset();
   }
-  
+    
 
   
 }

@@ -20,6 +20,8 @@ void setup()
   
 
   //****** AUDIO ******
+  
+  
   global_audio = new AudioManager(this); //new audio manager
   audio_proc = new AudioProcessor(global_audio.getBufferSize(),global_audio.getSampleRate()); //new audio processor
   global_audio.addListener(audio_proc); //attach processor to manager
@@ -27,10 +29,16 @@ void setup()
   global_timbre = new Timbre(global_audio.getBufferSize(),global_audio.getSampleRate()); //new timbric features extractor
   global_rhythm = new Rhythm(global_audio.getBufferSize(),global_audio.getSampleRate()); //new rhythmic features extractor
   //add features extractors to our audio processor
+  
+  global_rhythm.setSensitivity(15);
+  global_rhythm.setThreshold(5);
+    
+    
   audio_proc.addDyn(global_dyn);
   audio_proc.addTimbre(global_timbre);
   audio_proc.addRhythm(global_rhythm);
-
+  
+  
   //****** STAGE ******
   global_stage = new Stage();
 
@@ -106,6 +114,7 @@ void draw()
 
    println("SPECTRAL CENTROID: "+global_timbre.getCentroidAvg()+" Hz");
    println("SILENCE: "+ global_dyn.isSilence());
+   println("PERCUSSIVE ONSET: "+ global_rhythm.isPercOnset());
    println("*******************END*****************");
    println("***************************************");
 
