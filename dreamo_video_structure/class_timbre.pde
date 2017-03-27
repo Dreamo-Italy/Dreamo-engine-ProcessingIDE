@@ -7,30 +7,30 @@ class Timbre extends FeaturesExtractor
   
   private float[] FFTcoeffs;
   private int specSize;
+  
   private float spectralCentroidHz;
+  private float spectralCentroidMax;
+  
   private Statistics CentroidStats;
   
   public Timbre(int bSize, float sRate)
   {
     buffSize=bSize;
     sampleRate=sRate; 
+    
+    FFTcoeffs=new float[bSize/2+1];
     spectralCentroidHz=0;
+    spectralCentroidMax=0;
     CentroidStats=new Statistics(W);
   }
   
-  public void setFFTCoeffs(float[] coeffs)
+  public void setFFTCoeffs(float[] coeffs, int size)
   {
     //TODO: check if initialized
-    FFTcoeffs=new float[specSize];
+    specSize=size;    
     FFTcoeffs=coeffs.clone();
-    calcFeatures(); 
   }
-  
-  public void setSpecSize(int sz)
-  {
-    specSize=sz;
-  }
-  
+    
   public float getCentroidAvg()
   {
     return CentroidStats.getAverage();
@@ -63,6 +63,13 @@ class Timbre extends FeaturesExtractor
     }
     if(denom!=0){sc = num/denom;}
     else{sc=0;}
+    
+    /*
+    //NORMALIZATION IN 0-1 RANGE
+    if (sc > spectralCentroidMax) spectralCentroidMax = sc;
+    //normalize level in 0-1 range
+    sc=map(sc,0,spectralCentroidMax,0,1);
+    */
     
     //accumulate for statistcs
     CentroidStats.accumulate(sc);
