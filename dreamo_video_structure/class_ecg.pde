@@ -161,7 +161,7 @@ float RRdistanceSecond=0,RRdistanceSecondOld=1;
     //signal evaluation and peaks counter
     for(int i=0;i<N-1;i++){
        
-      if(a[i]>01.5 && a[i]<a[i+1]){
+      if(a[i]>2 && a[i]<a[i+1]){
        
           index=i;
           nSample=index-lastPeak;
