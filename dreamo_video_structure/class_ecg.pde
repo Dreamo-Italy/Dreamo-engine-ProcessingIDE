@@ -80,7 +80,7 @@ class Ecg extends Biosensor
        setValue  ( newValue );
      setBpm( BPM );
      println("BPM:"+ BPM );
-     //println("NEW BPM:"+ BPM2 );
+     println("NEW BPM:"+ BPM2 );
      
      
      // segnala lo stato dell'utente
@@ -105,13 +105,20 @@ class Ecg extends Biosensor
       filtered = Arrays.copyOf(arrayIn,arrayIn.length );
       //System.arraycopy(arrayIn, 0, filtered, 0, arrayIn.length);
       
-      filtered = DSP.HighPass (filtered, 5.0, global_sampleRate);
+      filtered = DSP.HighPass (filtered, 0.001, global_sampleRate);
       filtered = DSP.HWR(filtered);
-      //filtered = DSP.MAfilter(filtered, arrayIn.length);
-      filtered = DSP.times(filtered,5);
-      filtered = DSP.LowPassSP( filtered, 45.0, global_sampleRate);
       filtered = DSP.times(filtered,10);
-      filtered = differentiateArray(filtered);      
+      filtered = DSP.LowPassSP( filtered, 0.25, global_sampleRate);
+      filtered = DSP.times(filtered,25);
+      filtered = DSP.MAfilter(filtered, arrayIn.length);
+
+      for (int i=0; i<filtered.length;i++){
+      filtered[i]= filtered[i]*filtered[i];
+      if(filtered[i]>0.6){filtered[i]=2;
+      filtered[i]= filtered[i]*filtered[i];}
+    }
+      filtered = differentiateArray(filtered);  
+    
       return filtered;
   }
   
@@ -129,42 +136,38 @@ class Ecg extends Biosensor
     
     int Beatcount=0;
     int BPM;
-    float index=0,lastPeak=0, nSample=0;
+    float index=0,lastPeak=0, lastPeak2=0, nSample=0;
     float RRdistanceSecond=0;
     int N = a.length; //numToExtract*frameRate*5 
-    boolean flag=false, flag2=true;
+    boolean flag=false;
     
     
 
     //signal evaluation and peaks counter
-    for(int i=1;i<N-1;i++){
+    for(int i=0;i<N-1;i++){
        
-      if(a[i]> 3 && a[i]>a[i-1] && a[i+1]>a[i] ){
-    
-          if(flag2){
-          Beatcount++;
-          index=i;
-          flag2=false;
-          }
+      if(a[i]> 0.7 && a[i+1]>=a[i] ){
+   
           
           if(!flag){
-          flag=true;
+      
           index=i;
-          
-          if(lastPeak!=0){
           nSample=index-lastPeak;
-          RRdistanceSecond=nSample/30;
-          //println("RRbefore " +RRdistanceSecond);
-          //println("BCbefore " +Beatcount);
-          if (RRdistanceSecond > 0.12) {
+          RRdistanceSecond=nSample/global_sampleRate;
+          
+          if (RRdistanceSecond > 0.6 ) {
              Beatcount++;
+             flag=true;
+             lastPeak2=index;
           }
-        }
+        
         }
         } else {
-        flag=false; flag2=false; lastPeak=index;
+        flag=false; lastPeak=lastPeak2;
       }
     }
+ 
+     println("max filtered " + RRdistanceSecond);
      // BPM detector 
      BPM = Beatcount;
      return BPM;
@@ -183,20 +186,14 @@ class Ecg extends Biosensor
     int N = a.length; //numToExtract*frameRate*5 
     boolean flag=false;
     
-    ////Squaring the signal to increase the peak
-    //for (int i=0; i<N;i++){
-    //  a[i]= a[i]*a[i];
-    //  //if(a[i] < 0.05) 
-    //  //  a[i] = 0;
-    //} 
     
      float newMax = max ( a); 
      println("max filtered " + newMax);
 
     //signal evaluation and peaks counter
-    for(int i=1;i<N-1;i++)
+    for(int i=0;i<N-1;i++)
     {
-        if(a[i]> 3 /*&& a[i]>a[i-1] */&& a[i]>a[i+1])
+        if(a[i]> 0.7 /*&& a[i]>a[i-1] */&& a[i]<=a[i+1])
         {
           if (!flag)
           {

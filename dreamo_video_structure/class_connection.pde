@@ -112,7 +112,7 @@ class Connection
   private void loadOfflineTables()
   {
     table_gsr = loadTable("log_conductance.csv", "header"); // content of log_conductance
-    table_ecg = loadTable("LastLogEcg.csv", "header"); // content of log_ECG
+    table_ecg = loadTable("TheVeryLastLogEcg.csv", "header"); // content of log_ECG
     println(table_gsr.getRowCount() + " total rows in table conductance"); 
     println(table_ecg.getRowCount() + " total rows in table ECG");  
   }
@@ -141,7 +141,7 @@ class Connection
               tableHeaderName = "conductance";}
            else if ( sensorName.equals("ecg") )
              {sensorIndex = 1;
-              tableHeaderName = "ECG_Filtered";}             
+              tableHeaderName = "ecg_filtered";}             
         }            
         
       // CLEAR the list if the list SIZE is five time bigger than needed

@@ -33,9 +33,9 @@ void setup()
   //global_stage.addScene(new Lissajous() );
   //global_stage.addScene(new ScenePlotter());
   //global_stage.addScene(new AudioDebug());
-  //global_stage.addScene(new Cyclo1());
+  global_stage.addScene(new Cyclo1());
   //global_stage.addScene(new Cyclo2());
-  global_stage.addScene(new LineLine1());
+  //global_stage.addScene(new LineLine1());
   
  /*
   global_stage.addScene(new SceneFireworks());
