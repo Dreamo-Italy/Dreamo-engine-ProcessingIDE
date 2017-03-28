@@ -31,7 +31,7 @@ void setup()
   //add features extractors to our audio processor
   
   global_rhythm.setSensitivity(15);
-  global_rhythm.setThreshold(5);
+  global_rhythm.setThreshold(3);
     
     
   audio_proc.addDyn(global_dyn);
@@ -45,8 +45,8 @@ void setup()
   //scenes
   //global_stage.addScene(new Lissajous() );
   //global_stage.addScene(new ScenePlotter());
-  //global_stage.addScene(new AudioDebug());
-  global_stage.addScene(new ScenePresentation() );
+  global_stage.addScene(new AudioDebug());
+  //global_stage.addScene(new ScenePresentation() );
   /*
   global_stage.addScene(new SceneFireworks());
   global_stage.addScene(new SceneDots());
@@ -112,9 +112,10 @@ void draw()
    println("    MAX duration for framerate "+ int(frameRate) +": "+(1/frameRate*1000000)+" us");
    println("");
 
-   println("SPECTRAL CENTROID: "+global_timbre.getCentroidAvg()+" Hz");
+   println("SPECTRAL CENTROID: "+global_timbre.getCentroidHz());
+   println("SPECTRAL CENTROID DYNAMIC RATIO: "+global_timbre.getCentroidDynamicRatio());
    println("SILENCE: "+ global_dyn.isSilence());
-   println("PERCUSSIVE ONSET: "+ global_rhythm.isPercOnset());
+   println("ONSET RATE: "+ global_rhythm.getOnsetRate());
    println("*******************END*****************");
    println("***************************************");
 

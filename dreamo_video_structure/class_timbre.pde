@@ -2,86 +2,149 @@ import ddf.minim.analysis.*;
 
 class Timbre extends FeaturesExtractor
 {
-  //window
-  private final int W=129  ; // 43=~1s
   
+  //**** SPECTRUM DATA
   private float[] FFTcoeffs;
   private int specSize;
   
+  //**** AVERAGE SPECTRUM MAGNITUDE
+  private float avgMagnitude;
+  
+  //**** CENTROID VARIABLES
   private float spectralCentroidHz;
-  private float spectralCentroidMax;
+  private float spectralCentroidNormalized;
+  private final float CENTROID_THEORETICAL_MAX = 7000; //based on empirical tests
   
-  private Statistics CentroidStats;
+  //**** CENTROID STATISTICS
+  private Statistics centroidLongTerm; //long term statistics
+  private final int W=129  ; // long term statistics window length (43=~1s)
+  private Statistics centroidShortTerm; //short term statistics
+  private Statistics centroidMaxStats;  //maximum statistics
+  private float centroidMax; //stores the maximum value
+  private Hysteresis maxUpdate;
   
+  //**** CONSTRUCTOR
   public Timbre(int bSize, float sRate)
   {
+    
     buffSize=bSize;
     sampleRate=sRate; 
     
     FFTcoeffs=new float[bSize/2+1];
+    
     spectralCentroidHz=0;
-    spectralCentroidMax=0;
-    CentroidStats=new Statistics(W);
+    
+    //initialize statistics data
+    centroidLongTerm=new Statistics(W);
+    centroidShortTerm=new Statistics(21); //~0.5 sec   
+    centroidMaxStats=new Statistics(7);  
+    centroidMax=0;
+    maxUpdate=new Hysteresis(43);
+    
   }
   
+  //**** SET METHODS
+  /**
+   * Sets FFT coefficients (used in AudioProcessor)
+   */
   public void setFFTCoeffs(float[] coeffs, int size)
   {
-    //TODO: check if initialized
     specSize=size;    
     FFTcoeffs=coeffs.clone();
   }
-    
-  public float getCentroidAvg()
-  {
-    return CentroidStats.getAverage();
-  }
+ 
+  public void setAvgMagnitude(float avgm) { avgMagnitude=avgm; }
   
-  public float getCentroidStdDev()
-  {
-    return CentroidStats.getStdDev();
-  }
   
-  public float getCentroidHz()
-  {
-    return spectralCentroidHz;
-  }
+  //**** GET METHODS
+  
+  public float getAvgMagnitude() { return avgMagnitude; }
+  
+  public float getCentroid() { return spectralCentroidNormalized; } //instantaneous - normalized respect the theoretical maximum
+  
+  public float getCentroidAvg() { return centroidLongTerm.getAverage(); } //average - normalized respect the theoretical maximum
+  
+  public float getCentroidStdDev() { return centroidLongTerm.getStdDev(); } //std deviation - normalized respect the theoretical maximum
+  
+  public float getCentroidHz() { return spectralCentroidHz; } //instantaneous in Hz
+  
+  public float getCentroidAverageMax() { return centroidMaxStats.getAverage(); } //average maximum in Hz
+  
+  public float getCentroidDynamicRatio() { return centroidShortTerm.getAverage()/centroidMaxStats.getAverage(); } //dymaic ratio
+  
+  public float getCentroidShortTimeAvgHz() { return centroidShortTerm.getAverage(); }
+  
+  
+  //**** CALC FEATURES METHOD (overrides the inherited method)
   
   public void calcFeatures()
   {
     calcSpectralCentroid();
+    calcSpectralComplexity();
   }
  
+ 
+  //**** PRIVATE METHODS
+  /**
+   * Spectral centroid computation method
+   * see https://en.wikipedia.org/wiki/Spectral_centroid
+   */
   private void calcSpectralCentroid()
   {
     float num=0;
     float denom=0;
-    float sc=0;
+    float SC=0;
     for(int i=0;i<specSize;i++)
     {
       num+=(centerFreqHz(i)*FFTcoeffs[i]);
       denom+=FFTcoeffs[i];    
     }
-    if(denom!=0){sc = num/denom;}
-    else{sc=0;}
     
-    /*
-    //NORMALIZATION IN 0-1 RANGE
-    if (sc > spectralCentroidMax) spectralCentroidMax = sc;
-    //normalize level in 0-1 range
-    sc=map(sc,0,spectralCentroidMax,0,1);
-    */
+    if(denom!=0){SC = num/denom;}
+    else{SC=0;}
     
-    //accumulate for statistcs
-    CentroidStats.accumulate(sc);
+    //get the value in Hz before the mapping (with smoothing)
+    spectralCentroidHz=expSmooth(SC, spectralCentroidHz, 5);  
+    
+    //collect data for short time stats
+    centroidShortTerm.accumulate(SC); //accumulate values   
+    
+    //update maximum
+    if (spectralCentroidHz > centroidMax) 
+    {
+      centroidMaxStats.accumulate(spectralCentroidHz);
+      centroidMax = spectralCentroidHz;
+    }
+    
+    if(maxUpdate.checkWindow(centroidMax,CENTROID_THEORETICAL_MAX,CENTROID_THEORETICAL_MAX))
+    {
+      centroidMax=0;
+      centroidMaxStats.reset();
+      maxUpdate.restart();
+    }
+        
+    //map respect the theoretical maximum
+    SC=map(SC,0,CENTROID_THEORETICAL_MAX,0,1);
+    
+    //accumulate for long term statistcs
+    centroidLongTerm.accumulate(SC);
     
     //smoothing
-    spectralCentroidHz=expSmooth(sc, spectralCentroidHz, 5);
-    //spectralCentroidHz=sc;
+    spectralCentroidNormalized=expSmooth(SC, spectralCentroidNormalized, 5);
   }
   
+  private void calcSpectralComplexity()
+  {
+    
+  }
+   
+  
+  /**
+   * Returns the center frequency on Hz of the idx-th bin in the spectrum
+   */
   private float centerFreqHz(int idx)
   { 
      return (idx*sampleRate)/buffSize; 
   }
-
+  
 }

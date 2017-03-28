@@ -3,6 +3,8 @@ class AudioDebug extends Scene
   
   float[] coefficients;
   float[] long_window;
+  Hysteresis timbre_decisor;
+  int init;
   
   public void init()
   {
@@ -16,6 +18,7 @@ class AudioDebug extends Scene
     coefficients = new float[audio_proc.getSpecSize()];
     long_window = new float[global_rhythm.getLongWindowMaxSize()];
     
+    timbre_decisor=new Hysteresis(0.8,0.9,4);
   }
   
   
@@ -48,8 +51,8 @@ class AudioDebug extends Scene
     noFill();    
     rectMode(CORNERS);   
     rect(500,height-300,500+512*1.5,height-900);  
-    text("Std Deviation: "+global_timbre.getCentroidStdDev(),120,85);
-    text("Std Deviation: "+global_dyn.getRMSStdDev(),115,305);
+    text("Std Deviation: "+global_timbre.getCentroidStdDev(),120,105);
+    text("Std Deviation: "+global_dyn.getRMSStdDev(),115,260);
     stroke(pal.getColor(2));
     strokeWeight(2);
 
@@ -59,7 +62,10 @@ class AudioDebug extends Scene
       //draw the line for frequency band i, scaling it up a bit so we can see it
       line(500+i*3, height-300, 500+i*3, height - 300 - coefficients[i]*5);
     }
-   
+    
+    stroke(pal.getColor(4));
+    line(500,height-300-global_timbre.getAvgMagnitude()*5,500+audio_proc.getSpecSize()/3*3,height-300-global_timbre.getAvgMagnitude()*5);
+    println("AVG SPECTRUM MAGNITUDE: "+global_timbre.getAvgMagnitude()*5);
    /*
    stroke(pal.getColor(3));
    //draw 1 second window samples
@@ -67,13 +73,34 @@ class AudioDebug extends Scene
    {      
      line(180+i*0.01, height-100, 180+i*0.01, height-100 - long_window[i]*200);
    } */
-   
+   /*
    if(global_rhythm.isPercOnset())
    {
      fill(pal.getColor(1));
      ellipse(width/2,height/2,200,200);
    }
     
+  */
+  
+    if(timbre_decisor.checkWindow(global_timbre.getCentroidDynamicRatio()))
+    {
+      
+      drawEllipse(60, frameCount);
+      
+    }
+    
+    
   }
+  
+  void drawEllipse(int frames, int init)
+  {
+    //float init=frameCount;
+    if(frameCount-init<frames)
+    {
+      fill(pal.getColor(1));
+      ellipse(width/2,height/2,200,200);
+    }
+  }
+
   
 }

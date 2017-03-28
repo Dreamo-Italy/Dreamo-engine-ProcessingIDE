@@ -12,6 +12,7 @@ class AudioProcessor implements AudioListener
  
   private int frameCounter;
   private final int FRAMES_NUMBER=43;
+  private float avgMagnitude;
     
   private FFT fft;
   
@@ -32,6 +33,8 @@ class AudioProcessor implements AudioListener
     
     log=false;    
     frameCounter=0;
+    
+    avgMagnitude=0;
     
     if ( bSize == 0 || sRate == 0) {println("ERROR: Impossible to initialize AudioProcessor");}
     
@@ -148,14 +151,18 @@ class AudioProcessor implements AudioListener
   //FFT
   private void calcFFT(final float[] samples)
   {
-    fft.forward(samples);
-    
+    //fft.window(FFT.HAMMING);
+    fft.forward(samples);    
+    avgMagnitude=0;
     if(!log)
     {     
       for(int i = 0; i < fft.specSize(); i++)
        {
           FFTcoeffs[i]=fft.getBand(i);
+          if(i<=fft.specSize()/3) {avgMagnitude+=fft.getBand(i);}
        }
+      avgMagnitude=avgMagnitude/fft.specSize();
+      avgMagnitude=avgMagnitude*3;
     }
     
     else
@@ -166,6 +173,7 @@ class AudioProcessor implements AudioListener
        }
     }
    
+  
   }
   
 
@@ -208,7 +216,8 @@ class AudioProcessor implements AudioListener
     {
       if(!log) 
       {
-        timb.setFFTCoeffs(FFTcoeffs,fft.specSize());        
+        timb.setFFTCoeffs(FFTcoeffs,fft.specSize());
+        timb.setAvgMagnitude(avgMagnitude);
       }
       else 
       {  

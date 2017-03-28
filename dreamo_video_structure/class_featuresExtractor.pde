@@ -54,7 +54,7 @@ abstract class FeaturesExtractor
   
   //CALC METHODS
   //exponentially decaying moving average -> window=N
-  public float expSmooth(float currentval, float smoothedval, int N)
+  public float expSmooth(final float currentval, final float smoothedval, int N)
   {
     //averaging constant
     float tiny;

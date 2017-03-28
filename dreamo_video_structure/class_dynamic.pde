@@ -16,7 +16,7 @@ class Dynamic extends FeaturesExtractor
   {
     buffSize=bSize;
     sampleRate=sRate;
-    maxRMS = 0.5;
+    maxRMS = 0.4;
     RMSstats=new Statistics(W);
 
   }
@@ -48,13 +48,18 @@ class Dynamic extends FeaturesExtractor
     return soundPressureLevel(RMS);
   }
   
+  public void resetMax()
+  {
+    maxRMS=0.4;
+  }
+  
   //OVERRIDE CALC FEATURES METHOD
   public void calcFeatures()
   {
     calcRMS();
   }
 
-
+  
 
   //CALC METHODS
   public void calcRMS()
@@ -68,7 +73,7 @@ class Dynamic extends FeaturesExtractor
       level /= samples.length;
       level = (float) Math.sqrt(level);
 
-      if (level > maxRMS) maxRMS = level;
+      if(level > maxRMS) maxRMS = level;
 
       //normalize level in 0-1 range
       level=map(level,0,maxRMS,0,1);
