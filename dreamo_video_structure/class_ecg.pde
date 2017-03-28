@@ -28,7 +28,7 @@ class Ecg extends Biosensor
     public void update()
     {     
       int added = 0;
-     incomingValues = global_connection.extractFromBuffer("ecg", sampleToExtract ); // store the incoming conductance value from Connection to another FloatLIst
+     incomingValues = global_connection.extractFromBuffer("ecg", sampleToExtract*2 ); // store the incoming conductance value from Connection to another FloatLIst
      for (int i = (incomingValues.size()-1); i > 0; i--) {
           float newFloat = incomingValues.get(i);
           if ( newFloat < physicalMax )
@@ -52,7 +52,7 @@ class Ecg extends Biosensor
     float [] ecgPreFilter = StoreEcg.array();
     float [] ecgPostFilter = filterEcgData(ecgPreFilter);
     
-    if(StoreEcg.size()> (minBufferSize/2)-1) 
+    if(StoreEcg.size()> (minBufferSize)-1) 
     {
         
         BPM = BPM2 = ECGBPMLAST(ecgPostFilter,0);
@@ -60,7 +60,7 @@ class Ecg extends Biosensor
           
         flag1 = 1;
         
-        if (BPM<60){ 
+        if (BPM<50){ 
           println("BRADYCARDIA");
           FlagBrad=true;
           // rallentare le scene
@@ -83,7 +83,7 @@ class Ecg extends Biosensor
        setValue  ( newValue );
      setBpm( BPM );
      println("BPM:"+ BPM );
-     println("NEW BPM:"+ BPM2 );
+     println("NEW BPM:"+ BPM2);
      
      
      // segnala lo stato dell'utente
@@ -110,14 +110,15 @@ class Ecg extends Biosensor
       
       filtered = DSP.HighPass (filtered, 0.001, global_sampleRate);
       filtered = DSP.HWR(filtered);
-      filtered = DSP.times(filtered,10);
+      filtered = DSP.times(filtered,5);
       filtered = DSP.LowPassSP( filtered, 0.25, global_sampleRate);
-      filtered = DSP.times(filtered,25);
+      filtered = DSP.times(filtered,50);
       //filtered = DSP.MAfilter(filtered, arrayIn.length);
+      //filtered = differentiateArray(filtered);  
+
       filtered = Square(filtered);
    
   
-      filtered = differentiateArray(filtered);  
     
       return filtered;
   }
@@ -141,41 +142,42 @@ class Ecg extends Biosensor
  }
  
  /******************************************************************************************************/
- 
-float RRdistanceSecond=0,RRdistanceSecondOld=0.5;
+     int BPMlast, BPMHRV=20;
+float RRdistanceSecond=0,RRdistanceSecondOld=1;
  public int ECGBPMLAST(float[] input, int b)
  {
    float a [] = new float[input.length];
     a = Arrays.copyOf(input, input.length);
     
     int Beatcount=0;
-    int BPM, BPMHRV=20;
+
     float index=0,lastPeak=0, nSample=0;
 
     int N = a.length; //numToExtract*frameRate*5 
-    boolean flag=false;
+
     
     
 
     //signal evaluation and peaks counter
     for(int i=0;i<N-1;i++){
        
-      if(a[i]>1.1 && a[i]<a[i+1]){
+      if(a[i]>01.5 && a[i]<a[i+1]){
        
           index=i;
           nSample=index-lastPeak;
           RRdistanceSecond=nSample/(global_sampleRate);
           
-          if (RRdistanceSecond > 0.45 && RRdistanceSecond<1.9) {
+          if (RRdistanceSecond > 0.48 && RRdistanceSecond<1.9) {
              if (RRdistanceSecondOld >RRdistanceSecond + ((RRdistanceSecond/100)*12))
-                 RRdistanceSecondOld=0.5;
+                 RRdistanceSecondOld=1;
              
              if (RRdistanceSecond >( RRdistanceSecondOld - ((RRdistanceSecondOld/100)*12))){
              Beatcount++;
              BPMHRV=round(60/RRdistanceSecond);
              RRdistanceSecondOld=RRdistanceSecond;
-             }else 
              lastPeak=index;
+             } 
+             
            
 
           }
@@ -183,15 +185,15 @@ float RRdistanceSecond=0,RRdistanceSecondOld=0.5;
     }
      if (b==1){
      println("n samples " + nSample);
-     println("RR dist " + RRdistanceSecond);
+     println("RR dist " + RRdistanceSecondOld);
      println("last peak " + lastPeak);
-     println("BPM 2 " + BPMHRV/2);
+     println("BPM 2 " + BPMHRV);
      // BPM detector 
-          return BPMHRV/2;
+          return BPMHRV;
      }else
      {
-     BPM = Beatcount/2;
-     return BPM;
+     BPMlast = Beatcount;
+     return BPMlast;
      }
    }
    

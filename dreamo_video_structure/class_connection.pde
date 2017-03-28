@@ -45,7 +45,7 @@ class Connection
     parent = p;
     
     // number of BIOMEDICAL VALUES to extract at each update() cycle   
-    totSampleToExtract = round (global_sampleRate/global_fps);  //<>//
+    totSampleToExtract = ceil ((global_sampleRate/global_fps*2));  //<>//
     sampleToExtract = totSampleToExtract; /*/global_sensorNumber*/
      //<>//
     //serial check
