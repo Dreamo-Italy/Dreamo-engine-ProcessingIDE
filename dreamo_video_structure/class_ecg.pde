@@ -55,8 +55,8 @@ class Ecg extends Biosensor
     if(StoreEcg.size()> (minBufferSize/2)-1) 
     {
         
-        BPM = ECGBPM3(ecgPostFilter);
-        BPM2 = ECGBPMLAST(ecgPostFilter);
+        BPM = BPM2 = ECGBPMLAST(ecgPostFilter,0);
+        BPM2 = ECGBPMLAST(ecgPostFilter,1);
           
         flag1 = 1;
         
@@ -143,7 +143,7 @@ class Ecg extends Biosensor
  /******************************************************************************************************/
  
 float RRdistanceSecond=0,RRdistanceSecondOld=0.5;
- public int ECGBPMLAST(float[] input)
+ public int ECGBPMLAST(float[] input, int b)
  {
    float a [] = new float[input.length];
     a = Arrays.copyOf(input, input.length);
@@ -173,23 +173,30 @@ float RRdistanceSecond=0,RRdistanceSecondOld=0.5;
              if (RRdistanceSecond >( RRdistanceSecondOld - ((RRdistanceSecondOld/100)*12))){
              Beatcount++;
              BPMHRV=round(60/RRdistanceSecond);
-             global_debugPlots.plots[1].setLineColor(white);
              RRdistanceSecondOld=RRdistanceSecond;
-             }else  global_debugPlots.plots[1].setLineColor(red);
+             }else 
              lastPeak=index;
            
 
           }
         }   
     }
+     if (b==1){
      println("n samples " + nSample);
      println("RR dist " + RRdistanceSecond);
      println("last peak " + lastPeak);
      println("BPM 2 " + BPMHRV/2);
      // BPM detector 
+          return BPMHRV/2;
+     }else
+     {
      BPM = Beatcount/2;
      return BPM;
+     }
    }
+   
+   
+   
   
  /******************************************************************************************************/
  
