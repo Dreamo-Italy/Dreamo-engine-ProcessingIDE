@@ -15,6 +15,10 @@ class Timbre extends FeaturesExtractor
   private float spectralCentroidNormalized;
   private final float CENTROID_THEORETICAL_MAX = 7000; //based on empirical tests
   
+  //**** COMPLEXITY VARIABLES
+  private float spectralComplexity;
+  private final float COMPLEXITY_THRESHOLD_COEFF=1.5;
+  
   //**** CENTROID STATISTICS
   private Statistics centroidLongTerm; //long term statistics
   private final int W=129  ; // long term statistics window length (43=~1s)
@@ -33,6 +37,7 @@ class Timbre extends FeaturesExtractor
     FFTcoeffs=new float[bSize/2+1];
     
     spectralCentroidHz=0;
+    spectralComplexity=0;
     
     //initialize statistics data
     centroidLongTerm=new Statistics(W);
@@ -58,6 +63,7 @@ class Timbre extends FeaturesExtractor
   
   //**** GET METHODS
   
+  //CENTROID
   public float getAvgMagnitude() { return avgMagnitude; }
   
   public float getCentroid() { return spectralCentroidNormalized; } //instantaneous - normalized respect the theoretical maximum
@@ -74,13 +80,16 @@ class Timbre extends FeaturesExtractor
   
   public float getCentroidShortTimeAvgHz() { return centroidShortTerm.getAverage(); }
   
+  //COMPLEXITY
+  public float getComplexity() { return spectralComplexity; }
+  
   
   //**** CALC FEATURES METHOD (overrides the inherited method)
   
   public void calcFeatures()
   {
     calcSpectralCentroid();
-    calcSpectralComplexity();
+    
   }
  
  
@@ -94,11 +103,20 @@ class Timbre extends FeaturesExtractor
     float num=0;
     float denom=0;
     float SC=0;
+    float binsOverAvg=0;
     for(int i=0;i<specSize;i++)
     {
+      //spectral complexity
+      if(i<=specSize/3) 
+      {
+        if(FFTcoeffs[i]>avgMagnitude*COMPLEXITY_THRESHOLD_COEFF){binsOverAvg++;}
+      }
+      //spectral centroid
       num+=(centerFreqHz(i)*FFTcoeffs[i]);
       denom+=FFTcoeffs[i];    
     }
+    
+    calcSpectralComplexity(binsOverAvg);
     
     if(denom!=0){SC = num/denom;}
     else{SC=0;}
@@ -133,9 +151,9 @@ class Timbre extends FeaturesExtractor
     spectralCentroidNormalized=expSmooth(SC, spectralCentroidNormalized, 5);
   }
   
-  private void calcSpectralComplexity()
+  private void calcSpectralComplexity(float bins)
   {
-    
+    if(avgMagnitude>0.5){spectralComplexity=bins;}
   }
    
   

@@ -113,6 +113,7 @@ void draw()
    println("");
 
    println("SPECTRAL CENTROID: "+global_timbre.getCentroidHz());
+   println("SPECTRAL COMPLEXITY: "+global_timbre.getComplexity());
    println("SPECTRAL CENTROID DYNAMIC RATIO: "+global_timbre.getCentroidDynamicRatio());
    println("SILENCE: "+ global_dyn.isSilence());
    println("ONSET RATE: "+ global_rhythm.getOnsetRate());
