@@ -48,6 +48,11 @@ class Dynamic extends FeaturesExtractor
     return soundPressureLevel(RMS);
   }
   
+  public float getDynamicityIndex()
+  {
+    return RMSstats.getStdDev()/RMSstats.getAverage();
+  }
+  
   public void resetMax()
   {
     maxRMS=0.4;

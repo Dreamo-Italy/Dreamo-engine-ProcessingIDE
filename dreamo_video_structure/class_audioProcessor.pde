@@ -159,10 +159,10 @@ class AudioProcessor implements AudioListener
       for(int i = 0; i < fft.specSize(); i++)
        {
           FFTcoeffs[i]=fft.getBand(i);
-          if(i<=fft.specSize()/3) {avgMagnitude+=fft.getBand(i);}
+          if(i<=fft.specSize()/2) {avgMagnitude+=fft.getBand(i);}
        }
       avgMagnitude=avgMagnitude/fft.specSize();
-      avgMagnitude=avgMagnitude*3;
+      avgMagnitude=avgMagnitude*2;
     }
     
     else

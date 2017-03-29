@@ -112,9 +112,10 @@ void draw()
    println("    MAX duration for framerate "+ int(frameRate) +": "+(1/frameRate*1000000)+" us");
    println("");
 
-   println("SPECTRAL CENTROID: "+global_timbre.getCentroidHz());
-   println("SPECTRAL COMPLEXITY: "+global_timbre.getComplexity());
-   println("SPECTRAL CENTROID DYNAMIC RATIO: "+global_timbre.getCentroidDynamicRatio());
+   println("SPECTRAL CENTROID: "+global_timbre.getCentroidShortTimeAvgHz());
+   println("DINAMICITY INDEX: "+global_dyn.getDynamicityIndex());
+   println("SPECTRAL COMPLEXITY: "+global_timbre.getComplexityAvg());
+   println("SPECTRAL CENTROID RELATIVE RATIO: "+global_timbre.getCentroidRelativeRatio());
    println("SILENCE: "+ global_dyn.isSilence());
    println("ONSET RATE: "+ global_rhythm.getOnsetRate());
    println("*******************END*****************");

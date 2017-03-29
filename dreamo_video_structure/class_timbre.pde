@@ -13,11 +13,8 @@ class Timbre extends FeaturesExtractor
   //**** CENTROID VARIABLES
   private float spectralCentroidHz;
   private float spectralCentroidNormalized;
-  private final float CENTROID_THEORETICAL_MAX = 7000; //based on empirical tests
-  
-  //**** COMPLEXITY VARIABLES
-  private float spectralComplexity;
-  private final float COMPLEXITY_THRESHOLD_COEFF=1.5;
+  private final float CENTROID_THEORETICAL_MAX = 5500; //based on empirical tests
+  private final float CENTROID_THEORETICAL_MIN = 100; //based on empirical tests
   
   //**** CENTROID STATISTICS
   private Statistics centroidLongTerm; //long term statistics
@@ -26,6 +23,16 @@ class Timbre extends FeaturesExtractor
   private Statistics centroidMaxStats;  //maximum statistics
   private float centroidMax; //stores the maximum value
   private Hysteresis maxUpdate;
+  
+  //**** COMPLEXITY VARIABLES
+  private float spectralComplexity;
+  private final float COMPLEXITY_THRESHOLD_COEFF=1.5;
+  private final float COMPLEXITY_THEORETICAL_MAX=45; //based on empirical tests
+  private final float COMPLEXITY_THEORETICAL_MIN=15; //based on empirical tests
+  
+  //COMPLEXITY STATISTICS
+  private Statistics complexityLongTerm;
+  
   
   //**** CONSTRUCTOR
   public Timbre(int bSize, float sRate)
@@ -42,9 +49,11 @@ class Timbre extends FeaturesExtractor
     //initialize statistics data
     centroidLongTerm=new Statistics(W);
     centroidShortTerm=new Statistics(21); //~0.5 sec   
-    centroidMaxStats=new Statistics(7);  
+    centroidMaxStats=new Statistics(6);  
     centroidMax=0;
     maxUpdate=new Hysteresis(43);
+    
+    complexityLongTerm=new Statistics(W);
     
   }
   
@@ -76,12 +85,14 @@ class Timbre extends FeaturesExtractor
   
   public float getCentroidAverageMax() { return centroidMaxStats.getAverage(); } //average maximum in Hz
   
-  public float getCentroidDynamicRatio() { return centroidShortTerm.getAverage()/centroidMaxStats.getAverage(); } //dymaic ratio
+  public float getCentroidRelativeRatio() { return centroidShortTerm.getAverage()/centroidMaxStats.getAverage(); } //dymaic ratio
   
   public float getCentroidShortTimeAvgHz() { return centroidShortTerm.getAverage(); }
   
   //COMPLEXITY
   public float getComplexity() { return spectralComplexity; }
+  
+  public float getComplexityAvg() { return complexityLongTerm.getAverage(); }
   
   
   //**** CALC FEATURES METHOD (overrides the inherited method)
@@ -90,6 +101,11 @@ class Timbre extends FeaturesExtractor
   {
     calcSpectralCentroid();
     
+  }
+  
+  public void reset()
+  {
+    centroidMaxStats.reset();
   }
  
  
@@ -100,26 +116,31 @@ class Timbre extends FeaturesExtractor
    */
   private void calcSpectralCentroid()
   {
+    float lowsum=0;
     float num=0;
     float denom=0;
     float SC=0;
     float binsOverAvg=0;
-    for(int i=0;i<specSize;i++)
+    
+    for(int i=0;i<specSize-1;i++)
     {
-      //spectral complexity
-      if(i<=specSize/3) 
+      //spectral complexit
+      if(i<=specSize/2) 
       {
         if(FFTcoeffs[i]>avgMagnitude*COMPLEXITY_THRESHOLD_COEFF){binsOverAvg++;}
       }
       //spectral centroid
+      if(FFTcoeffs[i]<0.2){FFTcoeffs[i]=0;} //clean 
       num+=(centerFreqHz(i)*FFTcoeffs[i]);
       denom+=FFTcoeffs[i];    
     }
     
     calcSpectralComplexity(binsOverAvg);
     
-    if(denom!=0){SC = num/denom;}
+    if(denom!=0){SC = (float)num/denom;}
     else{SC=0;}
+   
+
     
     //get the value in Hz before the mapping (with smoothing)
     spectralCentroidHz=expSmooth(SC, spectralCentroidHz, 5);  
@@ -142,7 +163,7 @@ class Timbre extends FeaturesExtractor
     }
         
     //map respect the theoretical maximum
-    SC=map(SC,0,CENTROID_THEORETICAL_MAX,0,1);
+    SC=map(SC,CENTROID_THEORETICAL_MIN,CENTROID_THEORETICAL_MAX,0,1);
     
     //accumulate for long term statistcs
     centroidLongTerm.accumulate(SC);
@@ -153,7 +174,14 @@ class Timbre extends FeaturesExtractor
   
   private void calcSpectralComplexity(float bins)
   {
-    if(avgMagnitude>0.5){spectralComplexity=bins;}
+    
+    if(avgMagnitude>0.5)
+    {
+      spectralComplexity=expSmooth(bins,spectralComplexity,5);
+      spectralComplexity=map(bins,COMPLEXITY_THEORETICAL_MIN,COMPLEXITY_THEORETICAL_MAX,0,1);
+      complexityLongTerm.accumulate(spectralComplexity);
+      
+    }
   }
    
   
