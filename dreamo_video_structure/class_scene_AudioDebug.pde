@@ -38,12 +38,13 @@ class AudioDebug extends Scene
     brightnessCoeff=global_timbre.getCentroid();
     roughnessCoeff=global_timbre.getComplexity()+global_timbre.getCentroid();
     
-    
+    /*
     if(global_dyn.isSilence())
     {
       global_timbre.reset();
       pal.initColors();
     }
+   */
    
     for(int i = 0; i < audio_proc.getSpecSize(); i++)
     {
@@ -83,7 +84,7 @@ class AudioDebug extends Scene
     strokeWeight(1);   
     //draw quadrant
      
-    
+   /* 
     int W=width/2;
     int H=height/2;
     
@@ -96,7 +97,7 @@ class AudioDebug extends Scene
       //quad(W/3, H/4,  W/3+190, H/4+280,W/3+100, H/4+350, W/3+150, H/4+100);
     }
     
-    
+    */
     
    
     noFill();    

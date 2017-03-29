@@ -118,6 +118,7 @@ void draw()
    println("SPECTRAL CENTROID RELATIVE RATIO: "+global_timbre.getCentroidRelativeRatio());
    println("SILENCE: "+ global_dyn.isSilence());
    println("ONSET RATE: "+ global_rhythm.getOnsetRate());
+   println("RMS SLOPE: "+ global_dyn.getRmsSlope());
    println("*******************END*****************");
    println("***************************************");
 

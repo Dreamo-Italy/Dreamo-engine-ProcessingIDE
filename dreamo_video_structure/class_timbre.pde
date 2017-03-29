@@ -22,7 +22,7 @@ class Timbre extends FeaturesExtractor
   private Statistics centroidShortTerm; //short term statistics
   private Statistics centroidMaxStats;  //maximum statistics
   private float centroidMax; //stores the maximum value
-  private Hysteresis maxUpdate;
+  private Hysteresis maxControl;
   
   //**** COMPLEXITY VARIABLES
   private float spectralComplexity;
@@ -51,7 +51,7 @@ class Timbre extends FeaturesExtractor
     centroidShortTerm=new Statistics(21); //~0.5 sec   
     centroidMaxStats=new Statistics(6);  
     centroidMax=0;
-    maxUpdate=new Hysteresis(43);
+    maxControl=new Hysteresis(43);
     
     complexityLongTerm=new Statistics(W);
     
@@ -96,13 +96,13 @@ class Timbre extends FeaturesExtractor
   
   
   //**** CALC FEATURES METHOD (overrides the inherited method)
-  
   public void calcFeatures()
   {
     calcSpectralCentroid();
     
   }
   
+  //**** RESET MAXIMUM
   public void reset()
   {
     centroidMaxStats.reset();
@@ -124,7 +124,7 @@ class Timbre extends FeaturesExtractor
     
     for(int i=0;i<specSize-1;i++)
     {
-      //spectral complexit
+      //spectral complexity
       if(i<=specSize/2) 
       {
         if(FFTcoeffs[i]>avgMagnitude*COMPLEXITY_THRESHOLD_COEFF){binsOverAvg++;}
@@ -139,8 +139,6 @@ class Timbre extends FeaturesExtractor
     
     if(denom!=0){SC = (float)num/denom;}
     else{SC=0;}
-   
-
     
     //get the value in Hz before the mapping (with smoothing)
     spectralCentroidHz=expSmooth(SC, spectralCentroidHz, 5);  
@@ -155,11 +153,11 @@ class Timbre extends FeaturesExtractor
       centroidMax = spectralCentroidHz;
     }
     
-    if(maxUpdate.checkWindow(centroidMax,CENTROID_THEORETICAL_MAX,CENTROID_THEORETICAL_MAX))
+    if(maxControl.checkWindow(centroidMax,CENTROID_THEORETICAL_MAX,CENTROID_THEORETICAL_MAX))
     {
       centroidMax=0;
       centroidMaxStats.reset();
-      maxUpdate.restart();
+      maxControl.restart();
     }
         
     //map respect the theoretical maximum
@@ -173,15 +171,13 @@ class Timbre extends FeaturesExtractor
   }
   
   private void calcSpectralComplexity(float bins)
-  {
-    
+  {  
     if(avgMagnitude>0.5)
     {
       spectralComplexity=expSmooth(bins,spectralComplexity,5);
       spectralComplexity=map(bins,COMPLEXITY_THEORETICAL_MIN,COMPLEXITY_THEORETICAL_MAX,0,1);
-      complexityLongTerm.accumulate(spectralComplexity);
-      
-    }
+      complexityLongTerm.accumulate(spectralComplexity);      
+    }  
   }
    
   

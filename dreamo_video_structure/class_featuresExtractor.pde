@@ -6,11 +6,18 @@ abstract class FeaturesExtractor
   protected float sampleRate;
   private boolean init;
   
+  //SOPE CALC VARIABLES
+  private float previousVal;
+  private float slope;
+  
+  
   FeaturesExtractor()
   {
     buffSize=0;
     sampleRate=0;
     init=false; 
+    previousVal=0;
+    slope=0;
   }
   
   /*FeaturesExtractor(int bSize, float sRate)
@@ -54,7 +61,7 @@ abstract class FeaturesExtractor
   
   //CALC METHODS
   //exponentially decaying moving average -> window=N
-  public float expSmooth(final float currentval, final float smoothedval, int N)
+  protected float expSmooth(final float currentval, final float smoothedval, int N)
   {
     //averaging constant
     float tiny;
@@ -65,9 +72,16 @@ abstract class FeaturesExtractor
   }
   
   //UTILITY METHODS
-  public float linearToDecibel(final float value)
+  protected float linearToDecibel(final float value)
   {
     return 20.0 * (float) Math.log10(value);
+  }
+  
+  protected float realTimeSlope(float input)
+  {
+    slope=input-previousVal;
+    previousVal=input;
+    return slope;
   }
   
   //ABSTRACT METHODS  
