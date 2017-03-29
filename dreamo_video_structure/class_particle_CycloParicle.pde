@@ -68,6 +68,7 @@ class CycloParticle extends Particle
     setParameter(2,global_dyn.getRMS());
     setParameter(3,global_gsr.getNormalized());
     translate(width/2-(100*cos(t*0.001)), height/2-100*sin(t*0.001));
+    strokeWeight(1);
     stroke(myColor, alpha*sqrt(getParameter(1)));
   
     

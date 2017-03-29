@@ -19,10 +19,8 @@ class SpiralParticle extends Particle
   }
 
   public void update()
-  {
-    println(alphaArray);
-    
-    if(getSceneChanged())
+  {    
+    if(getSceneChanged()&&!isDestroying())
     {
       assertDestroying();
       setLifeTimeLeft(9000);
@@ -36,6 +34,7 @@ class SpiralParticle extends Particle
             alphaArray[i] -= 0.025;
         }
     }
+    
   }
   
   public void trace()
@@ -48,7 +47,7 @@ class SpiralParticle extends Particle
    {
       noStroke();
       color gradient = lerpColor(this.pal.getDarkest(), this.pal.getLightest(), alphaArray[i] );
-      fill(gradient, alphaArray[i]*100);
+      fill(gradient, alphaArray[i]*200);
       //fill(gradient);
       rotate(PI/4);     
       rect(0, 0, tileWidth, tileHeight);
