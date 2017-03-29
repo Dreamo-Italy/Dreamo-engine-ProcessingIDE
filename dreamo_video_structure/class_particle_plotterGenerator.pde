@@ -109,7 +109,8 @@ class PlotterGenerator extends Particle
     i1 = int ( particlesNumber - round(indexOffset) );
 
     // timeSpentDrawing MAPPING
-    timeSpentDrawing = map (timeSpentDrawing, 10.0, 0.0, 1, 20 );
+    timeSpentDrawing = map (timeSpentDrawing, 10.0, 0.1, 1, 20 );
+    if( timeSpentDrawing < 0 ) timeSpentDrawing = 0.1;
 
    for( int i3 = 0; i3 < particlesNumber; i3++)
    {
@@ -151,7 +152,7 @@ class PlotterGenerator extends Particle
 
     // draw lines just for the next period/N milliseconds
     int period = int ( 1000 * (1.0/global_fps) );
-    int drawEndTime = millis() + period/round(timeSpentDrawing);
+    int drawEndTime = millis() + period/round(timeSpentDrawing +0.5);
 
     while (i1 < particlesNumber && millis () < drawEndTime)
     {

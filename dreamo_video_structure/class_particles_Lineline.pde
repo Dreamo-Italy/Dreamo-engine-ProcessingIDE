@@ -1,28 +1,41 @@
 class lineLine extends Particle{
    float t=0,x=0,y=0;
-
-  public void init(){}
+   color myColor, myColor2;
+   int alpha=100;
+  public void init(){
+  myColor =  pal.getColor();  
+  myColor2 =  pal.getColor(); 
+    setPersistence(true);
+  
+  }
   public void update(){
-   t=frameCount; 
+   alpha = getFadingAlpha();
+    
+    t=frameCount; 
    x=cos((t/100));
    y=sin((t/100));
    
-   
+     if(getSceneChanged() && !this.isDestroying() )
+    {
+      assertDestroying();
+      setLifeTimeLeft(30);
+    } 
    
   }
   public void trace(){
+    
   setParameter(0, global_dyn.getRMS());
   setParameter(1, global_bioMood.getArousal());
   setParameter(2, global_ecg.getBpm());
   translate(width/2,height/2);
  
   
-  stroke(pal.getColor(2),100*getParameter(1)*5);
+  stroke(myColor,alpha*sqrt(getParameter(1)));
   for(int i=0; i<getParameter(2);i=i+2){
 
   line((-width/2)*y,(-50)*x,width/2*y,(-50+i)*x*getParameter(0)*100);
   }
-  stroke(pal.getColor(1),100*getParameter(1)*5);
+  stroke(myColor2,alpha*sqrt(getParameter(1)));
   
   for(int i=0; i<getParameter(2);i=i+2){ 
   line(width/2*x,(-50)*y,width/2*y,(-50+i)*x*getParameter(0)*100);

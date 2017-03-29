@@ -58,7 +58,8 @@ class Ecg extends Biosensor
         stdDev = computeStdDev(tacogram,0);
         Variate  = computeStdDev(tacogram,1);        
         
-        maxBPM= max(tacogram);
+        if(tacogram.length != 0)
+          maxBPM= max(tacogram);
         BPM  = ECGBPMLAST(ecgPostFilter,0);
         BPM2 = ECGBPMLAST(ecgPostFilter,1);
         flag1 = 1;
