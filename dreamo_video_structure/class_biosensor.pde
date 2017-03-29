@@ -18,7 +18,7 @@ abstract class Biosensor
 
 	//********* PRIVATE MEMBERS ***********
 
-  private float bpm;
+  private float bpm,StDev;
   private boolean connected; // connection status of the sensor
   private float defaultValue; // average of the incoming values
   private boolean calibrating; // TRUE IF the calibration process IS RUNNING
@@ -236,6 +236,33 @@ abstract class Biosensor
      }
     return a;
  }
+ 
+ 
+   public float StandardDev(float [] tacogramma){
+      float StdDev;
+      float a [] = new float[tacogramma.length];
+      a = Arrays.copyOf(tacogramma, tacogramma.length);
+      float sum=0,sumSq=0;
+      float xisq;
+      float xmsq;
+      float avarage;
+      float N=a.length;
+     for (int i=0; i< N;i++)
+     {
+      sum=+a[i];
+     }
+     avarage=sum/N;
+     
+     for (int i=0; i< N;i++)
+     {
+      sumSq=+sq(a[i]);
+     }
+     xmsq=sq(avarage);
+     xisq=sumSq/N;
+     
+     StdDev=sqrt(xisq-xmsq);
+     return StdDev;
+   }
    
   /******************************************************************************************************/ 
   // when setValue is called, every other info is updated ( absolute, variation,... )
@@ -243,9 +270,10 @@ abstract class Biosensor
   public void setVariation (float var ) { variation = var; return; }
   public void setAbsolute ( float abs ) { absolute = abs; return; }
   public void setBpm ( float newBpm ) { bpm = newBpm; return; }
-  
+  public void setStDev ( float stDev ) { StDev = stDev; return; }
   //********* GET METHODS ***********
-
+  
+  public float getStDev() { return StDev; }
   public float getBpm() { return bpm; }
   public float getPhysicalMin() { return physicalMin; }
   public float getPhysicalMax() { return physicalMax; }
