@@ -44,9 +44,12 @@ class CycloParticle2 extends Particle
   public void trace()
   {
    setParameter(0,global_dyn.getRMS());
-    stroke(pal.getColor(3));
-    for(int i=0;i<global_ecg.BPM;i=i+4){
-      line((xp+(i*20)+(z*0.5))*global_dyn.getRMS(),(yp+(z*0.5)+(i*20))*global_dyn.getRMS(),(x+(i*20)+(k*0.5))*global_dyn.getRMS(),(y+(k*0.5)+(i*20))*global_dyn.getRMS());
+   setParameter(1,global_bioMood.getArousal());
+   stroke(pal.getColor(3),getParameter(1)*100);
+   for(int i=0;i<40;i=i+4){
+      
+     line((xp+i)+z,yp+k,(x+i)+z,y+k);
+
     }
      yp=x;
      xp=y;
