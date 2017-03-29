@@ -7,7 +7,7 @@ class SceneFireworks extends Scene
     generator.setPalette(pal);
     addParticle(generator);
     
-    setHorizontalReflection(true);
+    //setHorizontalReflection(true);
 
     generator.setPosition(new Vector2d(width/2, height/2, false));
     
