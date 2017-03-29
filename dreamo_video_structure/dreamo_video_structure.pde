@@ -46,12 +46,12 @@ void setup()
   //global_stage.addScene(new Lissajous() );
   //global_stage.addScene(new ScenePlotter());
   //global_stage.addScene(new AudioDebug());
-  global_stage.addScene(new Cyclo1());
-  global_stage.addScene(new ScenePresentation() );
+  //global_stage.addScene(new Cyclo1());
+  //global_stage.addScene(new ScenePresentation() );
   //global_stage.addScene(new Cyclo2());
-  global_stage.addScene(new LineLine1());
-  
- 
+  //global_stage.addScene(new LineLine1());
+  global_stage.addScene(new ScenePerlinNoise());
+  /*
   global_stage.addScene(new SceneFireworks());
   global_stage.addScene(new SceneDots());
   global_stage.addScene(new ScenePerlinNoise());
@@ -59,7 +59,7 @@ void setup()
   global_stage.addScene(new HelloShape(0));
   global_stage.addScene(new HelloShape(1));
   global_stage.addScene(new DumbC());
- 
+  */
 
   //debug plots
   global_debugPlots = new DebugPlot(this);
