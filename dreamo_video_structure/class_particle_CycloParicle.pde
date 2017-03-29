@@ -65,7 +65,7 @@ class CycloParticle extends Particle
      rotate(t*0.005);
      //point(x+i,y+i);
      rotate(t/1000);
-     line((xp-i)*getParameter(2)*10,(yp-i)*getParameter(2)*10,(x)*getParameter(2)*10,(y)*getParameter(2)*10);
+     line((xp-i)*getParameter(2),(yp-i)*getParameter(2),(x)*getParameter(2),(y)*getParameter(2));
      }
      yp=x;
      xp=y;

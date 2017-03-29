@@ -48,10 +48,11 @@ class Connection
     parent = p;
     
     // number of BIOMEDICAL VALUES to extract at each update() cycle   
-    totSampleToExtract = ceil ((global_sampleRate/global_fps*2));  //<>//
+    totSampleToExtract = ceil ((global_sampleRate/global_fps));  //<>//
     sampleToExtract = totSampleToExtract; /*/global_sensorNumber*/
      //<>//
     //serial check
+    
     if(!wifiAvailable) 
       { 
         println("WARNING: Wifi is not available");

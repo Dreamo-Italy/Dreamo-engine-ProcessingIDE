@@ -16,6 +16,7 @@ class Ecg extends Biosensor
     {
           sensorName = "ecg";   
           BPM = 60;
+          BPM2 = 60;
           setBpm( BPM );
           StoreEcg = new FloatList();
         
@@ -91,7 +92,7 @@ class Ecg extends Biosensor
      setValue  ( newValue );
      setStDev( stdDev );
      setVarEcg( Variate );
-     setBpm( BPM );
+     setBpm( BPM2 );
      setEmotionPar( emotionPar );
      setMaxBpm(maxBPM);
      

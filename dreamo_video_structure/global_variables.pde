@@ -7,7 +7,7 @@ long global_particlesInstanciatedNumber = 0;
 float global_sampleRate = 100; 
 //////////////////////////////////////////////////////////////////////////////////
 String globalGsrTable = "LastLogGsr.csv";///"log_conductance_SIM.csv";////
-String globalEcgTable = "LastLogEcg.csv";///"log_ecg_SIM.csv";////
+String globalEcgTable = "TheVeryLastLogEcg.csv";///"log_ecg_SIM.csv";////
 //////////////////////////////////////////////////////////////////////////////////	
 final int SCENES_MAX = 100; 
 final int SOGLIA_SEL = 12;
