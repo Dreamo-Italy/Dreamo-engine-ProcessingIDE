@@ -94,7 +94,7 @@ class Dynamic extends FeaturesExtractor
       //normalize level in 0-1 range
       level=map(level,0,maxRMS,0,1);
       
-      RMSslope=realTimeSlope(level);
+      RMSslope=differentiateArray(level);
       
       
       
@@ -116,7 +116,7 @@ class Dynamic extends FeaturesExtractor
   private float getRmsSlope()
   {
     
-    return RMSslope/RMS;
+    return RMSslope;
   }
   
   
