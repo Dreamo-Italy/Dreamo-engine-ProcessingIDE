@@ -55,13 +55,12 @@ class Ecg extends Biosensor
     {
         float [] tacogram= Tacogramm(ecgPostFilter);
         
-        stdDev= StandardDev(tacogram,0);
-        Variate  = StandardDev(tacogram,1);
+        stdDev = computeStdDev(tacogram,0);
+        Variate  = computeStdDev(tacogram,1);        
         
         maxBPM= max(tacogram);
         BPM  = ECGBPMLAST(ecgPostFilter,0);
         BPM2 = ECGBPMLAST(ecgPostFilter,1);
-        emotionPar = emotionScale(); 
         flag1 = 1;
         
         if (BPM<50){ 
@@ -93,7 +92,6 @@ class Ecg extends Biosensor
      setStDev( stdDev );
      setVarEcg( Variate );
      setBpm( BPM2 );
-     setEmotionPar( emotionPar );
      setMaxBpm(maxBPM);
      
      println("BPM:"+ BPM );
@@ -291,15 +289,3 @@ float RRdistanceSecond1=0,RRdistanceSecondOld1=1;
        return BPM;
   }
 }
-
-  public float emotionScale (){
-      
-    float BPM=global_ecg.getBpm(),GSR=(global_ecg.getValue()),HRV=global_ecg.getVarEcg();
-    float emotionScale; 
-    
-    emotionScale=((BPM/120)+GSR+HRV)/3;
-    
-  
-  
-  return emotionScale;
-  }
