@@ -72,14 +72,33 @@ class BioMood
   
   private float computeEcgArousal()
   {
-    float ecgAr = global_ecg.getBpm();
-    ecgAr = map(ecgAr, 40, 120, 0, 1);
+    float ecgVar, ecgBpm, ecgArousal;
     
-    if(ecgAr<0) ecgAr = 0;
-    else if(ecgAr > 1) ecgAr = 1;
+    ecgVar = computeEcgVariation();
+    ecgBpm = computeEcgBpm();
     
-    return ecgAr;
+    ecgArousal = ( ecgVar + ecgBpm )/2;
+    
+    return ecgArousal; 
   }
+  
+  private float computeEcgVariation()
+  {
+    return global_ecg.getStDev();
+  }
+
+  private float computeEcgBpm()
+  {
+    float ecgbPM = global_ecg.getBpm();
+    ecgbPM = map(ecgbPM, 40, 120, 0, 1);
+    
+    if(ecgbPM<0) ecgbPM = 0;
+    else if(ecgbPM > 1) ecgbPM = 1;
+    
+    return ecgbPM;
+  }
+    
+
   
   
   public float getArousal()

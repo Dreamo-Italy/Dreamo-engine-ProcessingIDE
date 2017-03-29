@@ -49,9 +49,15 @@ void setup()
   global_stage.addScene(new Cyclo1());
   global_stage.addScene(new ScenePresentation() );
   //global_stage.addScene(new Cyclo2());
+<<<<<<< HEAD
+  //global_stage.addScene(new LineLine1());
+
+ /*
+=======
   global_stage.addScene(new LineLine1());
   
  
+>>>>>>> feature/presentazioneMarzo
   global_stage.addScene(new SceneFireworks());
   global_stage.addScene(new SceneDots());
   global_stage.addScene(new ScenePerlinNoise());

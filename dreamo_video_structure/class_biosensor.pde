@@ -240,7 +240,8 @@ abstract class Biosensor
  }
  
  
-   public float StandardDev(float [] tacogramma,int b){
+   public float computeStdDev(float [] tacogramma,int b)
+   {
       float StdDev,maxDev,maxAva, maxVar, VariateNorm;
       float a [] = new float[tacogramma.length];
       a = Arrays.copyOf(tacogramma, tacogramma.length);
@@ -291,6 +292,7 @@ abstract class Biosensor
   public float getEmotionPar() { return EmoPar; }
   public float getVarEcg() { return VarEcg; }
   public float getStDev() { return StDev; }
+  
   public float getBpm() { return bpm; }
   public float getPhysicalMin() { return physicalMin; }
   public float getPhysicalMax() { return physicalMax; }
