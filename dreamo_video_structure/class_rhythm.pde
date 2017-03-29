@@ -17,6 +17,9 @@ class Rhythm extends FeaturesExtractor {
   private float sensitivity;
   private boolean percOnset;
   
+  private float onsets;
+  private float onsetRate;
+  
   //temporary for minim onset implementation
   private BeatDetect beat;
   
@@ -44,6 +47,8 @@ class Rhythm extends FeaturesExtractor {
     this.sensitivity=DEFAULT_SENSITIVITY;
     
     percOnset=false;
+    onsetRate=0;
+    onsets=0;
     
     process_ok=false;
   }
@@ -97,6 +102,7 @@ class Rhythm extends FeaturesExtractor {
    if(dfMinus2<dfMinus1 && dfMinus1 >= binsOverThreshold && dfMinus1 > ((100 - sensitivity) * buffSize) / 200)
    {
      percOnset=true;
+     onsets++;
    }
    else{percOnset=false;}
    
@@ -110,6 +116,16 @@ class Rhythm extends FeaturesExtractor {
     return percOnset;
   }
   
+  private float getOnsetRate()
+  {
+    if(counter>=FRAMES_NUMBER)
+    {
+      onsetRate=onsets;
+      onsets=0;
+      return onsetRate;
+    }
+    else return onsetRate;    
+  }
   
   private void energyOnsetDetection()
   {

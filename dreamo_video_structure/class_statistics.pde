@@ -33,7 +33,17 @@ class Statistics
     return (float)Math.sqrt(getVariance());
   }
 
-
+  public void reset()
+  {
+    for(int i=0;i<acc.length;i++)
+    {
+      acc[i]=0;
+    }
+    aidx=0;
+    sum=0;
+    temp_var=0;   
+  }
+  
   public void accumulate(float data)
   {
     sum-=acc[aidx];//subtract last value

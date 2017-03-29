@@ -100,9 +100,10 @@
    plots[0].setYLim(0, 1);
    plots[1].setYLim(-1, 15);
    plots[2].setYLim(0, 1);
-   plots[3].setYLim(20, 20000);
+   //plots[3].setYLim(20, 7000);
+   plots[3].setYLim(0, 1);
    
-   plots[3].getYAxis().setLog(true);
+   //plots[3].getYAxis().setLog(true);
    
 
 
@@ -144,7 +145,7 @@
     
     //debug
     //plots[4].addPoint( frameCount, global_dyn.getRMS() );
-    plots[3].addPoint( frameCount, global_timbre.getCentroidHz());
+    plots[3].addPoint( frameCount, global_timbre.getCentroid());
     plots[3].getLayer("AvgCentroid").addPoint(frameCount, global_timbre.getCentroidAvg());
 
 

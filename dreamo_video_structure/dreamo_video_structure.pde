@@ -13,15 +13,15 @@ void setup()
   //****** BIOSENSORS ******
   global_gsr = new Gsr();
   global_ecg= new Ecg();
-  
+
   //****** BIOLOGICAL MOOD ******
-  
-  global_bioMood = new BioMood(); 
-  
+
+  global_bioMood = new BioMood();
+
 
   //****** AUDIO ******
-  
-  
+
+
   global_audio = new AudioManager(this); //new audio manager
   audio_proc = new AudioProcessor(global_audio.getBufferSize(),global_audio.getSampleRate()); //new audio processor
   global_audio.addListener(audio_proc); //attach processor to manager
@@ -29,16 +29,16 @@ void setup()
   global_timbre = new Timbre(global_audio.getBufferSize(),global_audio.getSampleRate()); //new timbric features extractor
   global_rhythm = new Rhythm(global_audio.getBufferSize(),global_audio.getSampleRate()); //new rhythmic features extractor
   //add features extractors to our audio processor
-  
+
   global_rhythm.setSensitivity(15);
-  global_rhythm.setThreshold(5);
-    
-    
+  global_rhythm.setThreshold(3);
+
+
   audio_proc.addDyn(global_dyn);
   audio_proc.addTimbre(global_timbre);
   audio_proc.addRhythm(global_rhythm);
-  
-  
+
+
   //****** STAGE ******
   global_stage = new Stage();
 
@@ -50,7 +50,7 @@ void setup()
   global_stage.addScene(new ScenePresentation() );
   //global_stage.addScene(new Cyclo2());
   //global_stage.addScene(new LineLine1());
-  
+
  /*
   global_stage.addScene(new SceneFireworks());
   global_stage.addScene(new SceneDots());
@@ -80,7 +80,7 @@ void draw()
    long gsrT= (System.nanoTime() - conT -initTimeT - audioTime);// time elapsed after GSR UPDATE
 
    global_ecg.update();
-   
+
    global_bioMood.update();
 
    long ecgT = (System.nanoTime() - conT -initTimeT - audioTime- gsrT); // time elapsed after ECG UPDATE
@@ -116,9 +116,24 @@ void draw()
    println("    MAX duration for framerate "+ int(frameRate) +": "+(1/frameRate*1000000)+" us");
    println("");
 
-   println("SPECTRAL CENTROID: "+global_timbre.getCentroidAvg()+" Hz");
-   println("SILENCE: "+ global_dyn.isSilence());
-   println("PERCUSSIVE ONSET: "+ global_rhythm.isPercOnset());
+   println("***************************************");
+   println("************** AUDIO PARAMETERS *****************");
+   println("***************************************");
+   println("RMS AVG (NORM): "+ global_dyn.getRMSAvg());
+   println("DINAMICITY INDEX: "+global_dyn.getDynamicityIndex());
+   println("RMS SLOPE: "+ global_dyn.getRmsSlope());
+   println("***************************************");
+   println("***************************************");
+   println("SPECTRAL CENTROID: "+global_timbre.getCentroidShortTimeAvgHz()+" Hz");
+   println("SPECTRAL CENTROID AVG (NORM): "+global_timbre.getCentroidAvg());
+   println("SPECTRAL CENTROID RELATIVE RATIO: "+global_timbre.getCentroidRelativeRatio());
+   println("***************************************");
+   println("***************************************");
+   println("SPECTRAL COMPLEXITY (NORM): "+global_timbre.getComplexityAvg());
+   println("***************************************");
+   println("***************************************");
+   println("DEFAULT SILENCE: "+ global_dyn.isSilence());
+   println("-50 SILENCE: "+ global_dyn.isSilence(-50));
    println("*******************END*****************");
    println("***************************************");
 
