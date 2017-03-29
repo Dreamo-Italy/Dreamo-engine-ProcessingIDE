@@ -35,10 +35,7 @@ class Statistics
 
   public void reset()
   {
-    for(int i=0;i<acc.length;i++)
-    {
-      acc[i]=0;
-    }
+    acc=new float[window];
     aidx=0;
     sum=0;
     temp_var=0;   

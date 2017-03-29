@@ -11,6 +11,7 @@ class AudioDebug extends Scene
   int articulationCoeff;
   float roughnessCoeff;
   float brightnessCoeff;
+  private AudioDecisor audioDecisor;
   
   public void init()
   {
@@ -25,6 +26,8 @@ class AudioDebug extends Scene
     long_window = new float[global_rhythm.getLongWindowMaxSize()];
     
     timbre_decisor=new Hysteresis(0.8,0.9,4);
+    
+    audioDecisor = new AudioDecisor();
   }
   
   
@@ -135,7 +138,8 @@ class AudioDebug extends Scene
   */
   
     
-    if(timbre_decisor.checkWindow(global_timbre.getCentroidRelativeRatio()))
+    //if(timbre_decisor.checkWindow(global_timbre.getCentroidRelativeRatio()))
+    if(audioDecisor.musicChange())
     {
       
       drawEllipse(60, frameCount);

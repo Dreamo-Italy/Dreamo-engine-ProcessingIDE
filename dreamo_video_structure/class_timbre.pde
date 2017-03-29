@@ -13,8 +13,8 @@ class Timbre extends FeaturesExtractor
   //**** CENTROID VARIABLES
   private float spectralCentroidHz;
   private float spectralCentroidNormalized;
-  private final float CENTROID_THEORETICAL_MAX = 6000; //based on empirical tests
-  private final float CENTROID_THEORETICAL_MIN = 1000; //based on empirical tests
+  private final float CENTROID_THEORETICAL_MAX = 4000; //based on empirical tests
+  private final float CENTROID_THEORETICAL_MIN = 500; //based on empirical tests
   
   //**** CENTROID STATISTICS
   private Statistics centroidLongTerm; //long term statistics
@@ -50,7 +50,7 @@ class Timbre extends FeaturesExtractor
     centroidLongTerm=new Statistics(W);
     centroidShortTerm=new Statistics(21); //~0.5 sec   
     centroidMaxStats=new Statistics(6);  
-    centroidMax=0;
+    centroidMax=1;
     maxControl=new Hysteresis(43);
     
     complexityLongTerm=new Statistics(W);
@@ -85,7 +85,12 @@ class Timbre extends FeaturesExtractor
   
   public float getCentroidAverageMax() { return centroidMaxStats.getAverage(); } //average maximum in Hz
   
-  public float getCentroidRelativeRatio() { return centroidShortTerm.getAverage()/centroidMaxStats.getAverage(); } //dymaic ratio
+  public float getCentroidRelativeRatio() 
+  { 
+    if(centroidMaxStats.getAverage()<1) return 0;
+    else return centroidShortTerm.getAverage()/centroidMaxStats.getAverage(); 
+  } //dymaic ratio
+  
   
   public float getCentroidShortTimeAvgHz() { return centroidShortTerm.getAverage(); }
   
@@ -105,6 +110,7 @@ class Timbre extends FeaturesExtractor
   //**** RESET MAXIMUM
   public void reset()
   {
+    centroidMax=0;
     centroidMaxStats.reset();
   }
  
