@@ -9,16 +9,23 @@ class CycloParticle extends Particle
   int multi=0;
   float bg;
   int count=0,j=0; 
+  int alpha = 80;
   int initTime=0;
   float multi2=1;
+  color myColor;
   //int mode;
 
-  public void init(){
+  public void init()
+  {
+    myColor =  pal.getColor();     
+    setPersistence(true);
     
   }
   
   public void update()
   {
+    alpha = getFadingAlpha();
+    
     if(getParameter(0)<80 && getParameter(0)>60) {
      xt=0;
     yt=0;
@@ -46,18 +53,22 @@ class CycloParticle extends Particle
     x=(2*(100*sin(2*3.174*t+10)+multi*10*cos(t))+xt*getParameter(4));
     y=2*(100*cos(2*3.174*t)+100*cos(4*3.174*t)+10*cos(8*3.174*t)+yt*getParameter(4));
      
-     
+     if(getSceneChanged() && !this.isDestroying() )
+    {
+      assertDestroying();
+      setLifeTimeLeft(60);
+    }
+    
   }
   
   public void trace()
   {
     setParameter(0,global_ecg.getBpm());
-    setParameter(1,global_ecg.getValue());
+    setParameter(1,global_bioMood.getArousal());
     setParameter(2,global_dyn.getRMS());
-    setParameter(3,global_gsr.getValue());
-    setParameter(4,global_ecg.getEmotionPar());
+    setParameter(3,global_gsr.getNormalized());
     translate(width/2-(100*cos(t*0.001)), height/2-100*sin(t*0.001));
-    stroke(pal.getColor());
+    stroke(myColor, alpha*getParameter(1)*3);
   
     
     for(int i=10;i>0;i--)

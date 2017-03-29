@@ -1,6 +1,6 @@
 class DotGenerator extends Particle
 {
-
+  
 
   public void init()
   {
@@ -14,7 +14,6 @@ class DotGenerator extends Particle
     if(frameCount%8 == 0)
     {
       Dot tempDot = new Dot();
-      tempDot.setPalette(this.pal);
       tempDot.setBounceAtBorders(true);
       tempDot.setPosition ( (new Vector2d(width/2, height/2, false) ).mul(getParameter(0)) );
       global_stage.getCurrentScene().addParticle(tempDot);

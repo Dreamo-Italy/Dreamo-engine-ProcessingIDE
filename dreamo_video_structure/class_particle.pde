@@ -14,6 +14,7 @@ abstract class Particle extends AgingObject
   private Vector2d rotation; //image rotation
   private int depth; //layers; small depth => near layer
   private int fadingAlpha; //users can use this value for fading effects during scene changes
+  private int maxAlpha; // max opacity allowed for the particle
 
   private long id; //number of particles
   private boolean destroy; // to be destroyed?
@@ -46,7 +47,9 @@ abstract class Particle extends AgingObject
     rotation = new Vector2d(1, 0, true);
     depth = 0;
     fadingAlpha = 0;
-
+    
+    maxAlpha=100;
+    
     persistent = false;
     initialised = false;
     sceneChanged = false;
@@ -59,6 +62,8 @@ abstract class Particle extends AgingObject
    
     warpAtBorders = false;
     bounceAtBorders = false;
+    
+    
     
     params = new float[PARAMETERS_NUMBER];    
     for(int i = 0; i < PARAMETERS_NUMBER; i++)
@@ -325,9 +330,13 @@ abstract class Particle extends AgingObject
     }
     
     //alpha update
-    if(fadingAlpha < 255 &&!isDestroying())
+    if(fadingAlpha < maxAlpha && !isDestroying())
     {
       fadingAlpha += 5;
+    }
+    if(fadingAlpha > maxAlpha && !isDestroying())
+    {
+      fadingAlpha -= 5;
     }
     if(isDestroying())
     {
@@ -385,6 +394,12 @@ abstract class Particle extends AgingObject
           }
         }            
      }        
+  }
+  
+  public void setMaxAlpha(int a)
+  {
+    if(a>=100){a=100;}
+    maxAlpha=a;
   }
 
   //methods to implement in the "child classes"

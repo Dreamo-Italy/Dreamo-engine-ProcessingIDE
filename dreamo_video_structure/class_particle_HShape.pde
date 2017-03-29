@@ -4,8 +4,10 @@ class HShape extends Particle
   color colore;
   
   int nSides=0;
-  float radius=0;
-  float angle=0;
+  float radius = 0;
+  float angle = 0;
+  float lineWeightDefault;
+  float lineWeight = lineWeightDefault = 5;
   
   int NSIDES=0;
   float RAD=0;
@@ -41,7 +43,7 @@ class HShape extends Particle
     switch(MODE) {
       case 0:
         nSides=(int)random(4,5);
-        radius=random(70,120);
+        radius=random(110,120);
         break;
       case 1:
         nSides=(int)random(3,4);
@@ -53,19 +55,19 @@ class HShape extends Particle
         break;
       case 3:
         nSides=3;
-        radius=random(130,180);
+        radius=random(150,200);
         break;
       case 4:
         nSides=(int)random(3,6);
-        radius=random(150,200);
+        radius=random(200,250);
         break; 
       case 5:
         nSides=5;
-        radius=random(200,300);
+        radius=random(250,300);
         break; 
       case 6:
         nSides=(int)random(4,7);
-        radius=random(220,570);
+        radius=random(320,370);
         break; 
     }
    }
@@ -76,11 +78,17 @@ class HShape extends Particle
    
    NSIDES=nSides;
    RAD=radius;   
-   alpha=(int)random(50,240);
+   setMaxAlpha((int)random(20));
   }
   
   public void update()
   {
+    noiseSeed(0);
+    
+    lineWeight = lineWeightDefault + global_timbre.getCentroid()*15;
+    setMaxAlpha(50*(int)global_timbre.getComplexity()+15);
+    alpha = getFadingAlpha();
+    
     if(MODE>=0 && MODE<=6){
     switch(MODE) {
       case 0:
@@ -127,7 +135,7 @@ class HShape extends Particle
     //float radius = mouseX-width/2 + 0.5;
     float angle = TWO_PI/nSides;
     
-    strokeWeight(2);
+    strokeWeight(lineWeight);
     stroke(colore,alpha);
     
     beginShape();

@@ -1,8 +1,8 @@
 class HelloShape extends Scene
 {
   private int index;
-  private final int INTENSITY = 20;
-  private final int SHAPE_NUM = 16;
+  private final int INTENSITY = 180;
+  private final int SHAPE_NUM = 10;
   private int mode=0;
   
   HelloShape(int M)
