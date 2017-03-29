@@ -59,7 +59,7 @@ class PlotterGenerator extends Particle
 
      // default values:
 
-      if(mode1) damping = 0.22;
+      if(mode1) damping = 0.2;
       else if(mode2) damping = 0.1;
 
       connectionRadius = 40;
@@ -73,11 +73,11 @@ class PlotterGenerator extends Particle
       //variations for the printed objects:
       if(frameCount % 15 == 0)
       {
-        if(getParameter(0) > 0.75 )
+        if(getParameter(0) > 0.45 )
            { setPosition( new Vector2d ( random(-width/6, width/6) , random(-height/6, height/6) , false ) ); damping = 0.001; }
         else if(getParameter(0) > 0.9 )
             {connectionRadius = 50; zoom = 1.05*getParameter(0);  lineWeight = 7; }
-        if ( getParameter(0) > 0.92)
+        if ( getParameter(0) > 0.72)
           { lineWeight = 40; connectionRadius = 10; particleConnectionRadius = 500;  /*setRotation(random(PI)/8);*/ }
         //  if(frameCount % 80 == 0) {loadPointsFromTxt();}
 
@@ -100,7 +100,7 @@ class PlotterGenerator extends Particle
     // *********
     // "TIME SPENT DRAWING". Range: 1 - 10 ( short time - long time )
     // *********
-     timeSpentDrawing = getParameter(0)/2 * 10 + 5;
+     timeSpentDrawing = getParameter(0)/2 * 10 + 7;
     // *********
 
     particlesNumber = global_stage.getCurrentScene().getParticlesNumber() -1;
@@ -121,19 +121,17 @@ class PlotterGenerator extends Particle
        global_stage.getCurrentScene().getParticleByListIndex(i3).perturbate(2.2*getParameter(0));
      }
      else if ( mode2 == true){
-       if( frameCount % 3 == 0 ){ //500
-        global_stage.getCurrentScene().getParticleByListIndex(i3).perturbate(50*(getParameter(0)-0.1));
+       if( frameCount % 6 == 0 ){ //500
+        global_stage.getCurrentScene().getParticleByListIndex(i3).perturbate(30*(getParameter(0)-0.1));
        }
      }
 
    }
-
-
-
+   
     if(getSceneChanged() && !this.isDestroying() )
     {
       assertDestroying();
-      setLifeTimeLeft(60);
+      setLifeTimeLeft(200);
     }
 
     if( this.isDestroying() )
@@ -257,9 +255,6 @@ public void loadPointsFromFile(File inputFile)
     }
   }
 }
-
-
-
 
 // GLOBAL FUNCTION
 

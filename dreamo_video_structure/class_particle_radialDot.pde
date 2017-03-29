@@ -13,7 +13,7 @@ class RadialDot extends Particle
   {
     gravityCenter = new Vector2d(0, 0, true);
     gravityRotation = 0;
-    damping = 1.07;
+    damping = 1.04;
     destroying = false;
     intro = true;
   }
@@ -53,11 +53,11 @@ class RadialDot extends Particle
   public void update()
   {
     if(intro){
-      if( (/*frameCount % global_fps*10 == 0 || */gravityRotation == 0) || getParameter(0) > 0.5)
+      if( gravityRotation == 0 || getParameter(0) > 0.4) 
         {gravityRotation = 0;}
     }
     else if(!intro){
-      if( /*(frameCount % global_fps*5 == 0 || gravityRotation == 0) ||*/ getParameter(0) > 0.2)
+      if( getParameter(0) > 0.2)
         {gravityRotation = 100;}
     }
       
