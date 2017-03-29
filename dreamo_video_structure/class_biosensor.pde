@@ -18,7 +18,7 @@ abstract class Biosensor
 
 	//********* PRIVATE MEMBERS ***********
 
-  private float bpm,StDev;
+  private float bpm,StDev,VarEcg,EmoPar;
   private boolean connected; // connection status of the sensor
   private float defaultValue; // average of the incoming values
   private boolean calibrating; // TRUE IF the calibration process IS RUNNING
@@ -238,14 +238,14 @@ abstract class Biosensor
  }
  
  
-   public float StandardDev(float [] tacogramma){
-      float StdDev;
+   public float StandardDev(float [] tacogramma,int b){
+      float StdDev,maxDev,maxAva, maxVar, VariateNorm;
       float a [] = new float[tacogramma.length];
       a = Arrays.copyOf(tacogramma, tacogramma.length);
       float sum=0,sumSq=0;
       float xisq;
       float xmsq;
-      float avarage;
+      float avarage,Variate;
       float N=a.length;
      for (int i=0; i< N;i++)
      {
@@ -259,9 +259,18 @@ abstract class Biosensor
      }
      xmsq=sq(avarage);
      xisq=sumSq/N;
-     
      StdDev=sqrt(xisq-xmsq);
+     maxAva=(1.9-0.28)/2;
+     maxDev=sqrt(((sq(1.9)-sq(0.48))/2) -sq(maxAva));
+     maxVar=maxDev/maxAva;
+    
+     if (b==1){
+      Variate=StdDev/avarage;
+      VariateNorm=maxVar/Variate;
+      return VariateNorm;
+     } else {
      return StdDev;
+     }
    }
    
   /******************************************************************************************************/ 
@@ -271,8 +280,12 @@ abstract class Biosensor
   public void setAbsolute ( float abs ) { absolute = abs; return; }
   public void setBpm ( float newBpm ) { bpm = newBpm; return; }
   public void setStDev ( float stDev ) { StDev = stDev; return; }
+  public void setVarEcg ( float varEcg ) { VarEcg = varEcg; return; }
+  public void setEmotionPar ( float emoPar ) { EmoPar = emoPar; return; }
+ 
   //********* GET METHODS ***********
-  
+  public float getEmotionPar() { return EmoPar; }
+  public float getVarEcg() { return VarEcg; }
   public float getStDev() { return StDev; }
   public float getBpm() { return bpm; }
   public float getPhysicalMin() { return physicalMin; }

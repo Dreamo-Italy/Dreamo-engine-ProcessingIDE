@@ -2,11 +2,11 @@ class Ecg extends Biosensor
 {
   private FloatList StoreEcg;
   DSP bpm;
-  public float BPM,RRdist,BPM2,stdDev;
+  public float BPM,RRdist,BPM2,stdDev,Variate,emotionPar;
   public Boolean FlagTachy = false;
   public Boolean FlagBrad = false;
   public final int filteredMax = 15;
- 
+  
   int flag1=0;
 
   
@@ -54,11 +54,11 @@ class Ecg extends Biosensor
     {
         float [] tacogram= Tacogramm(ecgPostFilter);
         
-        stdDev= StandardDev(tacogram);
-        
+        stdDev= StandardDev(tacogram,0);
+        Variate  = StandardDev(tacogram,1);
         BPM  = ECGBPMLAST(ecgPostFilter,0);
         BPM2 = ECGBPMLAST(ecgPostFilter,1);
-          
+        emotionPar = emotionScale(); 
         flag1 = 1;
         
         if (BPM<50){ 
@@ -76,17 +76,24 @@ class Ecg extends Biosensor
           FlagTachy=false;
      }
      else
-       {BPM = this.getBpm();
-       stdDev= this.getStDev();}
+       {
+         BPM = this.getBpm();
+         stdDev= this.getStDev();
+         Variate=this.getVarEcg();
+         emotionPar=this.getEmotionPar();
+       }
      float newValue = DSP.vmax(filterEcgData(incomingValues.array()));
      if ( newValue < filteredMax )
-       setValue  ( newValue );
+     
+     setValue  ( newValue );
      setStDev( stdDev );
+     setVarEcg( Variate );
      setBpm( BPM );
+     setEmotionPar( emotionPar );
      println("BPM:"+ BPM );
      println("NEW BPM:"+ BPM2);
      println("standard deviation:" + stdDev);
-     
+     println("EmotionPar" + emotionPar);
      // segnala lo stato dell'utente
      if (FlagTachy)  
      println("THACYCARDIA");
@@ -186,7 +193,7 @@ float RRdistanceSecond1=0,RRdistanceSecondOld1=1;
      println("last peak " + lastPeak);
      println("BPM 2 " + BPMHRV);
      // BPM detector 
-          return BPMHRV;
+     return BPMHRV;
      }
      else
      {
@@ -205,7 +212,7 @@ float RRdistanceSecond1=0,RRdistanceSecondOld1=1;
     int Beatcount=0;
     FloatList tacogram = new FloatList();
     float index=0,lastPeak=0, nSample=0;
-
+    
     int N = a.length; 
 
     //signal evaluation 
@@ -231,10 +238,9 @@ float RRdistanceSecond1=0,RRdistanceSecondOld1=1;
           }
         }   
     }
-       float [] tacogramm = tacogram.array();
-     
-          return tacogramm;
     
+       float [] tacogramm = tacogram.array();
+       return tacogramm;
    }
   
  /******************************************************************************************************/
@@ -275,3 +281,15 @@ float RRdistanceSecond1=0,RRdistanceSecondOld1=1;
        return BPM;
   }
 }
+
+  public float emotionScale (){
+      
+    float BPM=global_ecg.getBpm(),GSR=(global_ecg.getValue()/5),HRV=global_ecg.getVarEcg();
+    float emotionScale; 
+    
+    emotionScale=((BPM/120)+GSR+HRV)/3;
+    
+  
+  
+  return emotionScale;
+  }
