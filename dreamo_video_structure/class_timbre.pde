@@ -13,8 +13,8 @@ class Timbre extends FeaturesExtractor
   //**** CENTROID VARIABLES
   private float spectralCentroidHz;
   private float spectralCentroidNormalized;
-  private final float CENTROID_THEORETICAL_MAX = 5500; //based on empirical tests
-  private final float CENTROID_THEORETICAL_MIN = 100; //based on empirical tests
+  private final float CENTROID_THEORETICAL_MAX = 6000; //based on empirical tests
+  private final float CENTROID_THEORETICAL_MIN = 1000; //based on empirical tests
   
   //**** CENTROID STATISTICS
   private Statistics centroidLongTerm; //long term statistics
@@ -130,7 +130,7 @@ class Timbre extends FeaturesExtractor
         if(FFTcoeffs[i]>avgMagnitude*COMPLEXITY_THRESHOLD_COEFF){binsOverAvg++;}
       }
       //spectral centroid
-      if(FFTcoeffs[i]<0.2){FFTcoeffs[i]=0;} //clean 
+      //if(FFTcoeffs[i]<0.2){FFTcoeffs[i]=0;} //clean 
       num+=(centerFreqHz(i)*FFTcoeffs[i]);
       denom+=FFTcoeffs[i];    
     }

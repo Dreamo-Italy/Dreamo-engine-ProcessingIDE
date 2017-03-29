@@ -112,13 +112,24 @@ void draw()
    println("    MAX duration for framerate "+ int(frameRate) +": "+(1/frameRate*1000000)+" us");
    println("");
 
-   println("SPECTRAL CENTROID: "+global_timbre.getCentroidShortTimeAvgHz());
+   println("***************************************");
+   println("************** AUDIO PARAMETERS *****************");
+   println("***************************************");
+   println("RMS AVG (NORM): "+ global_dyn.getRMSAvg());
    println("DINAMICITY INDEX: "+global_dyn.getDynamicityIndex());
-   println("SPECTRAL COMPLEXITY: "+global_timbre.getComplexityAvg());
+   println("RMS SLOPE: "+ global_dyn.getRmsSlope()); 
+   println("***************************************");
+   println("***************************************");
+   println("SPECTRAL CENTROID: "+global_timbre.getCentroidShortTimeAvgHz()+" Hz");
+   println("SPECTRAL CENTROID AVG (NORM): "+global_timbre.getCentroidAvg());
    println("SPECTRAL CENTROID RELATIVE RATIO: "+global_timbre.getCentroidRelativeRatio());
-   println("SILENCE: "+ global_dyn.isSilence());
-   println("ONSET RATE: "+ global_rhythm.getOnsetRate());
-   println("RMS SLOPE: "+ global_dyn.getRmsSlope());
+   println("***************************************");
+   println("***************************************");
+   println("SPECTRAL COMPLEXITY (NORM): "+global_timbre.getComplexityAvg());
+   println("***************************************");
+   println("***************************************");
+   println("DEFAULT SILENCE: "+ global_dyn.isSilence());
+   println("-50 SILENCE: "+ global_dyn.isSilence(-50));   
    println("*******************END*****************");
    println("***************************************");
 
