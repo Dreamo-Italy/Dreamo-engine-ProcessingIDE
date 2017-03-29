@@ -48,7 +48,7 @@ class Connection
     parent = p;
     
     // number of BIOMEDICAL VALUES to extract at each update() cycle   
-    totSampleToExtract = round (global_sampleRate/global_fps);  //<>//
+    totSampleToExtract = ceil ((global_sampleRate/global_fps*2));  //<>//
     sampleToExtract = totSampleToExtract; /*/global_sensorNumber*/
      //<>//
     //serial check
@@ -144,7 +144,7 @@ class Connection
               tableHeaderName = "conductance";}
            else if ( sensorName.equals("ecg") )
              {sensorIndex = 1;
-              tableHeaderName = "ECG_Filtered";}             
+              tableHeaderName = "ecg_filtered";}             
         }            
         
       // CLEAR the list if the list SIZE is five time bigger than needed

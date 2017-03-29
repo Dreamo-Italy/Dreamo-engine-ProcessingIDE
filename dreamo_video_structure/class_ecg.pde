@@ -1,12 +1,14 @@
 class Ecg extends Biosensor
 {
   private FloatList StoreEcg;
-  //DSP bpm;
-  public float BPM,RRdist,BPM2;
+  DSP bpm;
+  public float BPM,RRdist,BPM2,stdDev,Variate,emotionPar,maxBPM;
   public Boolean FlagTachy = false;
   public Boolean FlagBrad = false;
   public final int filteredMax = 15;
+  
   int flag1=0;
+
   
   private final float minBufferSize = global_sampleRate*60;
   
@@ -16,7 +18,7 @@ class Ecg extends Biosensor
           BPM = 60;
           setBpm( BPM );
           StoreEcg = new FloatList();
-          
+        
           physicalMin = 0;
           physicalMax = 5;          
     }
@@ -25,7 +27,7 @@ class Ecg extends Biosensor
     public void update()
     {     
       int added = 0;
-     incomingValues = global_connection.extractFromBuffer("ecg", sampleToExtract ); // store the incoming conductance value from Connection to another FloatLIst
+     incomingValues = global_connection.extractFromBuffer("ecg", sampleToExtract*2 ); // store the incoming conductance value from Connection to another FloatLIst
      for (int i = (incomingValues.size()-1); i > 0; i--) {
           float newFloat = incomingValues.get(i);
           if ( newFloat < physicalMax )
@@ -48,17 +50,20 @@ class Ecg extends Biosensor
     
     float [] ecgPreFilter = StoreEcg.array();
     float [] ecgPostFilter = filterEcgData(ecgPreFilter);
-    
-    if(StoreEcg.size()> minBufferSize-1) 
+    if(StoreEcg.size()> (minBufferSize)-1) 
     {
+        float [] tacogram= Tacogramm(ecgPostFilter);
         
-        BPM = ECGBPM3(ecgPostFilter);
-        BPM2 = ECGBPMLAST(ecgPostFilter);
-          
+        stdDev= StandardDev(tacogram,0);
+        Variate  = StandardDev(tacogram,1);
+        
+        maxBPM= max(tacogram);
+        BPM  = ECGBPMLAST(ecgPostFilter,0);
+        BPM2 = ECGBPMLAST(ecgPostFilter,1);
+        emotionPar = emotionScale(); 
         flag1 = 1;
         
-        if (BPM<60){ 
-          println("BRADYCARDIA");
+        if (BPM<50){ 
           FlagBrad=true;
           // rallentare le scene
         }
@@ -73,16 +78,28 @@ class Ecg extends Biosensor
           FlagTachy=false;
      }
      else
-       BPM = this.getBpm();
-     
+       {
+         BPM = this.getBpm();
+         stdDev= this.getStDev();
+         Variate=this.getVarEcg();
+         emotionPar=this.getEmotionPar();
+         maxBPM=this.getMaxBpm();
+       }
      float newValue = DSP.vmax(filterEcgData(incomingValues.array()));
      if ( newValue < filteredMax )
-       setValue  ( newValue );
+     
+     setValue  ( newValue );
+     setStDev( stdDev );
+     setVarEcg( Variate );
      setBpm( BPM );
+     setEmotionPar( emotionPar );
+     setMaxBpm(maxBPM);
+     
      println("BPM:"+ BPM );
-     //println("NEW BPM:"+ BPM2 );
-     
-     
+     println("NEW BPM:"+ BPM2);
+     println("standard deviation:" + stdDev);
+     println("EmotionPar" + emotionPar);
+     println("MaxBPM:" + maxBPM);
      // segnala lo stato dell'utente
      if (FlagTachy)  
      println("THACYCARDIA");
@@ -105,69 +122,134 @@ class Ecg extends Biosensor
       filtered = Arrays.copyOf(arrayIn,arrayIn.length );
       //System.arraycopy(arrayIn, 0, filtered, 0, arrayIn.length);
       
-      filtered = DSP.HighPass (filtered, 5.0, global_sampleRate);
+      filtered = DSP.HighPass (filtered, 0.001, global_sampleRate);
       filtered = DSP.HWR(filtered);
-      //filtered = DSP.MAfilter(filtered, arrayIn.length);
       filtered = DSP.times(filtered,5);
-      filtered = DSP.LowPassSP( filtered, 45.0, global_sampleRate);
-      filtered = DSP.times(filtered,10);
-      filtered = differentiateArray(filtered);      
+      filtered = DSP.LowPassSP( filtered, 0.25, global_sampleRate);
+      filtered = DSP.times(filtered,50);
+      //filtered = DSP.MAfilter(filtered, arrayIn.length);
+     // filtered = differentiateArray(filtered);  
+
+      filtered = Square(filtered);
+   
+  
+    
       return filtered;
   }
   
   /******************************************************************************************************/
- //TODO: move this into ECG class
- // strani errori nel log se ECGBPM sopra 80 bpm circa 60 bpm per ECGBPMLAST
- // invece se ECGBPM sotto 40 bpm circa 80 bpm per ECGBPMLAST
- // il trend è sempre lo stesso i valori cambiano a seconda della threshold per
- // RRdistanceSecond
- // riguardare potenziali errori
- public int ECGBPMLAST(float[] input)
+
+ 
+ public float[] Square(float [] input)
+ {
+       float a [] = new float[input.length];
+       a = Arrays.copyOf(input, input.length);
+       
+      for (int i=0; i<a.length;i++){
+      a[i]= a[i]*a[i];
+      if(a[i]>1){
+      }else{ a[i]=0.1;}
+      
+     
+      }
+      return a;
+ }
+ 
+ /******************************************************************************************************/
+     int BPMlast, BPMHRV=20;
+float RRdistanceSecond=0,RRdistanceSecondOld=1;
+float RRdistanceSecond1=0,RRdistanceSecondOld1=1;
+
+ public int ECGBPMLAST(float[] input, int b)
  {
    float a [] = new float[input.length];
     a = Arrays.copyOf(input, input.length);
     
     int Beatcount=0;
-    int BPM;
+
     float index=0,lastPeak=0, nSample=0;
-    float RRdistanceSecond=0;
+
     int N = a.length; //numToExtract*frameRate*5 
-    boolean flag=false, flag2=true;
-    
-    
 
     //signal evaluation and peaks counter
-    for(int i=1;i<N-1;i++){
+    for(int i=0;i<N-1;i++){
        
-      if(a[i]> 3 && a[i]>a[i-1] && a[i+1]>a[i] ){
-    
-          if(flag2){
-          Beatcount++;
+      if(a[i]>3 && a[i]<a[i+1]){
+       
           index=i;
-          flag2=false;
-          }
-          
-          if(!flag){
-          flag=true;
-          index=i;
-          
-          if(lastPeak!=0){
           nSample=index-lastPeak;
-          RRdistanceSecond=nSample/30;
-          //println("RRbefore " +RRdistanceSecond);
-          //println("BCbefore " +Beatcount);
-          if (RRdistanceSecond > 0.12) {
+          RRdistanceSecond=nSample/(global_sampleRate);
+          
+          if (RRdistanceSecond > 0.48 && RRdistanceSecond<1.9) {
+             if (RRdistanceSecondOld >RRdistanceSecond + ((RRdistanceSecond/100)*12))
+                 RRdistanceSecondOld=1;
+             
+             if (RRdistanceSecond >( RRdistanceSecondOld - ((RRdistanceSecondOld/100)*12))){
              Beatcount++;
+             BPMHRV=round(60/RRdistanceSecond);
+             RRdistanceSecondOld=RRdistanceSecond;
+             lastPeak=index;
+           } 
           }
-        }
-        }
-        } else {
-        flag=false; flag2=false; lastPeak=index;
-      }
+        }   
     }
+     if (b==1){
+     println("n samples " + nSample);
+     println("RR dist " + RRdistanceSecondOld);
+     println("last peak " + lastPeak);
+     println("BPM 2 " + BPMHRV);
      // BPM detector 
-     BPM = Beatcount;
-     return BPM;
+     return BPMHRV;
+     }
+     else
+     {
+     BPMlast = Beatcount;
+     return BPMlast;
+     }
+   }
+   
+ /******************************************************************************************************/
+   
+    public float[] Tacogramm(float[] input)
+ {
+   float a [] = new float[input.length];
+    a = Arrays.copyOf(input, input.length);
+    
+    int Beatcount=0;
+    FloatList tacogram = new FloatList();
+
+    float index=0,lastPeak=0, nSample=0;
+    
+    int N = a.length; 
+
+    //signal evaluation 
+    for(int i=0;i<N-1;i++){
+       
+      if(a[i]>3 && a[i]<a[i+1]){
+       
+          index=i;
+          nSample=index-lastPeak;
+          RRdistanceSecond1=nSample/(global_sampleRate);
+          
+          if (RRdistanceSecond1 > 0.48 && RRdistanceSecond1<1.9) {
+             if (RRdistanceSecondOld1 >RRdistanceSecond1 + ((RRdistanceSecond1/100)*12))
+                 RRdistanceSecondOld1=1;
+             
+             if (RRdistanceSecond1 >( RRdistanceSecondOld1 - ((RRdistanceSecondOld/100)*12))){
+             Beatcount++;
+             BPMHRV=round(60/RRdistanceSecond);
+             RRdistanceSecondOld=RRdistanceSecond;
+             lastPeak=index;
+             tacogram.append(RRdistanceSecond);
+           
+           } 
+          }
+        }   
+    }
+ 
+       float [] tacogramm = tacogram.array();
+       return tacogramm;
+    
    }
   
  /******************************************************************************************************/
@@ -183,29 +265,22 @@ class Ecg extends Biosensor
     int N = a.length; //numToExtract*frameRate*5 
     boolean flag=false;
     
-    ////Squaring the signal to increase the peak
-    //for (int i=0; i<N;i++){
-    //  a[i]= a[i]*a[i];
-    //  //if(a[i] < 0.05) 
-    //  //  a[i] = 0;
-    //} 
     
-     float newMax = max ( a); 
+     float newMax = max (a); 
      println("max filtered " + newMax);
 
     //signal evaluation and peaks counter
     for(int i=1;i<N-1;i++)
     {
-        if(a[i]> 3 /*&& a[i]>a[i-1] */&& a[i]>a[i+1])
+        if(a[i] > 2 && a[i]>a[i-1] && a[i]<a[i+1])
         {
           if (!flag)
           {
             Beatcount++; 
             //flag=true;
           }
-        }
-        else
-          flag = false;
+         
+        } else {flag=false;}
       }
      
      
@@ -213,103 +288,17 @@ class Ecg extends Biosensor
      
        BPM = Beatcount;
        return BPM;
-   }
-   
-   /******************************************************************************************************/
-   //TODO: move this into ECG class
-   //BPM ECG (non funziona?)
-   public int ECGBPM(float[] a){
-     
-    int beatcount=0;
-    int BPM;
-    int N= a.length; 
-    int fs=256;
-    
-    for(int i=1;i<N-1;i++){
-        if( (a[i]>a[i-1]) && a[i]>a[i+1] && a[i]>1.5){
-         beatcount++;
-        }
-      }
-      
-       float duration_second = 1/30; //replace 30 with global_fps
-       float duration_minute = 60;
-       
-       //float duration_second= (float)N/fs;
-       //float dur_min=duration_second/60;
-       
-       BPM = round(beatcount * duration_minute / duration_second );
-       return BPM;
-   }    
-/******************************************************************************************************/
-   //TODO: move this into ECG class
-   public int ECGBPM2(FloatList a){
-    int Beatcount=0;
-    int BPM;
-    int N= a.size(); 
-    int fs=256;
-    boolean flag=false;
-    //Squaring the signal to increase the peak
-    for (int i=0; i<N;i++){
-     a.set(i,sq(a.get(i)));
-    } 
-    //signal evaluation and peaks counter
-    for(int i=1;i<N-1;i++){
-        if(a.get(i)>1.8){
-          if (!flag){
-          Beatcount++;
-          flag=true;
-          }
-        }else{flag=false;}
-      }
-     // BPM detector 
-       float duration_second = 1/30;
-       float dur_min=60;
-       BPM=round(Beatcount* dur_min/duration_second );
-       return BPM;
-   }
-
-
-/******************************************************************************************************/
- //TODO: move this into ECG class
-  public float RRdistance(float[] a){
-    
-    float indexs=0, indexsold=0, RRdist=0;
-    int N= a.length; //numToExtract*frameRate*5 
-    boolean flag=false;
-
-    // Differentiator
-    for (int i=0; i<N;i++){
-      if(i>3){a[i]= 0.1*(2*a[i] + a[i-1] -a[i-3]-2*a[i-4]);}
-     }
-    
-    //Squaring the signal to increase the peak
-    for (int i=0; i<N;i++){
-      a[i]= a[i]*a[i];
-      //if(a[i] < 0.05) 
-      //  a[i] = 0;
-    }
-    
-    //signal evaluation and peaks counter
-    for(int i=1;i<N-1;i++){
-        if(a[i]> 36000 && a[i]>a[i-1] && a[i+1]>a[i]){
-          if (!flag){
-          indexs=i/100;
-          flag=true;
-          }
-        }else{flag=false;}
-        indexs=indexsold;
-        if (indexs>indexsold && indexs!=0 && indexsold!=0){
-           RRdist=indexs-indexsold;
-          
-        }
-      
-      }
-      return RRdist;
-       
-   }
-  
- 
-  
-
-  
+  }
 }
+
+  public float emotionScale (){
+      
+    float BPM=global_ecg.getBpm(),GSR=(global_ecg.getValue()),HRV=global_ecg.getVarEcg();
+    float emotionScale; 
+    
+    emotionScale=((BPM/120)+GSR+HRV)/3;
+    
+  
+  
+  return emotionScale;
+  }

@@ -1,0 +1,44 @@
+class lineLine extends Particle{
+   float t=0,x=0,y=0;
+
+  public void init(){}
+  public void update(){
+   t=frameCount; 
+   x=cos((t/100));
+   y=sin((t/100));
+   
+   
+   
+  }
+  public void trace(){
+  
+  translate(width/2,height/2);
+ 
+  
+  
+  //for(int i=0; i<100;i=i+4){
+
+  //  line((-width/2)*global_dyn.getRMS()*y,(-50)*x,width/2*global_dyn.getRMS()*y,(-50+i)*x);
+  //}
+  //stroke(pal.getColor(1));
+  
+  //for(int i=0; i<100;i=i+4){ 
+  //line(width/2*global_dyn.getRMS()*x,(-50)*y,width/2*global_dyn.getRMS()*y,(-50+i)*x);
+  //}
+  
+  // stroke(pal.getColor(3));
+  //for(int i=0; i<100;i=i+4){
+  // noFill();
+  //  bezier((-width/2)*global_dyn.getRMS()*y,(-50)*x,i*x,-i*y,+i*y,-i+x,width/2*global_dyn.getRMS()*x,(-50)*y);
+  //}
+  //for(int i=0; i<100;i=i+4){
+  //bezier(width/2*global_dyn.getRMS()*x,(-50)*y,width/2*global_dyn.getRMS()*y,(-50+i)*x,width/2*global_dyn.getRMS()*y,(-50+i)*x,(-width/2)*global_dyn.getRMS()*y,(-50)*x);
+  //}
+   noFill();
+  for(int i=0;i<360;i=i+2){
+     stroke(pal.getColor()); 
+    bezier(0,0,100*x,100*y,200*x,200*y,300*cos(i),300*sin(i));
+  
+  }
+  
+}}

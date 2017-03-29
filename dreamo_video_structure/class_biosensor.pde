@@ -18,7 +18,7 @@ abstract class Biosensor
 
 	//********* PRIVATE MEMBERS ***********
 
-  private float bpm;
+  private float bpm,StDev,VarEcg,EmoPar,MaxBpm;
   private boolean connected; // connection status of the sensor
   private float defaultValue; // average of the incoming values
   private boolean calibrating; // TRUE IF the calibration process IS RUNNING
@@ -43,7 +43,7 @@ abstract class Biosensor
     calibrationCounter = 0;
     
     // number of BIOMEDICAL VALUES to extract at each update() cycle   
-    sampleToExtract = floor (global_sampleRate/(global_fps)); 
+    sampleToExtract = ceil ((global_sampleRate/(global_fps))); 
     
     incomingValues = new FloatList();
     
@@ -238,6 +238,42 @@ abstract class Biosensor
      }
     return a;
  }
+ 
+ 
+   public float StandardDev(float [] tacogramma,int b){
+      float StdDev,maxDev,maxAva, maxVar, VariateNorm;
+      float a [] = new float[tacogramma.length];
+      a = Arrays.copyOf(tacogramma, tacogramma.length);
+      float sum=0,sumSq=0;
+      float xisq;
+      float xmsq;
+      float avarage,Variate;
+      float N=a.length;
+     for (int i=0; i< N;i++)
+     {
+      sum=+a[i];
+     }
+     avarage=sum/N;
+     
+     for (int i=0; i< N;i++)
+     {
+      sumSq=+sq(a[i]);
+     }
+     xmsq=sq(avarage);
+     xisq=sumSq/N;
+     StdDev=sqrt(xisq-xmsq);
+     maxAva=(1.9-0.28)/2;
+     maxDev=sqrt(((sq(1.9)-sq(0.48))/2) -sq(maxAva));
+     maxVar=maxDev/maxAva;
+    
+     if (b==1){
+      Variate=StdDev/avarage;
+      VariateNorm=maxVar/Variate;
+      return VariateNorm;
+     } else {
+     return StdDev;
+     }
+   }
    
   /******************************************************************************************************/ 
   // when setValue is called, every other info is updated ( normalized, variation,... )
@@ -245,9 +281,16 @@ abstract class Biosensor
   public void setVariation (float var ) { variation = var; return; }
   public void setNormalized ( float abs ) { normalized = abs; return; }
   public void setBpm ( float newBpm ) { bpm = newBpm; return; }
-  
+  public void setStDev ( float stDev ) { StDev = stDev; return; }
+  public void setVarEcg ( float varEcg ) { VarEcg = varEcg; return; }
+  public void setEmotionPar ( float emoPar ) { EmoPar = emoPar; return; }
+  public void setMaxBpm ( float maxBpm ) { MaxBpm = maxBpm; return; }
+ 
   //********* GET METHODS ***********
-
+  public float getMaxBpm() { return MaxBpm; }
+  public float getEmotionPar() { return EmoPar; }
+  public float getVarEcg() { return VarEcg; }
+  public float getStDev() { return StDev; }
   public float getBpm() { return bpm; }
   public float getPhysicalMin() { return physicalMin; }
   public float getPhysicalMax() { return physicalMax; }
