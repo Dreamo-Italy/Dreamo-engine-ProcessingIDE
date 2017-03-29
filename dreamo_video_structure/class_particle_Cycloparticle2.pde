@@ -36,7 +36,7 @@ class CycloParticle2 extends Particle
     z=-100*cos(t/1000+10)+60*cos(t/900+100)+30*cos(t/700)+10*cos(t/600);
     
     }else z=0;
-     
+   
      
      
   }

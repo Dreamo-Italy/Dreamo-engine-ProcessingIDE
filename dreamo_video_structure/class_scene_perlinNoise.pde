@@ -5,7 +5,7 @@ class ScenePerlinNoise extends Scene
   void init()
   {
 
-    pal.initColors();
+    pal.initColors(9);
 
     final int row = 10;
     final int column = 11;
