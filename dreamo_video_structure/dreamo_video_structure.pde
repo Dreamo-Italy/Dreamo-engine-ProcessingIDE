@@ -7,7 +7,7 @@ void setup()
   frameRate(global_fps);
   noSmooth();
 
-  //****** CONNECTION //<>// ****** //<>// //<>// //<>//
+  //****** CONNECTION //<>// ****** //<>// //<>// //<>// //<>//
   global_connection = new Connection(this);
 
   //****** BIOSENSORS ******
@@ -45,11 +45,11 @@ void setup()
   //scenes
   //global_stage.addScene(new Lissajous() );
   //global_stage.addScene(new ScenePlotter());
-  //global_stage.addScene(new AudioDebug());
-  global_stage.addScene(new Cyclo1());
+  global_stage.addScene(new AudioDebug());
+  //global_stage.addScene(new Cyclo1());
   //global_stage.addScene(new ScenePresentation() );
   //global_stage.addScene(new Cyclo2());
-  global_stage.addScene(new LineLine1());
+  //global_stage.addScene(new LineLine1());
   
  
   //global_stage.addScene(new SceneFireworks());
@@ -103,9 +103,9 @@ void draw()
 
 
    long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME
- //<>//
+ //<>// //<>//
 
-   //----------- print the durations for debug purposes------------ //<>// //<>// //<>//
+   //----------- print the durations for debug purposes------------ //<>// //<>// //<>// //<>//
 
    println("    Audio update duration: "+ audioTime/1000 + " us");
    println("    Connection update duration: "+ conT/1000 + " us");
@@ -121,10 +121,11 @@ void draw()
    println("***************************************");
    println("RMS AVG (NORM): "+ global_dyn.getRMSAvg());
    println("DINAMICITY INDEX: "+global_dyn.getDynamicityIndex());
-   println("RMS SLOPE: "+ global_dyn.getRmsSlope());
+   println("RMS MAX SLOPE: "+ global_dyn.getRmsSlope());
    println("***************************************");
    println("***************************************");
    println("SPECTRAL CENTROID: "+global_timbre.getCentroidShortTimeAvgHz()+" Hz");
+   println("SPECTRAL CENTROID MAX: "+global_timbre.getCentroidAverageMax()+" Hz");
    println("SPECTRAL CENTROID AVG (NORM): "+global_timbre.getCentroidAvg());
    println("SPECTRAL CENTROID RELATIVE RATIO: "+global_timbre.getCentroidRelativeRatio());
    println("***************************************");
@@ -133,15 +134,22 @@ void draw()
    println("***************************************");
    println("***************************************");
    println("DEFAULT SILENCE: "+ global_dyn.isSilence());
-   println("-50 SILENCE: "+ global_dyn.isSilence(-50));
+   println("-40 SILENCE: "+ global_dyn.isSilence(-40));
    println("*******************END*****************");
    println("***************************************");
-
+  
+    
+   //select scene if silence
+   if(global_dyn.isSilence(-40)) 
+   {
+     global_stage.nextScene();
+     global_timbre.reset();
+   }
+  
 }
 
 void mouseClicked()
 {
-
   //Mood m = new Mood(random(-1,1), random(-1,1));
   // global_stage.selectScenebyMood(m);
   global_stage.nextScene();
