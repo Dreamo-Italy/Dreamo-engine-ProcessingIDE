@@ -2,7 +2,7 @@ class Ecg extends Biosensor
 {
   private FloatList StoreEcg;
   DSP bpm;
-  public float BPM,RRdist,BPM2,stdDev,Variate,emotionPar;
+  public float BPM,RRdist,BPM2,stdDev,Variate,emotionPar,maxBPM;
   public Boolean FlagTachy = false;
   public Boolean FlagBrad = false;
   public final int filteredMax = 15;
@@ -56,6 +56,8 @@ class Ecg extends Biosensor
         
         stdDev= StandardDev(tacogram,0);
         Variate  = StandardDev(tacogram,1);
+        
+        maxBPM= max(tacogram);
         BPM  = ECGBPMLAST(ecgPostFilter,0);
         BPM2 = ECGBPMLAST(ecgPostFilter,1);
         emotionPar = emotionScale(); 
@@ -81,6 +83,7 @@ class Ecg extends Biosensor
          stdDev= this.getStDev();
          Variate=this.getVarEcg();
          emotionPar=this.getEmotionPar();
+         maxBPM=this.getMaxBpm();
        }
      float newValue = DSP.vmax(filterEcgData(incomingValues.array()));
      if ( newValue < filteredMax )
@@ -90,10 +93,13 @@ class Ecg extends Biosensor
      setVarEcg( Variate );
      setBpm( BPM );
      setEmotionPar( emotionPar );
+     setMaxBpm(maxBPM);
+     
      println("BPM:"+ BPM );
      println("NEW BPM:"+ BPM2);
      println("standard deviation:" + stdDev);
      println("EmotionPar" + emotionPar);
+     println("MaxBPM:" + maxBPM);
      // segnala lo stato dell'utente
      if (FlagTachy)  
      println("THACYCARDIA");
@@ -211,6 +217,7 @@ float RRdistanceSecond1=0,RRdistanceSecondOld1=1;
     
     int Beatcount=0;
     FloatList tacogram = new FloatList();
+
     float index=0,lastPeak=0, nSample=0;
     
     int N = a.length; 
@@ -234,13 +241,15 @@ float RRdistanceSecond1=0,RRdistanceSecondOld1=1;
              RRdistanceSecondOld=RRdistanceSecond;
              lastPeak=index;
              tacogram.append(RRdistanceSecond);
+           
            } 
           }
         }   
     }
-    
+ 
        float [] tacogramm = tacogram.array();
        return tacogramm;
+    
    }
   
  /******************************************************************************************************/
@@ -284,7 +293,7 @@ float RRdistanceSecond1=0,RRdistanceSecondOld1=1;
 
   public float emotionScale (){
       
-    float BPM=global_ecg.getBpm(),GSR=(global_ecg.getValue()/5),HRV=global_ecg.getVarEcg();
+    float BPM=global_ecg.getBpm(),GSR=(global_ecg.getValue()),HRV=global_ecg.getVarEcg();
     float emotionScale; 
     
     emotionScale=((BPM/120)+GSR+HRV)/3;

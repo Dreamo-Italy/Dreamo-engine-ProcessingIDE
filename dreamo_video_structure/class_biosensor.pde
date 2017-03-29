@@ -18,7 +18,7 @@ abstract class Biosensor
 
 	//********* PRIVATE MEMBERS ***********
 
-  private float bpm,StDev,VarEcg,EmoPar;
+  private float bpm,StDev,VarEcg,EmoPar,MaxBpm;
   private boolean connected; // connection status of the sensor
   private float defaultValue; // average of the incoming values
   private boolean calibrating; // TRUE IF the calibration process IS RUNNING
@@ -282,8 +282,10 @@ abstract class Biosensor
   public void setStDev ( float stDev ) { StDev = stDev; return; }
   public void setVarEcg ( float varEcg ) { VarEcg = varEcg; return; }
   public void setEmotionPar ( float emoPar ) { EmoPar = emoPar; return; }
+  public void setMaxBpm ( float maxBpm ) { MaxBpm = maxBpm; return; }
  
   //********* GET METHODS ***********
+  public float getMaxBpm() { return MaxBpm; }
   public float getEmotionPar() { return EmoPar; }
   public float getVarEcg() { return VarEcg; }
   public float getStDev() { return StDev; }

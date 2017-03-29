@@ -56,7 +56,7 @@ class CycloParticle extends Particle
     setParameter(2,global_dyn.getRMS());
     setParameter(3,global_gsr.getValue());
     setParameter(4,global_ecg.getEmotionPar());
-    translate(width/2-(100*cos(t*0.001)*getParameter(4)), height/2-100*sin(t*0.001)*getParameter(4));
+    translate(width/2-(100*cos(t*0.001)), height/2-100*sin(t*0.001));
     stroke(pal.getColor());
   
     
