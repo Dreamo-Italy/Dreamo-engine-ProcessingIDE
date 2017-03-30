@@ -14,7 +14,7 @@ class Timbre extends FeaturesExtractor
   private float spectralCentroidHz;
   private float spectralCentroidNormalized;
   private final float CENTROID_THEORETICAL_MAX = 4000; //based on empirical tests
-  private final float CENTROID_THEORETICAL_MIN = 500; //based on empirical tests
+  private final float CENTROID_THEORETICAL_MIN = 1000; //based on empirical tests
   
   //**** CENTROID STATISTICS
   private Statistics centroidLongTerm; //long term statistics
