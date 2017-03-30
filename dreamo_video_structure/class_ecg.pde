@@ -47,7 +47,7 @@ class Ecg extends Biosensor
     //println("ECG buffer size: "+ incomingValues.size() );  
     //println("Highest ECG peak: "+ max(StoreEcg.array()) );
  
-    println("StoreEcg size: "+StoreEcg.size() );
+    //println("StoreEcg size: "+StoreEcg.size() );
     
     float [] ecgPreFilter = StoreEcg.array();
     float [] ecgPostFilter = filterEcgData(ecgPreFilter);
@@ -95,9 +95,9 @@ class Ecg extends Biosensor
      setBpm( BPM2 );
      setMaxBpm(maxBPM);
      
-     println("BPM:"+ BPM );
-     println("NEW BPM:"+ BPM2);
-     println("standard deviation:" + stdDev);
+     
+     println("BPM:"+ BPM2);
+    /* println("standard deviation:" + stdDev);
      println("EmotionPar" + emotionPar);
      println("MaxBPM:" + maxBPM);
      // segnala lo stato dell'utente
@@ -108,7 +108,7 @@ class Ecg extends Biosensor
      if ((!FlagBrad) &&(!FlagTachy))
      println("NORMAL MOOD");
      if ((FlagBrad) &&(FlagTachy))
-     println("ERROR MOOD");
+     println("ERROR MOOD");*/
      
      //if ( ! ( incomingValues == null ) )
       // checkCalibration();    
@@ -194,10 +194,10 @@ float RRdistanceSecond1=0,RRdistanceSecondOld1=1;
         }   
     }
      if (b==1){
-     println("n samples " + nSample);
+    /* println("n samples " + nSample);
      println("RR dist " + RRdistanceSecondOld);
      println("last peak " + lastPeak);
-     println("BPM 2 " + BPMHRV);
+     println("BPM 2 " + BPMHRV); */
      // BPM detector 
      return BPMHRV;
      }

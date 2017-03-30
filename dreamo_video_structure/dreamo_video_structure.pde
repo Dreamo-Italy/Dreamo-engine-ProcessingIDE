@@ -3,8 +3,8 @@ void setup()
 
   //****** VIDEO ******
   colorMode(HSB, 360, 100, 100, 100);
-  //size(1920, 1080, FX2D);
-  fullScreen(FX2D,2);
+  size(1280, 720, FX2D);
+  //fullScreen(FX2D,1);
   frameRate(global_fps);
   noSmooth();
  //<>//
@@ -45,18 +45,18 @@ void setup()
 
   //scenes
   
-  global_stage.addScene(new ScenePlotter());
+  /*global_stage.addScene(new ScenePlotter());
   global_stage.addScene(new ScenePresentation() );
   global_stage.addScene(new Lissajous() );
-  global_stage.addScene(new AudioDebug());
+  //global_stage.addScene(new AudioDebug());
   global_stage.addScene(new Cyclo1());
   //global_stage.addScene(new Cyclo2());
   global_stage.addScene(new LineLine1());
   
  
   //global_stage.addScene(new SceneFireworks());
-  global_stage.addScene(new SceneDots());
-  global_stage.addScene(new ScenePerlinNoise());
+  //global_stage.addScene(new SceneDots());
+  global_stage.addScene(new ScenePerlinNoise());*/
   global_stage.addScene(new Spirals());
   //global_stage.addScene(new HelloShape(0));
   global_stage.addScene(new HelloShape(1));
@@ -99,9 +99,9 @@ void draw()
    stroke(120); // for the DEBUG text
 
    text("particles: " + global_stage.getCurrentScene().getParticlesNumber() + "; framerate: " + nf(frameRate,2,1) + " \n", marginSpace, interlineSpace );
-   text("                                                                     Frame Count: "+frameCount,marginSpace, interlineSpace );
-   global_gsr.printDebug();// print the DEBUG TEXT related to the SKIN SENSOR
-   global_ecg.printDebug();// print the DEBUG TEXT related to the ECG SENSOR
+   text("                                                      Frame Count: "+frameCount,marginSpace, interlineSpace );
+   //global_gsr.printDebug();// print the DEBUG TEXT related to the SKIN SENSOR
+   //global_ecg.printDebug();// print the DEBUG TEXT related to the ECG SENSOR
 
 
  //<>//
@@ -109,15 +109,17 @@ void draw()
  //<>// //<>//
 
    //----------- print the durations for debug purposes------------ //<>// //<>// //<>//
+   
+   
 
    println("    Audio update duration: "+ audioTime/1000 + " us");
    println("    Connection update duration: "+ conT/1000 + " us");
    println("    GSR update duration: "+ gsrT/1000 + " us");
    println("    Video update duration: "+ viT/1000 + " us");
-   println("");
+   //println("");
    println("    LOOP duration: "+ loopT/1000 + " us");
    println("    MAX duration for framerate "+ int(frameRate) +": "+(1/frameRate*1000000)+" us");
-   println("");
+   //println("");
 
    println("***************************************");
    println("************** AUDIO PARAMETERS *****************");
@@ -133,12 +135,10 @@ void draw()
    //println("***************************************");
    println("***************************************");
    println("SPECTRAL COMPLEXITY (NORM): "+global_timbre.getComplexityAvg());
-   println("***************************************");
-   println("***************************************");
-   //println("DEFAULT SILENCE: "+ global_dyn.isSilence());
    println("-50 SILENCE: "+ global_dyn.isSilence(-50));
    //println("*******************END*****************");
    //println("***************************************");
+   
 
 }
 

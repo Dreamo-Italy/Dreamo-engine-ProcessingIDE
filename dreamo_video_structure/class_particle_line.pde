@@ -9,7 +9,7 @@ class Line extends Particle
     setPersistence(true); // keep the particle alive after a scene change
     setLifeTimeLeft(300);
     colore=pal.getColor();
-    alpha = 255.0;
+    alpha = 100.0;
 
   }
   

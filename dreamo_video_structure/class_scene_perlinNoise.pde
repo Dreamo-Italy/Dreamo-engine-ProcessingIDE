@@ -5,7 +5,7 @@ class ScenePerlinNoise extends Scene
   void init()
   {
 
-    pal.initColors(9);
+    pal.initColors(6);
 
     final int row = 10;
     final int column = 11;
@@ -33,7 +33,7 @@ class ScenePerlinNoise extends Scene
    for(int i = 0; i < particlesNumber; i++)
      {
        particlesList[i].updatePhysics();
-       particlesList[i].setParameter(0,global_dyn.getRMS());
+       particlesList[i].setParameter(0,global_dyn.getRmsSlope());
        particlesList[i].update();
    }
   }

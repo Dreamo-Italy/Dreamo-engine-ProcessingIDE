@@ -32,12 +32,12 @@ class GridPlotter extends Particle
   
   void init()
   {
-     colore = pal.getLightest();          
+     colore = pal.getNextColor();          
      hue = hue(colore);
      saturation = saturation(colore);
      brightness = brightness(colore);   
-     alpha = 2;
-    setPersistence(true);
+     alpha = 30;
+     setPersistence(true);
     
     gridNodes = new GridNode[N];
     for(int i = 0; i < N; i++)
@@ -70,20 +70,20 @@ class GridPlotter extends Particle
   void update()
   {
     float perturbationIntensity = getParameter(0);
-    float xTrans = (width/2)*perturbationIntensity;
-    float yTrans = (height/2)*perturbationIntensity;
+    float xTrans = (width)*perturbationIntensity;
+    float yTrans = (height)*perturbationIntensity;
 
     
     if( frameCount%4 == 0)
     {
       perturbate(new Vector2d(width/2, height/2, false).sum( new Vector2d( random(-xTrans,xTrans), random(-yTrans,yTrans), false) ),
-      perturbationIntensity*2500);
+      perturbationIntensity*3500);
     }
     
     if(getSceneChanged() && !destroying)
     {
       destroying = true;
-      setLifeTimeLeft(50);
+      setLifeTimeLeft(550);
     }
     
     if(destroying)
@@ -101,15 +101,16 @@ class GridPlotter extends Particle
     
     for(int i = 0; i < N; i++)
     {
-      //int hshift = round(gridNodes[i].getSpeed().getDirection()/TWO_PI*20);
+      hue = hue( lerpColor( colore, pal.getLightest(), (float)i/N ) );
+      //float hshift = hue*i*global_bioMood.getArousal();//round(gridNodes[i].getSpeed().getDirection()/TWO_PI*20);
       //if(hshift < 0) hshift += 360;
       //if(hshift > 360) hshift -= 360;
       int ashift = round(gridNodes[i].getSpeed().getModulus()*100 );
-      int swshift = round(gridNodes[i].getSpeed().getModulus()*0.1);
+      int swshift = round(gridNodes[i].getSpeed().getModulus());
       if(ashift > 360) ashift = 360;
       if(swshift > 5) swshift = 5;
       
-      stroke(hue +0 , saturation, brightness, round((alpha+ashift)*alphaWeight));
+      stroke(hue , saturation, brightness+20, round((alpha+ashift)*alphaWeight));
       strokeWeight(strokeWeight + swshift);
       if((i%columns) < columns-1)
       {

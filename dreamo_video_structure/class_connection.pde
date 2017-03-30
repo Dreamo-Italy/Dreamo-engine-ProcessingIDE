@@ -125,7 +125,7 @@ class Connection
   { 
     storeOfflineSamples("gsr");
     storeOfflineSamples("ecg");  
-    println("Offline sensor reading OK");
+    //println("Offline sensor reading OK");
   }
   
   void storeOfflineSamples(String sensorName)
@@ -214,7 +214,7 @@ class Connection
         }
       
      myPort.clear();
-     println("");
+     //println("");
      println( "DEBUG : incomingGsr queue size: " + getList("gsr").size() );
      println( "DEBUG : incomingEcg queue size: " + getList("ecg").size() );
      println( "DEBUG : added elements: " + added*2 );

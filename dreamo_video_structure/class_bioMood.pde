@@ -25,8 +25,8 @@ class BioMood
       arousalTot = (arousal[0]+arousal[1])/2;
     }
     
-    println("gsr arousal: "+arousal[0]);
-    println("ecg arousal: "+arousal[1]);
+    //println("gsr arousal: "+arousal[0]);
+    //println("ecg arousal: "+arousal[1]);
     
   }
   

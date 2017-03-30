@@ -12,7 +12,7 @@ class HelloShape extends Scene
   
   public void init()
   {
-    pal.initColors();
+    pal.initColors(3);
     index = 0;  
     
     if(mode==0)
@@ -22,6 +22,7 @@ class HelloShape extends Scene
         instantiatePolygon((int)i/10,INTENSITY);
       }
     }
+    
     Background bk = new Background();
     setBackground(bk);
     enableBackground();

@@ -13,6 +13,7 @@ class Palette
 
  //********* PRIVATE MEMBERS ***********
   private int ID;
+  private int index;
   private String name;
   private color[] colors = new color[COLOR_NUM];
   private boolean initialized=false;
@@ -61,14 +62,14 @@ class Palette
  colorsInit[4][3] = #F5853F;
  colorsInit[4][4] = #FFCDBC;
 
- //8 - green-blue
+ // - green-blue
  colorsInit[5][0] = #C4F1BE;
  colorsInit[5][1] = #A2C3A4;
  colorsInit[5][2] = #869D96;
  colorsInit[5][3] = #525B76;
  colorsInit[5][4] = #201E50;
  
- //9 - romania
+ // - romania
  colorsInit[6][0] = #264653;
  colorsInit[6][1] = #2A9D8F;
  colorsInit[6][2] = #E9C46A;
@@ -198,6 +199,13 @@ class Palette
     println("ERROR: getColor: not initialized.");
     return color(360,100,100);
     }
+  }
+  
+  public color getNextColor()
+  {
+    if(index<COLOR_NUM-1) index++;
+    else index = 0;   
+    return colors[index++]; 
   }
   
   //color idx

@@ -36,17 +36,19 @@ class HShape extends Particle
   
   public void init()
   {
-    setColorIndex((int)random(0,5));
-    colore=this.pal.getColor(getColorIndex());
+    noiseSeed(round(random(0,100)));
+    //setColorIndex( (int)random(0,5) );    
+    
+    colore = pal.getColor( round(random(0,pal.COLOR_NUM ))) ;
     
     if(MODE>=0 && MODE<=6){
     switch(MODE) {
       case 0:
-        nSides=(int)random(4,5);
+        nSides=(int)random(4,6);
         radius=random(110,120);
         break;
       case 1:
-        nSides=(int)random(3,4);
+        nSides=(int)random(4,4);
         radius=random(90,140);
         break;
       case 2:
@@ -83,7 +85,6 @@ class HShape extends Particle
   
   public void update()
   {
-    noiseSeed(0);
     
     lineWeight = lineWeightDefault + global_timbre.getCentroid()*15;
     setMaxAlpha(50*(int)global_timbre.getComplexity()+15);
@@ -128,7 +129,7 @@ class HShape extends Particle
   
   public void trace()
   {  
-    colore = this.pal.getColor(getColorIndex());
+   // colore = this.pal.getColor( getColorIndex() );
     translate(width/2,height/2);
     noFill();
     //int circleResolution = (int)map(mouseY+100,0,height,2, 10);
