@@ -3,10 +3,11 @@ void setup()
 
   //****** VIDEO ******
   colorMode(HSB, 360, 100, 100, 100);
-  size(800, 600, FX2D);
+  //size(1920, 1080, FX2D);
+  fullScreen(FX2D,2);
   frameRate(global_fps);
   noSmooth();
-
+ //<>//
   //****** CONNECTION //<>// ****** //<>// //<>// //<>//
   global_connection = new Connection(this);
 
@@ -53,13 +54,14 @@ void setup()
   global_stage.addScene(new LineLine1());
   
  
-  global_stage.addScene(new SceneFireworks());
+  //global_stage.addScene(new SceneFireworks());
   global_stage.addScene(new SceneDots());
   global_stage.addScene(new ScenePerlinNoise());
   global_stage.addScene(new Spirals());
   //global_stage.addScene(new HelloShape(0));
   global_stage.addScene(new HelloShape(1));
   //global_stage.addScene(new DumbC());
+  global_stage.addScene(new SceneDynamicGrid());
  
 
   //debug plots
@@ -102,9 +104,9 @@ void draw()
    global_ecg.printDebug();// print the DEBUG TEXT related to the ECG SENSOR
 
 
-
-   long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME
  //<>//
+   long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME
+ //<>// //<>//
 
    //----------- print the durations for debug purposes------------ //<>// //<>// //<>//
 
@@ -119,24 +121,24 @@ void draw()
 
    println("***************************************");
    println("************** AUDIO PARAMETERS *****************");
-   println("***************************************");
+   //println("***************************************");
    println("RMS AVG (NORM): "+ global_dyn.getRMSAvg());
    println("DINAMICITY INDEX: "+global_dyn.getDynamicityIndex());
    println("RMS SLOPE: "+ global_dyn.getRmsSlope());
-   println("***************************************");
+   //println("***************************************");
    println("***************************************");
    println("SPECTRAL CENTROID: "+global_timbre.getCentroidShortTimeAvgHz()+" Hz");
    println("SPECTRAL CENTROID AVG (NORM): "+global_timbre.getCentroidAvg());
    println("SPECTRAL CENTROID RELATIVE RATIO: "+global_timbre.getCentroidRelativeRatio());
-   println("***************************************");
+   //println("***************************************");
    println("***************************************");
    println("SPECTRAL COMPLEXITY (NORM): "+global_timbre.getComplexityAvg());
    println("***************************************");
    println("***************************************");
-   println("DEFAULT SILENCE: "+ global_dyn.isSilence());
+   //println("DEFAULT SILENCE: "+ global_dyn.isSilence());
    println("-50 SILENCE: "+ global_dyn.isSilence(-50));
-   println("*******************END*****************");
-   println("***************************************");
+   //println("*******************END*****************");
+   //println("***************************************");
 
 }
 

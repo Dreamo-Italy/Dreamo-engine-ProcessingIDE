@@ -51,8 +51,8 @@ class PlotterGenerator extends Particle
   public void update()
   {
     if (frameCount % (global_fps*15) == 0){ // switch between mode1 and mode2, with different damping factors
-        mode2 = mode1;
-        mode1 = !mode1;
+        mode2 = true;
+        mode1 = false;
       }
 
       setParameter(0, global_dyn.getRMS() );
@@ -177,7 +177,7 @@ class PlotterGenerator extends Particle
 
     if (d <= connectionRadius && d > 2)
     {
-      hueValue = map(a, 0, 0.5, hue(myColor), hue(myColor)*3 )%360 ; //<>// //<>//
+      hueValue = map(a, 0, 0.5, hue(myColor), hue(myColor)*3 )%360 ; //<>// //<>// //<>//
       stroke(hueValue, saturationValue, brightnessValue, a*lineAlphaWeight*lineAlpha + (i1 %3 * 2));
       line(p1.getX(), p1.getY(), p2.getX(), p2.getY() );
     }

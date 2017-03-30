@@ -116,7 +116,7 @@ class Dynamic extends FeaturesExtractor
   private float getRmsSlope()
   {
     
-    return RMSslope/RMS;
+    return RMSslope*RMS;
   }
   
   

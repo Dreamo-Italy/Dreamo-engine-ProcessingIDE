@@ -3,7 +3,7 @@ class Palette
   
  //********* CONSTANTS ***********
  
- private final int PALETTE_NUM = 10;
+ private final int PALETTE_NUM = 7;
  private final int COLOR_NUM = 5;
  
  
