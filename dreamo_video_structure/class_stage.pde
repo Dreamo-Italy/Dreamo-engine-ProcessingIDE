@@ -12,6 +12,8 @@ class Stage
   private int global_stage_change_cnt;
   private int[] scene_score ;
   
+  private boolean firstChange;
+  
 	//CONSTRUCTORS
 	public Stage()
 	{
@@ -22,6 +24,8 @@ class Stage
 		currentSceneIndex = -1;
     global_stage_change_cnt = 0;
     scene_score = new int[SCENES_MAX];
+    
+    firstChange = false;
     
     for(i = 0; i < SCENES_MAX; i ++) //<>// //<>// //<>//
     {
@@ -36,6 +40,8 @@ class Stage
 		scenesNumber = toCopy.scenesNumber;
 		currentScene = null;
 		currentSceneIndex = -1;
+
+  firstChange = toCopy.firstChange;
 		
 		for(int i = 0; i < scenesNumber; i++)
 		{
@@ -186,11 +192,6 @@ class Stage
 		}
 	}
 
-  public void changeSceneOnSilence()
-  {
-    
-  }
-
 	public void selectScene(int n) 
 	{
 		if(n < scenesNumber)
@@ -232,4 +233,18 @@ class Stage
 	{
 		return scenesNumber;
 	}
+
+  public void nextSceneIfSilence(int noiseMaxDb)
+  {    
+    if(frameCount%30 != 0) return;
+    
+    if( global_dyn.isSilence(noiseMaxDb) && firstChange == false  ) 
+      {firstChange = true;
+       global_stage.nextScene();
+      }
+    else if( global_dyn.isSilence(noiseMaxDb) && firstChange )
+      {}      
+    else if ( firstChange )
+        firstChange = false;
+  }
 }

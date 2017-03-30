@@ -87,7 +87,7 @@ class HShape extends Particle
   {
     
     lineWeight = lineWeightDefault + global_timbre.getCentroid()*15;
-    setMaxAlpha(50*(int)global_timbre.getComplexity()+15);
+    setMaxAlpha(30-30*(int)(global_timbre.getComplexity()) );
     alpha = getFadingAlpha();
     
     if(MODE>=0 && MODE<=6){

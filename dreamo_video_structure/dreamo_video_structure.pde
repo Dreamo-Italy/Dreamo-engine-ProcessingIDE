@@ -48,24 +48,23 @@ void setup()
   global_stage = new Stage();
 
   //scenes
-  
-  /*global_stage.addScene(new ScenePlotter());
+  global_stage.addScene(new BlankScene() );
+  global_stage.addScene(new ScenePlotter());
+  global_stage.addScene(new Spirals());
+  global_stage.addScene(new HelloShape(1));
+  global_stage.addScene(new Cyclo1());
   global_stage.addScene(new ScenePresentation() );
   global_stage.addScene(new Lissajous() );
+  global_stage.addScene(new SceneDynamicGrid());
+
   //global_stage.addScene(new AudioDebug());
-  global_stage.addScene(new Cyclo1());
   //global_stage.addScene(new Cyclo2());
-  global_stage.addScene(new LineLine1());
-  
- 
+  //global_stage.addScene(new LineLine1());
   //global_stage.addScene(new SceneFireworks());
   //global_stage.addScene(new SceneDots());
-  global_stage.addScene(new ScenePerlinNoise());*/
-  global_stage.addScene(new Spirals());
+  //global_stage.addScene(new ScenePerlinNoise());
   //global_stage.addScene(new HelloShape(0));
-  global_stage.addScene(new HelloShape(1));
   //global_stage.addScene(new DumbC());
-  global_stage.addScene(new SceneDynamicGrid());
  
 
   //debug plots
@@ -116,6 +115,7 @@ void draw()
    //----------- print the durations for debug purposes------------ //<>// //<>// //<>//
    
    
+   
 
    println("    Audio update duration: "+ audioTime/1000 + " us");
    println("    Connection update duration: "+ conT/1000 + " us");
@@ -125,6 +125,8 @@ void draw()
    println("    LOOP duration: "+ loopT/1000 + " us");
    println("    MAX duration for framerate "+ int(frameRate) +": "+(1/frameRate*1000000)+" us");
    //println("");
+   
+   
 
    println("***************************************");
    println("************** AUDIO PARAMETERS *****************");
@@ -140,16 +142,20 @@ void draw()
    //println("***************************************");
    println("***************************************");
    println("SPECTRAL COMPLEXITY (NORM): "+global_timbre.getComplexityAvg());
-   println("-50 SILENCE: "+ global_dyn.isSilence(-50));
+   println("-50 SILENCE: "+ global_dyn.isSilence(-20));
    println("*******************END*****************");
    println("***************************************");
    
-   println("CLARITY: " + audio_decisor.getClarity());
-   println("ENERGY: " + audio_decisor.getEnergy());
-   println("AGITATION: " + audio_decisor.getAgitation());
-   println("ROUGHNESS: " + audio_decisor.getRoughness());
+   //println("CLARITY: " + audio_decisor.getClarity());
+   //println("ENERGY: " + audio_decisor.getEnergy());
+   //println("AGITATION: " + audio_decisor.getAgitation());
+   //println("ROUGHNESS: " + audio_decisor.getRoughness());
+   
+   
+   global_stage.nextSceneIfSilence(-20);
 
 }
+
 
 void mouseClicked()
 {

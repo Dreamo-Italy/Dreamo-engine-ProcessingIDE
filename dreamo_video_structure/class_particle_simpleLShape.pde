@@ -4,7 +4,7 @@ class simpleLShape extends Particle
 // ------ initial parameters and declarations ------
 
   final private int pointMax = 180;
-  final private int defaultRadius = 150;
+  final private int defaultRadius = 120;
   private int pointCount = pointMax;
   Vector2d[] lissajousPoints = new Vector2d[0];
   
@@ -81,7 +81,7 @@ class simpleLShape extends Particle
   
   void calculateLissajousPoints() 
   {
-    radius = defaultRadius*(5*getParameter(0)+1);
+    radius = defaultRadius*(3*getParameter(0)+1);
     offset = getParameter(1)*radius;
     
     if (pointCount != lissajousPoints.length-1) 

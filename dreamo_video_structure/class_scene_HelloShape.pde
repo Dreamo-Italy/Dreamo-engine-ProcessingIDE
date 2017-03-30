@@ -2,7 +2,7 @@ class HelloShape extends Scene
 {
   private int index;
   private final int INTENSITY = 180;
-  private final int SHAPE_NUM = 10;
+  private final int SHAPE_NUM = 8;
   private int mode=0;
   
   HelloShape(int M)
@@ -12,7 +12,7 @@ class HelloShape extends Scene
   
   public void init()
   {
-    pal.initColors(3);
+    pal.initColors(5);
     index = 0;  
     
     if(mode==0)

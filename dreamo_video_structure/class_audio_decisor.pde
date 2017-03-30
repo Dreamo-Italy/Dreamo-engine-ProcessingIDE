@@ -87,7 +87,7 @@ class AudioDecisor
   
   private void calcClarity()
   {  
-    clarity=global_timbre.getCentroid()+global_timbre.getCentroidRelativeRatio(); 
+    clarity=global_timbre.getCentroid()+global_timbre.getCentroidRelativeRatio()*0.5; 
   }
   
   
@@ -107,7 +107,7 @@ class AudioDecisor
   private void calcRoughness()
   {
     //complexity
-    roughness=global_timbre.getComplexityAvg()+global_timbre.getCentroidRelativeRatio();
+    roughness=global_timbre.getComplexityAvg()+global_timbre.getCentroidRelativeRatio()*0.5;
     //centroidglobal_timbre.getCentroidRelativeRatio()
     
   }

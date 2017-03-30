@@ -30,7 +30,7 @@ class PlotterGenerator extends Particle
 
   public void init()
   {
-      setPersistence(true);
+     setPersistence(true);
 
      myColor = pal.getLightest();
      hueValue = hue(myColor);
@@ -50,12 +50,13 @@ class PlotterGenerator extends Particle
 
   public void update()
   {
-    if (frameCount % (global_fps*15) == 0){ // switch between mode1 and mode2, with different damping factors
-        mode2 = true;
+    if ( global_timbre.getCentroidRelativeRatio()>0.85 && global_timbre.getComplexityAvg()<0.1 ){
+    //(frameCount % (global_fps*15) == 0){ // switch between mode1 and mode2, with different damping factors
+        mode2 = mode1;
         mode1 = false;
       }
-
-      setParameter(0, global_dyn.getRMS() );
+      println("mode1: "+mode1);
+      setParameter(0, global_dyn.getRMS()*1.7 );
 
      // default values:
 
@@ -77,7 +78,7 @@ class PlotterGenerator extends Particle
            { setPosition( new Vector2d ( random(-width/6, width/6) , random(-height/6, height/6) , false ) ); damping = 0.001; }
         else if(getParameter(0) > 0.9 )
             {connectionRadius = 50; zoom = 1.05*getParameter(0);  lineWeight = 7; }
-        if ( getParameter(0) > 0.72)
+        if ( global_dyn.getDynamicityIndex() > 0.86)
           { lineWeight = 40; connectionRadius = 10; particleConnectionRadius = 500;  /*setRotation(random(PI)/8);*/ }
         //  if(frameCount % 80 == 0) {loadPointsFromTxt();}
 
