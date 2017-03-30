@@ -1,3 +1,5 @@
+
+
 void setup()
 {
 
@@ -40,6 +42,8 @@ void setup()
   audio_proc.addRhythm(global_rhythm);
 
 
+  audio_decisor = new AudioDecisor();
+  
   //****** STAGE ******
   global_stage = new Stage();
 
@@ -103,6 +107,7 @@ void draw()
    //global_gsr.printDebug();// print the DEBUG TEXT related to the SKIN SENSOR
    //global_ecg.printDebug();// print the DEBUG TEXT related to the ECG SENSOR
 
+   audio_decisor.run();
 
  //<>//
    long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME
@@ -136,9 +141,13 @@ void draw()
    println("***************************************");
    println("SPECTRAL COMPLEXITY (NORM): "+global_timbre.getComplexityAvg());
    println("-50 SILENCE: "+ global_dyn.isSilence(-50));
-   //println("*******************END*****************");
-   //println("***************************************");
+   println("*******************END*****************");
+   println("***************************************");
    
+   println("CLARITY: " + audio_decisor.getClarity());
+   println("ENERGY: " + audio_decisor.getEnergy());
+   println("AGITATION: " + audio_decisor.getAgitation());
+   println("ROUGHNESS: " + audio_decisor.getRoughness());
 
 }
 

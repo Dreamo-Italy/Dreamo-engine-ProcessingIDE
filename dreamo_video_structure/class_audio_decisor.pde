@@ -42,16 +42,34 @@ class AudioDecisor
   }
   
   
-  //centroid.checkWindow(global_timbre.getCentroid(), __ , __ );
+  //global_timbre.getCentroid();
   
-  //centroid_relative.checkWindow(global_timbre.getCentroidRelativeRatio(), __ , __ ,  );
-  
+  //global_timbre.getCentroidRelativeRatio();
+ 
   //complexity.checkWindow(global_timbre.getComplexityAvg(), __ , __ , );
   
   //rms.checkWindow(global_dyn.getRMS(), __ , __ ); 
   
   //dinamicity.chekWindow(global_dyn.getDynamicityIndex(), __ , __ );
   
+  
+  
+  public float getClarity()
+  {
+    return clarity;
+  }
+    public float getEnergy()
+  {
+    return energy;
+  }
+    public float getAgitation()
+  {
+    return agitation;
+  }
+    public float getRoughness()
+  {
+    return roughness;
+  }
   
   public void run()
   {
@@ -68,26 +86,34 @@ class AudioDecisor
   
   
   private void calcClarity()
-  {
-    //spectral centroid
-    //rms
+  {  
+    clarity=global_timbre.getCentroid()+global_timbre.getCentroidRelativeRatio(); 
   }
   
   
   private void calcEnergy()
   {
-    //dinamicity
-    //
+    energy=global_dyn.getDynamicityIndex()+global_dyn.getRMS();
   }
   
   private void calcAgitation()
   {
+    //complexity+global_timbre.getComplexityAvg()
+    agitation=global_timbre.getComplexityAvg()+global_dyn.getDynamicityIndex();
+    //dinamicity
   }
+  
   
   private void calcRoughness()
   {
+    //complexity
+    roughness=global_timbre.getComplexityAvg()+global_timbre.getCentroidRelativeRatio();
+    //centroidglobal_timbre.getCentroidRelativeRatio()
+    
   }
   
+  
+ 
   
   public boolean musicChange()
   {
