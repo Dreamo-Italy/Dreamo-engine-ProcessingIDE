@@ -10,6 +10,8 @@ abstract class FeaturesExtractor
   private float previousVal;
   private float slope;
   
+  private float[] diffMemory;
+  
   
   FeaturesExtractor()
   {
@@ -18,6 +20,7 @@ abstract class FeaturesExtractor
     init=false; 
     previousVal=0;
     slope=0;
+    diffMemory=new float[5];
   }
   
   /*FeaturesExtractor(int bSize, float sRate)
@@ -83,6 +86,17 @@ abstract class FeaturesExtractor
     previousVal=input;
     return slope;
   }
+  
+  public float differentiateArray(float input)
+  {
+    diffMemory[4]=input;
+    for(int i=1;i<diffMemory.length;i++){diffMemory[i-1]=diffMemory[i];}
+    
+    //return 0;
+    // Differentiator    
+    return 0.1*(2*diffMemory[4] + diffMemory[3] -diffMemory[1]-diffMemory[0]);
+ }
+  
   
   //ABSTRACT METHODS  
   abstract void calcFeatures();

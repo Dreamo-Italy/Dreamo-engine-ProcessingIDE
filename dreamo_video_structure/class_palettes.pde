@@ -3,7 +3,7 @@ class Palette
   
  //********* CONSTANTS ***********
  
- private final int PALETTE_NUM = 6;
+ private final int PALETTE_NUM = 8;
  private final int COLOR_NUM = 5;
  
  
@@ -13,6 +13,7 @@ class Palette
 
  //********* PRIVATE MEMBERS ***********
   private int ID;
+  private int index;
   private String name;
   private color[] colors = new color[COLOR_NUM];
   private boolean initialized=false;
@@ -22,12 +23,7 @@ class Palette
  //********* CONTRUCTORS ***********
  public Palette(){
  
- /* //debug palette - red
- colorsInit[0][0] = color(359,90,100);
- colorsInit[0][1] = color(359,100,90);
- colorsInit[0][2] = color(359,80,100);
- colorsInit[0][3] = color(359,100,80);
- colorsInit[0][4] = color(359,80,100); */
+
   
  
  //first palette - ghiaccio
@@ -37,7 +33,7 @@ class Palette
  colorsInit[0][3] = color(194,8,42);
  colorsInit[0][4] = color(216,28,74);
  
- //second palette
+ //second palette orange/blue
  colorsInit[1][0] = color(204, 100, 47);
  colorsInit[1][1] = color(0, 100, 64);
  colorsInit[1][2] = color(28, 100, 100);
@@ -58,20 +54,35 @@ class Palette
  colorsInit[3][3] = color(295, 13, 82);
  colorsInit[3][4] = color(342, 6, 39);
  
- //fifth palette - focolare
- colorsInit[4][0] = color(9, 93, 61);
- colorsInit[4][1] = color(20, 100, 60);
- colorsInit[4][2] = color(12, 74, 54);
- colorsInit[4][3] = color(4, 79, 54);
- colorsInit[4][4] = color(120, 9, 89);
  
- //sixth palette - giallo 
+ //7 - savana
+ colorsInit[4][0] = #130303;
+ colorsInit[4][1] = #2D080A;
+ colorsInit[4][2] = #7C3626;
+ colorsInit[4][3] = #F5853F;
+ colorsInit[4][4] = #FFCDBC;
+
+ // - green-blue
+ colorsInit[5][0] = #C4F1BE;
+ colorsInit[5][1] = #A2C3A4;
+ colorsInit[5][2] = #869D96;
+ colorsInit[5][3] = #525B76;
+ colorsInit[5][4] = #201E50;
  
- colorsInit[5][0] = #db8300;
- colorsInit[5][1] = #eaa001;
- colorsInit[5][2] = #f9c700;
- colorsInit[5][3] = #ffe11d;
- colorsInit[5][4] = #030300;
+ // - romania
+ colorsInit[6][0] = #264653;
+ colorsInit[6][1] = #2A9D8F;
+ colorsInit[6][2] = #E9C46A;
+ colorsInit[6][3] = #F4A261;
+ colorsInit[6][4] = #E76F51;
+ 
+ //10 - super gray
+ colorsInit[7][0] = #D2D4C8;
+ colorsInit[7][1] = #E0E2DB;
+ colorsInit[7][2] = #B8BDB5;
+ colorsInit[7][3] = #889696;
+ colorsInit[7][4] = #5F7470;
+ 
  
  initialized=false;
  }
@@ -107,20 +118,33 @@ class Palette
  colorsInit[3][3] = color(295, 13, 82);
  colorsInit[3][4] = color(342, 6, 39);
  
- //fifth palette - focolare
- colorsInit[4][0] = color(9, 93, 61);
- colorsInit[4][1] = color(20, 100, 60);
- colorsInit[4][2] = color(12, 74, 54);
- colorsInit[4][3] = color(4, 79, 54);
- colorsInit[4][4] = color(120, 9, 89);
+ //7 - savana
+ colorsInit[4][0] = #130303;
+ colorsInit[4][1] = #2D080A;
+ colorsInit[4][2] = #7C3626;
+ colorsInit[4][3] = #F5853F;
+ colorsInit[4][4] = #FFCDBC;
+
+ //8 - green-blue
+ colorsInit[5][0] = #C4F1BE;
+ colorsInit[5][1] = #A2C3A4;
+ colorsInit[5][2] = #869D96;
+ colorsInit[5][3] = #525B76;
+ colorsInit[5][4] = #201E50;
  
- //sixth palette - giallo 
+ //9 - romania
+ colorsInit[6][0] = #264653;
+ colorsInit[6][1] = #2A9D8F;
+ colorsInit[6][2] = #E9C46A;
+ colorsInit[6][3] = #F4A261;
+ colorsInit[6][4] = #E76F51;
  
- colorsInit[5][0] = #db8300;
- colorsInit[5][1] = #eaa001;
- colorsInit[5][2] = #f9c700;
- colorsInit[5][3] = #ffe11d;
- colorsInit[5][4] = #030300;
+ //10 - super gray
+ colorsInit[7][0] = #D2D4C8;
+ colorsInit[7][1] = #E0E2DB;
+ colorsInit[7][2] = #B8BDB5;
+ colorsInit[7][3] = #889696;
+ colorsInit[7][4] = #5F7470;
  
  initColors(i);
  
@@ -175,6 +199,13 @@ class Palette
     println("ERROR: getColor: not initialized.");
     return color(360,100,100);
     }
+  }
+  
+  public color getNextColor()
+  {
+    if(index<COLOR_NUM-1) index++;
+    else index = 0;   
+    return colors[index++]; 
   }
   
   //color idx

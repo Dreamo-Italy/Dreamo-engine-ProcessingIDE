@@ -2,7 +2,7 @@ class SceneDynamicGrid extends Scene
 {
   void init()
   {
-    pal.initColors();
+    pal.initColors(5);
 
     GridPlotter grid1 = new GridPlotter();
     grid1.setPalette(pal);

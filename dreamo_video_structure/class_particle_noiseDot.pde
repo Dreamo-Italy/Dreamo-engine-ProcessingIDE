@@ -6,7 +6,7 @@ class NoiseDot extends Particle
   void init()
   {
     setLifeTimeLeft(10);
-    alpha=255;
+    alpha=100;
     setPersistence(true);
     //colore=pal.getColor();
   }

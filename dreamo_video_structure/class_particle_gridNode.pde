@@ -1,10 +1,10 @@
 class GridNode extends Particle
 {
-  float kToCenter = 0.014;
-  float kToNeighbour = 0.06;
+  float kToCenter;
+  float kToNeighbour;
   float damping = 1.05;
-  float maximumDistanceFromCenter = 100;
-  float maximumSpeed = 100;
+  float maximumDistanceFromCenter = 600;
+  float maximumSpeed = 50;
   Vector2d centerPosition;
   GridNode[] neighbourGridNodes = {null, null, null, null}; //other GridNode which is at position right, up, left, down
   
@@ -36,8 +36,8 @@ class GridNode extends Particle
   void update()
   {    
     // 0-10 RANGE
-    //float forceToCenter = 10*getParameter(0);
-    //float forceToNeighbour = 8*getParameter(0);
+    ////float forceToCenter = 10*getParameter(1);
+    //float forceToNeighbour = 8*getParameter(1);
     
     //update elastic constants with audio infos
     
@@ -46,29 +46,35 @@ class GridNode extends Particle
     
     //calculate elastic force due to neighbour nodes
     Vector2d elasticForceToNeighbours = new Vector2d(0, 0, false);
-    for(int i = 0; i < 4; i++)
-    {
-      if(neighbourGridNodes[i]!=null)
+    
+    
+      for(int i = 0; i < 4; i++)
       {
-        float distanceBetweenCenters = neighbourGridNodes[i].getCenterPosition().distance(centerPosition);
-        float distanceBetweenPoints = neighbourGridNodes[i].getPosition().distance(getPosition());
-        elasticForceToNeighbours = elasticForceToNeighbours.sum(new Vector2d((distanceBetweenPoints-distanceBetweenCenters)*kToNeighbour, neighbourGridNodes[i].getPosition().subtract(getPosition()).getDirection(), true));
-        if ( elasticForceToNeighbours.getModulus() > 0.6 ) elasticForceToNeighbours.setModulus(0.6);
+        if(neighbourGridNodes[i]!=null)
+        {
+          float distanceBetweenCenters = neighbourGridNodes[i].getCenterPosition().distance(centerPosition);
+          float distanceBetweenPoints = neighbourGridNodes[i].getPosition().distance(getPosition());
+          elasticForceToNeighbours = elasticForceToNeighbours.sum(new Vector2d((distanceBetweenPoints-distanceBetweenCenters)*kToNeighbour, neighbourGridNodes[i].getPosition().subtract(getPosition()).getDirection(), true));
+          if ( elasticForceToNeighbours.getModulus() > 0.6 ) elasticForceToNeighbours.setModulus(0.6);
+        }
       }
-    }
-        
-    //add elastic force due to the center of the node and set acceleration
-    float distanceFromCenter = centerPosition.distance(getPosition());
-    float directionToCenter = centerPosition.subtract(getPosition()).getDirection();
-    setGravity(elasticForceToNeighbours.sum(new Vector2d(distanceFromCenter*kToCenter, directionToCenter, true)));
+
+      //add elastic force due to the center of the node and set acceleration
+      float distanceFromCenter = centerPosition.distance(getPosition());
+      float directionToCenter = centerPosition.subtract(getPosition()).getDirection();
+      setGravity(elasticForceToNeighbours.sum(new Vector2d(distanceFromCenter*kToCenter, directionToCenter, true)));
+      
+      getSpeed().setModulus(getSpeed().getModulus()/damping); //apply damping (or nodes will continue to oscillate till forever)
     
-    getSpeed().setModulus(getSpeed().getModulus()/damping); //apply damping (or nodes will continue to oscillate till forever)
+      if(distanceFromCenter > maximumDistanceFromCenter) //in case the system is diverging
+      {
+        setPosition(centerPosition);
+        setSpeed(new Vector2d(0, 0, false));
+      }
     
-    if(distanceFromCenter > maximumDistanceFromCenter) //in case the system is diverging
-    {
-      setPosition(centerPosition);
-      setSpeed(new Vector2d(0, 0, false));
-    }
+    
+    
+
     
     if(getSpeed().getModulus() > maximumSpeed)
     {

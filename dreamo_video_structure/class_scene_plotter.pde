@@ -4,7 +4,7 @@ class ScenePlotter extends Scene
   void init()
   {
     
-    pal.initColors();
+    pal.initColors(2);
     
     PlotterGenerator newPlotter = new PlotterGenerator();
     

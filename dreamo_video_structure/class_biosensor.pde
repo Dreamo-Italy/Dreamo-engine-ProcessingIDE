@@ -4,7 +4,7 @@ abstract class Biosensor
 {
  //************ CONSTANTS **************
  
-  final private int CALIBRATION_TIME = 6; // duration of the CALIBRATION PROCESS, expressed in seconds
+  final private int CALIBRATION_TIME = 30; // duration of the CALIBRATION PROCESS, expressed in seconds
 
   
  //********* PUBLIC MEMBERS ***********

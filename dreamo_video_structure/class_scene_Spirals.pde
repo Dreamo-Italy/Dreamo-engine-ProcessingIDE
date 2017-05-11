@@ -2,7 +2,7 @@ class Spirals extends Scene
 {
   void init()
   {
-    pal.initColors();
+    pal.initColors(4);
     SpiralParticle sp = new SpiralParticle();
     //sp.disablePhysics();
     sp.setPalette(pal);

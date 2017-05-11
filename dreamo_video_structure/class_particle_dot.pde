@@ -7,9 +7,8 @@ class Dot extends Particle
     setSpeed(new Vector2d(3, random(TWO_PI), true));
     setGravity(new Vector2d(0, 0.007, false));
     setPersistence(true);    // smoother transition from one scene to another
-    setLifeTimeLeft(300);    // time left decreases each frame
-
-    colore=this.pal.getColor();
+    setLifeTimeLeft(300);    // time left decreases each frame     
+   
   }
 
   public void update()

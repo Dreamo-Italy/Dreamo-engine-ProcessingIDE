@@ -4,12 +4,14 @@ class Dynamic extends FeaturesExtractor
   public static final double DEFAULT_SILENCE_THRESHOLD = -60.0;//db
   
   private float RMS;
-  private final float THEORETICAL_MAX_RMS=0.4; //based on empirical tests
+  private final float THEORETICAL_MAX_RMS=0.5; //based on empirical tests
+  private float maxRMS;
 
   //keep track of ~3 seconds of music and average RMS values
   private final int W=129; // 43=~1s
   
   private float RMSslope;
+  private float RMSmaxSlope;
   
   private Statistics RMSstats;
   
@@ -20,7 +22,10 @@ class Dynamic extends FeaturesExtractor
     sampleRate=sRate;
     
     RMSstats=new Statistics(W);
-
+    
+    RMSmaxSlope=0;
+    maxRMS=0.1;
+    
   }
 
 
@@ -82,15 +87,17 @@ class Dynamic extends FeaturesExtractor
       level /= samples.length;
       level = (float) Math.sqrt(level);
 
+       
       
-      
-      
-      //if(level > maxRMS) maxRMS = level;
+      if(level > maxRMS) maxRMS = level;
 
       //normalize level in 0-1 range
-      level=map(level,0,THEORETICAL_MAX_RMS,0,1);
+      level=map(level,0,maxRMS,0,1);
       
-      RMSslope=realTimeSlope(level);
+      RMSslope=differentiateArray(level);
+      
+      
+      
       //average      
       RMSstats.accumulate(level);
       
@@ -104,8 +111,11 @@ class Dynamic extends FeaturesExtractor
   
   private float soundPressureLevel(final float RMS) { return linearToDecibel(RMS); }
   
+  
+
   private float getRmsSlope()
   {
+    
     return RMSslope;
   }
   

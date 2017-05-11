@@ -1,12 +1,15 @@
+
+
 void setup()
 {
 
   //****** VIDEO ******
   colorMode(HSB, 360, 100, 100, 100);
-  size(800, 600, FX2D);
+  size(1280, 720, FX2D);
+  //fullScreen(FX2D,1);
   frameRate(global_fps);
   noSmooth();
-
+ //<>//
   //****** CONNECTION //<>// ****** //<>// //<>// //<>//
   global_connection = new Connection(this);
 
@@ -39,26 +42,31 @@ void setup()
   audio_proc.addRhythm(global_rhythm);
 
 
+  audio_decisor = new AudioDecisor();
+  
   //****** STAGE ******
   global_stage = new Stage();
 
   //scenes
-  //global_stage.addScene(new Lissajous() );
-  //global_stage.addScene(new ScenePlotter());
-  //global_stage.addScene(new AudioDebug());
+  /*
+  global_stage.addScene(new BlankScene() );
+  global_stage.addScene(new BlankScene() );
+  global_stage.addScene(new ScenePlotter());
+  global_stage.addScene(new Spirals());
+  global_stage.addScene(new HelloShape(1));
   global_stage.addScene(new Cyclo1());
   global_stage.addScene(new ScenePresentation() );
+  global_stage.addScene(new Lissajous() );
+  global_stage.addScene(new SceneDynamicGrid());
+*/
+  global_stage.addScene(new AudioDebug());
   //global_stage.addScene(new Cyclo2());
-  global_stage.addScene(new LineLine1());
-  
- 
-  global_stage.addScene(new SceneFireworks());
-  global_stage.addScene(new SceneDots());
-  global_stage.addScene(new ScenePerlinNoise());
-  global_stage.addScene(new Spirals());
-  global_stage.addScene(new HelloShape(0));
-  global_stage.addScene(new HelloShape(1));
-  global_stage.addScene(new DumbC());
+  //global_stage.addScene(new LineLine1());
+  //global_stage.addScene(new SceneFireworks());
+  //global_stage.addScene(new SceneDots());
+  //global_stage.addScene(new ScenePerlinNoise());
+  //global_stage.addScene(new HelloShape(0));
+  //global_stage.addScene(new DumbC());
  
 
   //debug plots
@@ -96,48 +104,60 @@ void draw()
    stroke(120); // for the DEBUG text
 
    text("particles: " + global_stage.getCurrentScene().getParticlesNumber() + "; framerate: " + nf(frameRate,2,1) + " \n", marginSpace, interlineSpace );
-   text("                                                                     Frame Count: "+frameCount,marginSpace, interlineSpace );
-   global_gsr.printDebug();// print the DEBUG TEXT related to the SKIN SENSOR
-   global_ecg.printDebug();// print the DEBUG TEXT related to the ECG SENSOR
+   text("                                                      Frame Count: "+frameCount,marginSpace, interlineSpace );
+   //global_gsr.printDebug();// print the DEBUG TEXT related to the SKIN SENSOR
+   //global_ecg.printDebug();// print the DEBUG TEXT related to the ECG SENSOR
 
+   audio_decisor.run();
 
-
-   long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME
  //<>//
+   long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME
+ //<>// //<>//
 
    //----------- print the durations for debug purposes------------ //<>// //<>// //<>//
+   
+   
+   
 
    println("    Audio update duration: "+ audioTime/1000 + " us");
    println("    Connection update duration: "+ conT/1000 + " us");
    println("    GSR update duration: "+ gsrT/1000 + " us");
    println("    Video update duration: "+ viT/1000 + " us");
-   println("");
+   //println("");
    println("    LOOP duration: "+ loopT/1000 + " us");
    println("    MAX duration for framerate "+ int(frameRate) +": "+(1/frameRate*1000000)+" us");
-   println("");
+   //println("");
+   
+   
 
    println("***************************************");
    println("************** AUDIO PARAMETERS *****************");
-   println("***************************************");
+   //println("***************************************");
    println("RMS AVG (NORM): "+ global_dyn.getRMSAvg());
    println("DINAMICITY INDEX: "+global_dyn.getDynamicityIndex());
    println("RMS SLOPE: "+ global_dyn.getRmsSlope());
-   println("***************************************");
+   //println("***************************************");
    println("***************************************");
    println("SPECTRAL CENTROID: "+global_timbre.getCentroidShortTimeAvgHz()+" Hz");
    println("SPECTRAL CENTROID AVG (NORM): "+global_timbre.getCentroidAvg());
    println("SPECTRAL CENTROID RELATIVE RATIO: "+global_timbre.getCentroidRelativeRatio());
-   println("***************************************");
+   //println("***************************************");
    println("***************************************");
    println("SPECTRAL COMPLEXITY (NORM): "+global_timbre.getComplexityAvg());
-   println("***************************************");
-   println("***************************************");
-   println("DEFAULT SILENCE: "+ global_dyn.isSilence());
    println("-50 SILENCE: "+ global_dyn.isSilence(-50));
    println("*******************END*****************");
    println("***************************************");
+   
+   //println("CLARITY: " + audio_decisor.getClarity());
+   //println("ENERGY: " + audio_decisor.getEnergy());
+   //println("AGITATION: " + audio_decisor.getAgitation());
+   //println("ROUGHNESS: " + audio_decisor.getRoughness());
+   
+   
+   global_stage.nextSceneIfSilence(-50);
 
 }
+
 
 void mouseClicked()
 {

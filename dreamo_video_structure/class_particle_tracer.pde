@@ -1,6 +1,6 @@
 class ParticleTracer extends Particle
 {
-  final float SPEED = 6;
+  final float SPEED = 28;
   float noiseScale;
   float noiseStrength;
   float angle;
@@ -29,7 +29,7 @@ class ParticleTracer extends Particle
     angle = noise((getPosition().getX() + nCrossedX*width)/noiseScale, (getPosition().getY()+nCrossedY*height)/noiseScale) * noiseStrength;
     
     getSpeed().setDirection(angle);
-    getSpeed().setModulus(SPEED*3*getParameter(0)); 
+    getSpeed().setModulus(SPEED*getParameter(0)); 
     
     keepInsideTheScreen();    
   }

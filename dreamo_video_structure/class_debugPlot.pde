@@ -34,8 +34,8 @@
    plots = new GPlot[plotNumber];
    surfacePoints = new GPointsArray(nPoints);
    
-   ySize = (height - interlineSpace*6)/plotNumber;
-   xSize = width/3;
+   ySize = (height - interlineSpace*6)/(2+plotNumber);
+   xSize = width/8;
    
 
 
@@ -54,7 +54,7 @@
      //plots[i].getYAxis().setAxisLabelText("y ");
      
      plots[i].setDim(xSize,ySize); 
-     plots[i].setPos(-marginSpace*4, height-(i*(ySize+interlineSpace*2))-interlineSpace*5); 
+     plots[i].setPos(-marginSpace*4, interlineSpace*6+(i*(ySize+interlineSpace*2))); 
 
    
      // Set the colors
@@ -141,7 +141,7 @@
     plots[1].addPoint( frameCount, global_ecg.getValue());
     
     plots[2].addPoint( frameCount, global_dyn.getRMS());    
-    plots[2].getLayer("AvgRMS").addPoint( frameCount, global_dyn.getRMSAvg());
+    plots[2].getLayer("AvgRMS").addPoint( frameCount, global_dyn.getRmsSlope());
     
     //debug
     //plots[4].addPoint( frameCount, global_dyn.getRMS() );

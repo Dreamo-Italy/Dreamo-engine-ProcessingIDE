@@ -30,7 +30,7 @@ class PlotterGenerator extends Particle
 
   public void init()
   {
-      setPersistence(true);
+     setPersistence(true);
 
      myColor = pal.getLightest();
      hueValue = hue(myColor);
@@ -50,16 +50,17 @@ class PlotterGenerator extends Particle
 
   public void update()
   {
-    if (frameCount % (global_fps*15) == 0){ // switch between mode1 and mode2, with different damping factors
+    if ( global_timbre.getCentroidAvg()>0.6 && global_timbre.getComplexityAvg()<0.2 ){
+    //(frameCount % (global_fps*15) == 0){ // switch between mode1 and mode2, with different damping factors
         mode2 = mode1;
-        mode1 = !mode1;
+        mode1 = false;
       }
-
-      setParameter(0, global_dyn.getRMS() );
+      println("mode1: "+mode1);
+      setParameter(0, global_dyn.getRMS()*1.7 );
 
      // default values:
 
-      if(mode1) damping = 0.22;
+      if(mode1) damping = 0.2;
       else if(mode2) damping = 0.1;
 
       connectionRadius = 40;
@@ -73,11 +74,11 @@ class PlotterGenerator extends Particle
       //variations for the printed objects:
       if(frameCount % 15 == 0)
       {
-        if(getParameter(0) > 0.75 )
+        if(getParameter(0) > 0.45 )
            { setPosition( new Vector2d ( random(-width/6, width/6) , random(-height/6, height/6) , false ) ); damping = 0.001; }
         else if(getParameter(0) > 0.9 )
             {connectionRadius = 50; zoom = 1.05*getParameter(0);  lineWeight = 7; }
-        if ( getParameter(0) > 0.92)
+        if ( global_dyn.getDynamicityIndex() > 0.86)
           { lineWeight = 40; connectionRadius = 10; particleConnectionRadius = 500;  /*setRotation(random(PI)/8);*/ }
         //  if(frameCount % 80 == 0) {loadPointsFromTxt();}
 
@@ -100,7 +101,7 @@ class PlotterGenerator extends Particle
     // *********
     // "TIME SPENT DRAWING". Range: 1 - 10 ( short time - long time )
     // *********
-     timeSpentDrawing = getParameter(0)/2 * 10 + 5;
+     timeSpentDrawing = getParameter(0)/2 * 10 + 7;
     // *********
 
     particlesNumber = global_stage.getCurrentScene().getParticlesNumber() -1;
@@ -109,7 +110,8 @@ class PlotterGenerator extends Particle
     i1 = int ( particlesNumber - round(indexOffset) );
 
     // timeSpentDrawing MAPPING
-    timeSpentDrawing = map (timeSpentDrawing, 10.0, 0.0, 1, 20 );
+    timeSpentDrawing = map (timeSpentDrawing, 10.0, 0.1, 1, 20 );
+    if( timeSpentDrawing < 0 ) timeSpentDrawing = 0.1;
 
    for( int i3 = 0; i3 < particlesNumber; i3++)
    {
@@ -120,19 +122,17 @@ class PlotterGenerator extends Particle
        global_stage.getCurrentScene().getParticleByListIndex(i3).perturbate(2.2*getParameter(0));
      }
      else if ( mode2 == true){
-       if( frameCount % 3 == 0 ){ //500
-        global_stage.getCurrentScene().getParticleByListIndex(i3).perturbate(50*(getParameter(0)-0.1));
+       if( frameCount % 6 == 0 ){ //500
+        global_stage.getCurrentScene().getParticleByListIndex(i3).perturbate(30*(getParameter(0)-0.1));
        }
      }
 
    }
-
-
-
+   
     if(getSceneChanged() && !this.isDestroying() )
     {
       assertDestroying();
-      setLifeTimeLeft(60);
+      setLifeTimeLeft(200);
     }
 
     if( this.isDestroying() )
@@ -151,7 +151,7 @@ class PlotterGenerator extends Particle
 
     // draw lines just for the next period/N milliseconds
     int period = int ( 1000 * (1.0/global_fps) );
-    int drawEndTime = millis() + period/round(timeSpentDrawing);
+    int drawEndTime = millis() + period/round(timeSpentDrawing +0.5);
 
     while (i1 < particlesNumber && millis () < drawEndTime)
     {
@@ -178,7 +178,7 @@ class PlotterGenerator extends Particle
 
     if (d <= connectionRadius && d > 2)
     {
-      hueValue = map(a, 0, 0.5, hue(myColor), hue(myColor)*3 )%360 ; //<>// //<>//
+      hueValue = map(a, 0, 0.5, hue(myColor), hue(myColor)*3 )%360 ; //<>// //<>// //<>//
       stroke(hueValue, saturationValue, brightnessValue, a*lineAlphaWeight*lineAlpha + (i1 %3 * 2));
       line(p1.getX(), p1.getY(), p2.getX(), p2.getY() );
     }
@@ -256,9 +256,6 @@ public void loadPointsFromFile(File inputFile)
     }
   }
 }
-
-
-
 
 // GLOBAL FUNCTION
 
