@@ -48,6 +48,8 @@ void setup()
   global_stage = new Stage();
 
   //scenes
+  /*
+  global_stage.addScene(new BlankScene() );
   global_stage.addScene(new BlankScene() );
   global_stage.addScene(new ScenePlotter());
   global_stage.addScene(new Spirals());
@@ -56,8 +58,8 @@ void setup()
   global_stage.addScene(new ScenePresentation() );
   global_stage.addScene(new Lissajous() );
   global_stage.addScene(new SceneDynamicGrid());
-
-  //global_stage.addScene(new AudioDebug());
+*/
+  global_stage.addScene(new AudioDebug());
   //global_stage.addScene(new Cyclo2());
   //global_stage.addScene(new LineLine1());
   //global_stage.addScene(new SceneFireworks());
@@ -142,7 +144,7 @@ void draw()
    //println("***************************************");
    println("***************************************");
    println("SPECTRAL COMPLEXITY (NORM): "+global_timbre.getComplexityAvg());
-   println("-50 SILENCE: "+ global_dyn.isSilence(-20));
+   println("-50 SILENCE: "+ global_dyn.isSilence(-50));
    println("*******************END*****************");
    println("***************************************");
    
@@ -152,7 +154,7 @@ void draw()
    //println("ROUGHNESS: " + audio_decisor.getRoughness());
    
    
-   global_stage.nextSceneIfSilence(-20);
+   global_stage.nextSceneIfSilence(-50);
 
 }
 

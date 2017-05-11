@@ -50,7 +50,7 @@ class PlotterGenerator extends Particle
 
   public void update()
   {
-    if ( global_timbre.getCentroidRelativeRatio()>0.85 && global_timbre.getComplexityAvg()<0.1 ){
+    if ( global_timbre.getCentroidAvg()>0.6 && global_timbre.getComplexityAvg()<0.2 ){
     //(frameCount % (global_fps*15) == 0){ // switch between mode1 and mode2, with different damping factors
         mode2 = mode1;
         mode1 = false;
