@@ -92,7 +92,7 @@ class Dynamic extends FeaturesExtractor
       if(level > maxRMS) maxRMS = level;
 
       //normalize level in 0-1 range
-      level=map(level,0,maxRMS,0,1);
+      //level=map(level,0,maxRMS,0,1);
       
       RMSslope=differentiateArray(level);
       

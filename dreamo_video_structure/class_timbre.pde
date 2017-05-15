@@ -26,12 +26,15 @@ class Timbre extends FeaturesExtractor
   
   //**** COMPLEXITY VARIABLES
   private float spectralComplexity;
-  private final float COMPLEXITY_THRESHOLD_COEFF=1.5;
+  private final float COMPLEXITY_THRESHOLD_COEFF=2.6;
   private final float COMPLEXITY_THEORETICAL_MAX=45; //based on empirical tests
   private final float COMPLEXITY_THEORETICAL_MIN=15; //based on empirical tests
   
   //COMPLEXITY STATISTICS
   private Statistics complexityLongTerm;
+  
+  //ZERO CROSSING RATE
+  private float ZCR;
   
   
   //**** CONSTRUCTOR
@@ -55,6 +58,8 @@ class Timbre extends FeaturesExtractor
     
     complexityLongTerm=new Statistics(W);
     
+    ZCR=0;
+    
   }
   
   //**** SET METHODS
@@ -71,10 +76,10 @@ class Timbre extends FeaturesExtractor
   
   
   //**** GET METHODS
-  
-  //CENTROID
   public float getAvgMagnitude() { return avgMagnitude; }
   
+  
+  //CENTROID  
   public float getCentroid() { return spectralCentroidNormalized; } //instantaneous - normalized respect the theoretical maximum
   
   public float getCentroidAvg() { return centroidLongTerm.getAverage(); } //average - normalized respect the theoretical maximum
@@ -99,12 +104,17 @@ class Timbre extends FeaturesExtractor
   
   public float getComplexityAvg() { return complexityLongTerm.getAverage(); }
   
+  public float getMagnitudeThreshold() { return COMPLEXITY_THRESHOLD_COEFF;}
+  //ZCR
+  public float getZeroCrossingRate() {return ZCR;}
+  
   
   //**** CALC FEATURES METHOD (overrides the inherited method)
   public void calcFeatures()
   {
-    calcSpectralCentroid();
-    
+    calcSpectralCentroid();//contains also spectral complexity calc
+    calcSpectralComplexity();
+    calcZeroCrossingRate();
   }
   
   //**** RESET MAXIMUM
@@ -122,7 +132,7 @@ class Timbre extends FeaturesExtractor
    */
   private void calcSpectralCentroid()
   {
-    float lowsum=0;
+    
     float num=0;
     float denom=0;
     float SC=0;
@@ -131,17 +141,19 @@ class Timbre extends FeaturesExtractor
     for(int i=0;i<specSize-1;i++)
     {
       //spectral complexity
+      /*
       if(i<=specSize/2) 
       {
         if(FFTcoeffs[i]>avgMagnitude*COMPLEXITY_THRESHOLD_COEFF){binsOverAvg++;}
       }
+      */
       //spectral centroid
       //if(FFTcoeffs[i]<0.2){FFTcoeffs[i]=0;} //clean 
       num+=(centerFreqHz(i)*FFTcoeffs[i]);
       denom+=FFTcoeffs[i];    
     }
     
-    calcSpectralComplexity(binsOverAvg);
+    //calcSpectralComplexity(binsOverAvg);
     
     if(denom!=0){SC = (float)num/denom;}
     else{SC=0;}
@@ -176,14 +188,44 @@ class Timbre extends FeaturesExtractor
     spectralCentroidNormalized=expSmooth(SC, spectralCentroidNormalized, 5);
   }
   
-  private void calcSpectralComplexity(float bins)
+  private void calcSpectralComplexity()
   {  
-    if(avgMagnitude>0.5)
-    {
-      spectralComplexity=expSmooth(bins,spectralComplexity,5);
-      spectralComplexity=map(bins,COMPLEXITY_THEORETICAL_MIN,COMPLEXITY_THEORETICAL_MAX,0,1);
+   
+   int peaks =0;
+    
+   for(int i=1;i<specSize-1;i++)
+   {
+     boolean largerThanPrevious = (FFTcoeffs[i - 1] < FFTcoeffs[i]);
+     boolean largerThanNext = (FFTcoeffs[i] > FFTcoeffs[i + 1]);
+     boolean largerThanNoiseFloor = (FFTcoeffs[i] > avgMagnitude*COMPLEXITY_THRESHOLD_COEFF); 
+    
+     if (largerThanPrevious && largerThanNext && largerThanNoiseFloor)
+     {
+       peaks++;
+     }    
+   }
+          
+      spectralComplexity=expSmooth(peaks,spectralComplexity,5);
+      //spectralComplexity=map(bins,COMPLEXITY_THEORETICAL_MIN,COMPLEXITY_THEORETICAL_MAX,0,1);
       complexityLongTerm.accumulate(spectralComplexity);      
-    }  
+    //}  
+  }
+   
+   
+  private void calcZeroCrossingRate()
+  {
+    float zeroCrossingRate=0;   
+    int numberOfZeroCrossings = 0;
+    for(int i = 1 ; i < samples.length ; i++){
+      if(samples[i] * samples[i-1] < 0){
+        numberOfZeroCrossings++;
+      }
+    }
+    
+    zeroCrossingRate = numberOfZeroCrossings / (float) (samples.length - 1);
+    
+    //smoothing
+    ZCR=expSmooth(zeroCrossingRate,ZCR,5);    
   }
    
   

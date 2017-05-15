@@ -135,15 +135,15 @@ void draw()
    //println("***************************************");
    println("RMS AVG (NORM): "+ global_dyn.getRMSAvg());
    println("DINAMICITY INDEX: "+global_dyn.getDynamicityIndex());
-   println("RMS SLOPE: "+ global_dyn.getRmsSlope());
+   //println("RMS SLOPE: "+ global_dyn.getRmsSlope());
    //println("***************************************");
    println("***************************************");
    println("SPECTRAL CENTROID: "+global_timbre.getCentroidShortTimeAvgHz()+" Hz");
-   println("SPECTRAL CENTROID AVG (NORM): "+global_timbre.getCentroidAvg());
-   println("SPECTRAL CENTROID RELATIVE RATIO: "+global_timbre.getCentroidRelativeRatio());
+   //println("SPECTRAL CENTROID AVG (NORM): "+global_timbre.getCentroidAvg());
+   println("ZERO CROSSING RATE: "+global_timbre.getZeroCrossingRate());
    //println("***************************************");
    println("***************************************");
-   println("SPECTRAL COMPLEXITY (NORM): "+global_timbre.getComplexityAvg());
+   println("SPECTRAL COMPLEXITY: "+global_timbre.getComplexityAvg());
    println("-50 SILENCE: "+ global_dyn.isSilence(-50));
    println("*******************END*****************");
    println("***************************************");
@@ -175,6 +175,16 @@ void keyPressed()
        global_ecg.restartCalibration();
        println("key pressed");
      }
+     
+  
+  if (key=='s'||key=='S')
+  {
+    audio_proc.saveLog();
+    //global_audio.stop();
+    //exit();
+  }
+     
+     
 }
 
 

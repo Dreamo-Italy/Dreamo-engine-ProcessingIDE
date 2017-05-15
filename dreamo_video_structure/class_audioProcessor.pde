@@ -20,6 +20,10 @@ class AudioProcessor implements AudioListener
   private Timbre timb;
   private Rhythm rhy;
   
+  private Table audioLog;
+  private int bufferCount;
+  
+  
   //********* CONSTRUCTOR ***********
   AudioProcessor(int bSize, float sRate)
   {
@@ -33,7 +37,7 @@ class AudioProcessor implements AudioListener
     
     log=false;    
     frameCounter=0;
-    
+    bufferCount=0;
     avgMagnitude=0;
     
     if ( bSize == 0 || sRate == 0) {println("ERROR: Impossible to initialize AudioProcessor");}
@@ -57,6 +61,15 @@ class AudioProcessor implements AudioListener
         FFTcoeffs = new float[fft.avgSize()];
       }
     }
+    
+    audioLog = new Table();
+    
+    audioLog.addColumn("Buffer N.");
+    audioLog.addColumn("RMS");
+    audioLog.addColumn("Dyn Index");
+    audioLog.addColumn("Spectral Centroid");
+    audioLog.addColumn("Spectral Complexity");
+    audioLog.addColumn("ZCR");   
     
   }
   
@@ -84,11 +97,16 @@ class AudioProcessor implements AudioListener
     left = sampL;
     right = sampR; 
     
+    mix();
+    
     //calculate fourier transform
-    calcFFT(sampL);  
+    calcFFT(mix);  
     
     //run features extractors
     extractFeatures();
+    bufferCount++;
+    logFeatures();
+    
     
     frameCounter++;
     if(frameCounter>FRAMES_NUMBER){frameCounter=0;}
@@ -162,7 +180,6 @@ class AudioProcessor implements AudioListener
           if(i<=fft.specSize()/2) {avgMagnitude+=fft.getBand(i);}
        }
       avgMagnitude=avgMagnitude/fft.specSize();
-      avgMagnitude=avgMagnitude*2;
     }
     
     else
@@ -191,7 +208,7 @@ class AudioProcessor implements AudioListener
   private void runRhythm()
   {
     if(rhy!=null){
-      rhy.setSamples(left);
+      rhy.setSamples(mix);
       rhy.setCounter(frameCounter);
       rhy.setFFTCoeffs(FFTcoeffs,fft.specSize());
       rhy.calcFeatures();
@@ -204,7 +221,7 @@ class AudioProcessor implements AudioListener
   { 
     if(dyn!=null)
     {
-      dyn.setSamples(left);
+      dyn.setSamples(mix);
       dyn.calcFeatures();
     }
     else{println("DYN OBJECT HAS TO BE ADDED TO AUDIO PROCESSOR");}
@@ -218,14 +235,37 @@ class AudioProcessor implements AudioListener
       {
         timb.setFFTCoeffs(FFTcoeffs,fft.specSize());
         timb.setAvgMagnitude(avgMagnitude);
+        timb.setSamples(mix);
       }
       else 
       {  
         timb.setFFTCoeffs(FFTcoeffs,fft.avgSize());
+        timb.setSamples(mix);
       }
       timb.calcFeatures();
     }
     else{println("TIMBRE OBJECT HAS TO BE ADDED TO AUDIO PROCESSOR");}
+  }
+  
+  private void logFeatures(){
+  
+      TableRow newRow = audioLog.addRow();
+          
+      newRow.setInt("Buffer N.",bufferCount);
+      newRow.setFloat("RMS",dyn.getRMS());
+      newRow.setFloat("Dyn Index",dyn.getDynamicityIndex());
+      newRow.setFloat("Spectral Centroid",timb.getCentroidHz());
+      newRow.setFloat("Spectral Complexity",timb.getComplexity());
+      newRow.setFloat("ZCR",timb.getZeroCrossingRate());
+      
+  }
+  
+  public void saveLog()
+  {
+    
+    saveTable(audioLog, "data/audioFeaturesLog.csv");
+    
+  
   }
   
   
