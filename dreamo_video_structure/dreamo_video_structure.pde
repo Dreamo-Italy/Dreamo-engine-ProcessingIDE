@@ -33,8 +33,8 @@ void setup()
   global_rhythm = new Rhythm(global_audio.getBufferSize(),global_audio.getSampleRate()); //new rhythmic features extractor
   //add features extractors to our audio processor
 
-  global_rhythm.setSensitivity(15);
-  global_rhythm.setThreshold(3);
+  //global_rhythm.setSensitivity(80);
+  //global_rhythm.setThreshold(13);
 
 
   audio_proc.addDyn(global_dyn);
@@ -130,23 +130,29 @@ void draw()
    
    
 
-   println("***************************************");
+   println("*************************************************");
    println("************** AUDIO PARAMETERS *****************");
-   //println("***************************************");
+   println("*************************************************");
+   println("************* DYNAMIC PARAMETERS ****************");
    println("RMS AVG (NORM): "+ global_dyn.getRMSAvg());
    println("DINAMICITY INDEX: "+global_dyn.getDynamicityIndex());
-   //println("RMS SLOPE: "+ global_dyn.getRmsSlope());
-   //println("***************************************");
-   println("***************************************");
+   println("*************************************************");
+   println("************* TIMBRIC PARAMETERS ****************");
    println("SPECTRAL CENTROID: "+global_timbre.getCentroidShortTimeAvgHz()+" Hz");
-   //println("SPECTRAL CENTROID AVG (NORM): "+global_timbre.getCentroidAvg());
+   println("SPECTRAL COMPLEXITY: "+global_timbre.getComplexityAvg()+" peaks");
    println("ZERO CROSSING RATE: "+global_timbre.getZeroCrossingRate());
-   //println("***************************************");
-   println("***************************************");
-   println("SPECTRAL COMPLEXITY: "+global_timbre.getComplexityAvg());
-   println("-50 SILENCE: "+ global_dyn.isSilence(-50));
-   println("*******************END*****************");
-   println("***************************************");
+   println("*************************************************");
+   println("************* RHYTHMIC PARAMETERS ***************");
+   println("PERCUSSIVITY RATE: "+global_rhythm.getPercussivityAvg());
+   println("ONSET RATE: "+global_rhythm.getOnsetRate());
+   println("*************************************************");
+   println("************** SILENCE DETECTOR *****************");;
+   println("-60dB SILENCE: "+ global_dyn.isSilence(-60));
+   println("-50dB SILENCE: "+ global_dyn.isSilence(-50));
+   println("-45dB SILENCE: "+ global_dyn.isSilence(-45));
+   println("-40dB SILENCE: "+ global_dyn.isSilence(-40));
+   println("*******************END***************************");
+   println("*************************************************");
    
    //println("CLARITY: " + audio_decisor.getClarity());
    //println("ENERGY: " + audio_decisor.getEnergy());

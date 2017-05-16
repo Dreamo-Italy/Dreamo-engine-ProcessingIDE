@@ -128,14 +128,15 @@ class AudioDebug extends Scene
    {      
      line(180+i*0.01, height-100, 180+i*0.01, height-100 - long_window[i]*200);
    } */
-   /*
+   
+   
    if(global_rhythm.isPercOnset())
    {
      fill(pal.getColor(1));
      ellipse(width/2,height/2,200,200);
    }
     
-  */
+  
   
     
     //if(timbre_decisor.checkWindow(global_timbre.getCentroidRelativeRatio()))

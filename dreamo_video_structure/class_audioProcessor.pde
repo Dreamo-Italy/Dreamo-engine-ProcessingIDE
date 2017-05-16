@@ -69,7 +69,9 @@ class AudioProcessor implements AudioListener
     audioLog.addColumn("Dyn Index");
     audioLog.addColumn("Spectral Centroid");
     audioLog.addColumn("Spectral Complexity");
-    audioLog.addColumn("ZCR");   
+    audioLog.addColumn("ZCR"); 
+    audioLog.addColumn("Percussivity Rate");
+    audioLog.addColumn("Onset Rate");
     
   }
   
@@ -104,10 +106,12 @@ class AudioProcessor implements AudioListener
     
     //run features extractors
     extractFeatures();
-    bufferCount++;
+    
+    //log features
+    bufferCount++; //log buffer count number
     logFeatures();
     
-    
+    //frame counter
     frameCounter++;
     if(frameCounter>FRAMES_NUMBER){frameCounter=0;}
   }
@@ -209,7 +213,7 @@ class AudioProcessor implements AudioListener
   {
     if(rhy!=null){
       rhy.setSamples(mix);
-      rhy.setCounter(frameCounter);
+      //rhy.setCounter(frameCounter);
       rhy.setFFTCoeffs(FFTcoeffs,fft.specSize());
       rhy.calcFeatures();
     }
@@ -257,7 +261,8 @@ class AudioProcessor implements AudioListener
       newRow.setFloat("Spectral Centroid",timb.getCentroidHz());
       newRow.setFloat("Spectral Complexity",timb.getComplexity());
       newRow.setFloat("ZCR",timb.getZeroCrossingRate());
-      
+      newRow.setFloat("Percussivity Rate",rhy.getPercussivityAvg());
+      newRow.setFloat("Onset Rate",rhy.getOnsetRate());
   }
   
   public void saveLog()

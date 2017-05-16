@@ -101,7 +101,7 @@
    plots[1].setYLim(-1, 15);
    plots[2].setYLim(0, 1);
    //plots[3].setYLim(20, 7000);
-   plots[3].setYLim(0, 1);
+   plots[3].setYLim(0, 5);
    
    //plots[3].getYAxis().setLog(true);
    
@@ -145,8 +145,12 @@
     
     //debug
     //plots[4].addPoint( frameCount, global_dyn.getRMS() );
-    plots[3].addPoint( frameCount, global_timbre.getCentroid());
-    plots[3].getLayer("AvgCentroid").addPoint(frameCount, global_timbre.getCentroidAvg());
+    //plots[3].addPoint( frameCount, global_timbre.getCentroid());
+    //plots[3].getLayer("AvgCentroid").addPoint(frameCount, global_timbre.getCentroidAvg());
+    //plots[3].addPoint( frameCount, global_rhythm.getPercussivity());
+    //plots[3].getLayer("AvgCentroid").addPoint(frameCount, global_rhythm.getPercussivityAvg());
+    plots[3].addPoint( frameCount, global_rhythm.getOnsetRate());
+    plots[3].getLayer("AvgCentroid").addPoint(frameCount, global_rhythm.getOnsetRate());
 
 
   }

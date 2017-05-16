@@ -5,9 +5,9 @@ class Rhythm extends FeaturesExtractor {
   private FloatList longWindow;
   private float[] processed;
   
-  public static final float DEFAULT_THRESHOLD = 8;
+  public static final float DEFAULT_THRESHOLD = 13;
   
-  public static final float DEFAULT_SENSITIVITY = 20;
+  public static final float DEFAULT_SENSITIVITY = 70;
   
   private float[] currentFFTmagnitudes;  
   private float[] priorFFTmagnitudes;
@@ -17,14 +17,18 @@ class Rhythm extends FeaturesExtractor {
   private float sensitivity;
   private boolean percOnset;
   
-  private float onsets;
+  public int onsets;
   private float onsetRate;
+  
+  private float percussivity;
+  private Statistics percussivityStats;
   
   //temporary for minim onset implementation
   private BeatDetect beat;
   
   private int counter; //audio frames counter (passed by AudioProcessor object)
-  private static final int FRAMES_NUMBER=43;
+  private static final int FRAMES_COUNT_LIMIT=217; //5 seconds
+  private final float WINDOW_TIME = ceil(FRAMES_COUNT_LIMIT*0.023);
   
   private boolean process_ok;
   
@@ -36,8 +40,8 @@ class Rhythm extends FeaturesExtractor {
     counter=0; 
     
     //energy onset detector
-    longWindow = new FloatList(bSize*FRAMES_NUMBER);
-    processed = new float[bSize*FRAMES_NUMBER];
+    longWindow = new FloatList(bSize*FRAMES_COUNT_LIMIT);
+    processed = new float[bSize*FRAMES_COUNT_LIMIT];
     
     priorFFTmagnitudes=new float[bSize/2+1];
     currentFFTmagnitudes=new float[bSize/2+1];
@@ -51,6 +55,9 @@ class Rhythm extends FeaturesExtractor {
     onsets=0;
     
     process_ok=false;
+    
+    percussivityStats=new Statistics(21); 
+    
   }
  
   public void setCounter( int c)
@@ -82,10 +89,20 @@ class Rhythm extends FeaturesExtractor {
   
   private void percussiveOnsetDetection()
   {
-    //debug
-    //for(int i=100;i<120;i++){println(priorFFTmagnitudes[i]);}
+   
+    counter++;
+    
+    if(counter>=FRAMES_COUNT_LIMIT)
+    { 
+      if(onsets==0){percussivity=0;} //if no onsets for 5 seconds, assume there is no percussion
+      calcOnsetRate();
+      onsets=0;
+      counter=0;
+    }
+    //println(onsets);
     
     int binsOverThreshold=0;
+    
     for(int i=0;i<FFTsize;i++)
     {
      if(priorFFTmagnitudes[i]>0)
@@ -96,19 +113,48 @@ class Rhythm extends FeaturesExtractor {
      priorFFTmagnitudes[i]=currentFFTmagnitudes[i];   
     }
     
-    //println("BINS OVER TH: "+binsOverThreshold);
+    //percussivity=(float)binsOverThreshold;
     
+    if(binsOverThreshold>((100-sensitivity)*FFTsize)/100) //if onset
+    {
+      //println("BINS OVER TH: "+binsOverThreshold);
+      onsets++;
+      
+      percussivity=(float)binsOverThreshold/FFTsize;
+      percussivityStats.accumulate(percussivity);
+      
+      percOnset=true;
+    
+    }
+  
+   else{percOnset=false;}
+    /*
    //check if is onset 
    if(dfMinus2<dfMinus1 && dfMinus1 >= binsOverThreshold && dfMinus1 > ((100 - sensitivity) * buffSize) / 200)
    {
      percOnset=true;
-     onsets++;
    }
    else{percOnset=false;}
    
    dfMinus2=dfMinus1;
    dfMinus1=binsOverThreshold;
-   
+   */
+  }
+  
+  private void calcOnsetRate()
+  {
+    
+    onsetRate=(float)onsets/WINDOW_TIME;
+  }
+  
+  public float getPercussivity()
+  {
+    return percussivity;
+  }
+  
+  public float getPercussivityAvg()
+  {
+    return percussivityStats.getAverage();
   }
   
   public boolean isPercOnset()
@@ -118,13 +164,7 @@ class Rhythm extends FeaturesExtractor {
   
   private float getOnsetRate()
   {
-    if(counter>=FRAMES_NUMBER)
-    {
-      onsetRate=onsets;
-      onsets=0;
-      return onsetRate;
-    }
-    else return onsetRate;    
+    return onsetRate;    
   }
   
   private void energyOnsetDetection()
@@ -132,7 +172,7 @@ class Rhythm extends FeaturesExtractor {
     updateLongWindow();
     
     //when counter is at the end
-    if(counter>=FRAMES_NUMBER)
+    if(counter>=FRAMES_COUNT_LIMIT)
     {
       detectEnergyOnsets();     
     }
@@ -142,7 +182,7 @@ class Rhythm extends FeaturesExtractor {
   private void updateLongWindow()
   {
     //if the FloatList is full
-    if(longWindow.size()>(buffSize*FRAMES_NUMBER))
+    if(longWindow.size()>(buffSize*FRAMES_COUNT_LIMIT))
     {
       //remove the oldest 1024 values from bottom of the list
       for(int i=0; i<1024;i++){longWindow.remove(i);}       
@@ -173,7 +213,7 @@ class Rhythm extends FeaturesExtractor {
   
   public int getLongWindowMaxSize()
   {
-    return buffSize*FRAMES_NUMBER;
+    return buffSize*FRAMES_COUNT_LIMIT;
   }
   
   public boolean isProcessed()

@@ -136,25 +136,13 @@ class Timbre extends FeaturesExtractor
     float num=0;
     float denom=0;
     float SC=0;
-    float binsOverAvg=0;
     
     for(int i=0;i<specSize-1;i++)
     {
-      //spectral complexity
-      /*
-      if(i<=specSize/2) 
-      {
-        if(FFTcoeffs[i]>avgMagnitude*COMPLEXITY_THRESHOLD_COEFF){binsOverAvg++;}
-      }
-      */
-      //spectral centroid
-      //if(FFTcoeffs[i]<0.2){FFTcoeffs[i]=0;} //clean 
       num+=(centerFreqHz(i)*FFTcoeffs[i]);
       denom+=FFTcoeffs[i];    
     }
-    
-    //calcSpectralComplexity(binsOverAvg);
-    
+       
     if(denom!=0){SC = (float)num/denom;}
     else{SC=0;}
     
