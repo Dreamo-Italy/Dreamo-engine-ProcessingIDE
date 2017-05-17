@@ -7,7 +7,7 @@ class Rhythm extends FeaturesExtractor {
   
   public static final float DEFAULT_THRESHOLD = 13;
   
-  public static final float DEFAULT_SENSITIVITY = 70;
+  public static final float DEFAULT_SENSITIVITY = 80;
   
   private float[] currentFFTmagnitudes;  
   private float[] priorFFTmagnitudes;
@@ -116,6 +116,7 @@ class Rhythm extends FeaturesExtractor {
     //percussivity=(float)binsOverThreshold;
     
     if(binsOverThreshold>((100-sensitivity)*FFTsize)/100) //if onset
+    //if(dfMinus2<dfMinus1 && dfMinus1 >= binsOverThreshold && dfMinus1 > ((100 - 90) * buffSize) / 200)
     {
       //println("BINS OVER TH: "+binsOverThreshold);
       onsets++;
