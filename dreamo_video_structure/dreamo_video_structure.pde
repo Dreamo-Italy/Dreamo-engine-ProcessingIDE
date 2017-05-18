@@ -33,8 +33,9 @@ void setup()
   global_rhythm = new Rhythm(global_audio.getBufferSize(),global_audio.getSampleRate()); //new rhythmic features extractor
   //add features extractors to our audio processor
 
-  //global_rhythm.setSensitivity(80);
-  //global_rhythm.setThreshold(13);
+  //Tarsos default values
+  //global_rhythm.setSensitivity(20);
+  //global_rhythm.setThreshold(8);
 
 
   audio_proc.addDyn(global_dyn);
