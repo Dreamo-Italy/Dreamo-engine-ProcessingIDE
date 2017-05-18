@@ -48,9 +48,9 @@ class Connection
     parent = p;
     
     // number of BIOMEDICAL VALUES to extract at each update() cycle   
-    totSampleToExtract = ceil ((global_sampleRate/global_fps));  //<>//
+    totSampleToExtract = ceil ((global_sampleRate/global_fps)); 
     sampleToExtract = totSampleToExtract; /*/global_sensorNumber*/
-     //<>//
+    
     //serial check
     
     if(!wifiAvailable) 
@@ -93,9 +93,9 @@ class Connection
     final String[] ports = Serial.list();
     println( ports );
     
-    if (ports.length  == 1) // DEBUG = 1 ; RIGHT ONE = 0;
+    if (ports.length  > 0) // DEBUG = 1 ; RIGHT ONE = 0;
     {
-      String portName = Serial.list()[0]; //change the 0 to a 1 or 2 etc. to match your port
+      String portName = Serial.list()[2]; //change the 0 to a 1 or 2 etc. to match your port
       myPort = new Serial(parent, portName, 38400);
       portAvailable = true; 
     }
@@ -106,8 +106,8 @@ class Connection
   
   
   public void update()
-  {     //<>//
-    if( !serialAvailable ) //<>//
+  {    
+    if( !serialAvailable )
          storeFromText();      // read the data from an OFFLINE TABLE
     else if ( serialAvailable )
         storeFromSerial();    // read the data from the SERIAL LINE
@@ -175,7 +175,7 @@ class Connection
       //println("Read from table "+sensorName+" has completed.");
         
      executionNumber[sensorIndex]++;
-   } //<>// //<>//
+   } //<>//
    
     // the function that reads the DATA from the SERIAL LINE BUFFER
    private void storeFromSerial()
@@ -186,9 +186,9 @@ class Connection
       checkBufferSize("gsr");
       checkBufferSize("ecg");        
             
-      short added = 0, counter = 0; //<>//
+      short added = 0, counter = 0;
       
-      myPort.readStringUntil(lineFeed); // clean the garbage //<>//
+      myPort.readStringUntil(lineFeed); // clean the garbage
 
       // while there is something on the serial buffer, add the data to the "getList(sensorName)" queue      
       while ( serialAvailable && added < totSampleToExtract && counter < totSampleToExtract*3)
@@ -236,7 +236,7 @@ class Connection
     {
       FloatList toOutput = new FloatList();  
       boolean emptyList = false;
-      int originalListSize = getList(sensorName).size();   //<>//
+      int originalListSize = getList(sensorName).size();  
       
       float inValue = 0;
  //<>//
