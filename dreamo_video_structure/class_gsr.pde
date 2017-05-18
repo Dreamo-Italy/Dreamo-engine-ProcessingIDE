@@ -10,7 +10,7 @@ class Gsr extends Biosensor
     setBpm(0);
   }
   public void update()
-   {     //<>//
+   {     //<>// //<>//
     // store the incoming conductance value from Connection to another FloatLIst
     incomingValues = global_connection.extractFromBuffer("gsr", sampleToExtract );
     

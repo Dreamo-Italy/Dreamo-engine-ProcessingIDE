@@ -85,18 +85,14 @@ class Dynamic extends FeaturesExtractor
        }       
       
       level /= samples.length;
-      level = (float) Math.sqrt(level);
-
-       
+      level = (float) Math.sqrt(level); 
       
       if(level > maxRMS) maxRMS = level;
 
       //normalize level in 0-1 range
       //level=map(level,0,maxRMS,0,1);
       
-      RMSslope=differentiateArray(level);
-      
-      
+      RMSslope=differentiateArray(level);       
       
       //average      
       RMSstats.accumulate(level);
@@ -106,13 +102,10 @@ class Dynamic extends FeaturesExtractor
       
   }
   
-
-
   
   private float soundPressureLevel(final float RMS) { return linearToDecibel(RMS); }
   
   
-
   private float getRmsSlope()
   {
     

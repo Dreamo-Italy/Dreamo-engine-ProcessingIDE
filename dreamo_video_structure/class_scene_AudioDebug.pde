@@ -23,7 +23,7 @@ class AudioDebug extends Scene
     enableBackground();
     
     coefficients = new float[audio_proc.getSpecSize()];
-    long_window = new float[global_rhythm.getLongWindowMaxSize()];
+    //long_window = new float[global_rhythm.getLongWindowMaxSize()];
     
     timbre_decisor=new Hysteresis(0.8,0.9,4);
     
@@ -53,7 +53,8 @@ class AudioDebug extends Scene
     {
       coefficients[i]=audio_proc.getFFTcoeff(i);
     }
-        
+    
+    /*   
     if(frameCount%30==0)
     {
       if(global_rhythm.isProcessed())
@@ -63,7 +64,7 @@ class AudioDebug extends Scene
         long_window[i]=global_rhythm.getLongWindowSamples(i);
         }
        }
-    }
+    }*/
   }
   
   public void trace()
@@ -106,8 +107,8 @@ class AudioDebug extends Scene
     noFill();    
     //rectMode(CORNERS);   
     //rect(500,height-300,500+512*1.5,height-900);  
-    text("Centroid Std Deviation: "+global_timbre.getCentroidStdDev(),120,105);
-    text("RMS Std Deviation: "+global_dyn.getRMSStdDev(),115,260);
+    //text("Centroid Std Deviation: "+global_timbre.getCentroidStdDev(),120,105);
+    //text("RMS Std Deviation: "+global_dyn.getRMSStdDev(),115,260);
     stroke(pal.getColor(2));
     strokeWeight(2);
 
@@ -130,7 +131,7 @@ class AudioDebug extends Scene
    } */
    
    
-   if(global_rhythm.isPercOnset())
+   if(global_rhythm.isEnergyOnset())
    {
      fill(pal.getColor(1));
      ellipse(width/2,height/2,200,200);

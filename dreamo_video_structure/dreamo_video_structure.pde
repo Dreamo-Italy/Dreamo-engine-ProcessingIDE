@@ -31,26 +31,21 @@ void setup()
   global_dyn = new Dynamic(global_audio.getBufferSize(),global_audio.getSampleRate()); //new dynamic features extractor
   global_timbre = new Timbre(global_audio.getBufferSize(),global_audio.getSampleRate()); //new timbric features extractor
   global_rhythm = new Rhythm(global_audio.getBufferSize(),global_audio.getSampleRate()); //new rhythmic features extractor
+  
   //add features extractors to our audio processor
-
-  //Tarsos default values
-  //global_rhythm.setSensitivity(20);
-  //global_rhythm.setThreshold(8);
-
-
   audio_proc.addDyn(global_dyn);
   audio_proc.addTimbre(global_timbre);
   audio_proc.addRhythm(global_rhythm);
 
 
-  audio_decisor = new AudioDecisor();
+  //audio_decisor = new AudioDecisor();
   
   //****** STAGE ******
   global_stage = new Stage();
 
-  //scenes
+  
   /*
-  global_stage.addScene(new BlankScene() );
+  //**** PRESENTATION SCENES
   global_stage.addScene(new BlankScene() );
   global_stage.addScene(new ScenePlotter());
   global_stage.addScene(new Spirals());
@@ -59,7 +54,9 @@ void setup()
   global_stage.addScene(new ScenePresentation() );
   global_stage.addScene(new Lissajous() );
   global_stage.addScene(new SceneDynamicGrid());
-*/
+  */
+  
+  //**** OTHER SCENES
   global_stage.addScene(new AudioDebug());
   //global_stage.addScene(new Cyclo2());
   //global_stage.addScene(new LineLine1());
@@ -68,9 +65,8 @@ void setup()
   //global_stage.addScene(new ScenePerlinNoise());
   //global_stage.addScene(new HelloShape(0));
   //global_stage.addScene(new DumbC());
- 
 
-  //debug plots
+  //**** DEBUG PLOTS
   global_debugPlots = new DebugPlot(this);
 }
 
@@ -109,7 +105,7 @@ void draw()
    //global_gsr.printDebug();// print the DEBUG TEXT related to the SKIN SENSOR
    //global_ecg.printDebug();// print the DEBUG TEXT related to the ECG SENSOR
 
-   audio_decisor.run();
+   //audio_decisor.run();
 
  //<>//
    long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME
@@ -117,7 +113,7 @@ void draw()
 
    //----------- print the durations for debug purposes------------ //<>// //<>// //<>//
    
-   
+   /*
    
 
    println("    Audio update duration: "+ audioTime/1000 + " us");
@@ -144,8 +140,8 @@ void draw()
    println("ZERO CROSSING RATE: "+global_timbre.getZeroCrossingRate());
    println("*************************************************");
    println("************* RHYTHMIC PARAMETERS ***************");
-   println("PERCUSSIVITY RATE: "+global_rhythm.getPercussivityAvg());
-   println("ONSET RATE: "+global_rhythm.getOnsetRate());
+   println("RHYTHM DENSITY: "+global_rhythm.getRhythmDensity());
+   println("RHYTHM STRENGTH: "+global_rhythm.getRhythmStrength());
    println("*************************************************");
    println("************** SILENCE DETECTOR *****************");;
    println("-60dB SILENCE: "+ global_dyn.isSilence(-60));
@@ -160,6 +156,7 @@ void draw()
    //println("AGITATION: " + audio_decisor.getAgitation());
    //println("ROUGHNESS: " + audio_decisor.getRoughness());
    
+   */
    
    global_stage.nextSceneIfSilence(-50);
 

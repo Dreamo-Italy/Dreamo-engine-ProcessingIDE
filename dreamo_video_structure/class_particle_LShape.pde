@@ -65,12 +65,12 @@ class LShape extends Particle
     //update color if palette is changed
     myColor = pal.getColor(getColorIndex());     
     hue = hue(myColor);
-     //<>//
+     //<>// //<>//
     if (pointCountEnd < pointMax && frameCount % 1 == 0)
       pointCountEnd = pointCountEnd + 1;
     
     if ( freqX < 6 && raisingFreqX ){
-    freqX = freqX + getParameter(0)/100; //<>//
+    freqX = freqX + getParameter(0)/100; //<>// //<>//
     raisingFreqX = true;
   }
     else{
