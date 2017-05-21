@@ -62,6 +62,7 @@ class AudioProcessor implements AudioListener
     audioLog = new Table();
     
     audioLog.addColumn("Buffer N.");
+    
     audioLog.addColumn("RMS");
     audioLog.addColumn("Dyn Index");
     audioLog.addColumn("Spectral Centroid");

@@ -113,8 +113,9 @@ void draw()
 
    //----------- print the durations for debug purposes------------ //<>// //<>// //<>//
    
-   /*
    
+   
+   /*
 
    println("    Audio update duration: "+ audioTime/1000 + " us");
    println("    Connection update duration: "+ conT/1000 + " us");
@@ -139,10 +140,12 @@ void draw()
    println("SPECTRAL COMPLEXITY: "+global_timbre.getComplexityAvg()+" peaks");
    println("ZERO CROSSING RATE: "+global_timbre.getZeroCrossingRate());
    println("*************************************************");
+   
    println("************* RHYTHMIC PARAMETERS ***************");
    println("RHYTHM DENSITY: "+global_rhythm.getRhythmDensity());
    println("RHYTHM STRENGTH: "+global_rhythm.getRhythmStrength());
    println("*************************************************");
+   
    println("************** SILENCE DETECTOR *****************");;
    println("-60dB SILENCE: "+ global_dyn.isSilence(-60));
    println("-50dB SILENCE: "+ global_dyn.isSilence(-50));
@@ -183,7 +186,8 @@ void keyPressed()
   
   if (key=='s'||key=='S')
   {
-    audio_proc.saveLog();
+    //saudio_proc.saveLog();
+    global_connection.saveLog();
     //global_audio.stop();
     //exit();
   }

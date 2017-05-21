@@ -26,6 +26,7 @@ class Connection
 
   private FloatList incomingGsr, incomingEcg;
   private Table table_gsr, table_ecg;
+  private Table sensorsLog;
 
   //********* CONSTRUCTOR ***********
   
@@ -44,6 +45,12 @@ class Connection
  
     incomingGsr = new FloatList();
     incomingEcg = new FloatList();
+    
+    sensorsLog=new Table();
+    
+   sensorsLog.addColumn("Time (sec)");
+   sensorsLog.addColumn("GSR");
+   sensorsLog.addColumn("ECG");
     
     parent = p;
     
@@ -204,6 +211,13 @@ class Connection
                   println( " cond: " + inputValues[0]);
                   println( " ecg: " + inputValues[1]);
                   
+                  //log sensors on csv
+                  TableRow newRow = sensorsLog.addRow();        
+                  newRow.setInt("Time (sec)",second());
+                  newRow.setFloat("GSR",inputValues[0]);
+                  newRow.setFloat("ECG",inputValues[1]);
+                  
+                  
                   getList("gsr").append(inputValues[0]);
                   getList("ecg").append(inputValues[1]);
                   
@@ -215,12 +229,19 @@ class Connection
       
      myPort.clear();
      //println("");
+     
+     /*
      println( "DEBUG : incomingGsr queue size: " + getList("gsr").size() );
      println( "DEBUG : incomingEcg queue size: " + getList("ecg").size() );
      println( "DEBUG : added elements: " + added*2 );
      if ( getList("gsr").size() == 0 ) println(" ERROR in storeFromSerial: incomingGsrSize = 0 ");
      if ( getList("ecg").size() == 0 ) println(" ERROR in storeFromSerial: incomingEcgSize = 0 "); 
+     */
+     
   }
+  
+  
+  
   
   private void checkBufferSize(String sensorName)
   {
@@ -283,6 +304,11 @@ class Connection
       return table_ecg;
     else 
       return null;
+  }
+  
+  public void saveLog()
+  {   
+    saveTable(sensorsLog, "data/biometricSensorssLog.csv");    
   }
 }
 
