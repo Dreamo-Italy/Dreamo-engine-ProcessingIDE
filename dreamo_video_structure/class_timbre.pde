@@ -51,7 +51,8 @@ class Timbre extends FeaturesExtractor
     
     //initialize statistics data
     centroidLongTerm=new Statistics(W);
-    centroidShortTerm=new Statistics(21); //~0.5 sec   
+    centroidShortTerm=new Statistics(21); //~1 sec   
+    
     centroidMaxStats=new Statistics(6);  
     centroidMax=1;
     maxControl=new Hysteresis(43);
@@ -96,6 +97,8 @@ class Timbre extends FeaturesExtractor
   } //dymaic ratio  
   
   public float getCentroidShortTimeAvgHz() { return centroidShortTerm.getAverage(); }
+  
+  public float getCentroidShortTimeMaxHz() { return centroidShortTerm.getMax(); }
   
   //COMPLEXITY
   public float getComplexity() { return spectralComplexity; }

@@ -38,7 +38,8 @@ void setup()
   audio_proc.addRhythm(global_rhythm);
 
 
-  //audio_decisor = new AudioDecisor();
+  audio_decisor = new AudioDecisor(global_dyn,global_rhythm,global_timbre);
+  
   
   //****** STAGE ******
   global_stage = new Stage();
@@ -105,7 +106,7 @@ void draw()
    //global_gsr.printDebug();// print the DEBUG TEXT related to the SKIN SENSOR
    //global_ecg.printDebug();// print the DEBUG TEXT related to the ECG SENSOR
 
-   //audio_decisor.run();
+   audio_decisor.run();
 
  //<>//
    long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME
@@ -186,8 +187,8 @@ void keyPressed()
   
   if (key=='s'||key=='S')
   {
-    //saudio_proc.saveLog();
-    global_connection.saveLog();
+    audio_proc.saveLog();
+    //global_connection.saveLog();
     //global_audio.stop();
     //exit();
   }

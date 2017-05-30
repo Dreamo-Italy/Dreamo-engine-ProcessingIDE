@@ -4,7 +4,7 @@ class Dynamic extends FeaturesExtractor
   public static final double DEFAULT_SILENCE_THRESHOLD = -60.0;//db
   
   private float RMS;
-  private final float THEORETICAL_MAX_RMS=0.5; //based on empirical tests
+  private final float THEORETICAL_MAX_RMS=1; //based on empirical tests
   private float maxRMS;
 
   //keep track of ~3 seconds of music and average RMS values

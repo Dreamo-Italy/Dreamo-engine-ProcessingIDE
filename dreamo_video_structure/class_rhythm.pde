@@ -7,6 +7,8 @@ class Rhythm extends FeaturesExtractor {
   
   //ENERGY ONSET DETECTION VARIABLES
   private float frameEnergy;
+  private float prevFrameEnergy;
+  private float currentFrameEnergy;
   private Statistics energyStats;
   private boolean energyOnset;
   public int energyOnsets;
@@ -34,7 +36,7 @@ class Rhythm extends FeaturesExtractor {
   
   //RHYTM DENSITY AND RHYTHM STRENGTH 
   private int counter; //audio frames counter
-  private static final int WINDOW_LENGTH=217; //window length in buffers (43 = 1 second)
+  private static final int WINDOW_LENGTH=86; //window length in buffers (43 = 1 second)
   private float WINDOW_TIME; //window length in seconds
   
   private boolean process_ok;
@@ -121,6 +123,7 @@ class Rhythm extends FeaturesExtractor {
  private void calcRhythmFeatures()
  {
     rhythmDensity=(float)energyOnsets/WINDOW_TIME;
+    //rhythmDensity=energyOnsets;
     if(energyOnsets==0) rhythmStrength=0;
     else rhythmStrength=(float)energyOnsetStrength/energyOnsets;
  }
@@ -136,13 +139,15 @@ class Rhythm extends FeaturesExtractor {
       energyOnsets=0;
     }
     
-    float C=-0.0000015*energyStats.getVariance()+2;
-    //float C=-0.0000015*energyStats.getVariance()+1.5142857; //zic version
+    //float C=-0.0000015*energyStats.getVariance()+2;
+    float C=-0.0000015*energyStats.getVariance()+1.5142857; //zic version
     //float C=(-0.0025714*energyStats.getVariance())+1.5142857; //original paper    
     //if energy in the current frame is bigger than C*avg(E) we detect an onset
     //avg(E) and C are computed on a window that considers the 43 previous frames
     float strength=0;
-    if(frameEnergy > 0 && frameEnergy>energyStats.getAverage()*C)
+    //the analyzed frame must be an energy peak and his energy must be over the threshold
+    
+    if(prevFrameEnergy<currentFrameEnergy && currentFrameEnergy >= frameEnergy && currentFrameEnergy>energyStats.getAverage()*C)
     {
       energyOnsets++;
       strength=frameEnergy-energyStats.getAverage()*C;
@@ -152,7 +157,9 @@ class Rhythm extends FeaturesExtractor {
     else energyOnset=false;
     
     energyOnsetStrength+=strength;
-
+    
+    prevFrameEnergy=currentFrameEnergy;
+    currentFrameEnergy=frameEnergy;
 
   }
    

@@ -178,7 +178,7 @@ class PlotterGenerator extends Particle
 
     if (d <= connectionRadius && d > 2)
     {
-      hueValue = map(a, 0, 0.5, hue(myColor), hue(myColor)*3 )%360 ; //<>// //<>// //<>// //<>//
+      hueValue = map(a, 0, 0.5, hue(myColor), hue(myColor)*3 )%360 ; //<>// //<>// //<>// //<>// //<>//
       stroke(hueValue, saturationValue, brightnessValue, a*lineAlphaWeight*lineAlpha + (i1 %3 * 2));
       line(p1.getX(), p1.getY(), p2.getX(), p2.getY() );
     }

@@ -85,7 +85,7 @@ abstract class Biosensor
   {
     if ( !calibrating )                    { println("WARNING: not calibrating error");     return; }
     else if ( calibrated )                 { println("WARNING: already calibrated error");  return; }
-    else if ( incomingValues.size() == 0 ) { println("ERROR: incomingValues is empty");     return; }
+    else if ( incomingValues.size() == 0 ) { /*println("ERROR: incomingValues is empty");*/     return; }
 
     calibrationValues.append( incomingValues );
  
@@ -159,7 +159,7 @@ abstract class Biosensor
     float average = oldAverage;
     int listSize = inputList.size();
       if ( listSize == 0 ) 
-        { println("ERROR: Argument of computeAverage is an empty list. "); 
+        { /*println("ERROR: Argument of computeAverage is an empty list. "); */
             return oldAverage; 
           }       
       else

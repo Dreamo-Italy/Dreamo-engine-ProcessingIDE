@@ -4,6 +4,7 @@ class Statistics
   private float sum;
   private float[] acc;
   private int window;
+  private int delay;
   private int aidx;
   private float temp_var;
 
@@ -14,7 +15,18 @@ class Statistics
     sum=0;
     temp_var=0;
     this.window=window;
+    this.delay=0;
     acc=new float[window];
+  }
+  
+  public Statistics(int window, int delay)
+  {
+    aidx=0;
+    sum=0;
+    temp_var=0;
+    this.window=window;
+    this.delay=delay;
+    acc=new float[window+delay];
   }
 
   public float getAverage()
@@ -31,6 +43,16 @@ class Statistics
   public float getStdDev()
   {
     return (float)Math.sqrt(getVariance());
+  }
+  
+  public float getMax()
+  {
+    return DSP.vmax(acc);
+  }
+  
+  public float getMin()
+  {
+    return DSP.vmin(acc);
   }
 
   public void reset()
@@ -53,9 +75,11 @@ class Statistics
     
     aidx++;//next position
     if (aidx>=window) {
+     
       aidx=0;
-    }//if at the end go back
-
-    
+    }//if at the end go back 
   }
+  
+  
+  
 }

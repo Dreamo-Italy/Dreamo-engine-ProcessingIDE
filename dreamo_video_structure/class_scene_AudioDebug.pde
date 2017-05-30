@@ -11,12 +11,14 @@ class AudioDebug extends Scene
   int articulationCoeff;
   float roughnessCoeff;
   float brightnessCoeff;
+  int[] audioStatus;
+  float[] audioFeatures;
   
   
   public void init()
   {
     
-    pal.initColors(1);
+    pal.initColors();
     
     Background bk = new Background();
     setBackground(bk);
@@ -33,62 +35,27 @@ class AudioDebug extends Scene
   
   public void update()
   {
-    
-    //update coefficients
-    ratioCoeff=global_dyn.getRMS();  
-    elasticCoeff=global_dyn.getDynamicityIndex();
-    articulationCoeff=1+(int)global_timbre.getComplexity()*50;
-    brightnessCoeff=global_timbre.getCentroid();
-    roughnessCoeff=global_timbre.getComplexity()+global_timbre.getCentroid();
-    
-    /*
-    if(global_dyn.isSilence())
-    {
-      global_timbre.reset();
-      pal.initColors();
-    }
-   */
-   
+     
     for(int i = 0; i < audio_proc.getSpecSize(); i++)
     {
       coefficients[i]=audio_proc.getFFTcoeff(i);
     }
     
-    /*   
-    if(frameCount%30==0)
-    {
-      if(global_rhythm.isProcessed())
-      {
-        for(int i = 0; i < global_rhythm.getLongWindowMaxSize(); i++)
-        {
-        long_window[i]=global_rhythm.getLongWindowSamples(i);
-        }
-       }
-    }*/
+    audioStatus=audio_decisor.getStatusVector();
+    audioFeatures=audio_decisor.getFeturesVector();
+    
   }
   
   public void trace()
   {
     sceneBackground.trace();
     
-    //**** AUDIO DATA FOR DIRECT ASSEGNATION
-    //INSTANTANOUS VOL: global_dyn.getRMS();
-    //DYNAMIC INDEX: global_dyn.getDynamicityIndex();
-    //SPECTRAL CENTROID: global_timbre.getCentroid();
-    //SPECTRAL COMPLEXITY: global_timbre.getComplexity(); //average is better? 
-    
-    
-    //**** AUDIO DATA FOR TRIGGERING
-    //SILENCE: global_dyn.isSilence(); //try different thresholds
-    //DETECT DROP (?)
-    //AVERAGE VOL: global_dyn.getRMSAvg();
-    //CENTROID RELATIVE RATIO: global_timbre.getCentroidRelativeRatio();
    
     stroke(pal.getColor(3));
     strokeWeight(1);   
     //draw quadrant
      
-   /* 
+   /*
     int W=width/2;
     int H=height/2;
     
@@ -100,8 +67,17 @@ class AudioDebug extends Scene
       ellipse(W+(50*i),H+(50*i),200+10*ratioCoeff,170+10*ratioCoeff);     
       //quad(W/3, H/4,  W/3+190, H/4+280,W/3+100, H/4+350, W/3+150, H/4+100);
     }
-    
     */
+    fill(pal.getColor(1));
+    int dist=250;
+    int l=450;
+    textSize(23);
+    text("RMS ||| "+audioFeatures[0],width/4,height/4); text("||| "+audioStatus[0],width/4+l,height/4);
+    text("DYN INDEX ||| "+audioFeatures[1],width/4,height/4+dist/6);text("||| "+audioStatus[1],width/4+l,height/4+dist/6);
+    text("CENTROID ||| "+audioFeatures[2],width/4,height/4+dist/6*2);text("||| "+audioStatus[2],width/4+l,height/4+dist/6*2);
+    text("COMPLEXITY ||| "+audioFeatures[3],width/4,height/4+dist/6*3);text("||| "+audioStatus[3],width/4+l,height/4+dist/6*3);
+    text("RHYTHM STREGNGTH ||| "+audioFeatures[4],width/4,height/4+dist/6*4);text("||| "+audioStatus[4],width/4+l,height/4+dist/6*4);
+    text("RHYTHM DENSITY ||| "+audioFeatures[5],width/4,height/4+dist/6*5);text("||| "+audioStatus[5],width/4+l,height/4+dist/6*5);
     
    
     noFill();    
@@ -110,8 +86,9 @@ class AudioDebug extends Scene
     //text("Centroid Std Deviation: "+global_timbre.getCentroidStdDev(),120,105);
     //text("RMS Std Deviation: "+global_dyn.getRMSStdDev(),115,260);
     stroke(pal.getColor(2));
-    strokeWeight(2);
+    strokeWeight(1);
 
+    
     //draw spectrum
     for(int i = 0; i < audio_proc.getSpecSize(); i++)
     {
@@ -121,33 +98,18 @@ class AudioDebug extends Scene
     
     stroke(pal.getColor(4));
     line(500,height-global_timbre.getAvgMagnitude()*global_timbre.getMagnitudeThreshold(),500+audio_proc.getSpecSize(),height-global_timbre.getAvgMagnitude()*global_timbre.getMagnitudeThreshold());
-    text("AVG SPECTRUM MAGNITUDE: "+global_timbre.getAvgMagnitude(),width/2,height/2);
-   /*
-   stroke(pal.getColor(3));
-   //draw 1 second window samples
-   for(int i = 0; i < long_window.length; i++)
-   {      
-     line(180+i*0.01, height-100, 180+i*0.01, height-100 - long_window[i]*200);
-   } */
+    //text("AVG SPECTRUM MAGNITUDE: "+global_timbre.getAvgMagnitude(),width/2,height/2);
+      
    
-   
+   //draw onsets
    if(global_rhythm.isEnergyOnset())
    {
      fill(pal.getColor(1));
-     ellipse(width/2,height/2,200,200);
+     ellipse(width/4+150+l,height/4+dist/6*2,100,100);
    }
-    
-  
-  
-    
-    //if(timbre_decisor.checkWindow(global_timbre.getCentroidRelativeRatio()))
-
-      //drawEllipse(60, frameCount);
-      
-    
-    
-    
-  }
+        
+    textSize(12);
+}
   
   void drawEllipse(int frames, int init)
   {
@@ -158,6 +120,8 @@ class AudioDebug extends Scene
       ellipse(width/2,height/2,200,200);
     }
   }
+  
+  
 
   
 }
