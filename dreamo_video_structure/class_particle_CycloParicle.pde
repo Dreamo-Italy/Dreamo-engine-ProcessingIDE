@@ -64,9 +64,12 @@ class CycloParticle extends Particle
   public void trace()
   {
     setParameter(0,global_ecg.getBpm());
+    //setParameter(0,1);
     setParameter(1,global_bioMood.getArousal());
+    //setParameter(1,1);
     setParameter(2,global_dyn.getRMS());
     setParameter(3,global_gsr.getNormalized());
+    //setParameter(3,1);
     translate(width/2-(100*cos(t*0.001)), height/2-100*sin(t*0.001));
     strokeWeight(1);
     stroke(myColor, alpha*sqrt(getParameter(1)));

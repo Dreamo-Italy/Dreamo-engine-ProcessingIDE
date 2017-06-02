@@ -1,4 +1,4 @@
-class Dynamic extends FeaturesExtractor
+ class Dynamic extends FeaturesExtractor
 {
 
   public static final double DEFAULT_SILENCE_THRESHOLD = -60.0;//db

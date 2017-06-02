@@ -26,10 +26,10 @@ class Lissajous extends Scene
     
    //example of usage
    //TODO: implement histeresis cycle to change status
-   //TODO: implement reliable decision algorithm (na parola)
+   //TODO: implement reliable decision algorithm (na parola) 
    
-   colorFadeTo(new Palette(1),7,centroidControl.checkWindow(global_timbre.getCentroidAvg()));
-   colorFadeTo(new Palette(4),7,!centroidControl.checkWindow(global_timbre.getCentroidAvg()));
+   colorFadeTo(new Palette(4),7,centroidControl.checkWindow(global_timbre.getCentroidAvg()));
+   colorFadeTo(new Palette(7),7,!centroidControl.checkWindow(global_timbre.getCentroidAvg()));
    
    //println("HISTERESIS: "+centroidControl.check(global_timbre.getCentroidAvg()));
    for(int i = 0; i < particlesNumber; i++)

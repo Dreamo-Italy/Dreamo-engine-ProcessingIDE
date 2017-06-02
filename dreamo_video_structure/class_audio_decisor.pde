@@ -1,14 +1,6 @@
 class AudioDecisor
 {
   
-  private Hysteresis centroid;
-  private Hysteresis centroid_relative;
-  private Hysteresis complexity; 
-  
-  private Hysteresis rms;
-  private Hysteresis dinamicity;
-  private Hysteresis rmsSlope;
-  
   private Dynamic dynamic;
   private Rhythm rhythm;
   private Timbre timbre;
@@ -18,7 +10,7 @@ class AudioDecisor
   private float energy;
   private float roughness;
   
-  //collect stats on features
+  //**** COLLECT STATS ON FEATURES ****
   //DYNAMIC FEATURES
   private Statistics RMS;
   private Statistics DynIndex;
@@ -32,7 +24,7 @@ class AudioDecisor
   private Statistics rhythmStr;
   private Statistics rhythmDens; 
     
-  //Hysteresis controls
+  //**** HYSTERESIS CONTROLS ****
   private Hysteresis RMSLowerBound;
   private Hysteresis RMSUpperBound;
   
@@ -54,7 +46,7 @@ class AudioDecisor
   private Hysteresis rhythmDensLowerBound;
   private Hysteresis rhythmDensUpperBound;
   
-  //STATUS
+  //**** STATUS ****
   private int RMSStatus;
   private int DynIndexStatus;
   private int centroidStatus;
@@ -88,6 +80,7 @@ class AudioDecisor
     
     featuresVector=new float[FEATURES_NUMBER];
     statusVector=new int[FEATURES_NUMBER];
+
    
     //STATS
     RMS=new Statistics(86); //2 seconds
@@ -95,32 +88,30 @@ class AudioDecisor
     specComplexity=new Statistics(86);
     specCentroid=new Statistics(86); 
     ZCR=new Statistics(86);   
-    rhythmStr=new Statistics(86);
-    rhythmDens=new Statistics(86);
+    rhythmStr=new Statistics(172);
+    rhythmDens=new Statistics(172);
  
     
     //HYSTERESIS
-    RMSLowerBound=new Hysteresis(0.08,0.12,11); //check for 0.25 seconds
-    RMSUpperBound=new Hysteresis(0.18,0.22,11);
+    RMSLowerBound=new Hysteresis(0.28,0.32,11); //check for 0.25 seconds
+    RMSUpperBound=new Hysteresis(0.58,0.62,11);
     
-    DynIndexLowerBound=new Hysteresis(0.1,0.14,11);
-    DynIndexUpperBound=new Hysteresis(0.28,0.32,11);
+    DynIndexLowerBound=new Hysteresis(0.09,0.11,11);
+    DynIndexUpperBound=new Hysteresis(0.18,0.20,11);
     
     specCentroidLowerBound=new Hysteresis(1800,2200,11);
     specCentroidUpperBound=new Hysteresis(2800,3200,11);
     
-    specComplexityLowerBound=new Hysteresis(9,13,11);
-    specComplexityUpperBound=new Hysteresis(14,18,11);
+    specComplexityLowerBound=new Hysteresis(9,11,11);
+    specComplexityUpperBound=new Hysteresis(15,17,11);
     
-    //ZCRLowerBound=new Hysteresis(0.018,0.022,11);
-    //ZCRUpperBound=new Hysteresis(0.048,0.052,11);
+    rhythmStrLowerBound=new Hysteresis(25,30,11);
+    rhythmStrUpperBound=new Hysteresis(120,130,11);
     
-    rhythmStrLowerBound=new Hysteresis(9,12,11);
-    rhythmStrUpperBound=new Hysteresis(38,42,11);
+    rhythmDensLowerBound=new Hysteresis(1,2,43);
+    rhythmDensUpperBound=new Hysteresis(3.5,4.5,43);    
     
-    rhythmDensLowerBound=new Hysteresis(9,11,11);
-    rhythmDensUpperBound=new Hysteresis(9,11,11);
-    
+        
   }
   
   //idea: stabilisco delle soglie generali per capire lo stato della traccia in generale
@@ -167,11 +158,12 @@ class AudioDecisor
   
   public void run()
   {   
-    if(!dynamic.isSilence(-45))
+    if(dynamic.isSilence(-60) || !dynamic.isSilence(-50))
     { 
       collectStats();
       checkStatus();
     }
+    
   }
   
   

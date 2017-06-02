@@ -26,8 +26,8 @@ class ScenePresentation extends Scene
   public void update()
   {
    
-   colorFadeTo(new Palette(1),7,centroidControl.checkWindow(global_timbre.getCentroidAvg()));
-   colorFadeTo(new Palette(4),7,!centroidControl.checkWindow(global_timbre.getCentroidAvg()));
+   colorFadeTo(new Palette(4),7,centroidControl.checkWindow(global_timbre.getCentroidAvg()));
+   colorFadeTo(new Palette(7),7,!centroidControl.checkWindow(global_timbre.getCentroidAvg()));
    
    //println("HISTERESIS: "+centroidControl.check(global_timbre.getCentroidAvg()));
    for(int i = 0; i < particlesNumber; i++)

@@ -122,7 +122,9 @@ class Rhythm extends FeaturesExtractor {
  //**** PRIVATE METHODS **** 
  private void calcRhythmFeatures()
  {
-    rhythmDensity=(float)energyOnsets/WINDOW_TIME;
+    if(rhythmStrength<5){rhythmDensity=0;} 
+    else {rhythmDensity=(float)energyOnsets/WINDOW_TIME;}
+    //rhythmDensity=(float)energyOnsets/WINDOW_TIME;
     //rhythmDensity=energyOnsets;
     if(energyOnsets==0) rhythmStrength=0;
     else rhythmStrength=(float)energyOnsetStrength/energyOnsets;
@@ -134,6 +136,7 @@ class Rhythm extends FeaturesExtractor {
  {    
     if(counter>WINDOW_LENGTH)
     { 
+      
       calcRhythmFeatures();
       energyOnsetStrength=0;
       energyOnsets=0;
@@ -150,7 +153,7 @@ class Rhythm extends FeaturesExtractor {
     if(prevFrameEnergy<currentFrameEnergy && currentFrameEnergy >= frameEnergy && currentFrameEnergy>energyStats.getAverage()*C)
     {
       energyOnsets++;
-      strength=frameEnergy-energyStats.getAverage()*C;
+      strength=currentFrameEnergy-energyStats.getAverage()*C;
       energyOnset=true;
     }
     

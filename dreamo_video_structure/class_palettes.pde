@@ -19,136 +19,39 @@ class Palette
   private boolean initialized=false;
   //private DSP dsp;
 
+  private float[] hues;
+  private float[] saturations;
+  private float[] brightnesses;
  
  //********* CONTRUCTORS ***********
  public Palette(){
  
 
-  
- 
- //first palette - ghiaccio
- colorsInit[0][0] = color(219,18,61);
- colorsInit[0][1] = color(217,47,82);
- colorsInit[0][2] = color(230,8,14);
- colorsInit[0][3] = color(194,8,42);
- colorsInit[0][4] = color(216,28,74);
- 
- //second palette orange/blue
- colorsInit[1][0] = color(204, 100, 47);
- colorsInit[1][1] = color(0, 100, 64);
- colorsInit[1][2] = color(28, 100, 100);
- colorsInit[1][3] = color(42, 41, 94);
- colorsInit[1][4] = color(182, 100, 71);
- 
- //third palette
- colorsInit[2][0] = color(152, 48, 100);
- colorsInit[2][1] = color(180, 64, 45);
- colorsInit[2][2] = color(18, 68, 100);
- colorsInit[2][3] = color(0, 0, 90);
- colorsInit[2][4] = color(240, 2, 23);
- 
- //fourth palette - carpentiere
- colorsInit[3][0] = color(44, 16, 76);
- colorsInit[3][1] = color(39, 41, 81);
- colorsInit[3][2] = color(240, 3, 94);
- colorsInit[3][3] = color(295, 13, 82);
- colorsInit[3][4] = color(342, 6, 39);
- 
- 
- //7 - savana
- colorsInit[4][0] = #130303;
- colorsInit[4][1] = #2D080A;
- colorsInit[4][2] = #7C3626;
- colorsInit[4][3] = #F5853F;
- colorsInit[4][4] = #FFCDBC;
+  hues=new float[COLOR_NUM];
+  saturations=new float[COLOR_NUM];
+  brightnesses=new float[COLOR_NUM];
 
- // - green-blue
- colorsInit[5][0] = #C4F1BE;
- colorsInit[5][1] = #A2C3A4;
- colorsInit[5][2] = #869D96;
- colorsInit[5][3] = #525B76;
- colorsInit[5][4] = #201E50;
+  loadColors();
+  
+  initialized=false;
  
- // - romania
- colorsInit[6][0] = #264653;
- colorsInit[6][1] = #2A9D8F;
- colorsInit[6][2] = #E9C46A;
- colorsInit[6][3] = #F4A261;
- colorsInit[6][4] = #E76F51;
+ }
  
- //10 - super gray
- colorsInit[7][0] = #D2D4C8;
- colorsInit[7][1] = #E0E2DB;
- colorsInit[7][2] = #B8BDB5;
- colorsInit[7][3] = #889696;
- colorsInit[7][4] = #5F7470;
+ public Palette(int i)
+ {
+    hues=new float[COLOR_NUM];
+    saturations=new float[COLOR_NUM];
+    brightnesses=new float[COLOR_NUM];
+    
+    loadColors();  
+    
+    initColors(i);   
  
- 
- initialized=false;
  }
  
  
- public Palette(int i){
-  
- //first palette - ghiaccio
- colorsInit[0][0] = color(219,18,61);
- colorsInit[0][1] = color(217,47,82);
- colorsInit[0][2] = color(230,8,14);
- colorsInit[0][3] = color(194,8,42);
- colorsInit[0][4] = color(216,28,74);
  
- //second palette
- colorsInit[1][0] = color(204, 100, 47);
- colorsInit[1][1] = color(0, 100, 64);
- colorsInit[1][2] = color(28, 100, 100);
- colorsInit[1][3] = color(42, 41, 94);
- colorsInit[1][4] = color(182, 100, 71);
  
- //third palette
- colorsInit[2][0] = color(152, 48, 100);
- colorsInit[2][1] = color(180, 64, 45);
- colorsInit[2][2] = color(18, 68, 100);
- colorsInit[2][3] = color(0, 0, 90);
- colorsInit[2][4] = color(240, 2, 23);
- 
- //fourth palette - carpentiere
- colorsInit[3][0] = color(44, 16, 76);
- colorsInit[3][1] = color(39, 41, 81);
- colorsInit[3][2] = color(240, 3, 94);
- colorsInit[3][3] = color(295, 13, 82);
- colorsInit[3][4] = color(342, 6, 39);
- 
- //7 - savana
- colorsInit[4][0] = #130303;
- colorsInit[4][1] = #2D080A;
- colorsInit[4][2] = #7C3626;
- colorsInit[4][3] = #F5853F;
- colorsInit[4][4] = #FFCDBC;
-
- //8 - green-blue
- colorsInit[5][0] = #C4F1BE;
- colorsInit[5][1] = #A2C3A4;
- colorsInit[5][2] = #869D96;
- colorsInit[5][3] = #525B76;
- colorsInit[5][4] = #201E50;
- 
- //9 - romania
- colorsInit[6][0] = #264653;
- colorsInit[6][1] = #2A9D8F;
- colorsInit[6][2] = #E9C46A;
- colorsInit[6][3] = #F4A261;
- colorsInit[6][4] = #E76F51;
- 
- //10 - super gray
- colorsInit[7][0] = #D2D4C8;
- colorsInit[7][1] = #E0E2DB;
- colorsInit[7][2] = #B8BDB5;
- colorsInit[7][3] = #889696;
- colorsInit[7][4] = #5F7470;
- 
- initColors(i);
- 
- }
  
  //********* PUBLIC METHODS ***********
  
@@ -158,7 +61,12 @@ class Palette
     int r = (int)random(PALETTE_NUM);
     for(int i=0;i<COLOR_NUM;i++){
        colors[i]=colorsInit[r][i];
+       
+       hues[i]=hue(colors[i]);
+       saturations[i]=saturation(colors[i]);
+       brightnesses[i]=brightness(colors[i]);
      }
+     
      ID=r;
      name="random";
      
@@ -169,6 +77,11 @@ class Palette
   {
      for(int i=0;i<COLOR_NUM;i++){
        colors[i]=colorsInit[idx][i];
+       
+       hues[i]=hue(colors[i]);
+       saturations[i]=saturation(colors[i]);
+       brightnesses[i]=brightness(colors[i]);
+       
       }
      ID=idx;
      name="idx";
@@ -285,5 +198,102 @@ class Palette
   {
     ID=i;
   }
+  
+  
+  
+  public void influenceColors(float h, float s, float b)
+  {
+    //create a new color with the same H and S buu with a new B
+    color newColor;
+    
+    for(int i=0;i<COLOR_NUM;i++)
+        {
+          newColor=color(hues[i]+(h*10),saturations[i]+(s*30),brightnesses[i]+(b*30));
+          colors[i]=newColor;
+        }
+  }
+  
+  public void influenceColors(float h, float s, float b, int coeff)
+  {
+    //create a new color with the same H and S buu with a new B
+    color newColor;
+    
+    for(int i=0;i<COLOR_NUM;i++)
+        {
+          newColor=color(hues[i]+(h*coeff),saturations[i]+(s*coeff),brightnesses[i]+(b*coeff));
+          colors[i]=newColor;
+        }
+  }
+  
+
+  
+  
+  
+  
+  
+  private void loadColors()
+  {
+       //first palette - ghiaccio
+     colorsInit[0][0] = color(219,18,61);
+     colorsInit[0][1] = color(217,47,82);
+     colorsInit[0][2] = color(230,8,14);
+     colorsInit[0][3] = color(194,8,42);
+     colorsInit[0][4] = color(216,28,74);
+ 
+     //second palette orange/blue
+     colorsInit[1][0] = color(204, 100, 47);
+     colorsInit[1][1] = color(0, 100, 64);
+     colorsInit[1][2] = color(28, 100, 100);
+     colorsInit[1][3] = color(42, 41, 94);
+     colorsInit[1][4] = color(182, 100, 71);
+ 
+     //third palette
+     colorsInit[2][0] = color(152, 48, 100);
+     colorsInit[2][1] = color(180, 64, 45);
+     colorsInit[2][2] = color(18, 68, 100);
+     colorsInit[2][3] = color(0, 0, 90);
+     colorsInit[2][4] = color(240, 2, 23);
+ 
+     //fourth palette - carpentiere
+     colorsInit[3][0] = color(44, 16, 76);
+     colorsInit[3][1] = color(39, 41, 81);
+     colorsInit[3][2] = color(240, 3, 94);
+     colorsInit[3][3] = color(295, 13, 82);
+     colorsInit[3][4] = color(342, 6, 39);
+ 
+ 
+     //7 - savana
+     colorsInit[4][0] = #130303;
+     colorsInit[4][1] = #2D080A;
+     colorsInit[4][2] = #7C3626;
+     colorsInit[4][3] = #F5853F;
+     colorsInit[4][4] = #FFCDBC;
+
+     // - green-blue
+     colorsInit[5][0] = #C4F1BE;
+     colorsInit[5][1] = #A2C3A4;
+     colorsInit[5][2] = #869D96;
+     colorsInit[5][3] = #525B76;
+     colorsInit[5][4] = #201E50;
+ 
+     // - romania
+     colorsInit[6][0] = #264653;
+     colorsInit[6][1] = #2A9D8F;
+     colorsInit[6][2] = #E9C46A;
+     colorsInit[6][3] = #F4A261;
+     colorsInit[6][4] = #E76F51;
+   
+     //10 - super gray
+     colorsInit[7][0] = #D2D4C8;
+     colorsInit[7][1] = #E0E2DB;
+     colorsInit[7][2] = #B8BDB5;
+     colorsInit[7][3] = #889696;
+     colorsInit[7][4] = #5F7470;    
+  
+}
+  
+
+  
+  
   
 }

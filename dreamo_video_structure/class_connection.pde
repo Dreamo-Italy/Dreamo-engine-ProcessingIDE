@@ -98,9 +98,9 @@ class Connection
     
     boolean portAvailable = false;
     final String[] ports = Serial.list();
-    println( ports );
+    println( ports.length );
     
-    if (ports.length  > 0) // DEBUG = 1 ; RIGHT ONE = 0;
+    if (ports.length  == 0) // DEBUG = 1 ; RIGHT ONE = 0;
     {
       String portName = Serial.list()[2]; //change the 0 to a 1 or 2 etc. to match your port
       myPort = new Serial(parent, portName, 38400);
@@ -182,7 +182,7 @@ class Connection
       //println("Read from table "+sensorName+" has completed.");
         
      executionNumber[sensorIndex]++;
-   } //<>// //<>//
+   } //<>// //<>// //<>//
    
     // the function that reads the DATA from the SERIAL LINE BUFFER
    private void storeFromSerial()
@@ -260,7 +260,7 @@ class Connection
       int originalListSize = getList(sensorName).size();  
       
       float inValue = 0;
- //<>// //<>//
+ //<>// //<>// //<>//
      // extract numberOfElements of elements from conductance list
 
      while(! (getList(sensorName).size() <= originalListSize  - numberOfElements) && !emptyList) 
@@ -275,12 +275,12 @@ class Connection
                if ( index >= 0 && index <= currentListSize )
                    {
                      inValue = getList(sensorName).remove( index );
-                     toOutput.append( inValue ); //<>// //<>//
+                     toOutput.append( inValue ); //<>// //<>// //<>//
                      }               
               }
           else
               emptyList = true; 
-     }  //<>// //<>// //<>//
+     }  //<>// //<>// //<>// //<>//
     
      return toOutput;
     }

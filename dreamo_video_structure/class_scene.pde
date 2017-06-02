@@ -24,6 +24,9 @@ abstract class Scene extends AgingObject
   private int startFading;
   private int endFading;
   
+  protected int[] audioStatus;
+  protected float[] audioFeatures;
+  
   //CONSTRUCTORS
   public Scene()
   {
@@ -224,6 +227,11 @@ abstract class Scene extends AgingObject
       particlesList[i].updatePhysics();
       particlesList[i].update();
     }
+    
+    //update audio parameters
+    audioStatus=audio_decisor.getStatusVector();
+    audioFeatures=audio_decisor.getFeturesVector();
+    
   }
 
   public void trace()
@@ -240,7 +248,7 @@ abstract class Scene extends AgingObject
       particlesList[i].endTransformations();
     }
     
-    if(reflectHorizontally) //<>// //<>// //<>//
+    if(reflectHorizontally) //<>// //<>// //<>// //<>//
     {
       PImage reflection = get(0, 0, width/2, height);
       pushMatrix();

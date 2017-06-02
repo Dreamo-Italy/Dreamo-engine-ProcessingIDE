@@ -1,4 +1,4 @@
-import ddf.minim.analysis.*;
+  import ddf.minim.analysis.*;
 
 class AudioProcessor implements AudioListener
 {
@@ -22,6 +22,7 @@ class AudioProcessor implements AudioListener
   private Rhythm rhy;
   
   private Table audioLog;
+  private Table statusLog;
   private int bufferCount;
   
   
@@ -59,17 +60,24 @@ class AudioProcessor implements AudioListener
       
     }
     
-    audioLog = new Table();
-    
-    audioLog.addColumn("Buffer N.");
-    
+    audioLog = new Table();    
+    audioLog.addColumn("Buffer N.");    
     audioLog.addColumn("RMS");
     audioLog.addColumn("Dyn Index");
     audioLog.addColumn("Spectral Centroid");
     audioLog.addColumn("Spectral Complexity");
-    //audioLog.addColumn("ZCR"); 
+    audioLog.addColumn("ZCR"); 
     audioLog.addColumn("Rhythm Strength");
     audioLog.addColumn("Rhythm Density");
+    
+    statusLog = new Table();   
+    statusLog.addColumn("Buffer N.");
+    statusLog.addColumn("RMS");
+    statusLog.addColumn("Dyn Index");
+    statusLog.addColumn("Spectral Centroid");
+    statusLog.addColumn("Spectral Complexity");    
+    statusLog.addColumn("Rhythm Strength");
+    statusLog.addColumn("Rhythm Density");    
     
   }
   
@@ -155,7 +163,8 @@ class AudioProcessor implements AudioListener
   
   public void saveLog()
   {   
-    saveTable(audioLog, "data/audioFeaturesLog.csv");    
+    saveTable(audioLog, "data/audioFeaturesLog.csv");  
+    saveTable(statusLog, "data/audioStatusLog.csv");
   }
    
   //********* PRIVATE METHODS ***********
@@ -249,17 +258,29 @@ class AudioProcessor implements AudioListener
   
   private void logFeatures()
   {
- 
-    TableRow newRow = audioLog.addRow();        
-    newRow.setInt("Buffer N.",bufferCount);
-    newRow.setFloat("RMS",dyn.getRMS());
-    newRow.setFloat("Dyn Index",dyn.getRMSStdDev());
-    newRow.setFloat("Spectral Centroid",timb.getCentroidHz());
-    newRow.setFloat("Spectral Complexity",timb.getComplexity());
-    //newRow.setFloat("ZCR",timb.getZeroCrossingRate());
-    newRow.setFloat("Rhythm Strength",rhy.getRhythmStrength());
-    newRow.setFloat("Rhythm Density",rhy.getRhythmDensity());
+    if(dyn.isSilence(-60) || !dyn.isSilence(-50))
+    {
+      //LOG FEATURES
+      TableRow newRow = audioLog.addRow();        
+      newRow.setInt("Buffer N.",bufferCount);
+      newRow.setFloat("RMS",dyn.getRMS());
+      newRow.setFloat("Dyn Index",dyn.getRMSStdDev());
+      newRow.setFloat("Spectral Centroid",timb.getCentroidHz());
+      newRow.setFloat("Spectral Complexity",timb.getComplexity());
+      newRow.setFloat("ZCR",timb.getZeroCrossingRate());
+      newRow.setFloat("Rhythm Strength",rhy.getRhythmStrength());
+      newRow.setFloat("Rhythm Density",rhy.getRhythmDensity());
       
+      //LOG STATUS
+      TableRow newRowS = statusLog.addRow();        
+      newRowS.setInt("Buffer N.",bufferCount);
+      newRowS.setInt("RMS",audio_decisor.getStatusVector()[0]);
+      newRowS.setInt("Dyn Index",audio_decisor.getStatusVector()[1]);
+      newRowS.setInt("Spectral Centroid",audio_decisor.getStatusVector()[2]);
+      newRowS.setInt("Spectral Complexity",audio_decisor.getStatusVector()[3]);
+      newRowS.setInt("Rhythm Strength",audio_decisor.getStatusVector()[4]);
+      newRowS.setInt("Rhythm Density",audio_decisor.getStatusVector()[5]);     
+    } 
   }
     
   
