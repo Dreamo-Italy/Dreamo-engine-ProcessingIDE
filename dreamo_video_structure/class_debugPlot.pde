@@ -224,33 +224,33 @@
     
     plots[2].addPoint( frameCount, global_dyn.getRMS());    
     plots[2].getLayer("AvgRMS").addPoint( frameCount, audio_decisor.getFeturesVector()[0]);
-    plots[2].getLayer("TH").addPoint(frameCount,0.3);
-    plots[2].getLayer("TH2").addPoint(frameCount,0.6);
+    plots[2].getLayer("TH").addPoint(frameCount,audio_decisor.getRMSLowerThreshold());
+    plots[2].getLayer("TH2").addPoint(frameCount,audio_decisor.getRMSUpperThreshold());
 
     plots[3].addPoint( frameCount, global_dyn.getRMSStdDev());
     plots[3].getLayer("AvgDynIndex").addPoint(frameCount, audio_decisor.getFeturesVector()[1]);
-    plots[3].getLayer("TH").addPoint(frameCount,0.1);
-    plots[3].getLayer("TH2").addPoint(frameCount,0.2);
+    plots[3].getLayer("TH").addPoint(frameCount,audio_decisor.getDynIndexLowerThreshold());
+    plots[3].getLayer("TH2").addPoint(frameCount,audio_decisor.getDynIndexUpperThreshold());
 
     plots[4].addPoint( frameCount, global_timbre.getCentroidHz());    
     plots[4].getLayer("AvgCentroid").addPoint( frameCount, audio_decisor.getFeturesVector()[2]);
-    plots[4].getLayer("TH").addPoint(frameCount,2000);
-    plots[4].getLayer("TH2").addPoint(frameCount,3000);
+    plots[4].getLayer("TH").addPoint(frameCount,audio_decisor.getCentroidLowerThreshold());
+    plots[4].getLayer("TH2").addPoint(frameCount,audio_decisor.getCentroidUpperThreshold());
     
     plots[5].addPoint( frameCount, global_timbre.getComplexity());    
     plots[5].getLayer("AvgComplexity").addPoint( frameCount, audio_decisor.getFeturesVector()[3]);
-    plots[5].getLayer("TH").addPoint(frameCount,11);
-    plots[5].getLayer("TH2").addPoint(frameCount,18);
+    plots[5].getLayer("TH").addPoint(frameCount,audio_decisor.getComplexityLowerThreshold());
+    plots[5].getLayer("TH2").addPoint(frameCount,audio_decisor.getComplexityUpperThreshold());
     
     plots[6].addPoint( frameCount, global_rhythm.getRhythmStrength());    
     plots[6].getLayer("AvgRhythmStrength").addPoint( frameCount, audio_decisor.getFeturesVector()[4]);
-    plots[6].getLayer("TH").addPoint(frameCount,27);
-    plots[6].getLayer("TH2").addPoint(frameCount,125);
+    plots[6].getLayer("TH").addPoint(frameCount,audio_decisor.getRhythmStrLowerThreshold());
+    plots[6].getLayer("TH2").addPoint(frameCount,audio_decisor.getRhythmStrUpperThreshold());
     
     plots[7].addPoint( frameCount, global_rhythm.getRhythmDensity());    
     plots[7].getLayer("AvgRhythmDensity").addPoint( frameCount, audio_decisor.getFeturesVector()[5]);
-    plots[7].getLayer("TH").addPoint(frameCount,1.5);
-    plots[7].getLayer("TH2").addPoint(frameCount,4);
+    plots[7].getLayer("TH").addPoint(frameCount,audio_decisor.getRhythmDensLowerThreshold());
+    plots[7].getLayer("TH2").addPoint(frameCount,audio_decisor.getRhythmDensUpperThreshold());
 
 
   }

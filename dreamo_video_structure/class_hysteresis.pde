@@ -108,14 +108,28 @@ class Hysteresis
     
   }
   
+  
   public float getUpperBound()
   {
     return upperBound;
   }
   
+  
   public float getLowerBound()
   {
     return lowerBound;
+  }
+  
+  
+  public void setUpperBound(float upper)
+  {
+    this.upperBound=upper;
+  }
+  
+  
+  public void setLowerBound(float lower)
+  {
+    this.lowerBound=lower;
   }
   
   

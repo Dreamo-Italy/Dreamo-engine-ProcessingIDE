@@ -26,29 +26,22 @@ class CrazyL extends Scene
   //trace and update methods
   public void update()
   {
-    
-    
-    //COLOR CONTROLS
+      
+    //**** COLOR CONTROLS
     //choose warm or cold palette
-    //colorFadeTo(new Palette(chooseMusicPalette()),2,audio_decisor.getColorChange()); 
+    colorFadeTo(new Palette(chooseMusicPalette()),2,audio_decisor.getColorChange()); 
     //println(audio_decisor.getColorChange());
     
     //control color brightness
-    //darkenColors(3,30f, (audio_decisor.getCentroidChangeDir()==-1));
-    //lightenColors(3,50f, (audio_decisor.getCentroidChangeDir()==1));
+    darkenColors(3,30f, (audio_decisor.getCentroidChangeDir()==-1));
+    lightenColors(3,50f, (audio_decisor.getCentroidChangeDir()==1));
     
     //control color saturation
-    //desaturateColors(3,20,(audio_decisor.getComplexityChangeDir()==-1));
-    //saturateColors(3,50,(audio_decisor.getComplexityChangeDir()==1));
+    desaturateColors(3,20f,(audio_decisor.getComplexityChangeDir()==-1));
+    saturateColors(3,50f,(audio_decisor.getComplexityChangeDir()==1));
     
     //follow big changes
-    //colorFadeTo(new Palette(chooseMusicPalette()),2,(audio_decisor.getChangesNumber()>2));
-    
-    //println(audio_decisor.getCentroidChangeDir());
-    
-    
-    //colorFadeTo(new Palette("warm"),2,(audio_decisor.getChangesNumber()>1));
-    //colorFadeTo(new Palette("cold"),2,(audio_decisor.getChangesNumber()>1));
+    colorFadeTo(new Palette(chooseMusicPalette()),2,(audio_decisor.getChangesNumber()>2));
     
     //println(chooseMusicPalette());
     
@@ -66,7 +59,7 @@ class CrazyL extends Scene
     }
     
 
-    println("COMPLEXITY STATUS: "+audioStatus[3]);
+    //println("COMPLEXITY STATUS: "+audioStatus[3]);
     
     /*
     int l=10;

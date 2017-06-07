@@ -476,7 +476,7 @@ class AudioDecisor
     
   }
   
-  public float getCentroidLowerBound()
+  public float getCentroidStatusLowerBound()
   {
     if(statusVector[2]==0) {return 0;}
     else if(statusVector[2]==1) {return specCentroidLowerBound.getLowerBound();}
@@ -484,7 +484,15 @@ class AudioDecisor
     else {return -1;}
   }
   
-  public float getComplexityLowerBound()
+  public float getCentroidStatusUpperBound()
+  {
+    if(statusVector[2]==0) {return specCentroidLowerBound.getUpperBound();}
+    else if(statusVector[2]==1) {return specCentroidUpperBound.getUpperBound();}
+    else if(statusVector[2]==3) {return 7000;}
+    else {return -1;}
+  }
+  
+  public float getComplexityStatusLowerBound()
   {
     if(statusVector[3]==0) {return 0;}
     else if(statusVector[3]==1) {return specComplexityLowerBound.getLowerBound();}
@@ -493,7 +501,7 @@ class AudioDecisor
   }
   
   
-  public float getComplexityUpperBound()
+  public float getComplexityStatusUpperBound()
   {
     if(statusVector[3]==0) {return specComplexityLowerBound.getUpperBound();}
     else if(statusVector[3]==1) {return specComplexityUpperBound.getUpperBound();}
@@ -502,12 +510,137 @@ class AudioDecisor
   }
   
   
-  public float getCentroidUpperBound()
+  public float getRMSLowerThreshold()
   {
-    if(statusVector[2]==0) {return specCentroidLowerBound.getUpperBound();}
-    else if(statusVector[2]==1) {return specCentroidUpperBound.getUpperBound();}
-    else if(statusVector[2]==3) {return 7000;}
-    else {return -1;}
+    return (RMSLowerBound.getLowerBound()+RMSLowerBound.getUpperBound())/2;
+  }
+  
+  public float getRMSUpperThreshold()
+  {
+    return (RMSUpperBound.getLowerBound()+RMSUpperBound.getUpperBound())/2;
+  }
+  
+  public float getDynIndexLowerThreshold()
+  {
+    return (DynIndexLowerBound.getLowerBound()+DynIndexLowerBound.getUpperBound()/2);
+  }
+  
+  public float getDynIndexUpperThreshold()
+  {
+    return (DynIndexUpperBound.getLowerBound()+DynIndexUpperBound.getUpperBound()/2);
+  }
+  
+  public float getCentroidLowerThreshold()
+  {
+    return (specCentroidLowerBound.getLowerBound()+specCentroidLowerBound.getUpperBound())/2;
+  }
+  
+  public float getCentroidUpperThreshold()
+  {
+    return (specCentroidUpperBound.getLowerBound()+specCentroidUpperBound.getUpperBound())/2;
+  }
+  
+  public float getComplexityLowerThreshold()
+  {
+    return (specComplexityLowerBound.getLowerBound()+specComplexityLowerBound.getUpperBound())/2;
+  } 
+  
+  public float getComplexityUpperThreshold()
+  {
+    return (specComplexityUpperBound.getLowerBound()+specComplexityUpperBound.getUpperBound())/2;
+  } 
+  
+  public float getRhythmStrLowerThreshold()
+  {
+    return (rhythmStrLowerBound.getLowerBound()+rhythmStrLowerBound.getUpperBound())/2;
+  }
+  
+  public float getRhythmStrUpperThreshold()
+  {
+    return (rhythmStrUpperBound.getLowerBound()+rhythmStrUpperBound.getUpperBound())/2;
+  }
+  
+  public float getRhythmDensLowerThreshold()
+  {
+    return (rhythmDensLowerBound.getLowerBound()+rhythmDensLowerBound.getUpperBound())/2;
+  }
+  
+  public float getRhythmDensUpperThreshold()
+  {
+    return (rhythmDensUpperBound.getLowerBound()+rhythmDensUpperBound.getUpperBound())/2;
+  }
+  
+  
+  public void setRMSLowerBound(float value)
+  {
+    RMSLowerBound.setLowerBound(value-0.02);
+    RMSLowerBound.setUpperBound(value+0.02);
+  }
+  
+  public void setRMSUpperBound(float value)
+  {
+    RMSUpperBound.setLowerBound(value-0.02);
+    RMSUpperBound.setUpperBound(value+0.02);   
+  }
+  
+  public void setDynIndexLowerBound(float value)
+  {
+    DynIndexLowerBound.setLowerBound(value-0.01);
+    DynIndexLowerBound.setUpperBound(value+0.01);
+  }
+  
+  public void setDynIndexUpperBound(float value)
+  {
+    DynIndexUpperBound.setLowerBound(value-0.02);
+    DynIndexUpperBound.setUpperBound(value+0.02);
+  }
+  
+  public void setCentroidLowerBound(float value)
+  {
+    specCentroidLowerBound.setLowerBound(value-150);
+    specCentroidLowerBound.setUpperBound(value+150);
+  }
+  
+  public void setCentroidUpperBound(float value)
+  {
+    specCentroidUpperBound.setLowerBound(value-200);
+    specCentroidUpperBound.setUpperBound(value+200);
+  }
+  
+  public void setComplexityLowerBound(float value)
+  {
+    specComplexityLowerBound.setLowerBound(value-1);
+    specComplexityLowerBound.setUpperBound(value+1);
+  }
+  
+  public void setComplexityUpperBound(float value)
+  {
+    specComplexityUpperBound.setLowerBound(value-1);
+    specComplexityUpperBound.setUpperBound(value+1);
+  }
+  
+  public void setRhythmStrLowerBound(float value)
+  {
+    rhythmStrLowerBound.setLowerBound(value-2.5);
+    rhythmStrLowerBound.setUpperBound(value+2.5);
+  }
+  
+  public void setRhythmStrUpperBound(float value)
+  {
+    rhythmStrUpperBound.setLowerBound(value-5);
+    rhythmStrUpperBound.setUpperBound(value+5);
+  }
+  
+  public void setRhythmDensLowerBound(float value)
+  {
+    rhythmDensLowerBound.setLowerBound(value-0.5);
+    rhythmDensLowerBound.setUpperBound(value+0.5);    
+  }
+  
+  public void setRhythmDensUpperBound(float value)
+  {
+    rhythmDensUpperBound.setLowerBound(value-0.5);
+    rhythmDensUpperBound.setUpperBound(value+0.5);    
   }
   
   

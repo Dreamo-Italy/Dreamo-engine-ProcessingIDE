@@ -74,7 +74,7 @@ class CrazyLines extends Particle
     //color gradient = pal.getColor();
     
     //println(saturation(pal.getColor(getColorIndex())));
-    pal.influenceColors(0,mapForSaturation(audioFeatures[3],audio_decisor.getComplexityLowerBound(),audio_decisor.getComplexityUpperBound()),mapForBrightness(audioFeatures[2],audio_decisor.getCentroidLowerBound(),audio_decisor.getCentroidUpperBound()));
+    pal.influenceColors(0,mapForSaturation(audioFeatures[3],audio_decisor.getComplexityStatusLowerBound(),audio_decisor.getComplexityStatusUpperBound()),mapForBrightness(audioFeatures[2],audio_decisor.getCentroidStatusLowerBound(),audio_decisor.getCentroidStatusUpperBound()));
     
     //par1=audioFeatures[0];
     par1=instantFeatures[0];
