@@ -15,6 +15,7 @@ abstract class Scene extends AgingObject
   protected Mood sceneMood;
 
   protected Palette pal;
+  private Palette targetPal;
   
   private boolean reflectHorizontally;
   private boolean reflectVertically;
@@ -24,8 +25,12 @@ abstract class Scene extends AgingObject
   private int startFading;
   private int endFading;
   
-  protected int[] audioStatus;
+  private boolean changingBrightness;
+  private boolean changingSaturation;
+  
+  protected float[] instantFeatures;
   protected float[] audioFeatures;
+  protected int[] audioStatus; 
   
   //CONSTRUCTORS
   public Scene()
@@ -42,6 +47,9 @@ abstract class Scene extends AgingObject
     reflectVertically = false;
     
     isFading=false;
+    changingBrightness=false;
+    changingSaturation=false;
+    
     sceneMood=new Mood();
   }
 
@@ -64,7 +72,7 @@ abstract class Scene extends AgingObject
     }
     
     sceneMood = new Mood(toCopy.sceneMood);
-    
+    isFading=false;
   }
 
   //
@@ -222,15 +230,20 @@ abstract class Scene extends AgingObject
   //trace and update methods
   public void update()
   {
+    
+    //update audio parameters
+    instantFeatures=audio_decisor.getInstantFeatures();
+    audioFeatures=audio_decisor.getFeturesVector();
+    audioStatus=audio_decisor.getStatusVector();
+    
     for(int i = 0; i < particlesNumber; i++)
     {
       particlesList[i].updatePhysics();
+      particlesList[i].updateAudio(instantFeatures,audioFeatures,audioStatus);
       particlesList[i].update();
     }
     
-    //update audio parameters
-    audioStatus=audio_decisor.getStatusVector();
-    audioFeatures=audio_decisor.getFeturesVector();
+
     
   }
 
@@ -290,7 +303,7 @@ abstract class Scene extends AgingObject
   
 
   public void colorFadeTo(Palette p, int seconds, boolean activate)
-  {
+  {       
     if(this.pal.getID()!=p.getID()) //if it's not the same palette
     {
       if(activate || isFading){
@@ -299,6 +312,7 @@ abstract class Scene extends AgingObject
         {
           startFading=frameCount;
           endFading=frameCount+seconds*global_fps;
+          targetPal=p;
           isFading=true; //now scene is fading    
         }
     
@@ -309,19 +323,149 @@ abstract class Scene extends AgingObject
             //set the colors of the palette
             for(int i=0;i<this.pal.paletteSize();i++)
             {
-              this.pal.setColor(lerpColor(this.pal.getColor(i), p.getColor(i), map(frameCount,startFading,endFading,0,1)),i);
+              
+              println("... FADING... ");
+              this.pal.setColor(lerpColor(this.pal.getColor(i), targetPal.getColor(i), map(frameCount,startFading,endFading,0,1)),i);
             }
           }
           else //finished 
           { 
-            this.setPalette(p); //overwrite palette
+            this.setPalette(targetPal); //overwrite palette
             isFading=false;
           }
          }
         }
-       }
-       
+       }      
+  
+}
+  
+  
+  public void darkenColors(int seconds, float amount, boolean activate)
+  {
+      if(activate || changingBrightness){
+        
+        //if the scene is not already fading
+        if(!changingBrightness) //set starting and ending frames
+        {
+          //startFading=frameCount;
+          endFading=frameCount+seconds*global_fps;
+          changingBrightness=true; //now scene is fading    
+        }
+    
+        else  //continue fading
+        {
+          if(frameCount<=endFading)//fading finished?
+          {
+            //set the colors of the palette
+            this.pal.makeDarker(amount/(seconds*global_fps));
+            
+          }
+          else //finished 
+          { 
+            changingBrightness=false;
+          }
+         }
+        }    
   }
-
+  
+  
+  public void lightenColors(int seconds, float amount, boolean activate)
+  {
+      if(activate || changingBrightness){
+        
+        //if the scene is not already fading
+        if(!changingBrightness) //set starting and ending frames
+        {
+          //startFading=frameCount;
+          endFading=frameCount+seconds*global_fps;
+          changingBrightness=true; //now scene is fading    
+        }
+    
+        else  //continue fading
+        {
+          if(frameCount<=endFading)//fading finished?
+          {
+            //set the colors of the palette
+            this.pal.makeBrighter(amount/(seconds*global_fps));
+            
+          }
+          else //finished 
+          { 
+            changingBrightness=false;
+          }
+         }
+        }    
+  }
+  
+  
+  public void saturateColors(int seconds, float amount, boolean activate)
+  {
+      if(activate || changingSaturation){
+        
+        //if the scene is not already fading
+        if(!changingSaturation) //set starting and ending frames
+        {
+          //startFading=frameCount;
+          endFading=frameCount+seconds*global_fps;
+          changingSaturation=true; //now scene is fading    
+        }
+    
+        else  //continue fading
+        {
+          if(frameCount<=endFading)//fading finished?
+          {
+           println("SATURATING");
+         
+            this.pal.saturate(amount/(seconds*global_fps));
+            
+          }
+          else //finished 
+          { 
+            changingSaturation=false;
+          }
+         }
+        }    
+  }
+  
+  
+  public void desaturateColors(int seconds, float amount, boolean activate)
+  {
+      if(activate || changingSaturation){
+        
+        //if the scene is not already fading
+        if(!changingSaturation) //set starting and ending frames
+        {
+          //startFading=frameCount;
+          endFading=frameCount+seconds*global_fps;
+          changingSaturation=true; //now scene is fading    
+        }
+    
+        else  //continue fading
+        {
+          if(frameCount<=endFading)//fading finished?
+          {
+            //set the colors of the palette
+            this.pal.desaturate(amount/(seconds*global_fps));
+            
+          }
+          else //finished 
+          { 
+            changingSaturation=false;
+          }
+         }
+        }    
+  }
+  
+  
+  protected String chooseMusicPalette()
+  {
+    //TODO: tune this parameter
+    if (audio_decisor.getColorIndicator()>3) {return "warm";}
+    else {return "cold";}
+    
+  }
+  
+  
   abstract void init();
+  
 }

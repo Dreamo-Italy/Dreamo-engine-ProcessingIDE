@@ -108,4 +108,15 @@ class Hysteresis
     
   }
   
+  public float getUpperBound()
+  {
+    return upperBound;
+  }
+  
+  public float getLowerBound()
+  {
+    return lowerBound;
+  }
+  
+  
 }

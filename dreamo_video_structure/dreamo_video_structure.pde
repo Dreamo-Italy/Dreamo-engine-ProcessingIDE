@@ -9,8 +9,8 @@ void setup()
   //fullScreen(FX2D,1);
   frameRate(global_fps);
   noSmooth();
- //<>// //<>//
-  //****** CONNECTION //<>// ****** //<>// //<>// //<>// //<>//
+ //<>//
+  //****** CONNECTION //<>// ****** //<>// //<>// //<>//
   global_connection = new Connection(this);
 
   //****** BIOSENSORS ******
@@ -59,7 +59,7 @@ void setup()
   //**** OTHER SCENES
   
   global_stage.addScene(new AudioDebug());
-  //global_stage.addScene(new CrazyL());
+  global_stage.addScene(new CrazyL());
   //global_stage.addScene(new Cyclo2());
   //global_stage.addScene(new LineLine1());
   //global_stage.addScene(new SceneFireworks());
@@ -109,11 +109,11 @@ void draw()
 
    audio_decisor.run();
 
- //<>// //<>//
+ //<>//
    long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME
- //<>// //<>// //<>//
+ //<>// //<>//
 
-   //----------- print the durations for debug purposes------------ //<>// //<>// //<>// //<>//
+   //----------- print the durations for debug purposes------------ //<>// //<>// //<>//
    
    
    

@@ -12,6 +12,7 @@ class AudioDebug extends Scene
   float roughnessCoeff;
   float brightnessCoeff;
   
+  boolean activate=false;
 
 
   
@@ -19,7 +20,9 @@ class AudioDebug extends Scene
   public void init()
   {
     
-    pal.initColors(1);
+    pal.initColors("warm");
+    println(pal.getID());
+    
     
     Background bk = new Background();
     setBackground(bk);
@@ -34,7 +37,7 @@ class AudioDebug extends Scene
     
     
   }
-  
+  int counter=0;
   
   public void update()
   {
@@ -44,12 +47,19 @@ class AudioDebug extends Scene
       coefficients[i]=audio_proc.getFFTcoeff(i);
     }
     
+    instantFeatures=audio_decisor.getInstantFeatures();
     audioStatus=audio_decisor.getStatusVector();
     audioFeatures=audio_decisor.getFeturesVector();
-    
-    //pal.influenceBrightness(map(audioFeatures[2],0,6000,-0.7,1));
-    pal.influenceColors(0,map(audioFeatures[3],0,50,-0.7,1),map(audioFeatures[2],0,6000,-0.7,1));
-    
+    //println("CHANGES "+audio_decisor.getChangesNumber());
+   
+    println(audio_decisor.getCentroidChangeDir());
+    //pal.influenceColors(0,map(audioFeatures[3],0,30,0,1),0);
+        
+    //println(map(audioFeatures[3],0,30,0,1));
+   
+    //println("STATUS CHANGES IN THE LAST 2 SECS: "+audio_decisor.getChangesNumber());
+    //println(audio_decisor.getColorChange());
+    //println(audio_decisor.getColorIndicator());
     //println(map(audioFeatures[2],0,6000,-0.7,1));
     
   }
@@ -84,7 +94,7 @@ class AudioDebug extends Scene
     text("DYN INDEX ||| "+audioFeatures[1],width/4,height/6+dist/6);text("||| "+audioStatus[1],width/4+l,height/6+dist/6);
     text("CENTROID ||| "+audioFeatures[2],width/4,height/6+dist/6*2);text("||| "+audioStatus[2],width/4+l,height/6+dist/6*2);
     text("COMPLEXITY ||| "+audioFeatures[3],width/4,height/6+dist/6*3);text("||| "+audioStatus[3],width/4+l,height/6+dist/6*3);
-    text("RHYTHM STREGNGTH ||| "+audioFeatures[4],width/4,height/6+dist/6*4);text("||| "+audioStatus[4],width/4+l,height/6+dist/6*4);
+    text("RHYTHM STRENGTH ||| "+audioFeatures[4],width/4,height/6+dist/6*4);text("||| "+audioStatus[4],width/4+l,height/6+dist/6*4);
     text("RHYTHM DENSITY ||| "+audioFeatures[5],width/4,height/6+dist/6*5);text("||| "+audioStatus[5],width/4+l,height/6+dist/6*5);
     
    

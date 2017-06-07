@@ -260,7 +260,7 @@ class Connection
       int originalListSize = getList(sensorName).size();  
       
       float inValue = 0;
- //<>// //<>// //<>//
+ //<>// //<>//
      // extract numberOfElements of elements from conductance list
 
      while(! (getList(sensorName).size() <= originalListSize  - numberOfElements) && !emptyList) 
@@ -275,12 +275,12 @@ class Connection
                if ( index >= 0 && index <= currentListSize )
                    {
                      inValue = getList(sensorName).remove( index );
-                     toOutput.append( inValue ); //<>// //<>// //<>//
+                     toOutput.append( inValue ); //<>// //<>//
                      }               
               }
           else
               emptyList = true; 
-     }  //<>// //<>// //<>// //<>//
+     }  //<>// //<>// //<>//
     
      return toOutput;
     }

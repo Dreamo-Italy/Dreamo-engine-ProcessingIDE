@@ -10,6 +10,11 @@ class AudioDecisor
   private float energy;
   private float roughness;
   
+ 
+  private int endCheck;
+  private int changesNumber;
+  private boolean checking;
+  
   //**** COLLECT STATS ON FEATURES ****
   //DYNAMIC FEATURES
   private Statistics RMS;
@@ -18,13 +23,13 @@ class AudioDecisor
   //TIMBRIC FEATURES
   private Statistics specCentroid;
   private Statistics specComplexity;
-  private Statistics ZCR;
+  //private Statistics ZCR;
   
   //RHYTHMIC FEATURES
   private Statistics rhythmStr;
   private Statistics rhythmDens; 
     
-  //**** HYSTERESIS CONTROLS ****
+  //**** HYSTERESIS CONTROLS ****-
   private Hysteresis RMSLowerBound;
   private Hysteresis RMSUpperBound;
   
@@ -55,9 +60,24 @@ class AudioDecisor
   private int rhythmStrStatus;
   private int rhythmDensStatus;
   
+  //***** VECTORS ****
+  private float[] instantFeatures;  
   private float[] featuresVector;
   private int[] statusVector;
+  private int[] prevStatusVector;
   private final int FEATURES_NUMBER=6;
+ 
+  //**** SCORES ****
+  private float[] colorIndicator;
+  private boolean colorChange;
+  
+  //CHANGES
+  private int RMSChange;
+  private int dynIndexChange;
+  private int centroidChange;
+  private int complexityChange;
+  private int rhythmStrChange;
+  private int rhythmDensChange;
   
   //**** AUDIO DATA FOR DIRECT ASSEGNATION
   //INSTANTANOUS VOL: global_dyn.getRMS();
@@ -75,35 +95,51 @@ class AudioDecisor
   {
     dynamic=d;
     rhythm=r;
-    timbre=t;
+    timbre=t;    
     
-    
+    instantFeatures=new float[FEATURES_NUMBER];
     featuresVector=new float[FEATURES_NUMBER];
     statusVector=new int[FEATURES_NUMBER];
+    prevStatusVector=new int[FEATURES_NUMBER];
 
-   
+    changesNumber=0;
+    checking=false;   
+     
+    colorIndicator=new float[2];
+    colorChange=false; 
+      
     //STATS
     RMS=new Statistics(86); //2 seconds
     DynIndex=new Statistics(86);   
     specComplexity=new Statistics(86);
     specCentroid=new Statistics(86); 
-    ZCR=new Statistics(86);   
+    //ZCR=new Statistics(86);   
     rhythmStr=new Statistics(172);
     rhythmDens=new Statistics(172);
  
+    RMSChange=0;
+    dynIndexChange=0;
+    centroidChange=0;
+    complexityChange=0;
+    rhythmStrChange=0;
+    rhythmDensChange=0;
+   
+ 
     
     //HYSTERESIS
+    //ricontrollare e validare e soglie facendo dei test su varie tracce e calcolando la media per ogni feature
+    
     RMSLowerBound=new Hysteresis(0.28,0.32,11); //check for 0.25 seconds
-    RMSUpperBound=new Hysteresis(0.58,0.62,11);
+    RMSUpperBound=new Hysteresis(0.54,0.58,11);
     
     DynIndexLowerBound=new Hysteresis(0.09,0.11,11);
     DynIndexUpperBound=new Hysteresis(0.18,0.20,11);
     
-    specCentroidLowerBound=new Hysteresis(1800,2200,11);
+    specCentroidLowerBound=new Hysteresis(1900,2200,11);
     specCentroidUpperBound=new Hysteresis(2800,3200,11);
     
-    specComplexityLowerBound=new Hysteresis(9,11,11);
-    specComplexityUpperBound=new Hysteresis(15,17,11);
+    specComplexityLowerBound=new Hysteresis(10,12,11);
+    specComplexityUpperBound=new Hysteresis(17,19,11);
     
     rhythmStrLowerBound=new Hysteresis(25,30,11);
     rhythmStrUpperBound=new Hysteresis(120,130,11);
@@ -111,58 +147,50 @@ class AudioDecisor
     rhythmDensLowerBound=new Hysteresis(1,2,43);
     rhythmDensUpperBound=new Hysteresis(3.5,4.5,43);    
     
+    //IDEA: utilizzare la deviazione standard per aggiornare le soglie, in modo che il sistema sia adattivo alla traccia corrente
         
   }
   
-  //idea: stabilisco delle soglie generali per capire lo stato della traccia in generale
-  
-  //aggiungo un controllo "interno" alla traccia
-  //idea: se il valore istantaneo si discosta dalla media (5 secondo precedenti?) +/- la std dev calcolata sullo stesso intervallo
-  //rileviamo un cambiamento
-  
-  //esempio: 
-  /*
-  if(timbre.getCentroid() > specCentroid.getAverage() + specCentroid.getStdDev()/2 || timbre.getCentroid() < specCentroid.getAverage() - specCentroid.getStdDev()/2)
-  {
-    println("SPECTRAL CETROID CHANGE");
-  }
-  */
 
+  public int[] getStatusVector() { return statusVector; }
+ 
+  public float[] getFeturesVector() { return featuresVector; }
   
-  public int[] getStatusVector()
-  {
-    return statusVector;
-  }
+  public float[] getInstantFeatures() { return instantFeatures; }
   
-  public float[] getFeturesVector()
-  {
-    return featuresVector;
-  }
+  public boolean isSilence() { return dynamic.isSilence(); }
+ 
+  public boolean isSilence(float t) { return dynamic.isSilence(t); }
   
-  public float getClarity()
-  {
-    return clarity;
-  }
-    public float getEnergy()
-  {
-    return energy;
-  }
-    public float getAgitation()
-  {
-    return agitation;
-  }
-    public float getRoughness()
-  {
-    return roughness;
-  }
+  public int getChangesNumber() { return changesNumber; }
   
+  public int getCentroidChangeDir() { return centroidChange;}
+  
+  public int getComplexityChangeDir() { return complexityChange;}
+  
+  public boolean getColorChange() { return colorChange; }
+  
+  public float getColorIndicator() { return colorIndicator[0]; }
+  
+  
+
   public void run()
   {   
     if(dynamic.isSilence(-60) || !dynamic.isSilence(-50))
     { 
       collectStats();
       checkStatus();
+      aggregateStatus();
     }
+    else
+    {
+      for(int i=0;i<FEATURES_NUMBER;i++)
+      {
+      statusVector[i]=-1;
+      }
+    }
+        
+    checkChanges();
     
   }
   
@@ -171,16 +199,25 @@ class AudioDecisor
   {
     //DYN
     RMS.accumulate(dynamic.getRMS());
+    instantFeatures[0]=dynamic.getRMS();
+    
     DynIndex.accumulate(dynamic.getRMSStdDev());
+    instantFeatures[1]=dynamic.getRMSStdDev();
     
     //TIMBRE
     specCentroid.accumulate(timbre.getCentroidHz());
+    instantFeatures[2]=timbre.getCentroidHz();
+    
     specComplexity.accumulate(timbre.getComplexity());
-    ZCR.accumulate(timbre.getZeroCrossingRate());
+    instantFeatures[3]=timbre.getComplexity();
     
     //RHYTHM
     rhythmStr.accumulate(rhythm.getRhythmStrength());
+    instantFeatures[4]=rhythm.getRhythmStrength();
+    
     rhythmDens.accumulate(rhythm.getRhythmDensity());
+    instantFeatures[5]=rhythm.getRhythmDensity();       
+    
   }
   
   
@@ -190,7 +227,6 @@ class AudioDecisor
     checkDynIndexStatus();
     checkCentroidStatus();
     checkComplexityStatus();
-    //ZCR?
     checkRhythmStrStatus();
     checkRhythmDensStatus();
    
@@ -203,19 +239,19 @@ class AudioDecisor
     if(!RMSLowerBound.checkWindow(RMS.getAverage()) && !RMSUpperBound.checkWindow(RMS.getAverage()))
     {
       //RMS LOW
-      RMSStatus=-1;
+      RMSStatus=0;
     }
     
     else if (RMSLowerBound.checkWindow(RMS.getAverage()) && !RMSUpperBound.checkWindow(RMS.getAverage()))
     {
       //RMS MEDIUM
-      RMSStatus=0;
+      RMSStatus=1;
     }
   
     else if (RMSLowerBound.checkWindow(RMS.getAverage()) && RMSUpperBound.checkWindow(RMS.getAverage()))
     {
       //RMS HIGH
-      RMSStatus=1;
+      RMSStatus=3;
     }
     
     featuresVector[0]=RMS.getAverage();
@@ -229,19 +265,19 @@ class AudioDecisor
     if(!DynIndexLowerBound.checkWindow(DynIndex.getAverage()) && !DynIndexUpperBound.checkWindow(DynIndex.getAverage()))
     {
       //RMS LOW
-      DynIndexStatus=-1;
+      DynIndexStatus=0;
     }
     
     else if (DynIndexLowerBound.checkWindow(DynIndex.getAverage()) && !DynIndexUpperBound.checkWindow(DynIndex.getAverage()))
     {
       //RMS MEDIUM
-      DynIndexStatus=0;
+      DynIndexStatus=1;
     }
   
     else if (DynIndexLowerBound.checkWindow(DynIndex.getAverage()) && DynIndexUpperBound.checkWindow(DynIndex.getAverage()))
     {
       //RMS HIGH
-      DynIndexStatus=1;
+      DynIndexStatus=3;
     }
     
     featuresVector[1]=DynIndex.getAverage();
@@ -255,18 +291,18 @@ class AudioDecisor
     if(!specCentroidLowerBound.checkWindow(specCentroid.getAverage()) && !specCentroidUpperBound.checkWindow(specCentroid.getAverage()))
     {        
       //println("LOW");
-      centroidStatus=-1;
+      centroidStatus=0;
     }
     
     else if (specCentroidLowerBound.checkWindow(specCentroid.getAverage()) && !specCentroidUpperBound.checkWindow(specCentroid.getAverage()))
     { 
       //println("MEDIUM");
-      centroidStatus=0;
+      centroidStatus=1;
     }
   
     else if (specCentroidLowerBound.checkWindow(specCentroid.getAverage()) && specCentroidUpperBound.checkWindow(specCentroid.getAverage()) )
     {
-     centroidStatus=1;
+     centroidStatus=3;
     }
    
    featuresVector[2]=specCentroid.getAverage();
@@ -280,18 +316,18 @@ class AudioDecisor
     if(!specComplexityLowerBound.checkWindow(specComplexity.getAverage()) && !specComplexityUpperBound.checkWindow(specComplexity.getAverage()))
     {        
       //println("LOW");
-      complexityStatus=-1;
+      complexityStatus=0;
     }
     
     else if (specComplexityLowerBound.checkWindow(specComplexity.getAverage()) && !specComplexityUpperBound.checkWindow(specComplexity.getAverage()))
     { 
       //println("MEDIUM");
-      complexityStatus=0;
+      complexityStatus=1;
     }
   
     else if (specComplexityLowerBound.checkWindow(specComplexity.getAverage()) && specComplexityUpperBound.checkWindow(specComplexity.getAverage()) )
     {
-     complexityStatus=1;
+     complexityStatus=3;
     }
     
     featuresVector[3]=specComplexity.getAverage();
@@ -305,18 +341,18 @@ class AudioDecisor
     if(!rhythmStrLowerBound.checkWindow(rhythmStr.getAverage()) && !rhythmStrUpperBound.checkWindow(rhythmStr.getAverage()))
     {        
       //println("LOW");
-      rhythmStrStatus=-1;
+      rhythmStrStatus=0;
     }
     
     else if (rhythmStrLowerBound.checkWindow(rhythmStr.getAverage()) && !rhythmStrUpperBound.checkWindow(rhythmStr.getAverage()))
     { 
       //println("MEDIUM");
-      rhythmStrStatus=0;
+      rhythmStrStatus=1;
     }
   
     else if (rhythmStrLowerBound.checkWindow(rhythmStr.getAverage()) && rhythmStrUpperBound.checkWindow(rhythmStr.getAverage()) )
     {
-     rhythmStrStatus=1;
+     rhythmStrStatus=3;
     }
    
    featuresVector[4]=rhythmStr.getAverage();
@@ -328,47 +364,155 @@ class AudioDecisor
     if(!rhythmDensLowerBound.checkWindow(rhythmDens.getAverage()) && !rhythmDensUpperBound.checkWindow(rhythmDens.getAverage()))
     {        
       //println("LOW");
-      rhythmDensStatus=-1;
+      rhythmDensStatus=0;
     }
     
     else if (rhythmDensLowerBound.checkWindow(rhythmDens.getAverage()) && !rhythmDensUpperBound.checkWindow(rhythmDens.getAverage()))
     { 
       //println("MEDIUM");
-      rhythmDensStatus=0;
+      rhythmDensStatus=1;
     }
   
     else if (rhythmDensLowerBound.checkWindow(rhythmDens.getAverage()) && rhythmDensUpperBound.checkWindow(rhythmDens.getAverage()) )
     {
-     rhythmDensStatus=1;
+     rhythmDensStatus=3;
     }
    
    featuresVector[5]=rhythmDens.getAverage();
    statusVector[5]=rhythmDensStatus;
  }
- 
+  
   
   private void checkChanges()
   { 
-    if(timbre.getCentroidShortTimeAvgHz() > specCentroid.getAverage() + 1.5*specCentroid.getStdDev())
-    {
-       
-       println("SPECTRAL CENTROID: "+ timbre.getCentroidHz()); 
-       println("CENTROID STANRD DEV: "+specCentroid.getStdDev()); 
-       println("SPECTRAL CETROID CHANGE UP");
-    }  
     
-    if(timbre.getCentroidShortTimeAvgHz() < specCentroid.getAverage() - 1.5*specCentroid.getStdDev())
+    //CHECK STATUS CHANGES IN A 4 SECONDS TEMPORAL WINDOW
+    //beginCheck=frameCount;
+    if (!checking) {endCheck=frameCount+global_fps*4;}
+    
+    if(frameCount<=endCheck)
     {
+      checking=true;      
+      for(int i=0;i<FEATURES_NUMBER;i++)
+      {
+        if(statusVector[i]!=prevStatusVector[i])
+        {
+          
+          manageChanges(i,(statusVector[i]-prevStatusVector[i]));          
+          changesNumber++;
+        }
+        else {manageChanges(i,0);}
+      }      
+    }
+    
+    else 
+    {
+      changesNumber=0;
+      checking=false;
+    }
        
-       println("SPECTRAL CENTROID: "+ timbre.getCentroidHz()); 
-       println("CENTROID STANRD DEV: "+specCentroid.getStdDev()); 
-       println("SPECTRAL CETROID CHANGE DOWN");
-    }  
+    //UPDATE STATUS VECTOR
+    for(int i=0;i<FEATURES_NUMBER;i++)
+    {
+      prevStatusVector[i]=statusVector[i];
+    }
     
   }
   
   
+  private void manageChanges(int feature_index, int direction)
+  {
+    switch(feature_index)
+    {
+      case(0): if(direction>0){RMSChange=1;}
+               else if (direction<0) {RMSChange=-1;}
+               else {RMSChange=0;}
+        break; 
+        
+      case(1): if(direction>0) dynIndexChange=1;    
+               else if (direction<0) dynIndexChange=-1;
+               else dynIndexChange=0;
+        break;
+        
+      case(2): if(direction>0) centroidChange=1;
+               else if (direction<0) centroidChange=-1;
+               else centroidChange=0;
+        break;
+        
+      case(3): if(direction>0) complexityChange=1;
+               else if (direction<0) complexityChange=-1;
+               else complexityChange=0;
+        break;
+        
+      case(4): if(direction>0) rhythmStrChange=1;
+               else if (direction <0) rhythmStrChange=-1;
+               else rhythmStrChange=0;
+        break;
+        
+      case(5): if(direction>0) rhythmDensChange=1;
+               else if (direction<9) rhythmDensChange=-1;
+               else rhythmDensChange=0;
+        break;     
+    }    
+  }
   
+  
+ 
+  private void aggregateStatus()
+  {
+    
+    //aggregate features status 
+    colorIndicator[0]=statusVector[0]+statusVector[2]+statusVector[3];
+    
+    if(colorIndicator[0]>3 && colorIndicator[1]<=3) {colorChange=true;}
+    else if(colorIndicator[0]<=3 && colorIndicator[1]>3) {colorChange=true;}
+    else if((colorIndicator[0]>3 && colorIndicator[1]>3) || (colorIndicator[0]<=3 && colorIndicator[1]<=3)) {colorChange=false;}
+    
+    colorIndicator[1]=colorIndicator[0];
+    
+    //example: centroid+complexity=timbre status
+    //dyn index+rhythm strength= rhythm prominency
+    //
+    
+  }
+  
+  public float getCentroidLowerBound()
+  {
+    if(statusVector[2]==0) {return 0;}
+    else if(statusVector[2]==1) {return specCentroidLowerBound.getLowerBound();}
+    else if(statusVector[2]==3) {return specCentroidUpperBound.getLowerBound();}
+    else {return -1;}
+  }
+  
+  public float getComplexityLowerBound()
+  {
+    if(statusVector[3]==0) {return 0;}
+    else if(statusVector[3]==1) {return specComplexityLowerBound.getLowerBound();}
+    else if(statusVector[3]==3) {return specComplexityUpperBound.getLowerBound();}
+    else {return -1;}
+  }
+  
+  
+  public float getComplexityUpperBound()
+  {
+    if(statusVector[3]==0) {return specComplexityLowerBound.getUpperBound();}
+    else if(statusVector[3]==1) {return specComplexityUpperBound.getUpperBound();}
+    else if(statusVector[3]==3) {return 30;}
+    else {return -1;}
+  }
+  
+  
+  public float getCentroidUpperBound()
+  {
+    if(statusVector[2]==0) {return specCentroidLowerBound.getUpperBound();}
+    else if(statusVector[2]==1) {return specCentroidUpperBound.getUpperBound();}
+    else if(statusVector[2]==3) {return 7000;}
+    else {return -1;}
+  }
+  
+  
+  
+  /*
   private void calcClarity()
   {  
     clarity=global_timbre.getCentroid()+global_timbre.getCentroidRelativeRatio()*0.5; 
@@ -397,7 +541,6 @@ class AudioDecisor
   }
   
   
- 
   
   public boolean musicChange()
   {
@@ -408,6 +551,25 @@ class AudioDecisor
     }
     else {return false;}
   }
+  
+    
+  public float getClarity()
+  {
+    return clarity;
+  }
+    public float getEnergy()
+  {
+    return energy;
+  }
+    public float getAgitation()
+  {
+    return agitation;
+  }
+    public float getRoughness()
+  {
+    return roughness;
+  }
+  */
   
   
   
