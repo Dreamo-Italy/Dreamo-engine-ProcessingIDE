@@ -9,7 +9,9 @@ void setup()
   //fullScreen(FX2D,1);
   frameRate(global_fps);
   noSmooth();
- //<>//
+
+  
+   //<>//
   //****** CONNECTION //<>// ****** //<>// //<>// //<>//
   global_connection = new Connection(this);
 
@@ -18,13 +20,10 @@ void setup()
   global_ecg= new Ecg();
 
   //****** BIOLOGICAL MOOD ******
-
   global_bioMood = new BioMood();
 
 
   //****** AUDIO ******
-
-
   global_audio = new AudioManager(this); //new audio manager
   audio_proc = new AudioProcessor(global_audio.getBufferSize(),global_audio.getSampleRate()); //new audio processor
   global_audio.addListener(audio_proc); //attach processor to manager
@@ -37,8 +36,8 @@ void setup()
   audio_proc.addTimbre(global_timbre);
   audio_proc.addRhythm(global_rhythm);
 
-
   audio_decisor = new AudioDecisor(global_dyn,global_rhythm,global_timbre);
+  
   
   
   //****** STAGE ******
@@ -70,6 +69,10 @@ void setup()
 
   //**** DEBUG PLOTS
   global_debugPlots = new DebugPlot(this);
+  
+  //**** CONTROL INTERFACE
+  setupGUI();
+  
 }
 
 void draw()
@@ -109,6 +112,7 @@ void draw()
 
    audio_decisor.run();
 
+   drawGUI();
  //<>//
    long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME
  //<>// //<>//
@@ -172,8 +176,8 @@ void mouseClicked()
 {
 
   //Mood m = new Mood(random(-1,1), random(-1,1));
-  // global_stage.selectScenebyMood(m);
-  global_stage.nextScene();
+  //global_stage.selectScenebyMood(m);
+  //global_stage.nextScene();
 }
 
 void keyPressed()
@@ -199,8 +203,13 @@ void keyPressed()
     global_audio.enableMonitoring();
   }
     
+  if (key=='n'||key=='N')
+  {
+    global_stage.nextScene();
+  }
      
 }
+
 
 
 void stop()

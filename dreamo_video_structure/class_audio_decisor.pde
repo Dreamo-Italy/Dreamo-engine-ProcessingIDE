@@ -148,7 +148,7 @@ class AudioDecisor
     rhythmDensUpperBound=new Hysteresis(3.5,4.5,43);    
     
     //IDEA: utilizzare la deviazione standard per aggiornare le soglie, in modo che il sistema sia adattivo alla traccia corrente
-        
+      
   }
   
 
@@ -571,7 +571,7 @@ class AudioDecisor
   }
   
   
-  public void setRMSLowerBound(float value)
+  public void setRMSLowerBound(float value) 
   {
     RMSLowerBound.setLowerBound(value-0.02);
     RMSLowerBound.setUpperBound(value+0.02);
@@ -591,8 +591,8 @@ class AudioDecisor
   
   public void setDynIndexUpperBound(float value)
   {
-    DynIndexUpperBound.setLowerBound(value-0.02);
-    DynIndexUpperBound.setUpperBound(value+0.02);
+    DynIndexUpperBound.setLowerBound(value-0.01);
+    DynIndexUpperBound.setUpperBound(value+0.01);
   }
   
   public void setCentroidLowerBound(float value)
