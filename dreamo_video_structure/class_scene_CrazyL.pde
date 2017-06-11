@@ -1,20 +1,24 @@
 class CrazyL extends Scene
 {
+  
+  CrazyLines C;
+  
   public void init()
   {
     pal.initColors("cold");
-    CrazyLines C = new CrazyLines(5);
+    C = new CrazyLines(5);
     C.setPalette(pal);
     C.disablePhysics();
+    C.setPosition(new Vector2d(width/2, height/2, false));
     addParticle(C);
     
-    
-    CrazyLines C2 = new CrazyLines(3);
+    /*
+    CrazyLines C2 = new CrazyLines(7);
     C2.setRotation(50);
     C2.setPalette(pal);
     C2.disablePhysics();
     addParticle(C2);
-    
+    */
     
     Background bk = new Background();
     setBackground(bk);
@@ -26,7 +30,19 @@ class CrazyL extends Scene
   //trace and update methods
   public void update()
   {
-      
+    //update audio parameter
+    instantFeatures=audio_decisor.getInstantFeatures();
+    audioFeatures=audio_decisor.getFeturesVector();
+    audioStatus=audio_decisor.getStatusVector();
+    
+    for(int i = 0; i < particlesNumber; i++)
+    {
+      particlesList[i].updatePhysics();
+      particlesList[i].updateAudio(instantFeatures,audioFeatures,audioStatus);
+      particlesList[i].setPalette(this.pal);
+      particlesList[i].update();
+    } 
+    
     //**** COLOR CONTROLS
     //choose warm or cold palette
     colorFadeTo(new Palette(chooseMusicPalette()),2,audio_decisor.getColorChange()); 
@@ -45,31 +61,19 @@ class CrazyL extends Scene
     
     //println(chooseMusicPalette());
     
-    //update audio parameter
-    instantFeatures=audio_decisor.getInstantFeatures();
-    audioFeatures=audio_decisor.getFeturesVector();
-    audioStatus=audio_decisor.getStatusVector();
     
-    for(int i = 0; i < particlesNumber; i++)
+    //SHAPE CONTROLS    
+    if(audioFeatures[3]>3)
     {
-      particlesList[i].updatePhysics();
-      particlesList[i].updateAudio(instantFeatures,audioFeatures,audioStatus);
-      particlesList[i].setPalette(this.pal);
-      particlesList[i].update();
+    //C.setFormResolution((int)audioFeatures[3]);
     }
     
-
-    //println("COMPLEXITY STATUS: "+audioStatus[3]);
     
-    /*
-    int l=10;
-    text("||| "+audioStatus[0],width/2,height-50);
-    text("||| "+audioStatus[1],width/2+l,height-50);
-    text("||| "+audioStatus[2],width/2+2*l,height-50);
-    text("||| "+audioStatus[3],width/2+3*l,height-50);
-    text("||| "+audioStatus[4],width/2+4*l,height-50);
-    text("||| "+audioStatus[5],width/2+5*l,height-50);   
-    */
+
+    println("AUDIO STATUS | "+audioStatus[0]+" | "+audioStatus[1]+" | "+audioStatus[2]+" | "+audioStatus[3]+" | "+audioStatus[4]+" | "+audioStatus[5]);
+    
+   
+    
   }
   
 

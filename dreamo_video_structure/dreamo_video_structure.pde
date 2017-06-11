@@ -57,7 +57,7 @@ void setup()
   //global_stage.addScene(new Cyclo1());
   //**** OTHER SCENES
   
-  global_stage.addScene(new AudioDebug());
+  //global_stage.addScene(new AudioDebug());
   global_stage.addScene(new CrazyL());
   //global_stage.addScene(new Cyclo2());
   //global_stage.addScene(new LineLine1());

@@ -1,13 +1,22 @@
+import java.util.List;
+import java.util.ArrayList;
+
 class CrazyLines extends Particle
 {
 
   // init form
-  float centerX = width/2;
-  float centerY = height/2;
+  float centerX = 10;
+  float centerY = 10;
+  
   int formResolution;
+  int targetResolution;
+  boolean morphing=false;
+  
   float initRadius = 100;
-  float[] x;
-  float[] y;
+  //float[] x;
+  List<Float> x = new ArrayList<Float>();
+  //float[] y;
+  List<Float> y = new ArrayList<Float>();
   float par1;
   float par2;
   float par3;
@@ -17,47 +26,55 @@ class CrazyLines extends Particle
   int MODE=0;
   //float strokeW;
   
-  //STROKE WEIGTH CONTROL
+  //STROKE WEIGTH CONTROL 
+  float vibrationFreq=1;
+  float vibrationRange=1;
+  float weightSeed=10;
   
-  float vibrationFreq=2;
-  float vibrationRange=2;
+  //stroke weigth vibration controls
   float startingWeight;
   float targetWeight;
   float weight; 
-  float weightSeed;
+ 
+ 
+ float distortionCoeff;
+ float elasticityCoeff=5;
+ float rotationCoeff=0;
 
   int colorIDX;
 
   public CrazyLines()
   {
-    formResolution = 5;
-    x = new float[formResolution];
-    y = new float[formResolution];
+    formResolution = 5; //DEFAULT RESOLUTION
+    targetResolution=formResolution;
+    //x = new float[formResolution];
+    //y = new float[formResolution];
   }
   
   public CrazyLines(int res)
   {
     formResolution=res;   
-    x = new float[formResolution];
-    y = new float[formResolution];
+    targetResolution=formResolution;
+    //x = new float[formResolution];
+    //y = new float[formResolution];
   }
   
   public void init()
   {
 
-    setColorIndex((int)random(0,5));
-   
+    setColorIndex((int)random(0,5));   
+    
     
     float angle = radians(360/float(formResolution));
     
     for (int i=0; i<formResolution; i++)
     {
-      x[i] = cos(angle*i) * initRadius;
-      y[i] = sin(angle*i) * initRadius;
+      x.add(i, (cos(angle*i) * initRadius));
+      y.add(i, (sin(angle*i) * initRadius));
     }
     
     
-    startingWeight=random(30);//dipenderò dal range di vibrazione
+    startingWeight=random(weightSeed-weightSeed/3,weightSeed+weightSeed/3);//dipenderà dal range di vibrazione
     //targetWeight=random(30);
     targetWeight=startingWeight+vibrationRange;
     //vibrationRange=startingWeight-targetWeight;
@@ -66,6 +83,17 @@ class CrazyLines extends Particle
    
    
   }
+
+
+  //PARAMTERI DA CONTROLLARE:
+  //strokeWeigth
+  //scale
+  //rotate
+  //curveVertex position
+  
+  //l'effetto che ottengo ora quanto RMS è a zero lo voglia quanto centroide e complexity sono alte!
+  //quando l'rms è basso e/o non cè ritmo voglio forme larghe e una leggera rotazione. pulsazione quasi nulla 
+  //quando la denistà di ritmo è alta voglio una vibrazione rapida dello spessore delle linee
 
   public void update()
   {  
@@ -79,9 +107,9 @@ class CrazyLines extends Particle
     //par1=audioFeatures[0];
     par1=instantFeatures[0];
     par2=instantFeatures[0];
-    par3=audioFeatures[2];
+    par3=audioFeatures[0];
     //par1=0.5;
-    par3=1;
+ 
     initRadius = 50;
     //initRadius = 200*par1;
     //centerY = width;// + random(20);
@@ -104,6 +132,8 @@ class CrazyLines extends Particle
     }
     
     //print("DUMB PARAM: " + par1);
+    
+    changeShape();
 
   }
 
@@ -120,7 +150,7 @@ class CrazyLines extends Particle
         
     else 
     {
-      startingWeight=random(30); //dipender dal range di vibrazione
+      startingWeight=random(weightSeed-weightSeed/3,weightSeed+weightSeed/3); //dipender dal range di vibrazione
       targetWeight=startingWeight+vibrationRange;
       //targetWeight=random(30);
       //vibrationRange=startingWeight-targetWeight;
@@ -130,43 +160,94 @@ class CrazyLines extends Particle
     strokeWeight(weight); //<>//
     
    
-    
     float angle = radians(360/float(formResolution));
 
     noFill();
+    //scale(1 + audio_decisor.getElasticityIndicator()*par1*0.5); //PARAMETRO UTILE CHE REGOLA LA SCALATURA DELLA FORMA
+    
+    scale(1+par1*elasticityCoeff); //influnzare il parametro che moltiplica l'RMS in base all'indice di elasticità
+    
     beginShape();
     //noStroke(); 
-    scale(.5 + par1*0.4); //PARAMETRO UTILE CHE REGOLA LA SCALATURA DELLA FORMA
-    //translate(width/2, height/2);
+
  
     //start controlpoint
-    curveVertex(x[formResolution-1]+centerX, y[formResolution-1]+centerY);
+    curveVertex(x.get(formResolution-1)/par3+centerX, y.get(formResolution-1)/par3+centerY);
     //curveVertex(random(50), random(50));
-    //only these points are drawn
+    
     //formResolution = 2 + int(para*5);
     
-    
-    
-    
+    //only these points are drawn   
     for (int i=0; i<formResolution; i++)
     {
         //curveVertex(x[i]+centerX, y[i]+centerY);
-        x[i] = cos(angle*i) * width/6;// + random(10);
-        y[i] = sin(angle*i) * width/6;// + random(10);
+        x.add(i, (cos(angle*i) * width/10));// + random(10);
+        y.add(i, ( sin(angle*i) * width/10));// + random(10);
         //curveVertex(x[i]+centerX, y[i]+centerY);
         
         //color gradient = lerpColor(this.pal.getDarkest(), this.pal.getLightest(), map(i/par2,0,3,0,1));
       
-        count = count + par1*2;
-        //rotate(count*.5);
-        curveVertex(x[formResolution-1]+centerX, y[formResolution-1]+centerY);
-        curveVertex(x[i]+centerX, y[i]+centerY);
-        curveVertex(x[0]+centerX, y[1]+centerY);
+        count = count + par1*rotationCoeff;
+        //rotate(count/par2);
+        curveVertex(x.get(formResolution-1)*par3+centerX, y.get(formResolution-1)*par3+centerY);
+        curveVertex(x.get(i)/par3+centerX, y.get(i)/par3+centerY);
+        curveVertex(x.get(0)*par3+centerX, y.get(1)*par3+centerY);
     }
 
     //end controlpoint
-    curveVertex(x[1]+centerX, y[1]+centerY);
-    endShape();
+    curveVertex(x.get(1)/par3+centerX, y.get(1)/par3+centerY);
+    endShape();    
+    
+    
   }
+  
+  
+  
+  public void changeShape()
+  {
+    
+    if(targetResolution==formResolution)
+    {
+      morphing=false;
+    }
+    
+    else if((targetResolution-formResolution)>0)
+    {
+      formResolution++;
+      morphing=true;
+      
+      float angle = radians(360/float(formResolution));
+    
+      for (int i=0; i<formResolution; i++)
+      { 
+        x.add(i, (cos(angle*i) * initRadius));
+        y.add(i, (sin(angle*i) * initRadius));
+       }      
+    }
+    
+    else if((targetResolution-formResolution)<0)
+    {
+      formResolution--;
+      morphing=true;
+      
+      float angle = radians(360/float(formResolution));
+    
+      for (int i=0; i<formResolution; i++)
+      { 
+        x.add(i, (cos(angle*i) * initRadius));
+        y.add(i, (sin(angle*i) * initRadius));
+       }  
+    }
+    
+
+    
+  }
+  
+  public void setFormResolution(int res)
+  {    
+    if(!morphing)targetResolution=res; //if not morphing, assign new target   
+  }
+  
+  
 
 }

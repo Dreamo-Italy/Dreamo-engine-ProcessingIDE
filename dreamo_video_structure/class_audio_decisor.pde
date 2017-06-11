@@ -70,6 +70,8 @@ class AudioDecisor
   //**** SCORES ****
   private float[] colorIndicator;
   private boolean colorChange;
+  private float[] elasticityIndicator;
+  
   
   //CHANGES
   private int RMSChange;
@@ -107,6 +109,7 @@ class AudioDecisor
      
     colorIndicator=new float[2];
     colorChange=false; 
+    elasticityIndicator=new float[2];
       
     //STATS
     RMS=new Statistics(86); //2 seconds
@@ -171,6 +174,8 @@ class AudioDecisor
   public boolean getColorChange() { return colorChange; }
   
   public float getColorIndicator() { return colorIndicator[0]; }
+  
+  public float getElasticityIndicator() { return elasticityIndicator[0]; }
   
   
 
@@ -470,6 +475,8 @@ class AudioDecisor
     
     colorIndicator[1]=colorIndicator[0];
     
+    
+    elasticityIndicator[0]=statusVector[1]+statusVector[2];
     //example: centroid+complexity=timbre status
     //dyn index+rhythm strength= rhythm prominency
     //

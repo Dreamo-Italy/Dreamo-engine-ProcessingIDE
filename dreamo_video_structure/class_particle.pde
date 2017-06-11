@@ -422,7 +422,7 @@ abstract class Particle extends AgingObject
   
   public float mapForSaturation(float value, float lB, float uB)
   {
-    return map(value,lB,uB,-0.5,1);
+    return map(value,lB,uB,-0.2,1);
   }
   
   

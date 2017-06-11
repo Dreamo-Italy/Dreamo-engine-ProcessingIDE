@@ -33,15 +33,16 @@ void setupGUI()
   cp5.setColorCaptionLabel(color(50));
   cp5.setColorValueLabel(color(255));
   
-  int left=300;
-  int top=100;
+  int left=5;
+  int top=10;
   int len=100;
   int thick=10;
   int posY=0;
   int increment=50;
     
     
-  ControlGroup controls = cp5.addGroup("controls",left,top,20);
+  ControlGroup controls = cp5.addGroup("controls");
+  controls.setPosition(800,350);
   controls.setColorLabel(color(255));
   controls.close();
   
