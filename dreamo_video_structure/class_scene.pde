@@ -1,4 +1,4 @@
-//package dreamo.display;
+//package dreamo.display; //<>//
 
 import java.util.Arrays;
 
@@ -16,22 +16,22 @@ abstract class Scene extends AgingObject
 
   protected Palette pal;
   private Palette targetPal;
-  
+
   private boolean reflectHorizontally;
   private boolean reflectVertically;
-  
+
   //fading 
   private boolean isFading;
   private int startFading;
   private int endFading;
-  
+
   private boolean changingBrightness;
   private boolean changingSaturation;
-  
+
   protected float[] instantFeatures;
   protected float[] audioFeatures;
   protected int[] audioStatus; 
-  
+
   //CONSTRUCTORS
   public Scene()
   {
@@ -45,11 +45,11 @@ abstract class Scene extends AgingObject
     backgroundEnabled = false; // false -> the screen doesn't refresh at every frame
     reflectHorizontally = false;
     reflectVertically = false;
-    
+
     isFading=false;
     changingBrightness=false;
     changingSaturation=false;
-    
+
     sceneMood=new Mood();
   }
 
@@ -63,14 +63,14 @@ abstract class Scene extends AgingObject
     reflectHorizontally = toCopy.reflectHorizontally;
     reflectVertically = toCopy.reflectVertically;
 
-    for(int i = 0; i < particlesNumber; i++) // pass by reference
+    for (int i = 0; i < particlesNumber; i++) // pass by reference
     {
-      if(toCopy.particlesList[i] != null)
+      if (toCopy.particlesList[i] != null)
       {
         particlesList[i] = toCopy.particlesList[i];
       }
     }
-    
+
     sceneMood = new Mood(toCopy.sceneMood);
     isFading=false;
   }
@@ -81,7 +81,7 @@ abstract class Scene extends AgingObject
     return particlesNumber;
   }
 
-  
+
   //
   public void setBackground(Background newBackground)
   {
@@ -97,12 +97,12 @@ abstract class Scene extends AgingObject
   {
     backgroundEnabled = false;
   }
-  
+
   public void setHorizontalReflection(boolean newValue)
   {
     reflectHorizontally = newValue;
   }
-  
+
   public void setVerticalReflection(boolean newValue)
   {
     reflectVertically = newValue;
@@ -110,20 +110,19 @@ abstract class Scene extends AgingObject
 
   public void addParticle(Particle toAdd)
   {
-    if(particlesNumber < PARTICLES_MAX)
+    if (particlesNumber < PARTICLES_MAX)
     {
       particlesList[particlesNumber] = toAdd;
       particlesNumber++;
       sortParticlesList(); // SORT: list[0] = far particle, small (or negative) depth
-                                                            // list[big number] = near particle, big depth
+      // list[big number] = near particle, big depth
       //initialise particle
-      if(!toAdd.getInitialised())
+      if (!toAdd.getInitialised())
       {
         toAdd.init();
         toAdd.assertInitialised();
       }
-    }
-    else
+    } else
     {
       println("Warning: reached maximum number of particles for a Scene. Last Particle wasn't added.");
     }
@@ -132,23 +131,22 @@ abstract class Scene extends AgingObject
 
   private Particle getParticleByListIndex(int indexToGet)
   {
-    if(indexToGet < particlesNumber)
+    if (indexToGet < particlesNumber)
     {
       return particlesList[indexToGet]; // the object pointed by particlesList[indexToRemove] has now no reference and will be removed from memory
-    }
-    else
+    } else
     {
       println("Warning: cannot get particle by list index, index higher than instance number.");
       return null;
     }
   }
-  
-  
+
+
   public Palette getPalette()
   {
     return pal;
   }
-  
+
   public void setPalette(Palette p)
   {
     this.pal=p;
@@ -162,15 +160,15 @@ abstract class Scene extends AgingObject
   public void removeParticleById(int idToRemove)
   {
     boolean match = false;
-    for(int i = 0; i < particlesNumber; i++)
+    for (int i = 0; i < particlesNumber; i++)
     {
-      if(idToRemove == particlesList[i].getId())
+      if (idToRemove == particlesList[i].getId())
       {
         match = true;
         removeParticleByListIndex(i);
       }
     }
-    if(!match)
+    if (!match)
     {
       println("Warning: no instances with specified id were found to be removed.");
     }
@@ -178,7 +176,7 @@ abstract class Scene extends AgingObject
 
   public void eraseParticles()
   {
-    for(int i = 0; i < particlesNumber; i++)
+    for (int i = 0; i < particlesNumber; i++)
     {
       particlesList[i] = null;
     }
@@ -187,16 +185,15 @@ abstract class Scene extends AgingObject
 
   private void removeParticleByListIndex(int indexToRemove)
   {
-    if(indexToRemove < particlesNumber)
+    if (indexToRemove < particlesNumber)
     {
       particlesList[indexToRemove] = null; // the object pointed by particlesList[indexToRemove] has now no reference and will be removed from memory
-      for(int i = indexToRemove; i < particlesNumber-1; i++)
+      for (int i = indexToRemove; i < particlesNumber-1; i++)
       {
         particlesList[i] = particlesList[i+1];
       }
       particlesNumber--;
-    }
-    else
+    } else
     {
       println("Warning: cannot remove particle by list index, index higher than instance number.");
     }
@@ -204,12 +201,11 @@ abstract class Scene extends AgingObject
 
   public void popParticle() // remove the youngest particle
   {
-    if(particlesNumber>0)
+    if (particlesNumber>0)
     {
       particlesList[particlesNumber] = null;
       particlesNumber--;
-    }
-    else
+    } else
     {
       println("Warning: cannot pop any more particles from the scene.");
     }
@@ -217,9 +213,9 @@ abstract class Scene extends AgingObject
 
   public void exportPersistentParticles(Scene targetScene)
   {
-    for(int i = 0; i < particlesNumber; i++)
+    for (int i = 0; i < particlesNumber; i++)
     {
-      if(particlesList[i].getPersistence())
+      if (particlesList[i].getPersistence())
       {
         particlesList[i].assertSceneChanged();
         targetScene.addParticle(particlesList[i]);
@@ -230,38 +226,35 @@ abstract class Scene extends AgingObject
   //trace and update methods
   public void update()
   {
-    
+
     //update audio parameters
     instantFeatures=audio_decisor.getInstantFeatures();
     audioFeatures=audio_decisor.getFeturesVector();
     audioStatus=audio_decisor.getStatusVector();
-    
-    for(int i = 0; i < particlesNumber; i++)
+
+    for (int i = 0; i < particlesNumber; i++)
     {
       particlesList[i].updatePhysics();
-      particlesList[i].updateAudio(instantFeatures,audioFeatures,audioStatus);
+      particlesList[i].updateAudio(instantFeatures, audioFeatures, audioStatus);
       particlesList[i].update();
     }
-    
-
-    
   }
 
   public void trace()
   {
-    if(sceneBackground != null && backgroundEnabled)
+    if (sceneBackground != null && backgroundEnabled)
     {
       sceneBackground.trace();
     }
 
-    for(int i = 0; i < particlesNumber; i++)
+    for (int i = 0; i < particlesNumber; i++)
     {
       particlesList[i].beginTransformations();
       particlesList[i].trace();
       particlesList[i].endTransformations();
     }
-    
-    if(reflectHorizontally) //<>// //<>// //<>// //<>//
+
+    if (reflectHorizontally) //<>// //<>// //<>//
     {
       PImage reflection = get(0, 0, width/2, height);
       pushMatrix();
@@ -269,8 +262,8 @@ abstract class Scene extends AgingObject
       image(reflection, -width, 0);
       popMatrix();
     }
-    
-    if(reflectVertically)
+
+    if (reflectVertically)
     {
       PImage reflection = get(0, 0, width, height/2);
       pushMatrix();
@@ -278,8 +271,8 @@ abstract class Scene extends AgingObject
       image(reflection, 0, -height);
       popMatrix();
     }
-    
-    if(reflectVertically&&reflectHorizontally)
+
+    if (reflectVertically&&reflectHorizontally)
     {
       PImage reflection = get(0, 0, width/2, height/2);
       pushMatrix();
@@ -292,180 +285,227 @@ abstract class Scene extends AgingObject
   //verify for particles to be destroyed
   public void trashDeadParticles()
   {
-    for(int i = 0; i < particlesNumber; i++)
+    for (int i = 0; i < particlesNumber; i++)
     {
-      if(particlesList[i].isToBeDestroyed())
+      if (particlesList[i].isToBeDestroyed())
       {
         removeParticleByListIndex(i);
       }
     }
   }
-  
+
 
   public void colorFadeTo(Palette p, int seconds, boolean activate)
   {       
-    if(this.pal.getID()!=p.getID()) //if it's not the same palette
+    if (this.pal.getID()!=p.getID()) //if it's not the same palette
     {
-      if(activate || isFading){
+      if (activate || isFading) {
         //if the scene is not already fading
-        if(!isFading) //set starting and ending frames
+        if (!isFading) //set starting and ending frames
         {
           startFading=frameCount;
           endFading=frameCount+seconds*global_fps;
           targetPal=p;
-          isFading=true; //now scene is fading    
-        }
-    
-        else  //continue fading
+          isFading=true; //now scene is fading
+        } else  //continue fading
         {
-          if(frameCount<=endFading)//fading finished?
+          if (frameCount<=endFading)//fading finished?
           {
             //set the colors of the palette
-            for(int i=0;i<this.pal.paletteSize();i++)
+            for (int i=0; i<this.pal.paletteSize(); i++)
             {
-              
+
               println("... FADING... ");
-              this.pal.setColor(lerpColor(this.pal.getColor(i), targetPal.getColor(i), map(frameCount,startFading,endFading,0,1)),i);
+              this.pal.setColor(lerpColor(this.pal.getColor(i), targetPal.getColor(i), map(frameCount, startFading, endFading, 0, 1)), i);
             }
-          }
-          else //finished 
+          } else //finished 
           { 
             this.setPalette(targetPal); //overwrite palette
             isFading=false;
           }
-         }
         }
-       }      
-  
-}
-  
-  
+      }
+    }
+  }
+
+
   public void darkenColors(int seconds, float amount, boolean activate)
   {
-      if(activate || changingBrightness){
-        
-        //if the scene is not already fading
-        if(!changingBrightness) //set starting and ending frames
+    if (activate || changingBrightness) {
+
+      //if the scene is not already fading
+      if (!changingBrightness) //set starting and ending frames
+      {
+        //startFading=frameCount;
+        endFading=frameCount+seconds*global_fps;
+        changingBrightness=true; //now scene is fading
+      } else  //continue fading
+      {
+        if (frameCount<=endFading)//fading finished?
         {
-          //startFading=frameCount;
-          endFading=frameCount+seconds*global_fps;
-          changingBrightness=true; //now scene is fading    
+          //set the colors of the palette
+          this.pal.makeDarker(amount/(seconds*global_fps));
+        } else //finished 
+        { 
+          changingBrightness=false;
         }
-    
-        else  //continue fading
-        {
-          if(frameCount<=endFading)//fading finished?
-          {
-            //set the colors of the palette
-            this.pal.makeDarker(amount/(seconds*global_fps));
-            
-          }
-          else //finished 
-          { 
-            changingBrightness=false;
-          }
-         }
-        }    
+      }
+    }
   }
-  
-  
+
+
   public void lightenColors(int seconds, float amount, boolean activate)
   {
-      if(activate || changingBrightness){
-        
-        //if the scene is not already fading
-        if(!changingBrightness) //set starting and ending frames
+    if (activate || changingBrightness) {
+
+      //if the scene is not already fading
+      if (!changingBrightness) //set starting and ending frames
+      {
+        //startFading=frameCount;
+        endFading=frameCount+seconds*global_fps;
+        changingBrightness=true; //now scene is fading
+      } else  //continue fading
+      {
+        if (frameCount<=endFading)//fading finished?
         {
-          //startFading=frameCount;
-          endFading=frameCount+seconds*global_fps;
-          changingBrightness=true; //now scene is fading    
+          //set the colors of the palette
+          this.pal.makeBrighter(amount/(seconds*global_fps));
+        } else //finished 
+        { 
+          changingBrightness=false;
         }
-    
-        else  //continue fading
-        {
-          if(frameCount<=endFading)//fading finished?
-          {
-            //set the colors of the palette
-            this.pal.makeBrighter(amount/(seconds*global_fps));
-            
-          }
-          else //finished 
-          { 
-            changingBrightness=false;
-          }
-         }
-        }    
+      }
+    }
   }
-  
-  
+
+
   public void saturateColors(int seconds, float amount, boolean activate)
   {
-      if(activate || changingSaturation){
-        
-        //if the scene is not already fading
-        if(!changingSaturation) //set starting and ending frames
+    if (activate || changingSaturation) {
+
+      //if the scene is not already fading
+      if (!changingSaturation) //set starting and ending frames
+      {
+        //startFading=frameCount;
+        endFading=frameCount+seconds*global_fps;
+        changingSaturation=true; //now scene is fading
+      } else  //continue fading
+      {
+        if (frameCount<=endFading)//fading finished?
         {
-          //startFading=frameCount;
-          endFading=frameCount+seconds*global_fps;
-          changingSaturation=true; //now scene is fading    
+          println("SATURATING");
+
+          this.pal.saturate(amount/(seconds*global_fps));
+        } else //finished 
+        { 
+          changingSaturation=false;
         }
-    
-        else  //continue fading
-        {
-          if(frameCount<=endFading)//fading finished?
-          {
-           println("SATURATING");
-         
-            this.pal.saturate(amount/(seconds*global_fps));
-            
-          }
-          else //finished 
-          { 
-            changingSaturation=false;
-          }
-         }
-        }    
+      }
+    }
   }
-  
-  
+
+
   public void desaturateColors(int seconds, float amount, boolean activate)
   {
-      if(activate || changingSaturation){
-        
-        //if the scene is not already fading
-        if(!changingSaturation) //set starting and ending frames
+    if (activate || changingSaturation) {
+
+      //if the scene is not already fading
+      if (!changingSaturation) //set starting and ending frames
+      {
+        //startFading=frameCount;
+        endFading=frameCount+seconds*global_fps;
+        changingSaturation=true; //now scene is fading
+      } else  //continue fading
+      {
+        if (frameCount<=endFading)//fading finished?
         {
-          //startFading=frameCount;
-          endFading=frameCount+seconds*global_fps;
-          changingSaturation=true; //now scene is fading    
+          //set the colors of the palette
+          this.pal.desaturate(amount/(seconds*global_fps));
+        } else //finished 
+        { 
+          changingSaturation=false;
         }
-    
-        else  //continue fading
-        {
-          if(frameCount<=endFading)//fading finished?
-          {
-            //set the colors of the palette
-            this.pal.desaturate(amount/(seconds*global_fps));
-            
-          }
-          else //finished 
-          { 
-            changingSaturation=false;
-          }
-         }
-        }    
+      }
+    }
   }
-  
-  
+
+
   protected String chooseMusicPalette()
   {
     //TODO: tune this parameter
-    if (audio_decisor.getColorIndicator()>3) {return "warm";}
-    else {return "cold";}
-    
+    if (audio_decisor.getColorIndicator()>3) {
+      return "warm";
+    } else {
+      return "cold";
+    }
+  }
+
+  protected float chooseMusicElasticity()
+  {
+    float el=0;
+
+    switch((int)audio_decisor.getElasticityIndicator())
+    {
+      case(0):
+      el= 0.4;
+      break;
+
+      case(1):
+      el= 0.7;
+      break;
+
+      case(2):
+      el=1;
+      break;
+
+      case(3):
+      el= 1.2;
+      break;
+
+      case(4):
+      el= 1.5;
+      break;
+
+      case(6):
+      el= 1.9;
+      break;
+    }
+    return el;
   }
   
-  
+  protected float chooseMusicVibration()
+  {
+    float vib=0;
+
+    switch((int)audio_decisor.getVibrationIndicator())
+    {
+      case(0):
+      vib = 0.4;
+      break;
+
+      case(1):
+      vib = 0.7;
+      break;
+
+      case(2):
+      vib =1;
+      break;
+
+      case(3):
+      vib = 1.2;
+      break;
+
+      case(4):
+      vib = 1.5;
+      break;
+
+      case(6):
+      vib= 1.9;
+      break;
+    }
+    return vib;
+  }
+
+
   abstract void init();
-  
 }

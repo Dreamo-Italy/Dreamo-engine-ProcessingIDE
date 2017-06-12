@@ -71,7 +71,7 @@ class AudioDecisor
   private float[] colorIndicator;
   private boolean colorChange;
   private float[] elasticityIndicator;
-  
+  private float vibrationIndicator;
   
   //CHANGES
   private int RMSChange;
@@ -110,6 +110,7 @@ class AudioDecisor
     colorIndicator=new float[2];
     colorChange=false; 
     elasticityIndicator=new float[2];
+    vibrationIndicator=0;
       
     //STATS
     RMS=new Statistics(86); //2 seconds
@@ -177,6 +178,7 @@ class AudioDecisor
   
   public float getElasticityIndicator() { return elasticityIndicator[0]; }
   
+  public float getVibrationIndicator() { return vibrationIndicator; }
   
 
   public void run()
@@ -476,7 +478,9 @@ class AudioDecisor
     colorIndicator[1]=colorIndicator[0];
     
     
-    elasticityIndicator[0]=statusVector[1]+statusVector[2];
+    elasticityIndicator[0]=statusVector[1]+statusVector[4];
+    
+    vibrationIndicator=statusVector[0]+statusVector[5];
     //example: centroid+complexity=timbre status
     //dyn index+rhythm strength= rhythm prominency
     //
@@ -529,12 +533,12 @@ class AudioDecisor
   
   public float getDynIndexLowerThreshold()
   {
-    return (DynIndexLowerBound.getLowerBound()+DynIndexLowerBound.getUpperBound()/2);
+    return ((DynIndexLowerBound.getLowerBound()+DynIndexLowerBound.getUpperBound())/2);
   }
   
   public float getDynIndexUpperThreshold()
   {
-    return (DynIndexUpperBound.getLowerBound()+DynIndexUpperBound.getUpperBound()/2);
+    return ((DynIndexUpperBound.getLowerBound()+DynIndexUpperBound.getUpperBound())/2);
   }
   
   public float getCentroidLowerThreshold()

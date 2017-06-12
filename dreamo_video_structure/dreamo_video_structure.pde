@@ -57,7 +57,7 @@ void setup()
   //global_stage.addScene(new Cyclo1());
   //**** OTHER SCENES
   
-  //global_stage.addScene(new AudioDebug());
+  global_stage.addScene(new AudioDebug());
   global_stage.addScene(new CrazyL());
   //global_stage.addScene(new Cyclo2());
   //global_stage.addScene(new LineLine1());
@@ -71,7 +71,7 @@ void setup()
   global_debugPlots = new DebugPlot(this);
   
   //**** CONTROL INTERFACE
-  setupGUI();
+  //setupGUI();
   
 }
 
@@ -112,7 +112,8 @@ void draw()
 
    audio_decisor.run();
 
-   drawGUI();
+
+   //drawGUI();
  //<>//
    long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME
  //<>// //<>//

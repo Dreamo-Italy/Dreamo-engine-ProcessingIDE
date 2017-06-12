@@ -5,8 +5,8 @@ class CrazyLines extends Particle
 {
 
   // init form
-  float centerX = 10;
-  float centerY = 10;
+  float centerX = 0;
+  float centerY = 0;
   
   int formResolution;
   int targetResolution;
@@ -28,17 +28,18 @@ class CrazyLines extends Particle
   
   //STROKE WEIGTH CONTROL 
   float vibrationFreq=1;
-  float vibrationRange=1;
-  float weightSeed=10;
+  float vibrationRange=10;
+  float weightSeed=20;
   
   //stroke weigth vibration controls
   float startingWeight;
   float targetWeight;
   float weight; 
+  float oldWeight;
  
  
  float distortionCoeff;
- float elasticityCoeff=5;
+ float elasticityCoeff=1;
  float rotationCoeff=0;
 
   int colorIDX;
@@ -72,15 +73,13 @@ class CrazyLines extends Particle
       x.add(i, (cos(angle*i) * initRadius));
       y.add(i, (sin(angle*i) * initRadius));
     }
+
     
-    
-    startingWeight=random(weightSeed-weightSeed/3,weightSeed+weightSeed/3);//dipenderà dal range di vibrazione
-    //targetWeight=random(30);
-    targetWeight=startingWeight+vibrationRange;
-    //vibrationRange=startingWeight-targetWeight;
+    startingWeight=random(weightSeed-vibrationRange/2,weightSeed+vibrationRange/2);
+    targetWeight=random(weightSeed-vibrationRange/2,weightSeed+vibrationRange/2);   
     
     weight=startingWeight;
-   
+    oldWeight=weight;
    
   }
 
@@ -134,7 +133,9 @@ class CrazyLines extends Particle
     //print("DUMB PARAM: " + par1);
     
     changeShape();
-
+    
+    //weightSeed=map(1/audioFeatures[0],1,100,1,50);
+    //println(map(1/audioFeatures[0],1,100,1,50));
   }
 
   public void trace()
@@ -143,29 +144,36 @@ class CrazyLines extends Particle
     //strokeWeight(random(4)); //QUESTO PARAMETRO CONTROLLA LO SPESSORE DELLE LINEE! UTILE!        
     stroke(myColor);
     
-    if(abs(vibrationRange) >= abs(weight-targetWeight))
-    {
-       weight+=(vibrationFreq);       
+    if((oldWeight-targetWeight)*(weight-targetWeight)<0) //zero crossing -> target reached!
+    {      
+      startingWeight=weight;
+      oldWeight=weight;
+      targetWeight=random(weightSeed-vibrationRange/2,weightSeed+vibrationRange/2);       
     }
-        
-    else 
+    
+    else if((weight-targetWeight)<0) 
     {
-      startingWeight=random(weightSeed-weightSeed/3,weightSeed+weightSeed/3); //dipender dal range di vibrazione
-      targetWeight=startingWeight+vibrationRange;
-      //targetWeight=random(30);
-      //vibrationRange=startingWeight-targetWeight;
-      weight=startingWeight;
+      oldWeight=weight;
+      weight+=(vibrationFreq); 
+       
     }
+    
+    else if((weight-targetWeight)>0)
+    {
+      oldWeight=weight;
+      weight-=(vibrationFreq);      
+    }
+         
     
     strokeWeight(weight); //<>//
-    
+
    
     float angle = radians(360/float(formResolution));
 
     noFill();
     //scale(1 + audio_decisor.getElasticityIndicator()*par1*0.5); //PARAMETRO UTILE CHE REGOLA LA SCALATURA DELLA FORMA
     
-    scale(1+par1*elasticityCoeff); //influnzare il parametro che moltiplica l'RMS in base all'indice di elasticità
+    scale(0.5+par1*elasticityCoeff); //influnzare il parametro che moltiplica l'RMS in base all'indice di elasticità
     
     beginShape();
     //noStroke(); 
@@ -188,7 +196,7 @@ class CrazyLines extends Particle
         //color gradient = lerpColor(this.pal.getDarkest(), this.pal.getLightest(), map(i/par2,0,3,0,1));
       
         count = count + par1*rotationCoeff;
-        //rotate(count/par2);
+        rotate(count);
         curveVertex(x.get(formResolution-1)*par3+centerX, y.get(formResolution-1)*par3+centerY);
         curveVertex(x.get(i)/par3+centerX, y.get(i)/par3+centerY);
         curveVertex(x.get(0)*par3+centerX, y.get(1)*par3+centerY);
@@ -248,6 +256,14 @@ class CrazyLines extends Particle
     if(!morphing)targetResolution=res; //if not morphing, assign new target   
   }
   
+  public void setElasticityCoeff(float coeff)
+  {
+    elasticityCoeff=coeff;
+  }
   
+ public void setVibrationFreq(float freq)
+ {
+   vibrationFreq=freq;
+ }
 
 }

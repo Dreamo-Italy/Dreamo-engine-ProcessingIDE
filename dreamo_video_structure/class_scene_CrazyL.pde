@@ -61,7 +61,8 @@ class CrazyL extends Scene
     
     //println(chooseMusicPalette());
     
-    
+    C.setElasticityCoeff(chooseMusicElasticity());
+    //println("ELASTICITY: "+chooseMusicElasticity());
     //SHAPE CONTROLS    
     if(audioFeatures[3]>3)
     {
