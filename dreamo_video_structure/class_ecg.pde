@@ -96,7 +96,7 @@ class Ecg extends Biosensor
      setMaxBpm(maxBPM);
      
      
-     println("BPM:"+ BPM2);
+     //println("BPM:"+ BPM2);
     /* println("standard deviation:" + stdDev);
      println("EmotionPar" + emotionPar);
      println("MaxBPM:" + maxBPM);

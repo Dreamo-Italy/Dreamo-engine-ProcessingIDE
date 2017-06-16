@@ -6,29 +6,17 @@ class AudioManager
  //********* PRIVATE MEMBERS ***********
  private Minim minim;
  private AudioInput in=null; 
- private float[] buffer;
  private boolean initialized = false;
   
  //********* CONTRUCTORS ***********
  public AudioManager(){}
-   /* //<>// //<>// //<>//
-   * @param fileSystemHandler
-   *        The Object that will be used for file operations.
-   *        When using Processing, simply pass <strong>this</strong> to AudioFeatures constructor.
-   */
- //TODO: monitoring audio input from Raspberry sound card
- //temporary: use pc input  
+ //<>// //<>// //<>// //<>//
  public AudioManager(Object fileSystemHandler)
  {
    minim = new Minim(fileSystemHandler);
-   in = minim.getLineIn(Minim.STEREO,1024,44100); //stereo stream, 2048 samples of buffer size
-   //in.enableMonitoring();
-   //bufferize();
+   in = minim.getLineIn(Minim.STEREO,1024,44100); //stereo stream, 1024 samples of buffer size
    
-   if(in!=null)
-   {
-   initialized=true;
-   }
+   if(in!=null) {initialized=true;}
    else {println("AUDIO INPUT NOT AVAILABLE");}
    
  }
@@ -45,50 +33,43 @@ class AudioManager
  
  public void enableMonitoring()
  {
-    if (isInitialized())
-    { 
-      in.enableMonitoring();
-    }
-    else{println("AUDIO FEATURE OBJECT NOT INITIALIZED");}   
+    if (isInitialized()) { in.enableMonitoring(); }
+    else{ println("AUDIO FEATURE OBJECT NOT INITIALIZED"); }   
  }
-  
- public void updateBuffer()
-  {       
-    if (isInitialized())
-    { 
-      buffer=in.mix.toArray();
-    }
-    else{println("AUDIO FEATURE OBJECT NOT INITIALIZED");} 
-  }
-  
-  public float[] getSamples()
-  {
-    return buffer;
-  }
-  
-  public void stop(){
+ 
+ public void disableMonitoring()
+ {
+    if (isInitialized()) { in.disableMonitoring(); }
+    else { println("AUDIO FEATURE OBJECT NOT INITIALIZED"); }   
+ }  
+ 
+ public void stop()
+ {
     in.close();
     minim.stop();
   }
   
+ //********* GETTERS ***********
+ public float[] getSamples()
+ {
+   return in.mix.toArray();
+ }   
   
-  //********* PRIVATE METHODS ***********
+ public int getBufferSize()
+ {
+   if(isInitialized()){return in.bufferSize();}
+   else return 0;
+ }
   
-  private boolean isInitialized()
-  {
-    return initialized;
-  }    
-  
-  private int getBufferSize()
-  {
-    if(isInitialized()){return in.bufferSize();}
-    else return 0;
-  }
-  
-  private float getSampleRate()
-  {
-    if(isInitialized()){return in.sampleRate();}
-    else return 0;
-  }
-  
+ public float getSampleRate()
+ {
+   if(isInitialized()){return in.sampleRate();}
+   else return 0;
+ }
+ 
+ public boolean isInitialized()
+ {
+   return initialized;
+ } 
+ 
 }

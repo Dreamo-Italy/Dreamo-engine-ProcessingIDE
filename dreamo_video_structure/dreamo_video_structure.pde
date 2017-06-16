@@ -1,5 +1,3 @@
-
-
 void setup()
 {
 
@@ -9,7 +7,9 @@ void setup()
   //fullScreen(FX2D,1);
   frameRate(global_fps);
   noSmooth();
- //<>//
+
+  
+   //<>//
   //****** CONNECTION //<>// ****** //<>// //<>// //<>//
   global_connection = new Connection(this);
 
@@ -18,39 +18,31 @@ void setup()
   global_ecg= new Ecg();
 
   //****** BIOLOGICAL MOOD ******
-
   global_bioMood = new BioMood();
 
 
   //****** AUDIO ******
-
-
   global_audio = new AudioManager(this); //new audio manager
   audio_proc = new AudioProcessor(global_audio.getBufferSize(),global_audio.getSampleRate()); //new audio processor
   global_audio.addListener(audio_proc); //attach processor to manager
   global_dyn = new Dynamic(global_audio.getBufferSize(),global_audio.getSampleRate()); //new dynamic features extractor
   global_timbre = new Timbre(global_audio.getBufferSize(),global_audio.getSampleRate()); //new timbric features extractor
   global_rhythm = new Rhythm(global_audio.getBufferSize(),global_audio.getSampleRate()); //new rhythmic features extractor
+  
   //add features extractors to our audio processor
-
-  //Tarsos default values
-  //global_rhythm.setSensitivity(20);
-  //global_rhythm.setThreshold(8);
-
-
   audio_proc.addDyn(global_dyn);
   audio_proc.addTimbre(global_timbre);
   audio_proc.addRhythm(global_rhythm);
 
-
-  audio_decisor = new AudioDecisor();
+  audio_decisor = new AudioDecisor(global_dyn,global_rhythm,global_timbre);
+  
+  
   
   //****** STAGE ******
   global_stage = new Stage();
 
-  //scenes
-  /*
-  global_stage.addScene(new BlankScene() );
+ /* 
+  //**** PRESENTATION SCENES
   global_stage.addScene(new BlankScene() );
   global_stage.addScene(new ScenePlotter());
   global_stage.addScene(new Spirals());
@@ -59,8 +51,12 @@ void setup()
   global_stage.addScene(new ScenePresentation() );
   global_stage.addScene(new Lissajous() );
   global_stage.addScene(new SceneDynamicGrid());
-*/
-  global_stage.addScene(new AudioDebug());
+  */
+  //global_stage.addScene(new Cyclo1());
+  //**** OTHER SCENES
+  global_stage.addScene(new BlankScene() );
+  //global_stage.addScene(new AudioDebug());
+  global_stage.addScene(new CrazyL());
   //global_stage.addScene(new Cyclo2());
   //global_stage.addScene(new LineLine1());
   //global_stage.addScene(new SceneFireworks());
@@ -68,10 +64,13 @@ void setup()
   //global_stage.addScene(new ScenePerlinNoise());
   //global_stage.addScene(new HelloShape(0));
   //global_stage.addScene(new DumbC());
- 
 
-  //debug plots
+  //**** DEBUG PLOTS
   global_debugPlots = new DebugPlot(this);
+  
+  //**** CONTROL INTERFACE
+  setupGUI();
+  
 }
 
 void draw()
@@ -111,6 +110,8 @@ void draw()
 
    audio_decisor.run();
 
+
+   drawGUI();
  //<>//
    long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME
  //<>// //<>//
@@ -119,6 +120,7 @@ void draw()
    
    
    
+   /*
 
    println("    Audio update duration: "+ audioTime/1000 + " us");
    println("    Connection update duration: "+ conT/1000 + " us");
@@ -143,10 +145,12 @@ void draw()
    println("SPECTRAL COMPLEXITY: "+global_timbre.getComplexityAvg()+" peaks");
    println("ZERO CROSSING RATE: "+global_timbre.getZeroCrossingRate());
    println("*************************************************");
+   
    println("************* RHYTHMIC PARAMETERS ***************");
-   println("PERCUSSIVITY RATE: "+global_rhythm.getPercussivityAvg());
-   println("ONSET RATE: "+global_rhythm.getOnsetRate());
+   println("RHYTHM DENSITY: "+global_rhythm.getRhythmDensity());
+   println("RHYTHM STRENGTH: "+global_rhythm.getRhythmStrength());
    println("*************************************************");
+   
    println("************** SILENCE DETECTOR *****************");;
    println("-60dB SILENCE: "+ global_dyn.isSilence(-60));
    println("-50dB SILENCE: "+ global_dyn.isSilence(-50));
@@ -160,8 +164,9 @@ void draw()
    //println("AGITATION: " + audio_decisor.getAgitation());
    //println("ROUGHNESS: " + audio_decisor.getRoughness());
    
+   */
    
-   global_stage.nextSceneIfSilence(-50);
+   //global_stage.nextSceneIfSilence(-50);
 
 }
 
@@ -170,8 +175,8 @@ void mouseClicked()
 {
 
   //Mood m = new Mood(random(-1,1), random(-1,1));
-  // global_stage.selectScenebyMood(m);
-  global_stage.nextScene();
+  //global_stage.selectScenebyMood(m);
+  //global_stage.nextScene();
 }
 
 void keyPressed()
@@ -187,12 +192,23 @@ void keyPressed()
   if (key=='s'||key=='S')
   {
     audio_proc.saveLog();
+    //global_connection.saveLog();
     //global_audio.stop();
     //exit();
   }
      
+  if (key=='m'||key=='M')
+  {
+    global_audio.enableMonitoring();
+  }
+    
+  if (key=='n'||key=='N')
+  {
+    global_stage.nextScene();
+  }
      
 }
+
 
 
 void stop()

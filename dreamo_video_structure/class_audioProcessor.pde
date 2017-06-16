@@ -1,4 +1,4 @@
-import ddf.minim.analysis.*;
+  import ddf.minim.analysis.*;
 
 class AudioProcessor implements AudioListener
 {
@@ -6,10 +6,11 @@ class AudioProcessor implements AudioListener
   private float[] right;
   private float[] mix;
  
+  private float frameEnergy;
+  
   private float[] FFTcoeffs;
   
-  private boolean log;
- 
+  
   private int frameCounter;
   private final int FRAMES_NUMBER=43;
   private float avgMagnitude;
@@ -21,6 +22,7 @@ class AudioProcessor implements AudioListener
   private Rhythm rhy;
   
   private Table audioLog;
+  private Table statusLog;
   private int bufferCount;
   
   
@@ -31,11 +33,13 @@ class AudioProcessor implements AudioListener
     left = null; 
     right = null;
     
+    frameEnergy=0;
+    
     dyn=null;
     timb=null;
     rhy=null;
     
-    log=false;    
+    //log=false;    
     frameCounter=0;
     bufferCount=0;
     avgMagnitude=0;
@@ -44,34 +48,36 @@ class AudioProcessor implements AudioListener
     
     else
     { 
-      fft = new FFT(bSize,sRate);
       
-      if(!log) 
-      {
-        fft.noAverages();
-        FFTcoeffs = new float[fft.specSize()];
-      }     
-      //TODO: implement logarithmic spectrum. 
+      fft = new FFT(bSize,sRate);
+      fft.noAverages();
+      FFTcoeffs = new float[fft.specSize()];
+      
+      //CONSIDER implementing logarithmic spectrum. 
       //the calculation of the spectroid won't be in Hz -> check it!
       //see http://code.compartmental.net/minim/fft_method_logaverages.html
-      //EXAMPLE: 
-      else 
-      {
-        fft.logAverages(  86, 3 );
-        FFTcoeffs = new float[fft.avgSize()];
-      }
+      //EXAMPLE: //fft.logAverages(  86, 3 );
+      
     }
     
-    audioLog = new Table();
-    
-    audioLog.addColumn("Buffer N.");
+    audioLog = new Table();    
+    audioLog.addColumn("Buffer N.");    
     audioLog.addColumn("RMS");
     audioLog.addColumn("Dyn Index");
     audioLog.addColumn("Spectral Centroid");
     audioLog.addColumn("Spectral Complexity");
     audioLog.addColumn("ZCR"); 
-    audioLog.addColumn("Percussivity Rate");
-    audioLog.addColumn("Onset Rate");
+    audioLog.addColumn("Rhythm Strength");
+    audioLog.addColumn("Rhythm Density");
+    
+    statusLog = new Table();   
+    statusLog.addColumn("Buffer N.");
+    statusLog.addColumn("RMS");
+    statusLog.addColumn("Dyn Index");
+    statusLog.addColumn("Spectral Centroid");
+    statusLog.addColumn("Spectral Complexity");    
+    statusLog.addColumn("Rhythm Strength");
+    statusLog.addColumn("Rhythm Density");    
     
   }
   
@@ -88,6 +94,7 @@ class AudioProcessor implements AudioListener
     //run features extractors
     extractFeatures(); 
     
+    //frame counter
     frameCounter++;
     if(frameCounter>FRAMES_NUMBER){frameCounter=0;}
     
@@ -95,11 +102,13 @@ class AudioProcessor implements AudioListener
   
   public synchronized void samples(float[] sampL, float[] sampR)
   {
-    //update samples - TODO: verify if is mix() could be useful
+    
     left = sampL;
     right = sampR; 
     
-    mix();
+    calcFrameEnergy();
+    
+    mix(); //check if mix is to slow
     
     //calculate fourier transform
     calcFFT(mix);  
@@ -115,6 +124,7 @@ class AudioProcessor implements AudioListener
     frameCounter++;
     if(frameCounter>FRAMES_NUMBER){frameCounter=0;}
   }
+  
   
   //********* PUBLIC METHODS ***********
   public void addDyn(Dynamic d)
@@ -135,7 +145,7 @@ class AudioProcessor implements AudioListener
     rhy.setInitialized();
   }
   
-  //get methods
+  //********* GETTERS ***********
   public float[] getLeft()
   {
     return left;
@@ -151,8 +161,26 @@ class AudioProcessor implements AudioListener
     return mix;
   }
   
+  public void saveLog()
+  {   
+    saveTable(audioLog, "data/audioFeaturesLog.csv");  
+    saveTable(statusLog, "data/audioStatusLog.csv");
+  }
+   
   //********* PRIVATE METHODS ***********
   //synchrodized is necessary?
+  
+  private void calcFrameEnergy()
+  {
+    float energy=0;
+    for(int i=0;i<left.length;i++)
+    {
+      energy+=Math.pow(left[i],2)+Math.pow(right[i],2);
+    }    
+    frameEnergy=(float)energy;   
+  }
+  
+  
   private void mix()
   {
     mix=DSP.plus(left,right); 
@@ -165,42 +193,26 @@ class AudioProcessor implements AudioListener
   
   public int getSpecSize()
   {
-    if(!log){return fft.specSize();}
-    else{return fft.avgSize();}
+    return fft.specSize();
   }
   
-  //FEATURES CALC METHODS
-  //FFT
+  //COMPUTE FFT FOR EVERY FRAME
   private void calcFFT(final float[] samples)
   {
-    //fft.window(FFT.HAMMING);
-    fft.forward(samples);    
-    avgMagnitude=0;
-    if(!log)
-    {     
-      for(int i = 0; i < fft.specSize(); i++)
-       {
-          FFTcoeffs[i]=fft.getBand(i);
-          if(i<=fft.specSize()/2) {avgMagnitude+=fft.getBand(i);}
-       }
-      avgMagnitude=avgMagnitude/fft.specSize();
-    }
     
-    else
+    fft.forward(samples); //compute FFT   
+    avgMagnitude=0;
+      
+    for(int i = 0; i < fft.specSize(); i++)
     {
-      for(int i = 0; i < fft.avgSize(); i++)
-       {
-          FFTcoeffs[i]=fft.getAvg(i);
-       }
+     FFTcoeffs[i]=fft.getBand(i);
+     if(i<=fft.specSize()/2) {avgMagnitude+=fft.getBand(i);}
     }
-   
-  
+    avgMagnitude=avgMagnitude/fft.specSize();
+     
   }
   
-
-   
-  //autocorr
-  //zerocrossing rate?
+  //TODO calc autocorr is necessary?
   
   private synchronized void extractFeatures()
   {
@@ -213,8 +225,8 @@ class AudioProcessor implements AudioListener
   {
     if(rhy!=null){
       rhy.setSamples(mix);
-      //rhy.setCounter(frameCounter);
       rhy.setFFTCoeffs(FFTcoeffs,fft.specSize());
+      rhy.setFrameEnergy(frameEnergy);
       rhy.calcFeatures();
     }
     else{println("RHYTHM OBJECT HAS TO BE ADDED TO AUDIO PROCESSOR");}
@@ -234,44 +246,42 @@ class AudioProcessor implements AudioListener
   private void runTimbre()
   { 
     if(timb!=null)
-    {
-      if(!log) 
-      {
-        timb.setFFTCoeffs(FFTcoeffs,fft.specSize());
-        timb.setAvgMagnitude(avgMagnitude);
-        timb.setSamples(mix);
-      }
-      else 
-      {  
-        timb.setFFTCoeffs(FFTcoeffs,fft.avgSize());
-        timb.setSamples(mix);
-      }
+    {   
+      timb.setFFTCoeffs(FFTcoeffs,fft.specSize());
+      timb.setAvgMagnitude(avgMagnitude);
+      timb.setSamples(mix);     
       timb.calcFeatures();
     }
     else{println("TIMBRE OBJECT HAS TO BE ADDED TO AUDIO PROCESSOR");}
   }
   
-  private void logFeatures(){
   
-      TableRow newRow = audioLog.addRow();
-          
+  private void logFeatures()
+  {
+    if(dyn.isSilence(-60) || !dyn.isSilence(-50))
+    {
+      //LOG FEATURES
+      TableRow newRow = audioLog.addRow();        
       newRow.setInt("Buffer N.",bufferCount);
       newRow.setFloat("RMS",dyn.getRMS());
-      newRow.setFloat("Dyn Index",dyn.getDynamicityIndex());
+      newRow.setFloat("Dyn Index",dyn.getRMSStdDev());
       newRow.setFloat("Spectral Centroid",timb.getCentroidHz());
       newRow.setFloat("Spectral Complexity",timb.getComplexity());
       newRow.setFloat("ZCR",timb.getZeroCrossingRate());
-      newRow.setFloat("Percussivity Rate",rhy.getPercussivityAvg());
-      newRow.setFloat("Onset Rate",rhy.getOnsetRate());
+      newRow.setFloat("Rhythm Strength",rhy.getRhythmStrength());
+      newRow.setFloat("Rhythm Density",rhy.getRhythmDensity());
+      
+      //LOG STATUS
+      TableRow newRowS = statusLog.addRow();        
+      newRowS.setInt("Buffer N.",bufferCount);
+      newRowS.setInt("RMS",audio_decisor.getStatusVector()[0]);
+      newRowS.setInt("Dyn Index",audio_decisor.getStatusVector()[1]);
+      newRowS.setInt("Spectral Centroid",audio_decisor.getStatusVector()[2]);
+      newRowS.setInt("Spectral Complexity",audio_decisor.getStatusVector()[3]);
+      newRowS.setInt("Rhythm Strength",audio_decisor.getStatusVector()[4]);
+      newRowS.setInt("Rhythm Density",audio_decisor.getStatusVector()[5]);     
+    } 
   }
-  
-  public void saveLog()
-  {
     
-    saveTable(audioLog, "data/audioFeaturesLog.csv");
-    
-  
-  }
-  
   
 }

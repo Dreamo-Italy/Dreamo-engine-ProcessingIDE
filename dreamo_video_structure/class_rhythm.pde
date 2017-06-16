@@ -2,13 +2,21 @@ import ddf.minim.analysis.*;
 
 class Rhythm extends FeaturesExtractor {
 
-  private FloatList longWindow;
-  private float[] processed;
+  private float  rhythmDensity;
+  private float rhythmStrength;
   
+  //ENERGY ONSET DETECTION VARIABLES
+  private float frameEnergy;
+  private float prevFrameEnergy;
+  private float currentFrameEnergy;
+  private Statistics energyStats;
+  private boolean energyOnset;
+  public int energyOnsets;
+  public float energyOnsetStrength;
+  
+  //PERCUSSIVE ONSET DETECTION VARIABLES
   public static final float DEFAULT_THRESHOLD = 13;
-  
   public static final float DEFAULT_SENSITIVITY = 80;
-  
   private float[] currentFFTmagnitudes;  
   private float[] priorFFTmagnitudes;
   private int FFTsize;
@@ -16,19 +24,20 @@ class Rhythm extends FeaturesExtractor {
   private float threshold;
   private float sensitivity;
   private boolean percOnset;
+  private int percOnsets;
+  private float percOnsetRate;
   
-  public int onsets;
-  private float onsetRate;
-  
+  // LOW PASS ONSET DETECTION VARIABLES
+  private FloatList longWindow;
+  private float[] processed;  
+
   private float percussivity;
   private Statistics percussivityStats;
   
-  //temporary for minim onset implementation
-  private BeatDetect beat;
-  
-  private int counter; //audio frames counter (passed by AudioProcessor object)
-  private static final int FRAMES_COUNT_LIMIT=217; //5 seconds
-  private final float WINDOW_TIME = ceil(FRAMES_COUNT_LIMIT*0.023);
+  //RHYTM DENSITY AND RHYTHM STRENGTH 
+  private int counter; //audio frames counter
+  private static final int WINDOW_LENGTH=86; //window length in buffers (43 = 1 second)
+  private float WINDOW_TIME; //window length in seconds
   
   private boolean process_ok;
   
@@ -37,11 +46,18 @@ class Rhythm extends FeaturesExtractor {
   {
     buffSize=bSize;
     sampleRate=sRate;
+    
+    WINDOW_TIME=ceil(WINDOW_LENGTH*buffSize/sampleRate);
+    
     counter=0; 
     
+    frameEnergy=0;
+    energyStats=new Statistics(43);
+    
     //energy onset detector
-    longWindow = new FloatList(bSize*FRAMES_COUNT_LIMIT);
-    processed = new float[bSize*FRAMES_COUNT_LIMIT];
+    longWindow = new FloatList(bSize*WINDOW_LENGTH);
+    processed = new float[bSize*WINDOW_LENGTH];
+    
     
     priorFFTmagnitudes=new float[bSize/2+1];
     currentFFTmagnitudes=new float[bSize/2+1];
@@ -49,57 +65,116 @@ class Rhythm extends FeaturesExtractor {
     //percussive onset detector
     this.threshold=DEFAULT_THRESHOLD;
     this.sensitivity=DEFAULT_SENSITIVITY;
-    
     percOnset=false;
-    onsetRate=0;
-    onsets=0;
+    percOnsetRate=0;
+    percOnsets=0;
     
     process_ok=false;
     
     percussivityStats=new Statistics(21); 
     
   }
- 
-  public void setCounter( int c)
-  {
-    counter=c;
-  }
   
+  //**** SET METHODS ****
   public void setFFTCoeffs(float[] coeffs, int size)
   {
     FFTsize=size;
     currentFFTmagnitudes=coeffs.clone();
   }
+  
+ public void setCounter( int c) { counter=c; }
+  
+ public void setThreshold(float th) { threshold=th; }
  
- public void setThreshold(float th)
+ public void setSensitivity(float sens) { sensitivity=sens; }
+ 
+ public void setFrameEnergy(float energy)
  {
-   threshold=th;
+   frameEnergy=energy;
+   energyStats.accumulate(frameEnergy);    
  }
  
- public void setSensitivity(float sens)
- {
-   sensitivity=sens;
- }
+ //**** GET METHODS ****
+ public float getRhythmStrength() { return rhythmStrength; }
+  
+ public float getRhythmDensity() { return rhythmDensity; }
  
- public synchronized void calcFeatures()
- {        
-   percussiveOnsetDetection();
-   //energyOnsetDetection();  
+ public float getPercussivity() { return percussivity; }
+  
+ public boolean isPercOnset() { return percOnset; }
+  
+ public boolean isEnergyOnset() { return energyOnset; }
+   
+ 
+ //**** FEATURES CALC METHOD ****
+  public synchronized void calcFeatures()
+  { 
+   
+   energyOnsetDetection();
+   //percussiveOnsetDetection();
+   //lowPassEnergyOnsetDetection();
+   
+   if(counter>WINDOW_LENGTH) { counter=0; }
+   counter++;
+   
  }
   
+ //**** PRIVATE METHODS **** 
+ private void calcRhythmFeatures()
+ {
+    if(rhythmStrength<5){rhythmDensity=0;} 
+    else {rhythmDensity=(float)energyOnsets/WINDOW_TIME;}
+    //rhythmDensity=(float)energyOnsets/WINDOW_TIME;
+    //rhythmDensity=energyOnsets;
+    if(energyOnsets==0) rhythmStrength=0;
+    else rhythmStrength=(float)energyOnsetStrength/energyOnsets;
+ }
+  
+ 
+ //ENERGY ONSETS DETECTION ALGORITHM
+ private void energyOnsetDetection()
+ {    
+    if(counter>WINDOW_LENGTH)
+    { 
+      
+      calcRhythmFeatures();
+      energyOnsetStrength=0;
+      energyOnsets=0;
+    }
+    
+    //float C=-0.0000015*energyStats.getVariance()+2;
+    float C=-0.0000015*energyStats.getVariance()+1.5142857; //zic version
+    //float C=(-0.0025714*energyStats.getVariance())+1.5142857; //original paper    
+    //if energy in the current frame is bigger than C*avg(E) we detect an onset
+    //avg(E) and C are computed on a window that considers the 43 previous frames
+    float strength=0;
+    //the analyzed frame must be an energy peak and his energy must be over the threshold
+    
+    if(prevFrameEnergy<currentFrameEnergy && currentFrameEnergy >= frameEnergy && currentFrameEnergy>energyStats.getAverage()*C)
+    {
+      energyOnsets++;
+      strength=currentFrameEnergy-energyStats.getAverage()*C;
+      energyOnset=true;
+    }
+    
+    else energyOnset=false;
+    
+    energyOnsetStrength+=strength;
+    
+    prevFrameEnergy=currentFrameEnergy;
+    currentFrameEnergy=frameEnergy;
+
+  }
+   
+  //PERCUSSIVE ONSETS DETECTION ALGORITHM
   private void percussiveOnsetDetection()
   {
    
-    counter++;
-    
-    if(counter>=FRAMES_COUNT_LIMIT)
+    if(counter>=WINDOW_LENGTH)
     { 
-      if(onsets==0){percussivity=0;} //if no onsets for 5 seconds, assume there is no percussion
-      calcOnsetRate();
-      onsets=0;
-      counter=0;
-    }
-    //println(onsets);
+      if(percOnsets==0){percussivity=0;} //if no onsets for 5 seconds, assume there is no percussion
+      calcRhythmFeatures();;
+    }  
     
     int binsOverThreshold=0;
     
@@ -116,64 +191,39 @@ class Rhythm extends FeaturesExtractor {
     //percussivity=(float)binsOverThreshold;
     
     if(binsOverThreshold>((100-sensitivity)*FFTsize)/100) //if onset
-    //if(dfMinus2<dfMinus1 && dfMinus1 >= binsOverThreshold && dfMinus1 > ((100 - 90) * buffSize) / 200)
+    //if(dfMinus2<dfMinus1 && dfMinus1 >= binsOverThreshold && dfMinus1 > ((100 - sensitivity) * buffSize) / 200)
     {
-      //println("BINS OVER TH: "+binsOverThreshold);
-      onsets++;
       
+      percOnsets++;
+     
       percussivity=(float)binsOverThreshold/FFTsize;
       percussivityStats.accumulate(percussivity);
       
       percOnset=true;
     
-    }
+    }    
+    //dfMinus2=dfMinus1;
+    //dfMinus1=binsOverThreshold;  
   
-   else{percOnset=false;}
-    /*
-   //check if is onset 
-   if(dfMinus2<dfMinus1 && dfMinus1 >= binsOverThreshold && dfMinus1 > ((100 - sensitivity) * buffSize) / 200)
-   {
-     percOnset=true;
-   }
-   else{percOnset=false;}
-   
-   dfMinus2=dfMinus1;
-   dfMinus1=binsOverThreshold;
-   */
+    else{percOnset=false;}
+
   }
   
-  private void calcOnsetRate()
+  
+  
+  /*
+  *
+  *  LOW PASS ENERGY ONSET DETECTION
+  *  (TO IMPLEMENT)
+  *
+  *
+  
+  private void lowPassEnergyOnsetDetection()
   {
     
-    onsetRate=(float)onsets/WINDOW_TIME;
-  }
-  
-  public float getPercussivity()
-  {
-    return percussivity;
-  }
-  
-  public float getPercussivityAvg()
-  {
-    return percussivityStats.getAverage();
-  }
-  
-  public boolean isPercOnset()
-  {
-    return percOnset;
-  }
-  
-  private float getOnsetRate()
-  {
-    return onsetRate;    
-  }
-  
-  private void energyOnsetDetection()
-  {
-    updateLongWindow();
-    
+    updateLongWindow();    
     //when counter is at the end
-    if(counter>=FRAMES_COUNT_LIMIT)
+    if(counter>=WINDOW_LENGTH)
     {
       detectEnergyOnsets();     
     }
@@ -183,19 +233,18 @@ class Rhythm extends FeaturesExtractor {
   private void updateLongWindow()
   {
     //if the FloatList is full
-    if(longWindow.size()>(buffSize*FRAMES_COUNT_LIMIT))
+    if(longWindow.size()>(buffSize*WINDOW_LENGTH))
     {
       //remove the oldest 1024 values from bottom of the list
       for(int i=0; i<1024;i++){longWindow.remove(i);}       
     }
     
     //put the last buffer at the top of the list with append(float[] values)
-    longWindow.append(samples);
-  
+    longWindow.append(samples);  
   }
-  
-  public synchronized void detectEnergyOnsets()
-  {
+     
+  public void detectLowPassEnergyOnsets()
+  {  
     //process to extract peaks
     //see http://mziccard.me/2015/05/28/beats-detection-algorithms-1/
     processed=longWindow.values().clone();
@@ -205,7 +254,9 @@ class Rhythm extends FeaturesExtractor {
     process_ok = true;
     
   }
-
+  
+  //PUBLIC METHODS
+  //PUBLIC GETTER TO VISUALIZE SAMPLES IN THE LONG WINDOW
   public synchronized float getLongWindowSamples(int idx)
   {
     //return longWindow.get(idx);
@@ -214,7 +265,7 @@ class Rhythm extends FeaturesExtractor {
   
   public int getLongWindowMaxSize()
   {
-    return buffSize*FRAMES_COUNT_LIMIT;
+    return buffSize*WINDOW_LENGTH;
   }
   
   public boolean isProcessed()
@@ -222,13 +273,13 @@ class Rhythm extends FeaturesExtractor {
     return process_ok;
   }
   
-  public boolean getOnset()
-  {
-   
-    beat.detect(samples);
-    return beat.isOnset();
-  }
-    
+  
+  */
+
+
+  
+
+  
 
   
 }

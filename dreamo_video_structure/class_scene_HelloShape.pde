@@ -12,7 +12,7 @@ class HelloShape extends Scene
   
   public void init()
   {
-    pal.initColors(5);
+    pal.initColors(4);
     index = 0;  
     
     if(mode==0)

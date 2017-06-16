@@ -36,6 +36,10 @@ abstract class Particle extends AgingObject
   private boolean warpAtBorders;
   private boolean bounceAtBorders;
   
+  protected float[] instantFeatures;
+  protected float[] audioFeatures;
+  protected int[] audioStatus;
+  
   
 
   //CONTRUCTORS
@@ -366,6 +370,15 @@ abstract class Particle extends AgingObject
   { return pal; }
   
   
+  public void updateAudio(float[] instant, float[] features, int[] status)
+  {
+    instantFeatures=instant;
+    audioFeatures=features;
+    audioStatus=status;
+    
+  }
+  
+  
   public void connectParticles(int connectionRadius, int particleRadius)
   {
     final int particlesNumber = global_stage.getCurrentScene().getParticlesNumber()-1;
@@ -401,6 +414,18 @@ abstract class Particle extends AgingObject
     if(a>=100){a=100;}
     maxAlpha=a;
   }
+  
+  public float mapForBrightness(float value, float lB, float uB)
+  {
+    return map(value,lB,uB,-0.6,1);
+  }
+  
+  public float mapForSaturation(float value, float lB, float uB)
+  {
+    return map(value,lB,uB,-0.2,1);
+  }
+  
+  
 
   //methods to implement in the "child classes"
   abstract void init();

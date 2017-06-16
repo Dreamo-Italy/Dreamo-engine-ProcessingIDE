@@ -13,7 +13,7 @@ final int SCENES_MAX = 100;
 final int SOGLIA_SEL = 12;
 final int CHANGE_CHECK = 4*8;
 
-final int interlineSpace = 19;
+final int interlineSpace = 24;
 final int marginSpace = 10;
 
 //main object for display
