@@ -12,24 +12,30 @@ class CrazyLines extends Particle
   int targetResolution;
   boolean morphing=false;
   
-  float initRadius = 100;
-  //float[] x;
+  float initRadius = 50;
+  
+  //POINT ARRAYS
   List<Float> x = new ArrayList<Float>();
-  //float[] y;
   List<Float> y = new ArrayList<Float>();
+  
+  //CONTROL PARAMETERS
   float par1;
   float par2;
   float par3;
   color myColor;
+  
+  //ROTATION
   float count = 0;
-  //changing mode means changing update rules --> graphic behaviour
-  int MODE=0;
-  //float strokeW;
+  
+  
+  float distortionCoeff;
+  float elasticityCoeff=1;
+  float rotationCoeff=0.001;
   
   //STROKE WEIGTH CONTROL 
   float vibrationFreq=1;
   float vibrationRange=10;
-  float weightSeed=20;
+  float weightSeed=10;
   
   //stroke weigth vibration controls
   float startingWeight;
@@ -37,49 +43,42 @@ class CrazyLines extends Particle
   float weight; 
   float oldWeight;
  
- 
- float distortionCoeff;
- float elasticityCoeff=1;
- float rotationCoeff=0;
+
 
   int colorIDX;
 
   public CrazyLines()
   {
-    formResolution = 5; //DEFAULT RESOLUTION
-    targetResolution=formResolution;
-    //x = new float[formResolution];
-    //y = new float[formResolution];
+   formResolution = 5; //DEFAULT RESOLUTION
+   targetResolution=formResolution;
   }
+  
   
   public CrazyLines(int res)
   {
-    formResolution=res;   
-    targetResolution=formResolution;
-    //x = new float[formResolution];
-    //y = new float[formResolution];
+   formResolution=res;   
+   targetResolution=formResolution;
   }
+  
   
   public void init()
   {
-
-    setColorIndex((int)random(0,5));   
+   setColorIndex((int)random(0,5));    
     
+   float angle = radians(360/float(formResolution));
     
-    float angle = radians(360/float(formResolution));
-    
-    for (int i=0; i<formResolution; i++)
-    {
-      x.add(i, (cos(angle*i) * initRadius));
-      y.add(i, (sin(angle*i) * initRadius));
-    }
+   for (int i=0; i<formResolution; i++)
+   {
+     x.add(i, (cos(angle*i) * initRadius));
+     y.add(i, (sin(angle*i) * initRadius));
+   }
 
     
-    startingWeight=random(weightSeed-vibrationRange/2,weightSeed+vibrationRange/2);
-    targetWeight=random(weightSeed-vibrationRange/2,weightSeed+vibrationRange/2);   
+   startingWeight=random(weightSeed-vibrationRange/2,weightSeed+vibrationRange/2);
+   targetWeight=random(weightSeed-vibrationRange/2,weightSeed+vibrationRange/2);   
     
-    weight=startingWeight;
-    oldWeight=weight;
+   weight=startingWeight;
+   oldWeight=weight;
    
   }
 
@@ -96,52 +95,27 @@ class CrazyLines extends Particle
 
   public void update()
   {  
+    //**** COLORS
+    myColor = pal.getColor(getColorIndex());        
+    pal.influenceColors(0,mapForSaturation(audioFeatures[3],0,40),mapForBrightness(audioFeatures[2],0,6000)); //DIRECT INFLUENCE
     
-    myColor = pal.getColor(getColorIndex());
-    //color gradient = pal.getColor();
-    
-    //println(saturation(pal.getColor(getColorIndex())));
-    pal.influenceColors(0,mapForSaturation(audioFeatures[3],audio_decisor.getComplexityStatusLowerBound(),audio_decisor.getComplexityStatusUpperBound()),mapForBrightness(audioFeatures[2],audio_decisor.getCentroidStatusLowerBound(),audio_decisor.getCentroidStatusUpperBound()));
-    
-    //par1=audioFeatures[0];
+    //**** SHAPE DISTORTION
     par1=instantFeatures[0];
-    par2=instantFeatures[0];
+    par2=pow(5,audioFeatures[2]/2500);
     par3=audioFeatures[0];
-    //par1=0.5;
- 
-    initRadius = 50;
-    //initRadius = 200*par1;
-    //centerY = width;// + random(20);
-    //formResolution++;
-    //color gradient = lerpColor(this.pal.getDarkest(), this.pal.getLightest(), i/count);
-    //fill(gradient, i/count*200);
-    //fill(gradient);
-    //rotate(PI/10);
-    if(par1*2 > 1) 
-    {
-      //formResolution = 4;
-    } 
-    else if(par1*2 > .5) 
-    {
-      //formResolution = 3;
-    } 
-    else 
-    {
-      //formResolution = 2;
-    }
     
-    //print("DUMB PARAM: " + par1);
-    
+    //randomize
+
+    //**** SHAPE RESOLUTION
     changeShape();
     
-    //weightSeed=map(1/audioFeatures[0],1,100,1,50);
-    //println(map(1/audioFeatures[0],1,100,1,50));
   }
 
   public void trace()
   {
+    noFill(); 
     
-    //strokeWeight(random(4)); //QUESTO PARAMETRO CONTROLLA LO SPESSORE DELLE LINEE! UTILE!        
+    //**** STROKE WEIGHT VIBRATION ****
     stroke(myColor);
     
     if((oldWeight-targetWeight)*(weight-targetWeight)<0) //zero crossing -> target reached!
@@ -163,24 +137,27 @@ class CrazyLines extends Particle
       oldWeight=weight;
       weight-=(vibrationFreq);      
     }
-         
-    
+            
     strokeWeight(weight); //<>//
 
    
+    //**** SCALE PULSATION ****
+    scale(0.5+instantFeatures[0]*elasticityCoeff); //DIRECT INFLUENCE
+    
+    
+    //**** SHAPE DISTORTION ****
     float angle = radians(360/float(formResolution));
-
-    noFill();
-    //scale(1 + audio_decisor.getElasticityIndicator()*par1*0.5); //PARAMETRO UTILE CHE REGOLA LA SCALATURA DELLA FORMA
-    
-    scale(0.5+par1*elasticityCoeff); //influnzare il parametro che moltiplica l'RMS in base all'indice di elasticità
-    
+   
     beginShape();
-    //noStroke(); 
-
  
     //start controlpoint
-    curveVertex(x.get(formResolution-1)/par3+centerX, y.get(formResolution-1)/par3+centerY);
+    
+    //IDEA: QUANDO C'E' UN CAMBIO DI STATUS IMPORTANTE CAMBIA RANDOMICAMENTE L'ASSEGNAZIONE DEI PARAMETRI AI VERTICI
+    //in questo modo cambiano le forme ma il comportamento rimane coerente alle feaatures
+    //meccanismo simile al cambio di palette
+    
+    curveVertex(x.get(formResolution-1)*par2+centerX, y.get(formResolution-1)*par2+centerY);
+    //curveVertex(x.get(formResolution-1)+centerX, y.get(formResolution-1)+centerY);
     //curveVertex(random(50), random(50));
     
     //formResolution = 2 + int(para*5);
@@ -195,15 +172,16 @@ class CrazyLines extends Particle
         
         //color gradient = lerpColor(this.pal.getDarkest(), this.pal.getLightest(), map(i/par2,0,3,0,1));
       
-        count = count + par1*rotationCoeff;
+        count = count + audioFeatures[0]*rotationCoeff; //DIRECT INFLUENCE
         rotate(count);
+        
         curveVertex(x.get(formResolution-1)*par3+centerX, y.get(formResolution-1)*par3+centerY);
-        curveVertex(x.get(i)/par3+centerX, y.get(i)/par3+centerY);
-        curveVertex(x.get(0)*par3+centerX, y.get(1)*par3+centerY);
+        curveVertex(x.get(i)*par2+centerX, y.get(i)*par2+centerY);
+        //curveVertex(x.get(0)*par3+centerX, y.get(1)*par3+centerY);
     }
 
     //end controlpoint
-    curveVertex(x.get(1)/par3+centerX, y.get(1)/par3+centerY);
+    curveVertex(x.get(1)*par2+centerX, y.get(1)*par2+centerY);
     endShape();    
     
     
@@ -225,7 +203,7 @@ class CrazyLines extends Particle
       morphing=true;
       
       float angle = radians(360/float(formResolution));
-    
+     
       for (int i=0; i<formResolution; i++)
       { 
         x.add(i, (cos(angle*i) * initRadius));
@@ -238,18 +216,34 @@ class CrazyLines extends Particle
       formResolution--;
       morphing=true;
       
-      float angle = radians(360/float(formResolution));
-    
+      float angle = radians(360/float(formResolution));    
       for (int i=0; i<formResolution; i++)
       { 
         x.add(i, (cos(angle*i) * initRadius));
         y.add(i, (sin(angle*i) * initRadius));
        }  
+    }    
+  }
+  
+  
+  /*
+  private void calcVibrationParameters()
+  {
+    if(vibrationCoeff<=1)
+    {
+      vibrationFreq=vibrationCoeff*2;
+      //weightSeed=map(1/vibrationCoeff,0.2,2.5,2,50);
+      //vibrationRange=weightSeed;
+    }
+    else if(vibrationCoeff>1)
+    {
+     vibrationFreq=vibrationCoeff;
+     //weightSeed=map(1/vibrationCoeff,0.2,2.5,2,50);
+     //vibrationRange=weightSeed/1.5;
+     println(weightSeed);   
     }
     
-
-    
-  }
+  }*/
   
   public void setFormResolution(int res)
   {    
@@ -261,9 +255,24 @@ class CrazyLines extends Particle
     elasticityCoeff=coeff;
   }
   
- public void setVibrationFreq(float freq)
+ public void setVibrationFreq(float f)
  {
-   vibrationFreq=freq;
+   vibrationFreq=f;
+ }
+ 
+ public void setThickness(float t)
+ {
+   weightSeed=t;
+ }
+ 
+ public void setVibrationRange(float r)
+ {
+   vibrationRange=r;
+ }
+ 
+ public void setRotationCoeff(float rot)
+ {
+   rotationCoeff=rot;
  }
 
 }

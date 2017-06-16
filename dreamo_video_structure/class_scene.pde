@@ -430,7 +430,7 @@ abstract class Scene extends AgingObject
   }
 
 
-  protected String chooseMusicPalette()
+  protected String choosePaletteFromAudio()
   {
     //TODO: tune this parameter
     if (audio_decisor.getColorIndicator()>3) {
@@ -440,7 +440,7 @@ abstract class Scene extends AgingObject
     }
   }
 
-  protected float chooseMusicElasticity()
+  protected float chooseElasticityFromAudio()
   {
     float el=0;
 
@@ -459,51 +459,151 @@ abstract class Scene extends AgingObject
       break;
 
       case(3):
-      el= 1.2;
+      el= 1.3;
       break;
 
       case(4):
-      el= 1.5;
+      el= 1.7;
       break;
 
       case(6):
-      el= 1.9;
+      el= 2.2;
       break;
     }
     return el;
   }
   
-  protected float chooseMusicVibration()
+  protected float chooseVibrationFromAudio()
   {
     float vib=0;
 
     switch((int)audio_decisor.getVibrationIndicator())
     {
       case(0):
-      vib = 0.4;
+      vib = 1;
       break;
 
       case(1):
-      vib = 0.7;
-      break;
-
-      case(2):
-      vib =1;
-      break;
-
-      case(3):
       vib = 1.2;
       break;
 
-      case(4):
+      case(2):
       vib = 1.5;
       break;
 
+      case(3):
+      vib = 1.8;
+      break;
+
+      case(4):
+      vib = 2;
+      break;
+
       case(6):
-      vib= 1.9;
+      vib= 3.8;
       break;
     }
     return vib;
+  }
+  
+  protected float chooseResolutionFromAudio()
+  {
+    float res=0; 
+    if(audioStatus[3]==0)
+    {
+      if(audioFeatures[3]<3 || audioFeatures[0]<0.01) res=2; //basic shape when silence ora very smooth sound
+      else if(audioFeatures[3]<9) res=5; //basic shape for smooth sounds
+      //else res=map(audioFeatures[3],0,audio_decisor.getComplexityLowerThreshold(),7,11);
+      else res=7;
+    }
+    else if(audioStatus[3]==1)
+    {
+      //res= map(audioFeatures[3],audio_decisor.getComplexityLowerThreshold(),audio_decisor.getComplexityUpperThreshold(),6,10);
+      res=11;
+    }
+    else 
+    {
+      res= audioFeatures[3];
+    }
+    println(res);
+    return res;
+  }
+  
+  protected float chooseThicknessFromAudio()
+  {
+    float t=0;
+
+    switch((int)audio_decisor.getTimbreIndicator())
+    {
+      case(0):
+      t = 40;
+      break;
+
+      case(1):
+      t = 30;
+      break;
+
+      case(2):
+      t = 17;
+      break;
+
+      case(3):
+      t = 11;
+      break;
+
+      case(4):
+      t = 7;
+      break;
+
+      case(6):
+      t = 3;
+      break;
+    }
+    return t;
+  }
+  
+  protected float chooseVibrationRangeFromAudio()
+  {
+    float range=0;
+    
+    if(audioFeatures[0]<0.05) {range=3/0.05;}
+    else range=3/audioFeatures[0];
+    
+    return range;
+    
+  }
+  
+  protected float chooseRotationFromAudio()
+  {
+    float rot=0;
+
+    switch((int)audio_decisor.getElasticityIndicator())
+    {
+      case(0):
+      rot= 0.001;
+      break;
+
+      case(1):
+      rot= 0.0001;
+      break;
+
+      case(2):
+      rot= 0.00001;
+      break;
+
+      case(3):
+      rot= 0.0;
+      break;
+
+      case(4):
+      rot= 0.0;
+      break;
+
+      case(6):
+      rot= 0;
+      break;
+    }
+    return rot;
   }
 
 

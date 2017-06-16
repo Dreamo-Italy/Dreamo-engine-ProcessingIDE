@@ -90,12 +90,12 @@ class AudioDebug extends Scene
     int dist=250;
     int l=450;
     textSize(23);
-    text("RMS ||| "+audioFeatures[0],width/4,height/6); text("||| "+audioStatus[0],width/4+l,height/6);
-    text("DYN INDEX ||| "+audioFeatures[1],width/4,height/6+dist/6);text("||| "+audioStatus[1],width/4+l,height/6+dist/6);
-    text("CENTROID ||| "+audioFeatures[2],width/4,height/6+dist/6*2);text("||| "+audioStatus[2],width/4+l,height/6+dist/6*2);
-    text("COMPLEXITY ||| "+audioFeatures[3],width/4,height/6+dist/6*3);text("||| "+audioStatus[3],width/4+l,height/6+dist/6*3);
-    text("RHYTHM STRENGTH ||| "+audioFeatures[4],width/4,height/6+dist/6*4);text("||| "+audioStatus[4],width/4+l,height/6+dist/6*4);
-    text("RHYTHM DENSITY ||| "+audioFeatures[5],width/4,height/6+dist/6*5);text("||| "+audioStatus[5],width/4+l,height/6+dist/6*5);
+    text("RMS ||| "+audioFeatures[0],width/5,height/6); text("||| "+audioStatus[0],width/5+l,height/6);
+    text("DYN INDEX ||| "+audioFeatures[1],width/5,height/6+dist/6);text("||| "+audioStatus[1],width/5+l,height/6+dist/6);
+    text("CENTROID ||| "+audioFeatures[2],width/5,height/6+dist/6*2);text("||| "+audioStatus[2],width/5+l,height/6+dist/6*2);
+    text("COMPLEXITY ||| "+audioFeatures[3],width/5,height/6+dist/6*3);text("||| "+audioStatus[3],width/5+l,height/6+dist/6*3);
+    text("RHYTHM STRENGTH ||| "+audioFeatures[4],width/5,height/6+dist/6*4);text("||| "+audioStatus[4],width/5+l,height/6+dist/6*4);
+    text("RHYTHM DENSITY ||| "+audioFeatures[5],width/5,height/6+dist/6*5);text("||| "+audioStatus[5],width/5+l,height/6+dist/6*5);
     
    
     noFill();    
@@ -118,7 +118,7 @@ class AudioDebug extends Scene
    if(global_rhythm.isEnergyOnset())
    {
      fill(pal.getColor(3));
-     ellipse(width/4+150+l,height/4+dist/6*2,100,100);
+     ellipse(width/5+150+l,height/4+dist/6*2,100,100);
    }
         
     

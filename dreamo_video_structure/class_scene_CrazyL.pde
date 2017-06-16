@@ -1,4 +1,5 @@
 class CrazyL extends Scene
+
 {
   
   CrazyLines C;
@@ -10,16 +11,14 @@ class CrazyL extends Scene
     C.setPalette(pal);
     C.disablePhysics();
     C.setPosition(new Vector2d(width/2, height/2, false));
-    addParticle(C);
-    
+    addParticle(C);   
     /*
     CrazyLines C2 = new CrazyLines(7);
     C2.setRotation(50);
     C2.setPalette(pal);
     C2.disablePhysics();
     addParticle(C2);
-    */
-    
+    */   
     Background bk = new Background();
     setBackground(bk);
     enableBackground();
@@ -45,7 +44,7 @@ class CrazyL extends Scene
     
     //**** COLOR CONTROLS
     //choose warm or cold palette
-    colorFadeTo(new Palette(chooseMusicPalette()),2,audio_decisor.getColorChange()); 
+    colorFadeTo(new Palette(choosePaletteFromAudio()),2,audio_decisor.getColorChange()); 
     //println(audio_decisor.getColorChange());
     
     //control color brightness
@@ -57,23 +56,28 @@ class CrazyL extends Scene
     saturateColors(3,50f,(audio_decisor.getComplexityChangeDir()==1));
     
     //follow big changes
-    colorFadeTo(new Palette(chooseMusicPalette()),2,(audio_decisor.getChangesNumber()>2));
+    colorFadeTo(new Palette(choosePaletteFromAudio()),2,(audio_decisor.getChangesNumber()>2));
+    //if(audio_decisor.getChangesNumber()>2) {C.randomizeShape();}
+    
     
     //println(chooseMusicPalette());
     
-    C.setElasticityCoeff(chooseMusicElasticity());
+    C.setElasticityCoeff(chooseElasticityFromAudio());
+    C.setVibrationFreq(chooseVibrationFromAudio());
     //println("ELASTICITY: "+chooseMusicElasticity());
     //SHAPE CONTROLS    
-    if(audioFeatures[3]>3)
-    {
-    //C.setFormResolution((int)audioFeatures[3]);
-    }
+    C.setFormResolution((int)chooseResolutionFromAudio());
+    C.setThickness(chooseThicknessFromAudio());
+    C.setVibrationRange(chooseVibrationRangeFromAudio());
+    C.setRotationCoeff(chooseRotationFromAudio());
     
+    println(chooseRotationFromAudio());
+    /*println("THICK: "+chooseThicknessFromAudio());
+    println("RANGE: "+chooseVibrationRangeFromAudio());
+    println("FREQ: "+ chooseVibrationFromAudio());
+    */
     
-
     println("AUDIO STATUS | "+audioStatus[0]+" | "+audioStatus[1]+" | "+audioStatus[2]+" | "+audioStatus[3]+" | "+audioStatus[4]+" | "+audioStatus[5]);
-    
-   
     
   }
   
