@@ -47,20 +47,17 @@ class AudioDebug extends Scene
       coefficients[i]=audio_proc.getFFTcoeff(i);
     }
     
-    instantFeatures=audio_decisor.getInstantFeatures();
-    audioStatus=audio_decisor.getStatusVector();
-    audioFeatures=audio_decisor.getFeturesVector();
     //println("CHANGES "+audio_decisor.getChangesNumber());
    
-    println(audio_decisor.getCentroidChangeDir());
-    //pal.influenceColors(0,map(audioFeatures[3],0,30,0,1),0);
+    
+    //pal.influenceColors(0,map(audio_decisor.getFeaturesVector()[3],0,30,0,1),0);
         
-    //println(map(audioFeatures[3],0,30,0,1));
+    //println(map(audio_decisor.getFeaturesVector()[3],0,30,0,1));
    
     //println("STATUS CHANGES IN THE LAST 2 SECS: "+audio_decisor.getChangesNumber());
     //println(audio_decisor.getColorChange());
     //println(audio_decisor.getColorIndicator());
-    //println(map(audioFeatures[2],0,6000,-0.7,1));
+    //println(map(audio_decisor.getFeaturesVector()[2],0,6000,-0.7,1));
     
   }
   
@@ -90,12 +87,12 @@ class AudioDebug extends Scene
     int dist=250;
     int l=450;
     textSize(23);
-    text("RMS ||| "+audioFeatures[0],width/5,height/6); text("||| "+audioStatus[0],width/5+l,height/6);
-    text("DYN INDEX ||| "+audioFeatures[1],width/5,height/6+dist/6);text("||| "+audioStatus[1],width/5+l,height/6+dist/6);
-    text("CENTROID ||| "+audioFeatures[2],width/5,height/6+dist/6*2);text("||| "+audioStatus[2],width/5+l,height/6+dist/6*2);
-    text("COMPLEXITY ||| "+audioFeatures[3],width/5,height/6+dist/6*3);text("||| "+audioStatus[3],width/5+l,height/6+dist/6*3);
-    text("RHYTHM STRENGTH ||| "+audioFeatures[4],width/5,height/6+dist/6*4);text("||| "+audioStatus[4],width/5+l,height/6+dist/6*4);
-    text("RHYTHM DENSITY ||| "+audioFeatures[5],width/5,height/6+dist/6*5);text("||| "+audioStatus[5],width/5+l,height/6+dist/6*5);
+    text("RMS ||| "+audio_decisor.getFeaturesVector()[0],width/5,height/6); text("||| "+audio_decisor.getStatusVector()[0],width/5+l,height/6);
+    text("DYN INDEX ||| "+audio_decisor.getFeaturesVector()[1],width/5,height/6+dist/6);text("||| "+audio_decisor.getStatusVector()[1],width/5+l,height/6+dist/6);
+    text("CENTROID ||| "+audio_decisor.getFeaturesVector()[2],width/5,height/6+dist/6*2);text("||| "+audio_decisor.getStatusVector()[2],width/5+l,height/6+dist/6*2);
+    text("COMPLEXITY ||| "+audio_decisor.getFeaturesVector()[3],width/5,height/6+dist/6*3);text("||| "+audio_decisor.getStatusVector()[3],width/5+l,height/6+dist/6*3);
+    text("RHYTHM STRENGTH ||| "+audio_decisor.getFeaturesVector()[4],width/5,height/6+dist/6*4);text("||| "+audio_decisor.getStatusVector()[4],width/5+l,height/6+dist/6*4);
+    text("RHYTHM DENSITY ||| "+audio_decisor.getFeaturesVector()[5],width/5,height/6+dist/6*5);text("||| "+audio_decisor.getStatusVector()[5],width/5+l,height/6+dist/6*5);
     
    
     noFill();    

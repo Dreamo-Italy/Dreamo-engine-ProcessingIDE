@@ -13,22 +13,15 @@ class Timbre extends FeaturesExtractor
   //**** CENTROID VARIABLES
   private float spectralCentroidHz;
   private float spectralCentroidNormalized;
-  private final float CENTROID_THEORETICAL_MAX = 4000; //based on empirical tests
-  private final float CENTROID_THEORETICAL_MIN = 1000; //based on empirical tests
   
   //**** CENTROID STATISTICS
   private Statistics centroidLongTerm; //long term statistics
   private final int W=129  ; // long term statistics window length (43=~1s)
   private Statistics centroidShortTerm; //short term statistics
-  private Statistics centroidMaxStats;  //maximum statistics
-  private float centroidMax; //stores the maximum value
-  private Hysteresis maxControl;
   
   //**** COMPLEXITY VARIABLES
   private float spectralComplexity;
   private final float COMPLEXITY_THRESHOLD_COEFF=2.6;
-  private final float COMPLEXITY_THEORETICAL_MAX=45; //based on empirical tests
-  private final float COMPLEXITY_THEORETICAL_MIN=15; //based on empirical tests
   
   //COMPLEXITY STATISTICS
   private Statistics complexityLongTerm;
@@ -52,10 +45,6 @@ class Timbre extends FeaturesExtractor
     //initialize statistics data
     centroidLongTerm=new Statistics(W);
     centroidShortTerm=new Statistics(21); //~1 sec   
-    
-    centroidMaxStats=new Statistics(6);  
-    centroidMax=1;
-    maxControl=new Hysteresis(43);
     
     complexityLongTerm=new Statistics(W);
     
@@ -88,14 +77,6 @@ class Timbre extends FeaturesExtractor
   
   public float getCentroidHz() { return spectralCentroidHz; } //instantaneous in Hz
   
-  public float getCentroidAverageMax() { return centroidMaxStats.getAverage(); } //average maximum in Hz
-  
-  public float getCentroidRelativeRatio() 
-  { 
-    if(centroidMaxStats.getAverage()<1) return 0;
-    else return centroidShortTerm.getAverage()/centroidMaxStats.getAverage(); 
-  } //dymaic ratio  
-  
   public float getCentroidShortTimeAvgHz() { return centroidShortTerm.getAverage(); }
   
   public float getCentroidShortTimeMaxHz() { return centroidShortTerm.getMax(); }
@@ -106,6 +87,7 @@ class Timbre extends FeaturesExtractor
   public float getComplexityAvg() { return complexityLongTerm.getAverage(); }
   
   public float getMagnitudeThreshold() { return COMPLEXITY_THRESHOLD_COEFF;}
+  
   //ZCR
   public float getZeroCrossingRate() {return ZCR;}
   
@@ -113,18 +95,11 @@ class Timbre extends FeaturesExtractor
   //**** CALC FEATURES METHOD (overrides the inherited method)
   public void calcFeatures()
   {
-    calcSpectralCentroid();//contains also spectral complexity calc
+    calcSpectralCentroid(); //contains also spectral complexity calc
     calcSpectralComplexity();
     calcZeroCrossingRate();
   }
-  
-  //**** RESET MAXIMUM
-  public void reset()
-  {
-    centroidMax=0;
-    centroidMaxStats.reset();
-  }
- 
+   
  
   //**** PRIVATE METHODS
   /**
@@ -151,24 +126,7 @@ class Timbre extends FeaturesExtractor
     spectralCentroidHz=expSmooth(SC, spectralCentroidHz, 5);  
     
     //collect data for short time stats
-    centroidShortTerm.accumulate(SC); //accumulate values   
-    
-    //update maximum
-    if (spectralCentroidHz > centroidMax) 
-    {
-      centroidMaxStats.accumulate(spectralCentroidHz);
-      centroidMax = spectralCentroidHz;
-    }
-    
-    if(maxControl.checkWindow(centroidMax,CENTROID_THEORETICAL_MAX,CENTROID_THEORETICAL_MAX))
-    {
-      centroidMax=0;
-      centroidMaxStats.reset();
-      maxControl.restart();
-    }
-        
-    //map respect the theoretical maximum
-    SC=map(SC,CENTROID_THEORETICAL_MIN,CENTROID_THEORETICAL_MAX,0,1);
+    centroidShortTerm.accumulate(SC); //accumulate values       
     
     //accumulate for long term statistcs
     centroidLongTerm.accumulate(SC);
@@ -194,10 +152,9 @@ class Timbre extends FeaturesExtractor
      }    
    }
           
-      spectralComplexity=expSmooth(peaks,spectralComplexity,5);
-      //spectralComplexity=map(bins,COMPLEXITY_THEORETICAL_MIN,COMPLEXITY_THEORETICAL_MAX,0,1);
+      spectralComplexity=expSmooth(peaks,spectralComplexity,5);      
       complexityLongTerm.accumulate(spectralComplexity);      
-    //}  
+      
   }
    
    

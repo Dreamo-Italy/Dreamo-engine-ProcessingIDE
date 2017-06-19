@@ -50,7 +50,7 @@ class PlotterGenerator extends Particle
 
   public void update()
   {
-    if ( global_timbre.getCentroidAvg()>0.6 && global_timbre.getComplexityAvg()<0.2 ){
+    if ( audio_decisor.getFeaturesVector()[2]>3200 && audio_decisor.getFeaturesVector()[3]<15 ){
     //(frameCount % (global_fps*15) == 0){ // switch between mode1 and mode2, with different damping factors
         mode2 = mode1;
         mode1 = false;
@@ -78,7 +78,7 @@ class PlotterGenerator extends Particle
            { setPosition( new Vector2d ( random(-width/6, width/6) , random(-height/6, height/6) , false ) ); damping = 0.001; }
         else if(getParameter(0) > 0.9 )
             {connectionRadius = 50; zoom = 1.05*getParameter(0);  lineWeight = 7; }
-        if ( global_dyn.getDynamicityIndex() > 0.86)
+        if ( audio_decisor.getInstantFeatures()[1] > 0.46)
           { lineWeight = 40; connectionRadius = 10; particleConnectionRadius = 500;  /*setRotation(random(PI)/8);*/ }
         //  if(frameCount % 80 == 0) {loadPointsFromTxt();}
 
@@ -178,7 +178,7 @@ class PlotterGenerator extends Particle
 
     if (d <= connectionRadius && d > 2)
     {
-      hueValue = map(a, 0, 0.5, hue(myColor), hue(myColor)*3 )%360 ; //<>// //<>// //<>// //<>// //<>// //<>//
+      hueValue = map(a, 0, 0.5, hue(myColor), hue(myColor)*3 )%360 ; //<>// //<>// //<>// //<>// //<>//
       stroke(hueValue, saturationValue, brightnessValue, a*lineAlphaWeight*lineAlpha + (i1 %3 * 2));
       line(p1.getX(), p1.getY(), p2.getX(), p2.getY() );
     }

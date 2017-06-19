@@ -11,7 +11,7 @@ class Spirals extends Scene
     Background bk = new Background();
     setBackground(bk);
     enableBackground();
-    sceneMood.setMood(0,1);    
+ 
   }
   
   public void update()

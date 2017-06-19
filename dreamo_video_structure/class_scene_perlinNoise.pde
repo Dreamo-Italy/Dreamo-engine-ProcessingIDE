@@ -16,7 +16,8 @@ class ScenePerlinNoise extends Scene
       {
         int x = round(width/column*(i+1));
         int y = round(height/row*(j+1));
-        ParticleTracer temp = new ParticleTracer();
+        
+        NoiseDot temp = new NoiseDot();
         temp.setPalette(pal);
         temp.setPosition(new Vector2d(x, y, false));
         addParticle(temp);
@@ -25,17 +26,21 @@ class ScenePerlinNoise extends Scene
 
     setBackground(new Background());
     enableBackground();
-    sceneMood.setMood(1,0);
+
   }
 
-   public void update()
-   {     
-   for(int i = 0; i < particlesNumber; i++)
-     {
-       particlesList[i].updatePhysics();
-       particlesList[i].setParameter(0,global_dyn.getRMS());
-       particlesList[i].update();
-   }
+  public void update()
+  {
+    
+    for(int i = 0; i < particlesNumber; i++)
+    {
+      particlesList[i].updatePhysics();
+      particlesList[i].setPalette(this.pal);
+      particlesList[i].update();
+    }
+    
+    //UPDATE CONTROL PARAMS
+    
   }
   
 }

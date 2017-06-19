@@ -1,5 +1,7 @@
 class SpiralParticle extends Particle
 {
+  
+  
   int count = 50;
   float alpha = 50;
   float [] alphaArray = new float[count];
@@ -11,6 +13,8 @@ class SpiralParticle extends Particle
   final float ALPHA_INCREMENT = 0.00125;
   final float ALPHA_DECREMENT = 0.025; 
   
+  float centroidParam;  
+    
   public void init()
   {
     setPersistence(true);
@@ -25,6 +29,14 @@ class SpiralParticle extends Particle
 
   public void update()
   {    
+    
+    centroidParam=map(audio_decisor.getFeaturesVector()[2],0,6000,0,1);
+    setParameter(1,centroidParam);
+    setParameter(0,audio_decisor.getInstantFeatures()[0]);
+    
+    
+    
+    //FADE OUT/FADE IN
     for(int i=0; i< count; i++) 
     {
       if(alphaArray[i]<alphaArrayOriginal[i] )
@@ -50,7 +62,7 @@ class SpiralParticle extends Particle
   
   public void trace()
   {
-    setParameter(1, global_timbre.getCentroidAvg() );
+    
     
    rectMode(CENTER);
    translate(width/2, height/2);
@@ -62,7 +74,7 @@ class SpiralParticle extends Particle
       fill(gradient, alphaArray[i]*200);
       //fill(gradient);
       rotate(PI/4);     
-      rect(0, 0, tileWidth*getParameter(1)*1.5, tileHeight/getParameter(1));
+      rect(0, 0, (tileWidth*getParameter(1))/0.5, tileHeight/getParameter(1));
       scale(1 - 3.0/count);
       rotate(getParameter(0));
    }

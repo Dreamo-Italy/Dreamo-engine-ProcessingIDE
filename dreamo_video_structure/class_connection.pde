@@ -182,7 +182,7 @@ class Connection
       //println("Read from table "+sensorName+" has completed.");
         
      executionNumber[sensorIndex]++;
-   } //<>// //<>// //<>//
+   } //<>// //<>//
    
     // the function that reads the DATA from the SERIAL LINE BUFFER
    private void storeFromSerial()
@@ -275,12 +275,12 @@ class Connection
                if ( index >= 0 && index <= currentListSize )
                    {
                      inValue = getList(sensorName).remove( index );
-                     toOutput.append( inValue ); //<>// //<>//
+                     toOutput.append( inValue ); //<>//
                      }               
               }
           else
               emptyList = true; 
-     }  //<>// //<>// //<>//
+     }  //<>// //<>//
     
      return toOutput;
     }

@@ -4,14 +4,9 @@
   public static final double DEFAULT_SILENCE_THRESHOLD = -60.0;//db
   
   private float RMS;
-  private final float THEORETICAL_MAX_RMS=1; //based on empirical tests
-  private float maxRMS;
 
   //keep track of ~3 seconds of music and average RMS values
   private final int W=129; // 43=~1s
-  
-  private float RMSslope;
-  private float RMSmaxSlope;
   
   private Statistics RMSstats;
   
@@ -23,54 +18,30 @@
     
     RMSstats=new Statistics(W);
     
-    RMSmaxSlope=0;
-    maxRMS=0.1;
-    
   }
 
 
   //GET METHODS
-  public float getRMS()
-  {
-   return RMS;
-  }
+  public float getRMS() { return RMS; }
     
-  public float getRMSAvg()
-  {
-    return RMSstats.getAverage();
-  }
+  public float getRMSAvg() { return RMSstats.getAverage(); }
   
-  public float getRMSStdDev()
-  {
-    return RMSstats.getStdDev();
-  }
+  public float getRMSStdDev() { return RMSstats.getStdDev(); }
   
-  public float getRMSVariance()
-  {
-    return RMSstats.getVariance();
-  }
+  public float getRMSVariance() { return RMSstats.getVariance(); }
   
-  public float getSPL()
-  {
-    return soundPressureLevel(RMS);
-  }
+  public float getSPL() { return soundPressureLevel(RMS); }
+ 
+  public boolean isSilence(final float silenceThreshold) { return soundPressureLevel(RMS) < silenceThreshold; }
   
-  public float getDynamicityIndex() { return RMSstats.getStdDev()/RMSstats.getAverage(); }
+  public boolean isSilence() { return soundPressureLevel(RMS) < DEFAULT_SILENCE_THRESHOLD; }
   
-  public void reset()
-  {
-    //maxRMS=0.4;
-  }
-  
+ 
   //OVERRIDE CALC FEATURES METHOD
   public void calcFeatures()
   {
     calcRMS();
   }
-
-  public boolean isSilence(final float silenceThreshold) { return soundPressureLevel(RMS) < silenceThreshold; }
-  
-  public boolean isSilence() { return soundPressureLevel(RMS) < DEFAULT_SILENCE_THRESHOLD; }
   
   //**** PRIVATE METHODS
   /**
@@ -78,6 +49,7 @@
    */
   private void calcRMS()
   {
+    
       float level=0;
       for(int i=0;i<samples.length;i++)
       {
@@ -86,14 +58,7 @@
       
       level /= samples.length;
       level = (float) Math.sqrt(level); 
-      
-      if(level > maxRMS) maxRMS = level;
-
-      //normalize level in 0-1 range
-      //level=map(level,0,maxRMS,0,1);
-      
-      RMSslope=differentiateArray(level);       
-      
+       
       //average      
       RMSstats.accumulate(level);
       
@@ -105,15 +70,5 @@
   
   private float soundPressureLevel(final float RMS) { return linearToDecibel(RMS); }
   
-  
-  private float getRmsSlope()
-  {
-    
-    return RMSslope;
-  }
-  
-  
-  
-
 
 }

@@ -4,12 +4,6 @@ class AudioDecisor
   private Dynamic dynamic;
   private Rhythm rhythm;
   private Timbre timbre;
-  
-  private float clarity;
-  private float agitation;
-  private float energy;
-  private float roughness;
-  
  
   private int endCheck;
   private int changesNumber;
@@ -68,9 +62,9 @@ class AudioDecisor
   private final int FEATURES_NUMBER=6;
  
   //**** SCORES ****
-  private float[] colorIndicator;
-  private boolean colorChange;
-  private float[] elasticityIndicator;
+  private float[] paletteIndicator;
+  private boolean paletteChange;
+  private float elasticityIndicator;
   private float vibrationIndicator;
   private float timbreIndicator;
   
@@ -81,18 +75,6 @@ class AudioDecisor
   private int complexityChange;
   private int rhythmStrChange;
   private int rhythmDensChange;
-  
-  //**** AUDIO DATA FOR DIRECT ASSEGNATION
-  //INSTANTANOUS VOL: global_dyn.getRMS();
-  //DYNAMIC INDEX: global_dyn.getDynamicityIndex();
-  //SPECTRAL CENTROID: global_timbre.getCentroid();
-  //SPECTRAL COMPLEXITY: global_timbre.getComplexityAvg(); //average is better? 
-        
-  //**** AUDIO DATA FOR TRIGGERING
-  //SILENCE: global_dyn.isSilence(); //try different thresholds
-  //DETECT DROP (?)
-  //AVERAGE VOL: global_dyn.getRMSAvg();
-  //CENTROID RELATIVE RATIO: global_timbre.getCentroidRelativeRatio();
     
   AudioDecisor(Dynamic d, Rhythm r, Timbre t)
   {
@@ -108,9 +90,9 @@ class AudioDecisor
     changesNumber=0;
     checking=false;   
      
-    colorIndicator=new float[2];
-    colorChange=false; 
-    elasticityIndicator=new float[2];
+    paletteIndicator=new float[2];
+    paletteChange=false; 
+    elasticityIndicator=0;
     vibrationIndicator=0;
     timbreIndicator=0;
       
@@ -120,7 +102,7 @@ class AudioDecisor
     specComplexity=new Statistics(86);
     specCentroid=new Statistics(86); 
     //ZCR=new Statistics(86);   
-    rhythmStr=new Statistics(172);
+    rhythmStr=new Statistics(172); //4 seconds
     rhythmDens=new Statistics(172);
  
     RMSChange=0;
@@ -160,7 +142,7 @@ class AudioDecisor
 
   public int[] getStatusVector() { return statusVector; }
  
-  public float[] getFeturesVector() { return featuresVector; }
+  public float[] getFeaturesVector() { return featuresVector; }
   
   public float[] getInstantFeatures() { return instantFeatures; }
   
@@ -174,11 +156,11 @@ class AudioDecisor
   
   public int getComplexityChangeDir() { return complexityChange;}
   
-  public boolean getColorChange() { return colorChange; }
+  public boolean getPaletteChange() { return paletteChange; }
   
-  public float getColorIndicator() { return colorIndicator[0]; }
+  public float getPaletteIndicator() { return paletteIndicator[0]; }
   
-  public float getElasticityIndicator() { return elasticityIndicator[0]; }
+  public float getElasticityIndicator() { return elasticityIndicator; }
   
   public float getVibrationIndicator() { return vibrationIndicator; }
   
@@ -470,26 +452,21 @@ class AudioDecisor
   
  
   private void aggregateStatus()
-  {
-    
+  {   
     //aggregate features status 
-    colorIndicator[0]=statusVector[0]+statusVector[2]+statusVector[3];
+    paletteIndicator[0]=statusVector[0]+statusVector[2]+statusVector[3];
     
-    if(colorIndicator[0]>3 && colorIndicator[1]<=3) {colorChange=true;}
-    else if(colorIndicator[0]<=3 && colorIndicator[1]>3) {colorChange=true;}
-    else if((colorIndicator[0]>3 && colorIndicator[1]>3) || (colorIndicator[0]<=3 && colorIndicator[1]<=3)) {colorChange=false;}
+    if(paletteIndicator[0]>PALETTE_THRESHOLD && paletteIndicator[1]<=PALETTE_THRESHOLD) {paletteChange=true;}
+    else if(paletteIndicator[0]<=PALETTE_THRESHOLD && paletteIndicator[1]>PALETTE_THRESHOLD) {paletteChange=true;}
+    else if((paletteIndicator[0]>PALETTE_THRESHOLD && paletteIndicator[1]>PALETTE_THRESHOLD) || (paletteIndicator[0]<=PALETTE_THRESHOLD && paletteIndicator[1]<=PALETTE_THRESHOLD)) {paletteChange=false;}
     
-    colorIndicator[1]=colorIndicator[0];
-    
-    
-    elasticityIndicator[0]=statusVector[1]+statusVector[4];
+    paletteIndicator[1]=paletteIndicator[0];
+       
+    elasticityIndicator=statusVector[1]+statusVector[4];
     
     vibrationIndicator=statusVector[0]+statusVector[5];
-    //example: centroid+complexity=timbre status
-    //dyn index+rhythm strength= rhythm prominency
     
-    timbreIndicator=statusVector[2]+statusVector[3];
-    
+    timbreIndicator=statusVector[2]+statusVector[3];    
   }
   
   public float getCentroidStatusLowerBound()
@@ -658,68 +635,6 @@ class AudioDecisor
     rhythmDensUpperBound.setLowerBound(value-0.5);
     rhythmDensUpperBound.setUpperBound(value+0.5);    
   }
-  
-  
-  
-  /*
-  private void calcClarity()
-  {  
-    clarity=global_timbre.getCentroid()+global_timbre.getCentroidRelativeRatio()*0.5; 
-  }
-  
-  
-  private void calcEnergy()
-  {
-    energy=global_dyn.getDynamicityIndex()+global_dyn.getRMS();
-  }
-  
-  private void calcAgitation()
-  {
-    //complexity+global_timbre.getComplexityAvg()
-    agitation=global_timbre.getComplexityAvg()+global_dyn.getDynamicityIndex();
-    //dinamicity
-  }
-  
-  
-  private void calcRoughness()
-  {
-    //complexity
-    roughness=global_timbre.getComplexityAvg()+global_timbre.getCentroidRelativeRatio()*0.5;
-    //centroidglobal_timbre.getCentroidRelativeRatio()
-    
-  }
-  
-  
-  
-  public boolean musicChange()
-  {
-    //if(centroid_relative.checkWindow(global_timbre.getCentroidRelativeRatio(),0.7,0.7) &&  rmsSlope.checkWindow(global_dyn.getRmsSlope(),0.8,1.2))
-    if(global_timbre.getCentroidRelativeRatio()>0.6 && global_dyn.getRmsSlope()>1.2)
-    {
-      return true;
-    }
-    else {return false;}
-  }
-  
-    
-  public float getClarity()
-  {
-    return clarity;
-  }
-    public float getEnergy()
-  {
-    return energy;
-  }
-    public float getAgitation()
-  {
-    return agitation;
-  }
-    public float getRoughness()
-  {
-    return roughness;
-  }
-  */
-  
-  
+   
   
 }

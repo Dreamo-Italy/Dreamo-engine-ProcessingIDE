@@ -35,11 +35,8 @@ abstract class FeaturesExtractor
   //SET METHODS
   public void setSamples(float[] _samples)
   {   
-      samples=_samples.clone();
-      //calcFeatures();   
+      samples=_samples.clone();  
   }
-  
-  //public void setBufferSize
   
   public void setInitialized()
   {

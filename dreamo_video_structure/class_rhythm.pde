@@ -142,7 +142,7 @@ class Rhythm extends FeaturesExtractor {
       energyOnsets=0;
     }
     
-    //float C=-0.0000015*energyStats.getVariance()+2;
+    
     float C=-0.0000015*energyStats.getVariance()+1.5142857; //zic version
     //float C=(-0.0025714*energyStats.getVariance())+1.5142857; //original paper    
     //if energy in the current frame is bigger than C*avg(E) we detect an onset
@@ -165,6 +165,8 @@ class Rhythm extends FeaturesExtractor {
     currentFrameEnergy=frameEnergy;
 
   }
+  
+  
    
   //PERCUSSIVE ONSETS DETECTION ALGORITHM
   private void percussiveOnsetDetection()

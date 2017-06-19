@@ -16,7 +16,6 @@ class ScenePlotter extends Scene
     setBackground(new Background());
     enableBackground();
     
-    sceneMood.setMood(-0.2,0.9);
   }
 
 

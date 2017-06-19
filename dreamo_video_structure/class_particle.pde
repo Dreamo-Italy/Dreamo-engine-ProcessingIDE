@@ -35,12 +35,6 @@ abstract class Particle extends AgingObject
   
   private boolean warpAtBorders;
   private boolean bounceAtBorders;
-  
-  protected float[] instantFeatures;
-  protected float[] audioFeatures;
-  protected int[] audioStatus;
-  
-  
 
   //CONTRUCTORS
   public Particle()
@@ -369,14 +363,6 @@ abstract class Particle extends AgingObject
   public Palette getPalette()
   { return pal; }
   
-  
-  public void updateAudio(float[] instant, float[] features, int[] status)
-  {
-    instantFeatures=instant;
-    audioFeatures=features;
-    audioStatus=status;
-    
-  }
   
   
   public void connectParticles(int connectionRadius, int particleRadius)
