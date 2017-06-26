@@ -41,11 +41,11 @@ void setup()
   global_stage = new Stage();
 
   //****** SCENES ********
-  global_stage.addScene(new BlankScene());
-  global_stage.addScene(new AudioDebug());
+  //global_stage.addScene(new BlankScene());
+ // global_stage.addScene(new AudioDebug());
   //global_stage.addScene(new ScenePlotter());
   //global_stage.addScene(new Spirals());
-  //global_stage.addScene(new ScenePerlinNoise());
+  global_stage.addScene(new ScenePerlinNoise());
   global_stage.addScene(new CrazyL());
 
 

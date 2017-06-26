@@ -4,8 +4,8 @@ class BlankScene extends Scene
   {
     Background bk = new Background();
     setBackground(bk);
-    enableBackground();
-  }
+    enableBackground();    
+  }  
   
   public void trace()
   {
@@ -18,6 +18,7 @@ class BlankScene extends Scene
     textSize(23);
     text("DREAMO",width/2-46,height/2-5);
     textSize(12);
-    text("press N for the next graphic scene",width/2-92,height/2+20);
+    text("press N for the next graphic scene",width/2-92,height/2+20);   
   }
+  
 }

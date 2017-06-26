@@ -472,23 +472,23 @@ abstract class Scene extends AgingObject
     switch((int)audio_decisor.getElasticityIndicator())
     {
       case(0):
-      rot= 0.001;
+      rot= 0.1;
       break;
 
       case(1):
-      rot= 0.0001;
+      rot= 0.09;
       break;
 
       case(2):
-      rot= 0.00001;
+      rot= 0.05;
       break;
 
       case(3):
-      rot= 0.0;
+      rot= 0.01;
       break;
 
       case(4):
-      rot= 0.0;
+      rot= 0.005;
       break;
 
       case(6):

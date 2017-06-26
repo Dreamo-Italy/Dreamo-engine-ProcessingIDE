@@ -5,7 +5,7 @@ import java.util.Comparator;
 abstract class Particle extends AgingObject
 {
   //CONSTANTS
-  public final int PARAMETERS_NUMBER = 5;
+  public final int PARAMETERS_NUMBER = 12;
     
   //PRIVATE MEMBERS
   private Vector2d position;

@@ -21,7 +21,7 @@ class AudioDebug extends Scene
   {
     
     pal.initColors("warm");
-    println(pal.getID());
+    //println(pal.getID());
     
     
     Background bk = new Background();

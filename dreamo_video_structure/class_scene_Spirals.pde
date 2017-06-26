@@ -16,6 +16,9 @@ class Spirals extends Scene
   
   public void update()
   {
+   
+    colorFadeTo(new Palette(choosePaletteFromAudio()),2,audio_decisor.getPaletteChange());
+    
    for(int i = 0; i < particlesNumber; i++)
      {
        particlesList[i].updatePhysics();

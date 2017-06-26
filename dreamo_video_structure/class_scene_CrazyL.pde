@@ -6,7 +6,7 @@ class CrazyL extends Scene
   
   public void init()
   {
-    pal.initColors("cold");
+    pal.initColors();
     C = new CrazyLines(5);
     C.setPalette(pal);
     C.disablePhysics();

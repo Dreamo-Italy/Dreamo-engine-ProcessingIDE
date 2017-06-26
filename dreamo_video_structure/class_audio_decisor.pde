@@ -469,6 +469,7 @@ class AudioDecisor
     timbreIndicator=statusVector[2]+statusVector[3];    
   }
   
+  
   public float getCentroidStatusLowerBound()
   {
     if(statusVector[2]==0) {return 0;}

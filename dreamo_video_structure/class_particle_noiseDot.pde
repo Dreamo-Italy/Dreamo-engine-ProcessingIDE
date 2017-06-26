@@ -1,45 +1,50 @@
 class NoiseDot extends Particle
-{
-  final float SPEED = 28;
+{ 
+  float speed;
+  float dotW;
+  float dotH;
   float noiseScale;
   float noiseStrength;
   float angle;
   float nCrossedX, nCrossedY;
   int indexShifting;
-  
-  color colore;
-  int alpha;
-  
+ 
   void init()
   {
-    noiseScale = 300;
+    speed = 10;
+    dotW=9;
+    dotH=9;
     noiseStrength = 100;
-    setSpeed(new Vector2d(0, 0, true));
+    noiseScale = 300;    
     nCrossedX = 0;
     nCrossedY = 0;
-    indexShifting = 0;
-    
-    //setLifeTimeLeft(10);
-    alpha=100;
-    //¢setPersistence(true);
-    
+    indexShifting = 0;    
   }
 
-
   void update()
-  {
+  {   
+    //**** PARAMETERS FOR DIRECT INFLUENCE
+    setParameter(0,audio_decisor.getInstantFeatures()[0]); //RMS istantaneo
+    setParameter(1,audio_decisor.getFeaturesVector()[0]); //RMS mediato (2 sec)
+    
+    //**** PARAMETERS FROM SCENE DECISIONS
+    noiseStrength=getParameter(2)*100;    
+    noiseScale=500/getParameter(3);
+    dotW=getParameter(4)*1.5;
+    dotH=getParameter(4)*1.5;
+    
     
     if ( frameCount % 4 == 0 && indexShifting < getPalette().COLOR_NUM && round(random(1)) == 1 )     indexShifting++;              
     if ( indexShifting >= getPalette().COLOR_NUM)         indexShifting = 0;
 
-    angle = noise((getPosition().getX() + nCrossedX*width)/noiseScale, (getPosition().getY()+nCrossedY*height)/noiseScale) * noiseStrength;
-    
+    angle = noise((getPosition().getX() + nCrossedX*width)/noiseScale, (getPosition().getY()+nCrossedY*height)/ noiseScale) * noiseStrength;
     getSpeed().setDirection(angle);
-    getSpeed().setModulus(SPEED*getParameter(0)); 
+    
+    getSpeed().setModulus(speed*getParameter(0)); 
+    
+    pal.influenceColors(0,mapForSaturation(getParameter(1),0,1),0);
     
     keepInsideTheScreen();    
-    
-    //alpha -= 255/10;
     
   }
   
@@ -47,9 +52,8 @@ class NoiseDot extends Particle
   {
     
     noStroke();
-    colore=pal.getColor(indexShifting);
-    fill(colore);
-    ellipse(-5, -5, 9, 9);
+    fill(pal.getColor(indexShifting));
+    ellipse(-5, -5, dotW, dotH);
     
   }
   
@@ -76,4 +80,6 @@ class NoiseDot extends Particle
       nCrossedY--;
     }
   }
+  
+  
 }

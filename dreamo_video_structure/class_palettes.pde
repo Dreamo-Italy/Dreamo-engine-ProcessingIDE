@@ -144,6 +144,12 @@ class Palette
 
 
   //get methods
+  
+  public int getColorsNumber()
+  {
+    return COLOR_NUM; 
+  }
+  
   //random color
   public color getColor()
   {
@@ -326,9 +332,9 @@ class Palette
     //GHIACCIO
     colorsInit[0][0] = color(219, 18, 61);
     colorsInit[0][1] = color(217, 47, 82);
-    colorsInit[0][2] = color(230, 8, 14);
-    colorsInit[0][3] = color(194, 8, 42);
-    colorsInit[0][4] = color(216, 28, 74);
+    colorsInit[0][2] = color(290, 50, 74);
+    colorsInit[0][3] = color(194, 35, 72);
+    colorsInit[0][4] = color(216, 40, 74);
 
     //GREEN/BLUE/GRAY
     colorsInit[1][0] = #155656;
@@ -346,17 +352,17 @@ class Palette
 
     //CARPENTIERE
     colorsInit[3][0] = #9CACA9;
-    colorsInit[3][1] = #F5FDFD;
+    colorsInit[3][1] = #8DFCFC;
     colorsInit[3][2] = #314E57;
-    colorsInit[3][3] = #6E929A;
-    colorsInit[3][4] = #CFD9D4;
+    colorsInit[3][3] = #77BECE;
+    colorsInit[3][4] = #299961;
 
-    //SUPER GRAY
-    colorsInit[4][0] = #D2D4C8;
-    colorsInit[4][1] = #E0E2DB;
-    colorsInit[4][2] = #B8BDB5;
-    colorsInit[4][3] = #889696;
-    colorsInit[4][4] = #5F7470;
+    //BLUE-VIOLET
+    colorsInit[4][0] = #4EA2D3;
+    colorsInit[4][1] = #FFFCFF;
+    colorsInit[4][2] = #247BA0;
+    colorsInit[4][3] = #8D2A99;
+    colorsInit[4][4] = #2D7266;
 
     
 
@@ -383,11 +389,11 @@ class Palette
     colorsInit[7][4] = #FFCDBC;
     
     //RED/GREEN
-    colorsInit[8][0] = color(152, 48, 100);
-    colorsInit[8][1] = color(180, 64, 45);
+    colorsInit[8][0] = color(135, 60, 95);
+    colorsInit[8][1] = color(60, 64, 70);
     colorsInit[8][2] = color(18, 68, 100);
-    colorsInit[8][3] = color(0, 0, 90);
-    colorsInit[8][4] = color(240, 2, 23);
+    colorsInit[8][3] = color(30, 30, 90);
+    colorsInit[8][4] = color(350, 40, 73);
     
     colorsInit[9][0] = #EAF4D3;
     colorsInit[9][1] = #F6BD60;

@@ -23,7 +23,7 @@ class CrazyLines extends Particle
   
   float distortionCoeff;
   float elasticityCoeff=1;
-  float rotationCoeff=0.001;
+  float rotationCoeff=0.009;
   
   //STROKE WEIGTH CONTROL 
   float vibrationFreq=1;
@@ -88,7 +88,15 @@ class CrazyLines extends Particle
     setParameter(3,audio_decisor.getFeaturesVector()[3]); 
     setParameter(4,audio_decisor.getFeaturesVector()[2]);
     
-      
+    /*
+    //**** PARAMETERS COMING FROM SCENE DECISIONS
+    formResolution=(int)getParameter(5);
+    elasticityCoeff=getParameter(6);
+    vibrationFreq=getParameter(7);
+    weightSeed=getParameter(8);
+    vibrationRange=getParameter(9);
+    rotationCoeff=getParameter(10);
+    */
     
     //**** DIRECT INFLUENCE of TIMBRE on colors SATURATION AND BRIGHTNESS
     pal.influenceColors(0,mapForSaturation(getParameter(3),0,40),mapForBrightness(getParameter(4),0,6000));
@@ -129,7 +137,7 @@ class CrazyLines extends Particle
         x.add(i, (cos(angle*i) * width/10));
         y.add(i, ( sin(angle*i) * width/10));
                      
-        count = count + getParameter(2)*rotationCoeff; //DIRECT INFLUENCE of RMS (average) on ROTATION
+        count = count + radians(getParameter(2)*rotationCoeff); //DIRECT INFLUENCE of RMS (average) on ROTATION
         rotate(count);
         
         curveVertex(x.get(formResolution-1)*getParameter(2), y.get(formResolution-1)*getParameter(2));
