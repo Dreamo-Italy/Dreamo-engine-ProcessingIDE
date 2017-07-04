@@ -14,7 +14,7 @@ class NoiseDot extends Particle
     speed = 10;
     dotW=9;
     dotH=9;
-    noiseStrength = 100;
+    noiseStrength = 1;
     noiseScale = 300;    
     nCrossedX = 0;
     nCrossedY = 0;
@@ -28,17 +28,19 @@ class NoiseDot extends Particle
     setParameter(1,audio_decisor.getFeaturesVector()[0]); //RMS mediato (2 sec)
     
     //**** PARAMETERS FROM SCENE DECISIONS
-    noiseStrength=getParameter(2)*100;    
-    noiseScale=500/getParameter(3);
-    dotW=getParameter(4)*1.5;
-    dotH=getParameter(4)*1.5;
-    
+    dotW=getParameter(2);
+    dotH=getParameter(2);
+    noiseScale=getParameter(3);
+    noiseStrength=getParameter(4);        
+        
     
     if ( frameCount % 4 == 0 && indexShifting < getPalette().COLOR_NUM && round(random(1)) == 1 )     indexShifting++;              
     if ( indexShifting >= getPalette().COLOR_NUM)         indexShifting = 0;
 
     angle = noise((getPosition().getX() + nCrossedX*width)/noiseScale, (getPosition().getY()+nCrossedY*height)/ noiseScale) * noiseStrength;
+   
     getSpeed().setDirection(angle);
+    
     
     getSpeed().setModulus(speed*getParameter(0)); 
     
@@ -46,6 +48,11 @@ class NoiseDot extends Particle
     
     keepInsideTheScreen();    
     
+  }
+  
+  public float getAngle()
+  {
+    return angle;
   }
   
   void trace()

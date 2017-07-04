@@ -1,8 +1,10 @@
 class ScenePerlinNoise extends Scene
 { 
+  
+  
   void init()
   {
-    pal.initColors();
+    pal.initColors();   
     final int row = 10;
     final int column = 11;    
     for(int i = 0; i < column; i++)
@@ -29,9 +31,9 @@ class ScenePerlinNoise extends Scene
     {
       particlesList[i].updatePhysics();
       particlesList[i].setPalette(this.pal);
-      particlesList[i].setParameter(2,chooseVibrationFromAudio());
-      particlesList[i].setParameter(3,chooseElasticityFromAudio());
-      particlesList[i].setParameter(4,chooseThicknessFromAudio());
+      particlesList[i].setParameter(2,1.5*chooseThicknessFromAudio());
+      particlesList[i].setParameter(3,1200/chooseVibrationFromAudio());
+      particlesList[i].setParameter(4,200*chooseElasticityFromAudio());    
       particlesList[i].update();    
     }   
   }  
