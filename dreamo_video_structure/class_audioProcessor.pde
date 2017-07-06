@@ -163,8 +163,8 @@ class AudioProcessor implements AudioListener
   
   public void saveLog()
   {   
-    saveTable(audioLog, "data/audioFeaturesLog.csv");  
-    saveTable(statusLog, "data/audioStatusLog.csv");
+    saveTable(audioLog, "data/FeaturesLog.csv");  
+    saveTable(statusLog, "data/StatusLog.csv");
   }
    
   //********* PRIVATE METHODS ***********
