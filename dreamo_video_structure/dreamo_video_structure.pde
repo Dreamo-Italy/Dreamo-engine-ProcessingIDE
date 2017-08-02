@@ -41,19 +41,24 @@ void setup()
   global_stage = new Stage();
 
   //****** SCENES ********
-  //global_stage.addScene(new BlankScene());
-    global_stage.addScene(new AudioDebug());
-  //global_stage.addScene(new ScenePlotter());
-  //global_stage.addScene(new Spirals());
+  global_stage.addScene(new BlankScene());
+  
+  //global_stage.addScene(new AudioDebug());
+  global_stage.addScene(new ScenePlotter());
+  global_stage.addScene(new Spirals());
   global_stage.addScene(new ScenePerlinNoise());
   global_stage.addScene(new CrazyL());
 
+  global_stage.addScene(new Lissajous() );
+  global_stage.addScene(new LineLine1());
+
+
 
   //**** DEBUG PLOTS
-  global_debugPlots = new DebugPlot(this);
+  //global_debugPlots = new DebugPlot(this);
   
   //**** CONTROL INTERFACE
-  setupGUI();
+  //setupGUI();
   
 }
 
@@ -81,7 +86,7 @@ void draw()
 
    long viT = (System.nanoTime() - gsrT - conT - initTimeT - audioTime-ecgT) ; // time elapsed after VIDEO UPDATE
 
-   global_debugPlots.update();
+   //global_debugPlots.update();
 
 
    fill(120); // for the DEBUG text
@@ -95,7 +100,7 @@ void draw()
    
    audio_decisor.run();
 
-   drawGUI();
+   //drawGUI();
 
    long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME
 
@@ -111,7 +116,6 @@ void draw()
    println("    MAX duration for framerate "+ int(frameRate) +": "+(1/frameRate*1000000)+" us");
    //println(""); 
    
-
    println("*************************************************");
    println("************** AUDIO PARAMETERS *****************");
    println("*************************************************");
