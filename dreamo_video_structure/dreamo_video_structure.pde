@@ -6,6 +6,7 @@ void setup()
   size(1280, 750, FX2D);
   //fullScreen(FX2D,1);
   frameRate(global_fps);
+  
   noSmooth();
   
   //****** CONNECTION //<>// ****** //<>// //<>//
