@@ -39,8 +39,7 @@ void setupGUI()
   int thick=10;
   int posY=0;
   int increment=50;
-    
-    
+     
   ControlGroup controls = cp5.addGroup("controls");
   controls.setPosition(780,30);
   controls.setColorLabel(color(255));
@@ -48,32 +47,36 @@ void setupGUI()
   
   sliders = new Slider[12];
   
-
   sliders[0]=cp5.addSlider("RMSupper",audio_decisor.getRMSLowerThreshold(),1,left,top+posY,len,thick);
   sliders[0].setCaptionLabel("RMS upper Th");
   sliders[1]=cp5.addSlider("RMSlower",0,audio_decisor.getRMSUpperThreshold(),left,top+posY+20,len,thick);
   sliders[1].setCaptionLabel("RMS lower Th");  
-  posY+=increment;    
+  posY+=increment; 
+  
   sliders[2]=cp5.addSlider("DYNINDEXupper",audio_decisor.getDynIndexLowerThreshold(),1,left,top+posY,len,thick);
   sliders[2].setCaptionLabel("DYN INDEX upper Th");
   sliders[3]=cp5.addSlider("DYNINDEXlower",0,audio_decisor.getDynIndexUpperThreshold(),left,top+posY+20,len,thick);
   sliders[3].setCaptionLabel("DYN INDEX LOWER Th");
-  posY+=increment;   
+  posY+=increment;
+  
   sliders[4]=cp5.addSlider("CENTROIDupper",audio_decisor.getCentroidLowerThreshold(),7000,left,top+posY,len,thick);
   sliders[4].setCaptionLabel("CENTROID upper Th");
   sliders[5]=cp5.addSlider("CENTROIDlower",0,audio_decisor.getCentroidUpperThreshold(),left,top+posY+20,len,thick);
   sliders[5].setCaptionLabel("CENTROID LOWER Th");
-  posY+=increment;   
+  posY+=increment;
+  
   sliders[6]=cp5.addSlider("COMPLEXITYupper",audio_decisor.getComplexityLowerThreshold(),50,left,top+posY,len,thick);
   sliders[6].setCaptionLabel("COMPLEXITY upper Th");
   sliders[7]=cp5.addSlider("COMPLEXITYlower",0,audio_decisor.getComplexityUpperThreshold(),left,top+posY+20,len,thick);
   sliders[7].setCaptionLabel("COMPLEXITY LOWER Th");
-  posY+=increment;     
+  posY+=increment;
+  
   sliders[8]=cp5.addSlider("RSTRENGTHupper",audio_decisor.getRhythmStrLowerThreshold(),400,left,top+posY,len,thick);
   sliders[8].setCaptionLabel("RHYTHM STR upper Th");
   sliders[9]=cp5.addSlider("RSTRENGTHlower",0,audio_decisor.getRhythmStrUpperThreshold(),left,top+posY+20,len,thick);
   sliders[9].setCaptionLabel("RHYTHM STR LOWER Th");
-  posY+=increment;        
+  posY+=increment;
+  
   sliders[10]=cp5.addSlider("RDENSITYupper",audio_decisor.getRhythmDensLowerThreshold(),9,left,top+posY,len,thick);
   sliders[10].setCaptionLabel("RHYTHM DENS upper Th");
   sliders[11]=cp5.addSlider("RDENSITYlower",0,audio_decisor.getRhythmDensUpperThreshold(),left,top+posY+20,len,thick);
@@ -82,15 +85,14 @@ void setupGUI()
   
   for(int i=0; i<12;i++)
   {
-  sliders[i].setSliderMode(Slider.FLEXIBLE);
-  sliders[i].setGroup(controls);
-  sliders[i].getCaptionLabel().toUpperCase(true);
-  sliders[i].getCaptionLabel().getStyle().padding(4,3,3,3);
-  sliders[i].getCaptionLabel().getStyle().marginTop = -4;
-  sliders[i].getCaptionLabel().getStyle().marginLeft = 0;
-  sliders[i].getCaptionLabel().getStyle().marginRight = -14;
-  sliders[i].getCaptionLabel().setColorBackground(0x99ffffff);
-  
+   sliders[i].setSliderMode(Slider.FLEXIBLE);
+   sliders[i].setGroup(controls);
+   sliders[i].getCaptionLabel().toUpperCase(true);
+   sliders[i].getCaptionLabel().getStyle().padding(4,3,3,3);
+   sliders[i].getCaptionLabel().getStyle().marginTop = -4;
+   sliders[i].getCaptionLabel().getStyle().marginLeft = 0;
+   sliders[i].getCaptionLabel().getStyle().marginRight = -14;
+   sliders[i].getCaptionLabel().setColorBackground(0x99ffffff);
   }
   
   //RESET BUTTON
@@ -101,7 +103,6 @@ void setupGUI()
 
 }
 
-
 void drawGUI()
 {
   cp5.show();
@@ -109,8 +110,6 @@ void drawGUI()
   updateParams();
   updateRanges();
 }
-
-
 
 void updateParams()
 {

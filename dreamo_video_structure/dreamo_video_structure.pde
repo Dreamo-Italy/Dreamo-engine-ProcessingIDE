@@ -1,16 +1,14 @@
 void setup()
-{
+{ 
 
   //****** VIDEO ******
   colorMode(HSB, 360, 100, 100, 100);
-  size(1280, 720, FX2D);
+  size(1280, 750, FX2D);
   //fullScreen(FX2D,1);
   frameRate(global_fps);
   noSmooth();
-
   
-   //<>//
-  //****** CONNECTION //<>// ****** //<>// //<>// //<>//
+  //****** CONNECTION //<>// ****** //<>// //<>//
   global_connection = new Connection(this);
 
   //****** BIOSENSORS ******
@@ -19,7 +17,6 @@ void setup()
 
   //****** BIOLOGICAL MOOD ******
   global_bioMood = new BioMood();
-
 
   //****** AUDIO ******
   global_audio = new AudioManager(this); //new audio manager
@@ -36,34 +33,16 @@ void setup()
 
   audio_decisor = new AudioDecisor(global_dyn,global_rhythm,global_timbre);
   
-  
-  
   //****** STAGE ******
   global_stage = new Stage();
 
- /* 
-  //**** PRESENTATION SCENES
-  global_stage.addScene(new BlankScene() );
-  global_stage.addScene(new ScenePlotter());
-  global_stage.addScene(new Spirals());
-  global_stage.addScene(new HelloShape(1));
-  global_stage.addScene(new Cyclo1());
-  global_stage.addScene(new ScenePresentation() );
-  global_stage.addScene(new Lissajous() );
-  global_stage.addScene(new SceneDynamicGrid());
-  */
-  //global_stage.addScene(new Cyclo1());
-  //**** OTHER SCENES
-  global_stage.addScene(new BlankScene() );
-  //global_stage.addScene(new AudioDebug());
+  //****** SCENES ********
+  //global_stage.addScene(new BlankScene());
+  global_stage.addScene(new AudioDebug());
+  //global_stage.addScene(new ScenePlotter());
+  //global_stage.addScene(new Spirals());
+  global_stage.addScene(new ScenePerlinNoise());
   global_stage.addScene(new CrazyL());
-  //global_stage.addScene(new Cyclo2());
-  //global_stage.addScene(new LineLine1());
-  //global_stage.addScene(new SceneFireworks());
-  //global_stage.addScene(new SceneDots());
-  //global_stage.addScene(new ScenePerlinNoise());
-  //global_stage.addScene(new HelloShape(0));
-  //global_stage.addScene(new DumbC());
 
   //**** DEBUG PLOTS
   global_debugPlots = new DebugPlot(this);
@@ -75,10 +54,11 @@ void setup()
 
 void draw()
 {
+  
+   //track execution times  
    long initTimeT = System.nanoTime(); // start time
-
    long audioTime = System.nanoTime() - initTimeT;
-
+   
    global_connection.update();
 
    long conT = System.nanoTime() - audioTime - initTimeT; // time elapsed after CONNECTION UPDATE
@@ -88,7 +68,6 @@ void draw()
    long gsrT= (System.nanoTime() - conT -initTimeT - audioTime);// time elapsed after GSR UPDATE
 
    global_ecg.update();
-
    global_bioMood.update();
 
    long ecgT = (System.nanoTime() - conT -initTimeT - audioTime- gsrT); // time elapsed after ECG UPDATE
@@ -99,7 +78,6 @@ void draw()
 
    global_debugPlots.update();
 
-
    fill(120); // for the DEBUG text
    stroke(120); // for the DEBUG text
 
@@ -109,30 +87,22 @@ void draw()
    //global_ecg.printDebug();// print the DEBUG TEXT related to the ECG SENSOR
 
    audio_decisor.run();
-
-
+   
    drawGUI();
- //<>//
+
    long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME
- //<>// //<>//
 
-   //----------- print the durations for debug purposes------------ //<>// //<>// //<>//
-   
-   
-   
    /*
-
+   //----------- DEBUG PRINTS ------------ //
    println("    Audio update duration: "+ audioTime/1000 + " us");
    println("    Connection update duration: "+ conT/1000 + " us");
    println("    GSR update duration: "+ gsrT/1000 + " us");
    println("    Video update duration: "+ viT/1000 + " us");
-   //println("");
+   println("");
    println("    LOOP duration: "+ loopT/1000 + " us");
    println("    MAX duration for framerate "+ int(frameRate) +": "+(1/frameRate*1000000)+" us");
-   //println("");
+   println(""); 
    
-   
-
    println("*************************************************");
    println("************** AUDIO PARAMETERS *****************");
    println("*************************************************");
@@ -159,11 +129,10 @@ void draw()
    println("*******************END***************************");
    println("*************************************************");
    
-   //println("CLARITY: " + audio_decisor.getClarity());
-   //println("ENERGY: " + audio_decisor.getEnergy());
-   //println("AGITATION: " + audio_decisor.getAgitation());
-   //println("ROUGHNESS: " + audio_decisor.getRoughness());
-   
+   println("CLARITY: " + audio_decisor.getClarity());
+   println("ENERGY: " + audio_decisor.getEnergy());
+   println("AGITATION: " + audio_decisor.getAgitation());
+   println("ROUGHNESS: " + audio_decisor.getRoughness());
    */
    
    //global_stage.nextSceneIfSilence(-50);
@@ -173,7 +142,6 @@ void draw()
 
 void mouseClicked()
 {
-
   //Mood m = new Mood(random(-1,1), random(-1,1));
   //global_stage.selectScenebyMood(m);
   //global_stage.nextScene();
@@ -181,20 +149,18 @@ void mouseClicked()
 
 void keyPressed()
 {
-     if (key == 'c')
-     {
-       global_gsr.restartCalibration();
-       global_ecg.restartCalibration();
-       println("key pressed");
-     }
-     
   
+  if (key == 'c')
+  {
+   global_gsr.restartCalibration();
+   global_ecg.restartCalibration();
+   println("key pressed");
+  }
+     
   if (key=='s'||key=='S')
   {
-    audio_proc.saveLog();
-    //global_connection.saveLog();
-    //global_audio.stop();
-    //exit();
+    audio_proc.saveLog(); //SAVE AUDIO DATA LOG
+    //global_connection.saveLog(); //SAVE SENSORS LOG
   }
      
   if (key=='m'||key=='M')
@@ -209,9 +175,7 @@ void keyPressed()
      
 }
 
-
-
 void stop()
-     {
-       global_audio.stop();
-     }
+{
+ global_audio.stop();
+}

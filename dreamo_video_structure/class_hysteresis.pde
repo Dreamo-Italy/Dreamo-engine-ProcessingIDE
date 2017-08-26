@@ -1,136 +1,147 @@
-class Hysteresis
+class Hysteresis 
 {
-  private boolean[] hWindow;
-  private int idx;
-  private int w;
-  private float lowerBound;
-  private float upperBound;
-  private boolean result;
+ private boolean[] hWindow;
+ private int idx;
+ private int w;
+ private float lowerBound;
+ private float upperBound;
+ private boolean result;
 
-  Hysteresis(int window)
+ Hysteresis(int window) 
+ {
+  this.w = window;
+  hWindow = new boolean[this.w];
+  idx = 0;
+  result = false;
+ }
+
+ Hysteresis(float lB, float uB, int window) 
+ {
+  this.lowerBound = lB;
+  this.upperBound = uB;
+  this.w = window;
+  hWindow = new boolean[this.w];
+  idx = 0;
+  result = false;
+ }
+
+
+ public boolean check(float value) 
+ {
+
+  if (value >= upperBound) 
   {
-    this.w=window;
-    hWindow = new boolean[this.w];
-    idx=0;
-    result=false;
-  }
-  
-  Hysteresis(float lB, float uB, int window)
+   result = true;
+  } 
+  else if (value <= lowerBound) 
   {
-    this.lowerBound=lB;
-    this.upperBound=uB;
-    this.w=window;
-    hWindow = new boolean[this.w];
-    idx=0;
-    result=false;
+   result = false;
   }
+  return result;
+ }
 
-
-  public boolean check(float value)
+ public boolean checkWindow(float value) 
+ {
+  if (idx == w) 
   {
-
-    if (value>=upperBound) {
-      result=true;
-    } else if (value<=lowerBound) {
-      result=false;
-    }
-
-    return result;
+   idx = 0;
   }
 
-  public boolean checkWindow(float value)
+  if (value >= upperBound)
   {
-    if (idx==w) {
-      idx=0;
-    }
-
-    if (value>=upperBound) {
-      hWindow[idx]=true; 
-      idx++;
-    } else if (value<=lowerBound) {
-      hWindow[idx]=false; 
-      idx++;
-    }
-
-    //idx++;
-
-    int k=0;
-    for (int j=0; j<w; j++)
-    {
-      if (hWindow[j]==true) k++;
-    }
-
-    if (k==w) {
-      result = true;
-    } else if (k==0) { 
-      result = false;
-    }
-
-    return result;
-  }
-  
-  public boolean checkWindow(float value, float upperBound, float lowerBound)
+   hWindow[idx] = true;
+   idx++;
+  } 
+  else if (value <= lowerBound) 
   {
-    if (idx==w) {
-      idx=0;
-    }
-
-    if (value>=upperBound) {
-      hWindow[idx]=true; 
-      idx++;
-    } else if (value<=lowerBound) {
-      hWindow[idx]=false; 
-      idx++;
-    }
-
-    //idx++;
-
-    int k=0;
-    for (int j=0; j<w; j++)
-    {
-      if (hWindow[j]==true) k++;
-    }
-
-    if (k==w) {
-      result = true;
-    } else if (k==0) { 
-      result = false;
-    }
-
-    return result;
+   hWindow[idx] = false;
+   idx++;
   }
-  
-  public void restart()
+  //idx++;
+  int k = 0;
+  for (int j = 0; j < w; j++) 
   {
-    hWindow = new boolean[this.w];
-    idx=0;
-    result=false;
-    
+   if (hWindow[j] == true) k++;
   }
-  
-  
-  public float getUpperBound()
+
+  if (k == w) 
   {
-    return upperBound;
-  }
-  
-  
-  public float getLowerBound()
+   result = true;
+  } 
+  else if (k == 0) 
   {
-    return lowerBound;
+   result = false;
   }
-  
-  
-  public void setUpperBound(float upper)
+
+  return result;
+ }
+
+ public boolean checkWindow(float value, float upperBound, float lowerBound) 
+ {
+  if (idx == w) 
   {
-    this.upperBound=upper;
+   idx = 0;
   }
-  
-  
-  public void setLowerBound(float lower)
+
+  if (value >= upperBound) 
   {
-    this.lowerBound=lower;
+   hWindow[idx] = true;
+   idx++;
+  } 
+  else if (value <= lowerBound) 
+  {
+   hWindow[idx] = false;
+   idx++;
   }
-  
-  
+
+  //idx++;
+
+  int k = 0;
+  for (int j = 0; j < w; j++) 
+  {
+   if (hWindow[j] == true) k++;
+  }
+
+  if (k == w) 
+  {
+   result = true;
+  } 
+  else if (k == 0) 
+  {
+   result = false;
+  }
+
+  return result;
+ }
+
+ public void restart() 
+ {
+  hWindow = new boolean[this.w];
+  idx = 0;
+  result = false;
+ }
+
+
+ public float getUpperBound() 
+ {
+  return upperBound;
+ }
+
+
+ public float getLowerBound() 
+ {
+  return lowerBound;
+ }
+
+
+ public void setUpperBound(float upper) 
+ {
+  this.upperBound = upper;
+ }
+
+
+ public void setLowerBound(float lower) 
+ {
+  this.lowerBound = lower;
+ }
 }

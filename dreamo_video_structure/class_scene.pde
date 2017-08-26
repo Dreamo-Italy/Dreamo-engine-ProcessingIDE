@@ -1,4 +1,4 @@
-//package dreamo.display; //<>//
+//package dreamo.display; //<>// //<>//
 
 import java.util.Arrays;
 
@@ -28,9 +28,6 @@ abstract class Scene extends AgingObject
   private boolean changingBrightness;
   private boolean changingSaturation;
 
-  protected float[] instantFeatures;
-  protected float[] audioFeatures;
-  protected int[] audioStatus; 
 
   //CONSTRUCTORS
   public Scene()
@@ -122,7 +119,8 @@ abstract class Scene extends AgingObject
         toAdd.init();
         toAdd.assertInitialised();
       }
-    } else
+    } 
+    else
     {
       println("Warning: reached maximum number of particles for a Scene. Last Particle wasn't added.");
     }
@@ -134,13 +132,13 @@ abstract class Scene extends AgingObject
     if (indexToGet < particlesNumber)
     {
       return particlesList[indexToGet]; // the object pointed by particlesList[indexToRemove] has now no reference and will be removed from memory
-    } else
+    } 
+    else
     {
       println("Warning: cannot get particle by list index, index higher than instance number.");
       return null;
     }
   }
-
 
   public Palette getPalette()
   {
@@ -205,7 +203,8 @@ abstract class Scene extends AgingObject
     {
       particlesList[particlesNumber] = null;
       particlesNumber--;
-    } else
+    } 
+    else
     {
       println("Warning: cannot pop any more particles from the scene.");
     }
@@ -226,16 +225,9 @@ abstract class Scene extends AgingObject
   //trace and update methods
   public void update()
   {
-
-    //update audio parameters
-    instantFeatures=audio_decisor.getInstantFeatures();
-    audioFeatures=audio_decisor.getFeturesVector();
-    audioStatus=audio_decisor.getStatusVector();
-
     for (int i = 0; i < particlesNumber; i++)
     {
-      particlesList[i].updatePhysics();
-      particlesList[i].updateAudio(instantFeatures, audioFeatures, audioStatus);
+      particlesList[i].updatePhysics();      
       particlesList[i].update();
     }
   }
@@ -254,7 +246,7 @@ abstract class Scene extends AgingObject
       particlesList[i].endTransformations();
     }
 
-    if (reflectHorizontally) //<>// //<>// //<>//
+    if (reflectHorizontally) //<>// //<>// //<>// //<>//
     {
       PImage reflection = get(0, 0, width/2, height);
       pushMatrix();
@@ -307,7 +299,8 @@ abstract class Scene extends AgingObject
           endFading=frameCount+seconds*global_fps;
           targetPal=p;
           isFading=true; //now scene is fading
-        } else  //continue fading
+        } 
+        else  //continue fading
         {
           if (frameCount<=endFading)//fading finished?
           {
@@ -339,13 +332,15 @@ abstract class Scene extends AgingObject
         //startFading=frameCount;
         endFading=frameCount+seconds*global_fps;
         changingBrightness=true; //now scene is fading
-      } else  //continue fading
+      } 
+      else  //continue fading
       {
         if (frameCount<=endFading)//fading finished?
         {
           //set the colors of the palette
           this.pal.makeDarker(amount/(seconds*global_fps));
-        } else //finished 
+        } 
+        else //finished 
         { 
           changingBrightness=false;
         }
@@ -356,7 +351,8 @@ abstract class Scene extends AgingObject
 
   public void lightenColors(int seconds, float amount, boolean activate)
   {
-    if (activate || changingBrightness) {
+    if (activate || changingBrightness) 
+    {
 
       //if the scene is not already fading
       if (!changingBrightness) //set starting and ending frames
@@ -381,7 +377,8 @@ abstract class Scene extends AgingObject
 
   public void saturateColors(int seconds, float amount, boolean activate)
   {
-    if (activate || changingSaturation) {
+    if (activate || changingSaturation) 
+    {
 
       //if the scene is not already fading
       if (!changingSaturation) //set starting and ending frames
@@ -389,14 +386,16 @@ abstract class Scene extends AgingObject
         //startFading=frameCount;
         endFading=frameCount+seconds*global_fps;
         changingSaturation=true; //now scene is fading
-      } else  //continue fading
+      } 
+      else  //continue fading
       {
         if (frameCount<=endFading)//fading finished?
         {
           println("SATURATING");
 
           this.pal.saturate(amount/(seconds*global_fps));
-        } else //finished 
+        } 
+        else //finished 
         { 
           changingSaturation=false;
         }
@@ -407,7 +406,8 @@ abstract class Scene extends AgingObject
 
   public void desaturateColors(int seconds, float amount, boolean activate)
   {
-    if (activate || changingSaturation) {
+    if (activate || changingSaturation) 
+    {
 
       //if the scene is not already fading
       if (!changingSaturation) //set starting and ending frames
@@ -415,13 +415,15 @@ abstract class Scene extends AgingObject
         //startFading=frameCount;
         endFading=frameCount+seconds*global_fps;
         changingSaturation=true; //now scene is fading
-      } else  //continue fading
+      } 
+      else  //continue fading
       {
         if (frameCount<=endFading)//fading finished?
         {
           //set the colors of the palette
           this.pal.desaturate(amount/(seconds*global_fps));
-        } else //finished 
+        } 
+        else //finished 
         { 
           changingSaturation=false;
         }
@@ -433,9 +435,12 @@ abstract class Scene extends AgingObject
   protected String choosePaletteFromAudio()
   {
     //TODO: tune this parameter
-    if (audio_decisor.getColorIndicator()>3) {
+    if (audio_decisor.getPaletteIndicator()>PALETTE_THRESHOLD) 
+    {
       return "warm";
-    } else {
+    } 
+    else 
+    {
       return "cold";
     }
   }
@@ -473,60 +478,37 @@ abstract class Scene extends AgingObject
     return el;
   }
   
-  protected float chooseVibrationFromAudio()
+  protected float chooseRotationFromAudio()
   {
-    float vib=0;
+    float rot=0;
 
-    switch((int)audio_decisor.getVibrationIndicator())
+    switch((int)audio_decisor.getElasticityIndicator())
     {
       case(0):
-      vib = 1;
+      rot= 0.1;
       break;
 
       case(1):
-      vib = 1.2;
+      rot= 0.09;
       break;
 
       case(2):
-      vib = 1.5;
+      rot= 0.05;
       break;
 
       case(3):
-      vib = 1.8;
+      rot= 0.01;
       break;
 
       case(4):
-      vib = 2;
+      rot= 0.005;
       break;
 
       case(6):
-      vib= 3.8;
+      rot= 0;
       break;
     }
-    return vib;
-  }
-  
-  protected float chooseResolutionFromAudio()
-  {
-    float res=0; 
-    if(audioStatus[3]==0)
-    {
-      if(audioFeatures[3]<3 || audioFeatures[0]<0.01) res=2; //basic shape when silence ora very smooth sound
-      else if(audioFeatures[3]<9) res=5; //basic shape for smooth sounds
-      //else res=map(audioFeatures[3],0,audio_decisor.getComplexityLowerThreshold(),7,11);
-      else res=7;
-    }
-    else if(audioStatus[3]==1)
-    {
-      //res= map(audioFeatures[3],audio_decisor.getComplexityLowerThreshold(),audio_decisor.getComplexityUpperThreshold(),6,10);
-      res=11;
-    }
-    else 
-    {
-      res= audioFeatures[3];
-    }
-    println(res);
-    return res;
+    return rot;
   }
   
   protected float chooseThicknessFromAudio()
@@ -562,50 +544,71 @@ abstract class Scene extends AgingObject
     return t;
   }
   
+  
+  protected float chooseVibrationFromAudio()
+  {
+    float vib=0;
+
+    switch((int)audio_decisor.getVibrationIndicator())
+    {
+      case(0):
+      vib = 1;
+      break;
+
+      case(1):
+      vib = 1.2;
+      break;
+
+      case(2):
+      vib = 1.5;
+      break;
+
+      case(3):
+      vib = 1.8;
+      break;
+
+      case(4):
+      vib = 2;
+      break;
+
+      case(6):
+      vib= 3.8;
+      break;
+    }
+    return vib;
+  }
+  
+  
   protected float chooseVibrationRangeFromAudio()
   {
     float range=0;
     
-    if(audioFeatures[0]<0.05) {range=3/0.05;}
-    else range=3/audioFeatures[0];
+    if(audio_decisor.getFeaturesVector()[0]<0.05) {range=3/0.05;}
+    else range=3/audio_decisor.getFeaturesVector()[0];
     
     return range;
-    
   }
   
-  protected float chooseRotationFromAudio()
+  protected float chooseResolutionFromAudio()
   {
-    float rot=0;
-
-    switch((int)audio_decisor.getElasticityIndicator())
+    float res=0; 
+    
+    if(audio_decisor.getStatusVector()[3]==0 || audio_decisor.getStatusVector()[3]==-1)
     {
-      case(0):
-      rot= 0.001;
-      break;
-
-      case(1):
-      rot= 0.0001;
-      break;
-
-      case(2):
-      rot= 0.00001;
-      break;
-
-      case(3):
-      rot= 0.0;
-      break;
-
-      case(4):
-      rot= 0.0;
-      break;
-
-      case(6):
-      rot= 0;
-      break;
+      if(audio_decisor.getFeaturesVector()[3]<3 || audio_decisor.getFeaturesVector()[0]<0.01 ) res=2; //basic shape when silence or very smooth sound
+      else if(audio_decisor.getFeaturesVector()[3]<9) res=5; //basic shape for smooth sounds
+      else res=7;
     }
-    return rot;
+    else if(audio_decisor.getStatusVector()[3]==1)
+    {
+      res=11;
+    }
+    else if (audio_decisor.getStatusVector()[3]==3)
+    {
+      res= audio_decisor.getFeaturesVector()[3];
+    }
+    return res;
   }
-
-
+  
   abstract void init();
 }

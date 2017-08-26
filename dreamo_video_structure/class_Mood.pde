@@ -22,9 +22,7 @@ class Mood
   {
     valence=toCopy.valence;
     arousal=toCopy.arousal;
-  
   }
-  
   
   //set methods
   public void setValence(float v)
@@ -42,7 +40,6 @@ class Mood
     valence=v;
     arousal=a;
   }
-   
    
   //get methods
   public float getValence()

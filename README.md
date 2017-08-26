@@ -7,14 +7,16 @@ Follow [Dreamo](https://www.facebook.com/dreamoItaly/) on Facebook for important
 
 Repository for "Dreamo" project | _Polytechnic of Turin_ |.
 
-Current team *Francesco Cretti, Giovanni Bologni, Luciano Prono, Nicola Ruffino, Andrea Gambedotti, Lorenzo de Luca*.
+Current team *Francesco Cretti, Giovanni Bologni, Nicola Ruffino, Andrea Gambedotti, Lorenzo de Luca*.
 
 
 ## Installing
 
 ### Prerequisites
 - [Processing 3 or higher] (https://processing.org/download/)
-- Minim library installed on Processing ( Processing -> Sketch -> Import Library... -> Add Library... -> Search for "Minim" )
+- "Minim" library installed on Processing ( Processing -> Sketch -> Import Library... -> Add Library... -> Search for "Minim" )
+- "ControlP5" library installed on Processing (same way as Minim)
+- "Grafica" library installed on Processing (same way as Minim)
 - [Java 8 or higher](https://www.java.com/it/)
 
 ### Windows
@@ -39,5 +41,6 @@ Here follows a generic description of the classes of the program:
 - *AudioProcessor* manages the samples buffer and does common calculations (FFT, xcorr,...)
 - *FeaturesExtractor* is a superclass with utilities methods for features extractors
 - actual features extractor are inherited from FeaturesExtractor and contain the actual computational methods (ex: Dynamic, Timbre...)
+- *Audio Decisor* calculates the "status" of audio and extract parameters useful for graphic generation
 
 By participating, you are expected to uphold this code. To learn more, you can write to dreamoitaly@gmail.com

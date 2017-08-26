@@ -10,25 +10,24 @@ class AudioManager
   
  //********* CONTRUCTORS ***********
  public AudioManager(){}
- //<>// //<>// //<>// //<>//
+ 
  public AudioManager(Object fileSystemHandler)
  {
    minim = new Minim(fileSystemHandler);
    in = minim.getLineIn(Minim.STEREO,1024,44100); //stereo stream, 1024 samples of buffer size
    
    if(in!=null) {initialized=true;}
-   else {println("AUDIO INPUT NOT AVAILABLE");}
-   
+   else {println("AUDIO INPUT NOT AVAILABLE");} 
  }
 
  //********* PUBLIC METHODS ***********
  public void addListener(AudioListener l)
  { 
    if (isInitialized())
-    { 
-       in.addListener(l);
-    }
-    else{println("AUDIO FEATURE OBJECT NOT INITIALIZED");} 
+   { 
+    in.addListener(l);
+   }
+   else{println("AUDIO FEATURE OBJECT NOT INITIALIZED");} 
  }
  
  public void enableMonitoring()
@@ -45,9 +44,9 @@ class AudioManager
  
  public void stop()
  {
-    in.close();
-    minim.stop();
-  }
+  in.close();
+  minim.stop();
+ }
   
  //********* GETTERS ***********
  public float[] getSamples()

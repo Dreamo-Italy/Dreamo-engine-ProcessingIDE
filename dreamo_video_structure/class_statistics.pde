@@ -1,6 +1,5 @@
 class Statistics
 {
-
   private float sum;
   private float[] acc;
   private int window;
@@ -65,8 +64,8 @@ class Statistics
   
   public void accumulate(float data)
   {
-    sum-=acc[aidx];//subtract last value
-    temp_var-=Math.pow((acc[aidx]-getAverage()),2);
+    sum -= acc[aidx];//subtract last value
+    temp_var -= Math.pow((acc[aidx]-getAverage()),2);
     
     acc[aidx]=data;//update the value
     
@@ -74,12 +73,9 @@ class Statistics
     temp_var+=Math.pow((acc[aidx]-getAverage()),2);
     
     aidx++;//next position
-    if (aidx>=window) {
-     
+    if (aidx>=window) 
+    {
       aidx=0;
     }//if at the end go back 
   }
-  
-  
-  
 }
