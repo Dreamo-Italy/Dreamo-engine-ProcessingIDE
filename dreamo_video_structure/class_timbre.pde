@@ -397,7 +397,7 @@ class Timbre extends FeaturesExtractor
    sdFFT = Math.sqrt(sum);
    
    //MEDIANA
-   arr = FFTcoeffs;
+   arr = FFTcoeffs.clone();
    Arrays.sort(arr);
    
    if ((arr.length) % 2 == 0)
@@ -458,8 +458,8 @@ class Timbre extends FeaturesExtractor
  
  private void calcRoughness()
  {
-   int peaks = 0;
-
+  int peaks = 0;
+  
   for (int i = 1; i < specSize - 1; i++) 
   {
    boolean largerThanPrevious = (FFTcoeffs[i - 1] < FFTcoeffs[i]);
@@ -471,7 +471,6 @@ class Timbre extends FeaturesExtractor
    }
   }
   println("n.ro picchi roughness  " + peaks);
-  
    
  }
  
@@ -491,8 +490,6 @@ class Timbre extends FeaturesExtractor
    }
   }
   
-  
-  println("n.ro picchi complexity  " + peaks);
   spectralComplexity = expSmooth(peaks, spectralComplexity, 5);
   complexityLongTerm.accumulate(spectralComplexity);
  }
