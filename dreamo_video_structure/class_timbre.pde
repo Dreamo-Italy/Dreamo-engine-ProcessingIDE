@@ -197,6 +197,7 @@ class Timbre extends FeaturesExtractor
   calcCOBE(); // calcola COBE istantaneo (1024 valori per buffer da 1024 samples), COBE su 3 sec , COBE su 1 sec.
   calcSpectralSkewnessE();
   calcSpectralSkewnessD();
+  calcRoughness();
  }
 
  //PRIVATE METHODS
@@ -454,7 +455,26 @@ class Timbre extends FeaturesExtractor
   //smoothing
   spectralCentroidNormalized = expSmooth(SC, spectralCentroidNormalized, 5);
  }
+ 
+ private void calcRoughness()
+ {
+   int peaks = 0;
 
+  for (int i = 1; i < specSize - 1; i++) 
+  {
+   boolean largerThanPrevious = (FFTcoeffs[i - 1] < FFTcoeffs[i]);
+   boolean largerThanNext = (FFTcoeffs[i] > FFTcoeffs[i + 1]);
+   boolean largerThanNoiseFloor = (FFTcoeffs[i] > avgMagnitude * COMPLEXITY_THRESHOLD_COEFF);
+   if (largerThanPrevious && largerThanNext && largerThanNoiseFloor) 
+   {
+    peaks++;
+   }
+  }
+  println("n.ro picchi roughness  " + peaks);
+  
+   
+ }
+ 
  private void calcSpectralComplexity() 
  {
 
@@ -465,13 +485,14 @@ class Timbre extends FeaturesExtractor
    boolean largerThanPrevious = (FFTcoeffs[i - 1] < FFTcoeffs[i]);
    boolean largerThanNext = (FFTcoeffs[i] > FFTcoeffs[i + 1]);
    boolean largerThanNoiseFloor = (FFTcoeffs[i] > avgMagnitude * COMPLEXITY_THRESHOLD_COEFF);
-
    if (largerThanPrevious && largerThanNext && largerThanNoiseFloor) 
    {
     peaks++;
    }
   }
-
+  
+  
+  println("n.ro picchi complexity  " + peaks);
   spectralComplexity = expSmooth(peaks, spectralComplexity, 5);
   complexityLongTerm.accumulate(spectralComplexity);
  }
