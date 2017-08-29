@@ -58,6 +58,12 @@ class Timbre extends FeaturesExtractor
  private Statistics SkewnessDlongTerm;
  private Statistics SkewnessDshortTerm;
  
+ //Roughness VAR
+ private float Roughness;
+ 
+ // Roughness  STATISTICS
+ private Statistics RoughnessLongTerm;
+ private Statistics RoughnessShortTerm;
  
  //**** CONSTRUCTOR
  public Timbre(int bSize, float sRate) 
@@ -100,6 +106,14 @@ class Timbre extends FeaturesExtractor
   //SKEWNESS DIFFICULT STATS
   SkewnessDlongTerm = new Statistics(W);
   SkewnessDshortTerm = new Statistics(43);
+  
+  //Roughness VAR
+  Roughness = 0;
+  
+  //Roughness  STATISTICS
+  RoughnessLongTerm = new Statistics(W);
+  RoughnessShortTerm = new Statistics(43);
+  
  }
 
  //SET METHODS
@@ -186,6 +200,13 @@ class Timbre extends FeaturesExtractor
  public float getSkewnessDshortTermAvg() { return SkewnessDshortTerm.getAverage(); }
  
  public float getSkewnessDlongTermAvg() { return SkewnessDlongTerm.getAverage(); }
+ 
+ //Roughness GETTER
+ public float getRoughness() { return Roughness; } // su picchi in 512 samples
+ 
+ public float getRoughnessShortTermAvg() { return RoughnessShortTerm.getAverage(); } // 1 sec 
+ 
+ public float getRoughnessLongTermAvg() { return RoughnessLongTerm.getAverage(); } // 3 sec
  
  
  //CALC FEATURES METHOD (overrides the inherited method)
@@ -456,9 +477,14 @@ class Timbre extends FeaturesExtractor
   spectralCentroidNormalized = expSmooth(SC, spectralCentroidNormalized, 5);
  }
  
- private void calcRoughness()
+ private void calcRoughness() // Si calcola un valore ma l'algoritmo non è perfettamante corretto ci sono un po' di complicazioni legate a gfcbParam e gfcb.
  {
   int peaks = 0;
+  float [] peakValue = new float[100];
+  float [] freqValue = new float[100];
+  float num = 0;
+  float denom = 0;
+  
   
   for (int i = 1; i < specSize - 1; i++) 
   {
@@ -468,10 +494,30 @@ class Timbre extends FeaturesExtractor
    if (largerThanPrevious && largerThanNext && largerThanNoiseFloor) 
    {
     peaks++;
+    peakValue[peaks - 1] = FFTcoeffs[i];
+    freqValue[peaks - 1] = centerFreqHz(i);
    }
   }
-  println("n.ro picchi roughness  " + peaks);
+  
+  for(int j = 0, k = 1; (j < peakValue.length && k < peakValue.length - 1) ; j++, k++)
+  {
+   if ( peakValue[k] == 0.0  ) { break; }
    
+   float fm = (freqValue[j] + freqValue[k]) / 2;
+   float fcb = 1.72 * ((float) Math.pow(fm, 0.65));  
+   float gfcbParam = Math.abs((freqValue[k] - freqValue[j])) / fcb;
+   float gfcb = (float) Math.pow(((gfcbParam  / 0.25) * Math.pow(2.71828, (1 - (gfcbParam  / 0.25)))), 2) ;
+   
+   num += peakValue[j] * peakValue[k] * gfcb;
+   denom += Math.pow(peakValue[j], 2);
+  }
+  
+  Roughness = num / denom;
+  
+  //AACUMULATE FOR STAT
+  RoughnessShortTerm.accumulate(Roughness);
+  RoughnessLongTerm.accumulate(Roughness);
+  
  }
  
  private void calcSpectralComplexity() 
@@ -520,5 +566,4 @@ class Timbre extends FeaturesExtractor
  {
   return (idx * sampleRate) / buffSize;
  }
-
 }
