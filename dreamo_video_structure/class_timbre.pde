@@ -242,7 +242,7 @@ class Timbre extends FeaturesExtractor
   {
    COBEistant[i] = EnvFilteredSignal[i] / EnvSignal[i];
 
-   EBFistant[i] = (44100 / PI) * asin(COBEistant[i] / 2);
+   EBFistant[i] = (44100 / PI) * asin( COBEistant[i] / 2);
   }
 
   // EBF medio su 1024 samples
@@ -477,14 +477,13 @@ class Timbre extends FeaturesExtractor
   spectralCentroidNormalized = expSmooth(SC, spectralCentroidNormalized, 5);
  }
  
- private void calcRoughness() // Si calcola un valore ma l'algoritmo non è perfettamante corretto ci sono un po' di complicazioni legate a gfcbParam e gfcb.
+ private void calcRoughness() 
  {
   int peaks = 0;
   float [] peakValue = new float[100];
   float [] freqValue = new float[100];
   float num = 0;
   float denom = 0;
-  
   
   for (int i = 1; i < specSize - 1; i++) 
   {
@@ -499,24 +498,51 @@ class Timbre extends FeaturesExtractor
    }
   }
   
-  for(int j = 0, k = 1; (j < peakValue.length && k < peakValue.length - 1) ; j++, k++)
+  float [] peakValueSorted = new float[100];
+  float [] max5 = new float[5];
+  float [] peakValueMax5 = new float[5];
+  float [] freqValueMax5 = new float[5];
+  int [] index = new int[5];
+  
+  peakValueSorted = peakValue.clone();
+  Arrays.sort(peakValueSorted);
+  max5 = Arrays.copyOfRange(peakValueSorted, peakValueSorted.length - 5 , peakValueSorted.length);
+  
+  for(int k = 0; k < peakValue.length; k++)
   {
    if ( peakValue[k] == 0.0  ) { break; }
    
-   float fm = (freqValue[j] + freqValue[k]) / 2;
+   for(int i = 0; i < max5.length; i++)
+   {
+    if(peakValue[k] == max5[i])
+    {
+     index[i] = k;
+    }
+   }
+  }
+  
+  for(int l = 0; l < index.length; l++)
+  {
+    peakValueMax5[l] = peakValue[ index[l] ];
+    freqValueMax5[l] = freqValue[ index[l] ];
+  }
+  
+  for(int j = 0, k = 1; (j < peakValueMax5.length && k < peakValueMax5.length - 1) ; j++, k++)
+  {
+   float fm = (freqValueMax5[j] + freqValueMax5[k]) / 2;
    float fcb = 1.72 * ((float) Math.pow(fm, 0.65));  
-   float gfcbParam = Math.abs((freqValue[k] - freqValue[j])) / fcb;
+   float gfcbParam = Math.abs((freqValueMax5[k] - freqValueMax5[j])) / fcb;
    float gfcb = (float) Math.pow(((gfcbParam  / 0.25) * Math.pow(2.71828, (1 - (gfcbParam  / 0.25)))), 2) ;
    
-   num += peakValue[j] * peakValue[k] * gfcb;
-   denom += Math.pow(peakValue[j], 2);
+   num += peakValueMax5[j] * peakValueMax5[k] * gfcb;
+   denom += Math.pow(peakValueMax5[j], 2);
   }
   
   Roughness = num / denom;
   
   //AACUMULATE FOR STAT
   RoughnessShortTerm.accumulate(Roughness);
-  RoughnessLongTerm.accumulate(Roughness);
+  RoughnessLongTerm.accumulate(Roughness); 
   
  }
  
