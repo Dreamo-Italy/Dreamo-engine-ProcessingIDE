@@ -73,7 +73,7 @@ abstract class FeaturesExtractor
  //UTILITY METHODS
  protected float linearToDecibel(final float value) 
  {
-  return 20.0 * (float) Math.log10(value);
+  return 20.0 * (float) FastMath.log10(value);
  }
 
  protected float realTimeSlope(float input) 

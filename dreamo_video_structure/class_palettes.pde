@@ -255,8 +255,6 @@ class Palette
   ID = i;
  }
 
-
-
  public void influenceColors(float h, float s, float b) 
  {
   //create a new color with the same H and S buu with a new B
@@ -280,8 +278,6 @@ class Palette
    colors[i] = newColor;
   }
  }
-
-
 
  public void desaturate(float amount) 
  {
@@ -308,8 +304,6 @@ class Palette
 
  }
 
-
-
  public void makeBrighter(float amount) 
  {
   //create a new color with the same H and S buu with a new B
@@ -333,7 +327,6 @@ class Palette
    colors[i] = newColor;
   }
  }
-
 
  private void loadColors() 
  {

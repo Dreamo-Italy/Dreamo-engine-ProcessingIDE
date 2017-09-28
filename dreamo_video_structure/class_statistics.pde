@@ -41,7 +41,7 @@ class Statistics
   
   public float getStdDev()
   {
-    return (float)Math.sqrt(getVariance());
+    return (float)FastMath.sqrt(getVariance());
   }
   
   public float getMax()
@@ -65,12 +65,12 @@ class Statistics
   public void accumulate(float data)
   {
     sum -= acc[aidx];//subtract last value
-    temp_var -= Math.pow((acc[aidx]-getAverage()),2);
+    temp_var -= FastMath.pow((acc[aidx]-getAverage()),2);
     
     acc[aidx]=data;//update the value
     
     sum+=acc[aidx];//update the total    
-    temp_var+=Math.pow((acc[aidx]-getAverage()),2);
+    temp_var+= FastMath.pow((acc[aidx]-getAverage()),2);
     
     aidx++;//next position
     if (aidx>=window) 

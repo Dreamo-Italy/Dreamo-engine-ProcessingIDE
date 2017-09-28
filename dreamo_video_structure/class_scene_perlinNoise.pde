@@ -9,8 +9,8 @@ class ScenePerlinNoise extends Scene
   {
    for (int j = 0; j < row; j++) 
    {
-    int x = round(width / column * (i + 1));
-    int y = round(height / row * (j + 1));
+    int x = FastMath.round(width / column * (i + 1));
+    int y = FastMath.round(height / row * (j + 1));
     NoiseDot temp = new NoiseDot();
     temp.setPalette(pal);
     temp.setPosition(new Vector2d(x, y, false));

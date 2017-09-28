@@ -13,9 +13,6 @@ class AudioDebug extends Scene
 
  boolean activate = false;
 
-
-
-
  public void init() 
  {
   pal.initColors("warm");

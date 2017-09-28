@@ -195,7 +195,7 @@ class Ecg extends Biosensor
      if (RRdistanceSecond > (RRdistanceSecondOld - ((RRdistanceSecondOld / 100) * 12))) 
      {
       Beatcount++;
-      BPMHRV = round(60 / RRdistanceSecond);
+      BPMHRV = FastMath.round(60 / RRdistanceSecond);
       RRdistanceSecondOld = RRdistanceSecond;
       lastPeak = index;
      }
@@ -251,7 +251,7 @@ class Ecg extends Biosensor
      if (RRdistanceSecond1 > (RRdistanceSecondOld1 - ((RRdistanceSecondOld / 100) * 12))) 
      {
       Beatcount++;
-      BPMHRV = round(60 / RRdistanceSecond);
+      BPMHRV = FastMath.round(60 / RRdistanceSecond);
       RRdistanceSecondOld = RRdistanceSecond;
       lastPeak = index;
       tacogram.append(RRdistanceSecond);

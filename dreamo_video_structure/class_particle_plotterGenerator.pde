@@ -96,7 +96,7 @@ class PlotterGenerator extends Particle  //<>//
    // index variation
    if (fromOneToTen < 10) 
    { //fromOneToTen++;
-    fromOneToTen += round(getParameter(0) * 4 / 7 + fromOneToTen / 10);
+    fromOneToTen += FastMath.round(getParameter(0) * 4 / 7 + fromOneToTen / 10);
     if (getParameter(0) < 0.14)
      fromOneToTen = 0;
    } 
@@ -118,7 +118,7 @@ class PlotterGenerator extends Particle  //<>//
   particlesNumber = global_stage.getCurrentScene().getParticlesNumber() - 1;
 
   indexOffset = map(indexOffset, 10.0, 0.0, 0, particlesNumber);
-  i1 = int(particlesNumber - round(indexOffset));
+  i1 = int(particlesNumber - FastMath.round(indexOffset));
 
   // timeSpentDrawing MAPPING
   timeSpentDrawing = map(timeSpentDrawing, 10.0, 0.1, 1, 20);
@@ -165,7 +165,7 @@ class PlotterGenerator extends Particle  //<>//
 
   // draw lines just for the next period/N milliseconds
   int period = int(1000 * (1.0 / global_fps));
-  int drawEndTime = millis() + period / round(timeSpentDrawing + 0.5);
+  int drawEndTime = millis() + period / FastMath.round(timeSpentDrawing + 0.5);
 
   while (i1 < particlesNumber && millis() < drawEndTime) 
   {
@@ -189,7 +189,7 @@ class PlotterGenerator extends Particle  //<>//
  {
   float d, a;
   d = p1.distance(p2);
-  a = pow(1 / (d / connectionRadius + 1), 6);
+  a = (float) FastMath.pow(1 / (d / connectionRadius + 1), 6);
 
   if (d <= connectionRadius && d > 2) 
   {
@@ -227,13 +227,13 @@ class PlotterGenerator extends Particle  //<>//
   // use different angle evaluation for each quarter of the screen
 
   if (position.getX() > width / 2 && position.getY() < height / 2)
-   angle = -atan2(height - position.getY(), position.getX());
+   angle = (float) - FastMath.atan2(height - position.getY(), position.getX());
   else if (position.getX() < width / 2 && position.getY() < height / 2)
-   angle = -atan2(height - position.getY(), -position.getX());
+   angle = (float) - FastMath.atan2(height - position.getY(), -position.getX());
   else if (position.getX() < width / 2 && position.getY() > height / 2)
-   angle = atan2(position.getY(), position.getX()) + PI / 2;
+   angle = (float) FastMath.atan2(position.getY(), position.getX()) + PI / 2;
   else if (position.getX() > width / 2 && position.getY() > height / 2)
-   angle = atan2(position.getY(), position.getX());
+   angle = (float)FastMath.atan2(position.getY(), position.getX());
 
   angle += random(-PI / 5, PI / 5);
   return angle;

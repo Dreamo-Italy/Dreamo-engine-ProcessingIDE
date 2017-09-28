@@ -45,9 +45,9 @@ class RadialDot extends Particle
   //setSpeed(new Vector2d(1, random(TWO_PI), true));
   setPersistence(true); // smoother transition from one scene to another
 
-  if (round(random(1)) == 1) setPosition(new Vector2d(width, height, false));
-  else if (ceil(random(2)) == 2) setPosition(new Vector2d(width, 0, false));
-  else if (ceil(random(3)) == 3) setPosition(new Vector2d(0, height, false));
+  if (FastMath.round(random(1)) == 1) setPosition(new Vector2d(width, height, false));
+  else if (FastMath.ceil(random(2)) == 2) setPosition(new Vector2d(width, 0, false));
+  else if (FastMath.ceil(random(3)) == 3) setPosition(new Vector2d(0, height, false));
  }
 
  public void update() 

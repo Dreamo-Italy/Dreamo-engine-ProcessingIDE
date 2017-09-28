@@ -730,5 +730,5 @@ class AudioDecisor
   rhythmDensUpperBound.setLowerBound(value - 0.5);
   rhythmDensUpperBound.setUpperBound(value + 0.5);
  }
-
+ 
 }

@@ -335,7 +335,7 @@ private DSP() {}
  {
   //calculate coefficients
   float fracFreq = freq / sampleRate;
-  float x = (float) Math.exp(-2 * Math.PI * fracFreq);
+  float x = (float) FastMath.exp(-2 * FastMath.PI * fracFreq);
   float[] b = { (1 + x) / 2,-(1 + x) / 2 };
   float[] a = { x };
   return TarsosFilter(b, a, in );
@@ -346,7 +346,7 @@ private DSP() {}
  {
   //calculate coefficients
   float fracFreq = freq / sampleRate;
-  float x = (float) Math.exp(-2 * Math.PI * fracFreq);
+  float x = (float) FastMath.exp(-2 * Math.PI * fracFreq);
   float[] b = { 1 - x };
   float[] a = { x };
 
@@ -362,8 +362,8 @@ private DSP() {}
 
   //calculate coefficients
   float fracFreq = freq / sampleRate;
-  float x = (float) Math.exp(-14.445 * fracFreq);
-  float[] b = { (float) Math.pow(1 - x, 4) };
+  float x = (float) FastMath.exp(-14.445 * fracFreq);
+  float[] b = { (float) FastMath.pow(1 - x, 4) };
   float[] a = { 4 * x, -6 * x * x, 4 * x * x * x, -x * x * x * x };
 
   return TarsosFilter(b, a, in );
@@ -378,7 +378,7 @@ private DSP() {}
   float fracFreq = freq / sampleRate;
   float R = 1 - 3 * bw;
 
-  float T = 2 * (float) Math.cos(2 * Math.PI * fracFreq);
+  float T = 2 * (float) FastMath.cos(2 * FastMath.PI * fracFreq);
   float K = (1 - R * T + R * R) / (2 - T);
   float[] b = new float[] { 1 - K, (K - R) * T, R * R - K };
   float[] a = new float[] { R * T, -R * R };

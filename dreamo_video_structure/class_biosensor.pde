@@ -43,7 +43,7 @@ abstract class Biosensor
   calibrationCounter = 0;
 
   // number of BIOMEDICAL VALUES to extract at each update() cycle   
-  sampleToExtract = ceil((global_sampleRate / (global_fps)));
+  sampleToExtract =(int) FastMath.ceil((global_sampleRate / global_fps));
 
   incomingValues = new FloatList();
 
@@ -70,15 +70,12 @@ abstract class Biosensor
    }
   }
 
-
-
  protected void startCalibration() 
  {
   calibrationValues = new FloatList();
   calibrationValues.clear();
   calibrating = true;
  }
-
 
  protected void calibration() 
  {
@@ -274,13 +271,13 @@ abstract class Biosensor
 
   for (int i = 0; i < N; i++) 
   {
-   sumSq = +sq(a[i]);
+   sumSq = + sq(a[i]);
   }
   xmsq = sq(avarage);
   xisq = sumSq / N;
-  StdDev = sqrt(xisq - xmsq);
+  StdDev =(float) FastMath.sqrt(xisq - xmsq);
   maxAva = (1.9 - 0.28) / 2;
-  maxDev = sqrt(((sq(1.9) - sq(0.48)) / 2) - sq(maxAva));
+  maxDev = (float) FastMath.sqrt(((sq(1.9) - sq(0.48)) / 2) - sq(maxAva));
   maxVar = maxDev / maxAva;
 
   if (b == 1) 

@@ -76,7 +76,7 @@
    }
 
    level /= samples.length;
-   level = (float) Math.sqrt(level);
+   level = (float) FastMath.sqrt(level);
 
    //average      
    RMSstats.accumulate(level);

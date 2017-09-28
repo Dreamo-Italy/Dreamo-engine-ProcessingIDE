@@ -55,7 +55,7 @@ class Rhythm extends FeaturesExtractor
   buffSize = bSize;
   sampleRate = sRate;
 
-  WINDOW_TIME = ceil(WINDOW_LENGTH * buffSize / sampleRate);
+  WINDOW_TIME = FastMath.ceil(WINDOW_LENGTH * buffSize / sampleRate);
 
   counter = 0;
 
@@ -245,7 +245,7 @@ class Rhythm extends FeaturesExtractor
   {
    if (priorFFTmagnitudes[i] > 0) 
    {
-    float diff = 10 * (float) Math.log10(currentFFTmagnitudes[i] / priorFFTmagnitudes[i]);
+    float diff = 10 * (float) FastMath.log10(currentFFTmagnitudes[i] / priorFFTmagnitudes[i]);
     if (diff >= threshold) 
     {
      binsOverThreshold++;

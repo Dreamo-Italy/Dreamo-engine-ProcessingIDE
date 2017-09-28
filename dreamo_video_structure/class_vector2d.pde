@@ -43,7 +43,7 @@ class Vector2d
  {
   x = newX;
   y = newY;
-  direction = atan2(y, x);
+  direction = (float)FastMath.atan2(y, x);
   modulus = dist(0, 0, x, y);
  }
 
@@ -62,8 +62,8 @@ class Vector2d
   }
   while (direction > TWO_PI) direction -= TWO_PI;
   while (direction < 0) direction += TWO_PI;
-  x = modulus * cos(direction);
-  y = modulus * sin(direction);
+  x = (float) (modulus * FastMath.cos(direction));
+  y = (float) (modulus * FastMath.sin(direction));
  }
 
  public void setModulus(float newModulus) { setModDir(newModulus, direction); }

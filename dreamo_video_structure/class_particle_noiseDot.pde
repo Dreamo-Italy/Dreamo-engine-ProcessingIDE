@@ -34,7 +34,7 @@ class NoiseDot extends Particle
   noiseStrength = getParameter(4);
 
 
-  if (frameCount % 4 == 0 && indexShifting < getPalette().COLOR_NUM && round(random(1)) == 1) indexShifting++;
+  if (frameCount % 4 == 0 && indexShifting < getPalette().COLOR_NUM && FastMath.round(random(1)) == 1) indexShifting++;
   if (indexShifting >= getPalette().COLOR_NUM) indexShifting = 0;
 
   angle = noise((getPosition().getX() + nCrossedX * width) / noiseScale, (getPosition().getY() + nCrossedY * height) / noiseScale) * noiseStrength;

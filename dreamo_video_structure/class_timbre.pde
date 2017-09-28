@@ -242,7 +242,7 @@ class Timbre extends FeaturesExtractor
   {
    COBEistant[i] = EnvFilteredSignal[i] / EnvSignal[i];
 
-   EBFistant[i] = (44100 / PI) * asin( COBEistant[i] / 2);
+   EBFistant[i] = (float) ((44100 / PI) * FastMath.asin( COBEistant[i] / 2));
   }
 
   // EBF medio su 1024 samples
@@ -338,12 +338,12 @@ class Timbre extends FeaturesExtractor
   {
    y[n] = y[n - 1] - w[m] + x[n];
    w[m] = x[n];
-   m = ((m + 1) - floor((m + 1) / windowsize) * windowsize);
+   m = (int)((m + 1) - FastMath.floor((m + 1) / windowsize) * windowsize);
   }
 
   for (int i = 0; i < y.length; i++) 
   {
-   y[i] = sqrt(y[i]);
+   y[i] = (float) FastMath.sqrt(y[i]);
   }
 
   return y;
@@ -370,16 +370,16 @@ class Timbre extends FeaturesExtractor
    
    for(int i = 0; i < specSize - 1; i++ )
    {
-     tmp1 = Math.pow((FFTcoeffs[i] - meanFFT), 2);
-     tmp2 = Math.pow((FFTcoeffs[i] - meanFFT), 3);
+     tmp1 = FastMath.pow((FFTcoeffs[i] - meanFFT), 2);
+     tmp2 = FastMath.pow((FFTcoeffs[i] - meanFFT), 3);
      sum = sum + tmp1;
      sum1 = sum1 + tmp2;
    }
    sum =  sum / specSize - 2;
-   sd = Math.sqrt(sum);
+   sd = FastMath.sqrt(sum);
    
    m3= sum1 / specSize - 1;
-   s3 = Math.pow(sd, 3);
+   s3 = FastMath.pow(sd, 3);
    
    SkewnessD = (float)m3 / (float)s3;
    
@@ -411,11 +411,11 @@ class Timbre extends FeaturesExtractor
    //SD
    for(int i = 0; i < specSize - 1; i++ )
    {
-     tmp1 = Math.pow((FFTcoeffs[i] - meanFFT), 2);
+     tmp1 = FastMath.pow((FFTcoeffs[i] - meanFFT), 2);
      sum = sum + tmp1; 
    }
    sum =  sum / specSize - 2;
-   sdFFT = Math.sqrt(sum);
+   sdFFT = FastMath.sqrt(sum);
    
    //MEDIANA
    arr = FFTcoeffs.clone();
@@ -530,12 +530,12 @@ class Timbre extends FeaturesExtractor
   for(int j = 0, k = 1; (j < peakValueMax5.length && k < peakValueMax5.length - 1) ; j++, k++)
   {
    float fm = (freqValueMax5[j] + freqValueMax5[k]) / 2;
-   float fcb = 1.72 * ((float) Math.pow(fm, 0.65));  
-   float gfcbParam = Math.abs((freqValueMax5[k] - freqValueMax5[j])) / fcb;
-   float gfcb = (float) Math.pow(((gfcbParam  / 0.25) * Math.pow(2.71828, (1 - (gfcbParam  / 0.25)))), 2) ;
+   float fcb = 1.72 * ((float) FastMath.pow(fm, 0.65));  
+   float gfcbParam = FastMath.abs((freqValueMax5[k] - freqValueMax5[j])) / fcb;
+   float gfcb = (float) FastMath.pow(((gfcbParam  / 0.25) * FastMath.pow(2.71828, (1 - (gfcbParam  / 0.25)))), 2) ;
    
    num += peakValueMax5[j] * peakValueMax5[k] * gfcb;
-   denom += Math.pow(peakValueMax5[j], 2);
+   denom += FastMath.pow(peakValueMax5[j], 2);
   }
   
   Roughness = num / denom;

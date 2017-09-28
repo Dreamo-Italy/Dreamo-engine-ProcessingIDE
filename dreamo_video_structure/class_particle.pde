@@ -61,8 +61,6 @@ abstract class Particle extends AgingObject
     warpAtBorders = false;
     bounceAtBorders = false;
     
-    
-    
     params = new float[PARAMETERS_NUMBER];    
     for(int i = 0; i < PARAMETERS_NUMBER; i++)
     {
@@ -382,7 +380,7 @@ abstract class Particle extends AgingObject
           Vector2d p2 = global_stage.getCurrentScene().getParticleByListIndex(i2).getPosition();
                   
           d = p1.distance(p2);
-          a = pow(1/(d/connectionRadius+1), 6);
+          a = (float) FastMath.pow(1/(d/connectionRadius+1), 6);
     
           if (d <= connectionRadius && d > 2) 
             {

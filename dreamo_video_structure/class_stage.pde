@@ -107,7 +107,7 @@ class Stage
  {
    if (currentSceneIndex >= 0) 
    {
-    currentSceneIndex = floor(random(scenesNumber));
+    currentSceneIndex = (int) FastMath.floor(random(scenesNumber));
     changeScene(scenesList[currentSceneIndex]);
    } 
    else 
@@ -147,7 +147,7 @@ class Stage
  {
   int i, scene_sel, max, max_sel;
 
-  scene_sel = (int) round((q_gsr + q_ecg) / 2);
+  scene_sel = (int) FastMath.round((q_gsr + q_ecg) / 2);
   scene_score[scene_sel] = scene_score[scene_sel] + 1;
 
   if (global_stage_change_cnt == CHANGE_CHECK) 
