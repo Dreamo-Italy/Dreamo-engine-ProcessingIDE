@@ -55,12 +55,16 @@ class AudioProcessor implements AudioListener
     audioLog = new Table();    
     audioLog.addColumn("Buffer N.");    
     audioLog.addColumn("RMS");
+    audioLog.addColumn("Roughness");
+    
+    /*
     audioLog.addColumn("Dyn Index");
     audioLog.addColumn("Spectral Centroid");
     audioLog.addColumn("Spectral Complexity");
     audioLog.addColumn("ZCR"); 
     audioLog.addColumn("Rhythm Strength");
     audioLog.addColumn("Rhythm Density");
+    */
     
     statusLog = new Table();   
     statusLog.addColumn("Buffer N.");
@@ -250,12 +254,15 @@ class AudioProcessor implements AudioListener
       TableRow newRow = audioLog.addRow();        
       newRow.setLong("Buffer N.",bufferCount);
       newRow.setFloat("RMS",dyn.getRMS());
+      newRow.setFloat("Roughness",timb.getRoughness());
+      /*
       newRow.setFloat("Dyn Index",dyn.getRMSStdDev());
       newRow.setFloat("Spectral Centroid",timb.getCentroidHz());
       newRow.setFloat("Spectral Complexity",timb.getComplexity());
       newRow.setFloat("ZCR",timb.getZeroCrossingRate());
       newRow.setFloat("Rhythm Strength",rhy.getRhythmStrength());
       newRow.setFloat("Rhythm Density",rhy.getRhythmDensity());
+      */
       
       //LOG STATUS
       TableRow newRowS = statusLog.addRow();        
