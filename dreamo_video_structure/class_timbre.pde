@@ -479,7 +479,7 @@ class Timbre extends FeaturesExtractor
  
  private void calcRoughness() 
  {
-  int peaks = 0;
+  int peaks = -1;
   float [] peakValue = new float[50];
   float [] freqValue = new float[50];
   float num = 0;
@@ -492,9 +492,9 @@ class Timbre extends FeaturesExtractor
    boolean largerThanNoiseFloor = (FFTcoeffs[i] > avgMagnitude * COMPLEXITY_THRESHOLD_COEFF); // coeff = 2.6
    if (largerThanPrevious && largerThanNext && largerThanNoiseFloor) 
    {
-    peaks++;
-    peakValue[ peaks - 1 ] = FFTcoeffs[i];
-    freqValue[ peaks - 1 ] = centerFreqHz(i);
+    peaks++;    
+    peakValue[ peaks ] = FFTcoeffs[i];
+    freqValue[ peaks ] = centerFreqHz(i);
    }
   }
   
@@ -514,8 +514,7 @@ class Timbre extends FeaturesExtractor
   
   Roughness = num / denom;
   
-   
-  //AACUMULATE FOR STAT
+  //ACUMULATE FOR STAT
   RoughnessShortTerm.accumulate(Roughness);
   RoughnessLongTerm.accumulate(Roughness);  
  }
