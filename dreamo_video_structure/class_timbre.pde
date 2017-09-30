@@ -480,8 +480,8 @@ class Timbre extends FeaturesExtractor
  private void calcRoughness() 
  {
   int peaks = 0;
-  float [] peakValue = new float[100];
-  float [] freqValue = new float[100];
+  float [] peakValue = new float[50];
+  float [] freqValue = new float[50];
   float num = 0;
   float denom = 0;
   
@@ -489,61 +489,35 @@ class Timbre extends FeaturesExtractor
   {
    boolean largerThanPrevious = (FFTcoeffs[i - 1] < FFTcoeffs[i]);
    boolean largerThanNext = (FFTcoeffs[i] > FFTcoeffs[i + 1]);
-   boolean largerThanNoiseFloor = (FFTcoeffs[i] > avgMagnitude * COMPLEXITY_THRESHOLD_COEFF);
+   boolean largerThanNoiseFloor = (FFTcoeffs[i] > avgMagnitude * COMPLEXITY_THRESHOLD_COEFF); // coeff = 2.6
    if (largerThanPrevious && largerThanNext && largerThanNoiseFloor) 
    {
     peaks++;
-    peakValue[peaks - 1] = FFTcoeffs[i];
-    freqValue[peaks - 1] = centerFreqHz(i);
+    peakValue[ peaks - 1 ] = FFTcoeffs[i];
+    freqValue[ peaks - 1 ] = centerFreqHz(i);
    }
   }
   
-  float [] peakValueSorted = new float[100];
-  float [] max5 = new float[5];
-  float [] peakValueMax5 = new float[5];
-  float [] freqValueMax5 = new float[5];
-  int [] index = new int[5];
-  
-  peakValueSorted = peakValue.clone();
-  Arrays.sort(peakValueSorted);
-  max5 = Arrays.copyOfRange(peakValueSorted, peakValueSorted.length - 5 , peakValueSorted.length);
-  
-  for(int k = 0; k < peakValue.length; k++)
+  for(int j = 0, k = 1; (j < peakValue.length && k < peakValue.length - 1) ; j++, k++)
   {
-   if ( peakValue[k] == 0.0  ) { break; }
+    
+   if (peakValue[k] == 0.0 ) { break; }
    
-   for(int i = 0; i < max5.length; i++)
-   {
-    if(peakValue[k] == max5[i])
-    {
-     index[i] = k;
-    }
-   }
-  }
-  
-  for(int l = 0; l < index.length; l++)
-  {
-    peakValueMax5[l] = peakValue[ index[l] ];
-    freqValueMax5[l] = freqValue[ index[l] ];
-  }
-  
-  for(int j = 0, k = 1; (j < peakValueMax5.length && k < peakValueMax5.length - 1) ; j++, k++)
-  {
-   float fm = (freqValueMax5[j] + freqValueMax5[k]) / 2;
+   float fm = (freqValue[j] + freqValue[k]) / 2;
    float fcb = 1.72 * ((float) FastMath.pow(fm, 0.65));  
-   float gfcbParam = FastMath.abs((freqValueMax5[k] - freqValueMax5[j])) / fcb;
-   float gfcb = (float) FastMath.pow(((gfcbParam  / 0.25) * FastMath.pow(2.71828, (1 - (gfcbParam  / 0.25)))), 2) ;
+   float gfcbParam = FastMath.abs((freqValue[k] - freqValue[j])) / fcb;
+   float gfcb = (float) FastMath.pow( ( ( gfcbParam  / 0.25 ) * FastMath.pow( 2.71828, ( 1 - ( gfcbParam  / 0.25 ) ) ) ), 2) ;
    
-   num += peakValueMax5[j] * peakValueMax5[k] * gfcb;
-   denom += FastMath.pow(peakValueMax5[j], 2);
+   num += peakValue[j] * peakValue[k] * gfcb;
+   denom += FastMath.pow(peakValue[j], 2);
   }
   
   Roughness = num / denom;
   
+   
   //AACUMULATE FOR STAT
   RoughnessShortTerm.accumulate(Roughness);
-  RoughnessLongTerm.accumulate(Roughness); 
-  
+  RoughnessLongTerm.accumulate(Roughness);  
  }
  
  private void calcSpectralComplexity() 
@@ -584,10 +558,8 @@ class Timbre extends FeaturesExtractor
   ZCR = expSmooth(zeroCrossingRate, ZCR, 5);
  }
 
- /**
-  * Returns the center frequency on Hz of the idx-th bin in the spectrum
-  */
-
+  //Returns the center frequency on Hz of the idx-th bin in the spectrum
+  
  private float centerFreqHz(int idx) 
  {
   return (idx * sampleRate) / buffSize;
