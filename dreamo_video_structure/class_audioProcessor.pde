@@ -11,6 +11,8 @@ class AudioProcessor implements AudioListener
   private float[] FFTcoeffs;
   
   private float avgMagnitude;
+  
+  private float level;
     
   private FFT fft;
   
@@ -38,6 +40,7 @@ class AudioProcessor implements AudioListener
     
     bufferCount=0;
     avgMagnitude=0;
+    level = 0;
     
     if ( bSize == 0 || sRate == 0) { println("ERROR: Impossible to initialize AudioProcessor"); }
     else
@@ -86,6 +89,8 @@ class AudioProcessor implements AudioListener
     //calculate fourier transform
     calcFFT(samp);
     
+    calcRMS(samp);
+    
     //run features extractors
     extractFeatures(); 
     
@@ -103,7 +108,9 @@ class AudioProcessor implements AudioListener
     mix(); //check if is to slow
     
     //calculate fourier transform
-    calcFFT(mix);  
+    calcFFT(mix); 
+    
+    calcRMS(mix);
     
     //run features extractors
     extractFeatures();
@@ -140,20 +147,19 @@ class AudioProcessor implements AudioListener
   
   public long getBufferCount() {return bufferCount;}
   
-  public float[] getLeft()
-  {
-    return left;
-  }
+  public float[] getLeft() { return left; }
   
-  public float[] getRight()
-  {
-    return right;
-  }
+  public float[] getRight(){ return right; }
+    
+  public float[] getMix() { return mix; }
   
-  public float[] getMix()
-  {
-    return mix;
-  }
+  public float getFFTcoeff(int i) { return FFTcoeffs[i]; }
+  
+  public float getRMS() { return level; }
+  
+  public float getRMSdB() { return level; }
+ 
+  public int getSpecSize() { return fft.specSize(); }
   
   public void saveLog()
   {   
@@ -174,22 +180,11 @@ class AudioProcessor implements AudioListener
     frameEnergy=(float)energy;   
   }
   
-  
   private void mix()
   {
     mix= DSP.plus(left,right); 
   }
-  
-  public float getFFTcoeff(int i)
-  {
-    return FFTcoeffs[i];
-  }
-  
-  public int getSpecSize()
-  {
-    return fft.specSize();
-  }
-  
+ 
   //COMPUTE FFT FOR EVERY FRAME
   private void calcFFT(final float[] samples)
   {
@@ -204,6 +199,15 @@ class AudioProcessor implements AudioListener
     avgMagnitude = avgMagnitude / fft.specSize(); 
   }
   
+  private void calcRMS(final float[] samples)
+  {
+   for (int i = 0; i < samples.length; i++) 
+   {
+    level += (samples[i] * samples[i]);
+   }
+   level /= samples.length;
+   level = (float) FastMath.sqrt(level);
+  }
   
   private synchronized void extractFeatures()
   {
@@ -229,6 +233,7 @@ class AudioProcessor implements AudioListener
     if(dyn!=null)
     {
       dyn.setSamples(mix);
+      dyn.setRMS(level);
       dyn.calcFeatures();
     }
     else{println("DYN OBJECT HAS TO BE ADDED TO AUDIO PROCESSOR");}
@@ -240,7 +245,8 @@ class AudioProcessor implements AudioListener
     {   
       timb.setFFTCoeffs(FFTcoeffs,fft.specSize());
       timb.setAvgMagnitude(avgMagnitude);
-      timb.setSamples(mix);     
+      timb.setSamples(mix); 
+      timb.setRMS(level);
       timb.calcFeatures();
     }
     else{println("TIMBRE OBJECT HAS TO BE ADDED TO AUDIO PROCESSOR");}

@@ -60,6 +60,7 @@ class Timbre extends FeaturesExtractor
  
  //Roughness VAR
  private float Roughness;
+ private float level;
  
  // Roughness  STATISTICS
  private Statistics RoughnessLongTerm;
@@ -127,6 +128,8 @@ class Timbre extends FeaturesExtractor
  }
 
  public void setAvgMagnitude(float avgm) { avgMagnitude = avgm; }
+ 
+ public void setRMS(float RMSvalue) {level = RMSvalue ;}
 
  //GET METHODS
  public float getAvgMagnitude() { return avgMagnitude; }
@@ -167,10 +170,6 @@ class Timbre extends FeaturesExtractor
 
  public float getCOBEshortTermAvg() { return COBEshortTerm.getAverage(); }
 
- public float getCOBElongTermStd() { return COBElongTerm.getStdDev(); }
-
- public float getCOBEshortTermStd() { return COBEshortTerm.getStdDev(); }
-
  public float getMaxCOBElongTerm() { return COBElongTerm.getMax(); }
 
  public float getMaxCOBEshortTerm() { return COBEshortTerm.getMax(); }
@@ -203,6 +202,8 @@ class Timbre extends FeaturesExtractor
  
  //Roughness GETTER
  public float getRoughness() { return Roughness; } // su picchi in 512 samples
+ 
+ public float getRMS() { return level  ;}
  
  public float getRoughnessShortTermAvg() { return RoughnessShortTerm.getAverage(); } // 1 sec 
  
@@ -438,11 +439,8 @@ class Timbre extends FeaturesExtractor
    SkewnessElongTerm.accumulate(SkewnessE);
  }
  
- /**
-  * Spectral centroid computation method
-  * see https://en.wikipedia.org/wiki/Spectral_centroid
-  */
-  
+ //Spectral centroid computation method see https://en.wikipedia.org/wiki/Spectral_centroid
+ 
  private void calcSpectralCentroid() 
  {
   float num = 0;
@@ -479,56 +477,76 @@ class Timbre extends FeaturesExtractor
  
  private void calcRoughness() 
  {
-  int peaks = -1;
-  float [] peakValue = new float[50];
+  float [] peakValue = new float[50];  
   float [] freqValue = new float[50];
-  float num = 0;
-  float denom = 0;
+  boolean largerThanPrevious;
+  boolean largerThanNext;
+  boolean largerThanNoiseFloor;     
+  int peak = 0;
+  float fm = 0.0;
+  float fcb = 0.0;
+  float gfcbParam = 0.0;
+  float gfcb = 0.0;
+  float num = 0.0;
+  float denom = 0.0;
   
-  for (int i = 1; i < specSize - 1; i++) 
+  if( 20 * FastMath.log10(level) < -50.0) 
+  { 
+   Roughness = 0.0;  
+   println("flag 1 peak --> " + peak);
+   RoughnessShortTerm.accumulate(Roughness);
+   RoughnessLongTerm.accumulate(Roughness); 
+  }
+  else
   {
-   boolean largerThanPrevious = (FFTcoeffs[i - 1] < FFTcoeffs[i]);
-   boolean largerThanNext = (FFTcoeffs[i] > FFTcoeffs[i + 1]);
-   boolean largerThanNoiseFloor = (FFTcoeffs[i] > avgMagnitude * COMPLEXITY_THRESHOLD_COEFF); // coeff = 2.6
-   if (largerThanPrevious && largerThanNext && largerThanNoiseFloor) 
+   for (int i = 1; i < specSize - 1; i++) 
    {
-    peaks++;    
-    peakValue[ peaks ] = FFTcoeffs[i];
-    freqValue[ peaks ] = centerFreqHz(i);
+    largerThanPrevious = (FFTcoeffs[i - 1] < FFTcoeffs[i]);
+    largerThanNext = (FFTcoeffs[i] > FFTcoeffs[i + 1]);
+    largerThanNoiseFloor = (FFTcoeffs[i] > avgMagnitude * 2.6); 
+    if (largerThanPrevious && largerThanNext && largerThanNoiseFloor ) 
+    {
+     peak++;    
+     peakValue[ peak - 1 ] = FFTcoeffs[i];
+     freqValue[ peak - 1 ] = centerFreqHz(i);
+    }
    }
-  }
+   println("flag 2 peak --> " + peak);
   
-  for(int j = 0, k = 1; (j < peakValue.length && k < peakValue.length - 1) ; j++, k++)
-  {
+   for(int j = 0, k = 1; (j < peakValue.length && k < peakValue.length - 1) ; j++, k++)
+   {
     
-   if (peakValue[k] == 0.0 ) { break; }
+    if (peakValue[k] == 0.0 ) { break; }
    
-   float fm = (freqValue[j] + freqValue[k]) / 2;
-   float fcb = 1.72 * ((float) FastMath.pow(fm, 0.65));  
-   float gfcbParam = FastMath.abs((freqValue[k] - freqValue[j])) / fcb;
-   float gfcb = (float) FastMath.pow( ( ( gfcbParam  / 0.25 ) * FastMath.pow( 2.71828, ( 1 - ( gfcbParam  / 0.25 ) ) ) ), 2) ;
+    fm = (freqValue[j] + freqValue[k]) / 2;
+    fcb = 1.72 * ((float) FastMath.pow(fm, 0.65));  
+    gfcbParam = FastMath.abs((freqValue[k] - freqValue[j])) / fcb;
+    gfcb = (float) FastMath.pow( ( ( gfcbParam  / 0.25 ) * FastMath.pow( 2.71828, ( 1 - ( gfcbParam  / 0.25 ) ) ) ), 2) ;
    
-   num += peakValue[j] * peakValue[k] * gfcb;
-   denom += FastMath.pow(peakValue[j], 2);
+    num += peakValue[j] * peakValue[k] * gfcb;
+    denom += FastMath.pow(peakValue[j], 2);
+   }
+  
+   Roughness = num / denom;
+   //println("flag 2 --> " + Roughness);
+   //ACUMULATE FOR STAT
+   RoughnessShortTerm.accumulate(Roughness);
+   RoughnessLongTerm.accumulate(Roughness);
   }
-  
-  Roughness = num / denom;
-  
-  //ACUMULATE FOR STAT
-  RoughnessShortTerm.accumulate(Roughness);
-  RoughnessLongTerm.accumulate(Roughness);  
  }
  
  private void calcSpectralComplexity() 
  {
-
+  boolean largerThanPrevious;
+  boolean largerThanNext;
+  boolean largerThanNoiseFloor;
   int peaks = 0;
 
   for (int i = 1; i < specSize - 1; i++) 
   {
-   boolean largerThanPrevious = (FFTcoeffs[i - 1] < FFTcoeffs[i]);
-   boolean largerThanNext = (FFTcoeffs[i] > FFTcoeffs[i + 1]);
-   boolean largerThanNoiseFloor = (FFTcoeffs[i] > avgMagnitude * COMPLEXITY_THRESHOLD_COEFF);
+   largerThanPrevious = (FFTcoeffs[i - 1] < FFTcoeffs[i]);
+   largerThanNext = (FFTcoeffs[i] > FFTcoeffs[i + 1]);
+   largerThanNoiseFloor = (FFTcoeffs[i] > avgMagnitude * COMPLEXITY_THRESHOLD_COEFF);
    if (largerThanPrevious && largerThanNext && largerThanNoiseFloor) 
    {
     peaks++;
@@ -543,6 +561,7 @@ class Timbre extends FeaturesExtractor
  {
   float zeroCrossingRate = 0;
   int numberOfZeroCrossings = 0;
+  
   for (int i = 1; i < samples.length; i++) 
   {
    if (samples[i] * samples[i - 1] < 0) 
@@ -557,7 +576,7 @@ class Timbre extends FeaturesExtractor
   ZCR = expSmooth(zeroCrossingRate, ZCR, 5);
  }
 
-  //Returns the center frequency on Hz of the idx-th bin in the spectrum
+ //Returns the center frequency on Hz of the idx-th bin in the spectrum
   
  private float centerFreqHz(int idx) 
  {
