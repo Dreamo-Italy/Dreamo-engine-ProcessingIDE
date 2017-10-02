@@ -239,7 +239,7 @@ class AudioProcessor implements AudioListener
       dyn.setRMS(level);
       dyn.calcFeatures();
     }
-    else{println("DYN OBJECT HAS TO BE ADDED TO AUDIO PROCESSOR");}
+    else{ println("DYN OBJECT HAS TO BE ADDED TO AUDIO PROCESSOR"); }
   }
   
   private void runTimbre()

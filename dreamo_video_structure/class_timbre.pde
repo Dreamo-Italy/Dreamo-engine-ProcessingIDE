@@ -288,7 +288,6 @@ class Timbre extends FeaturesExtractor
   // Accumuluate for stats
   COBElongTerm.accumulate(COBEsamples);
   COBEshortTerm.accumulate(COBEsamples);
-
  }
 
  private float[] fastRMS(int method) // method == 1 means  rms env on NON FILTERED signal , method == 2 mean rms env  on FILTERED signal
@@ -323,7 +322,7 @@ class Timbre extends FeaturesExtractor
    }
   }
 
-  for (int i = 0; i < windowsize; i++) // lunghezza w = 512
+  for (int i = 0; i < windowsize; i++)
   {
    w[i] = 0;
   }
@@ -348,7 +347,6 @@ class Timbre extends FeaturesExtractor
   }
 
   return y;
-
  }
  
  private void calcSpectralSkewnessD()
@@ -384,8 +382,7 @@ class Timbre extends FeaturesExtractor
    
    SkewnessD = (float)m3 / (float)s3;
    
-   if(Float.isNaN(SkewnessD))
-    SkewnessD = 0;
+   if(Float.isNaN(SkewnessD)) { SkewnessD = 0; }
    
    // Accumulate for stats
    SkewnessDshortTerm.accumulate(SkewnessD);
@@ -477,8 +474,8 @@ class Timbre extends FeaturesExtractor
  
  private void calcRoughness() 
  {
-  float [] peakValue = new float[50];  
-  float [] freqValue = new float[50];
+  float [] peakValue = new float[60];  
+  float [] freqValue = new float[60];
   boolean largerThanPrevious;
   boolean largerThanNext;
   boolean largerThanNoiseFloor;     
@@ -526,7 +523,6 @@ class Timbre extends FeaturesExtractor
    }
   
    Roughness = num / denom;
-   //println("flag 2 --> " + Roughness);
    //ACUMULATE FOR STAT
    RoughnessShortTerm.accumulate(Roughness);
    RoughnessLongTerm.accumulate(Roughness);
@@ -570,7 +566,6 @@ class Timbre extends FeaturesExtractor
 
   zeroCrossingRate = numberOfZeroCrossings / (float)(samples.length - 1);
 
-  //smoothing
   ZCR = expSmooth(zeroCrossingRate, ZCR, 5);
  }
 
