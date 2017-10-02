@@ -160,7 +160,7 @@ class AudioProcessor implements AudioListener
   
   public float getRMS() { return level; }
   
-  public float getRMSdB() { return level; }
+  public float getRMSdB() { return ((float)(20 * FastMath.log10(level))); }
  
   public int getSpecSize() { return fft.specSize(); }
   
