@@ -116,7 +116,7 @@ class CrazyLines extends Particle
     //**** STROKE WEIGHT VIBRATION ****
     stroke(myColor);
             
-    strokeWeight(weight); //<>// //<>// //<>// //<>// //<>// //<>// //<>//
+    strokeWeight(weight); //<>// //<>// //<>//
    
     //**** SCALE PULSATION ****
     scale(0.5+getParameter(0)*elasticityCoeff); //DIRECT INFLUENCE of RMS (instantaneous value) on SCALE

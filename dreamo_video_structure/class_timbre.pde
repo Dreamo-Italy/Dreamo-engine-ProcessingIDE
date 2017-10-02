@@ -474,8 +474,8 @@ class Timbre extends FeaturesExtractor
  
  private void calcRoughness() 
  {
-  float [] peakValue = new float[60];  
-  float [] freqValue = new float[60];
+  float [] peakValue = new float[100];  
+  float [] freqValue = new float[100];
   boolean largerThanPrevious;
   boolean largerThanNext;
   boolean largerThanNoiseFloor;     

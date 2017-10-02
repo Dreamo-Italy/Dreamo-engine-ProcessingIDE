@@ -17,6 +17,11 @@ class AudioDecisor
  private Statistics specCentroid;
  private Statistics specComplexity;
  //private Statistics ZCR;
+ private Statistics COBE;
+ private Statistics EBF;
+ private Statistics SkewnessD;
+ private Statistics SkewnessE;
+ private Statistics Roughness;
 
  //RHYTHMIC FEATURES
  private Statistics rhythmStr;
@@ -58,7 +63,7 @@ class AudioDecisor
  private float[] featuresVector;
  private int[] statusVector;
  private int[] prevStatusVector;
- private final int FEATURES_NUMBER = 6;
+ private final int FEATURES_NUMBER = 11;
 
  //**** SCORES ****
  private float[] paletteIndicator;
@@ -98,9 +103,16 @@ class AudioDecisor
   //STATS
   RMS = new Statistics(86); //2 seconds
   DynIndex = new Statistics(86);
+  
   specComplexity = new Statistics(86);
   specCentroid = new Statistics(86);
   //ZCR=new Statistics(86);   
+  COBE = new Statistics(86);
+  EBF = new Statistics(86);
+  SkewnessD = new Statistics(86);
+  SkewnessE = new Statistics(86);
+  Roughness =   SkewnessD = new Statistics(86);
+  
   rhythmStr = new Statistics(172); //4 seconds
   rhythmDens = new Statistics(172);
 
@@ -155,7 +167,6 @@ class AudioDecisor
   checkChanges();
  }
 
-
  private void collectStats() 
  {
   //DYN
@@ -178,6 +189,21 @@ class AudioDecisor
 
   rhythmDens.accumulate(rhythm.getRhythmDensity());
   instantFeatures[5] = rhythm.getRhythmDensity();
+  
+  COBE.accumulate(timbre.getCOBEsamples());
+  instantFeatures[6] = timbre.getCOBEsamples();
+
+  EBF.accumulate(timbre.getEBFsamples());
+  instantFeatures[7] = timbre.getEBFsamples();
+
+  SkewnessD.accumulate(timbre.getSkewnessD());
+  instantFeatures[8] = timbre.getSkewnessD();
+
+  SkewnessE.accumulate(timbre.getSkewnessE());
+  instantFeatures[9] = timbre.getSkewnessE();
+
+  Roughness.accumulate(timbre.getRoughness());
+  instantFeatures[10] = timbre.getRoughness(); 
  }
 
  private void checkStatus() 
@@ -193,7 +219,7 @@ class AudioDecisor
  private void checkRMSStatus() 
  {
   //CHECK RMS STATUS
-  if (!RMSLowerBound.checkWindow(RMS.getAverage()) && !RMSUpperBound.checkWindow(RMS.getAverage()))      { RMSStatus = 0; }  /*RMS LOW*/
+  if (!RMSLowerBound.checkWindow(RMS.getAverage()) && !RMSUpperBound.checkWindow(RMS.getAverage()))      { RMSStatus = 0; } /*RMS LOW*/
   else if (RMSLowerBound.checkWindow(RMS.getAverage()) && !RMSUpperBound.checkWindow(RMS.getAverage()))  { RMSStatus = 1; } /*RMS MEDIUM*/
   else if (RMSLowerBound.checkWindow(RMS.getAverage()) && RMSUpperBound.checkWindow(RMS.getAverage()))   { RMSStatus = 3; } /*RMS HIGH*/
   
