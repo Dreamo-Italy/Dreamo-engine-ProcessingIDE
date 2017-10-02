@@ -58,16 +58,19 @@ class AudioProcessor implements AudioListener
     audioLog = new Table();    
     audioLog.addColumn("Buffer N.");    
     audioLog.addColumn("RMS");
-    audioLog.addColumn("Roughness");
-    
-    /*
     audioLog.addColumn("Dyn Index");
     audioLog.addColumn("Spectral Centroid");
     audioLog.addColumn("Spectral Complexity");
     audioLog.addColumn("ZCR"); 
+    audioLog.addColumn("EBF_mean_on_1024");
+    audioLog.addColumn("COBE_mean_on_1024"); 
+    audioLog.addColumn("SkewnessD");
+    audioLog.addColumn("SkewnessE");
+    audioLog.addColumn("Roughness");
     audioLog.addColumn("Rhythm Strength");
     audioLog.addColumn("Rhythm Density");
-    */
+    
+    // Dopo aver aggiornato l'audio decisor aggiornare anche la tabella per lo STATUS LOG
     
     statusLog = new Table();   
     statusLog.addColumn("Buffer N.");
@@ -260,17 +263,20 @@ class AudioProcessor implements AudioListener
       TableRow newRow = audioLog.addRow();        
       newRow.setLong("Buffer N.",bufferCount);
       newRow.setFloat("RMS",dyn.getRMS());
-      newRow.setFloat("Roughness",timb.getRoughness());
-      /*
       newRow.setFloat("Dyn Index",dyn.getRMSStdDev());
       newRow.setFloat("Spectral Centroid",timb.getCentroidHz());
       newRow.setFloat("Spectral Complexity",timb.getComplexity());
       newRow.setFloat("ZCR",timb.getZeroCrossingRate());
+      newRow.setFloat("EBF_mean_on_1024",timb.getEBFsamples());
+      newRow.setFloat("COBE_mean_on_1024",timb.getCOBEsamples());
+      newRow.setFloat("SkewnessD",timb.getSkewnessD());
+      newRow.setFloat("SkewnessE",timb.getSkewnessE());
+      newRow.setFloat("Roughness",timb.getRoughness());
       newRow.setFloat("Rhythm Strength",rhy.getRhythmStrength());
       newRow.setFloat("Rhythm Density",rhy.getRhythmDensity());
-      */
       
-      //LOG STATUS
+      // Dopo aver aggiornato l'audio decisor aggiornare anche la tabella per lo STATUS LOG
+      //LOG STATUS 
       TableRow newRowS = statusLog.addRow();        
       newRowS.setLong("Buffer N.",bufferCount);
       newRowS.setInt("RMS",audio_decisor.getStatusVector()[0]);

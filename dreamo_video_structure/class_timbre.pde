@@ -493,7 +493,6 @@ class Timbre extends FeaturesExtractor
   if( 20 * FastMath.log10(level) < -50.0) 
   { 
    Roughness = 0.0;  
-   println("flag 1 peak --> " + peak);
    RoughnessShortTerm.accumulate(Roughness);
    RoughnessLongTerm.accumulate(Roughness); 
   }
@@ -511,8 +510,7 @@ class Timbre extends FeaturesExtractor
      freqValue[ peak - 1 ] = centerFreqHz(i);
     }
    }
-   println("flag 2 peak --> " + peak);
-  
+   
    for(int j = 0, k = 1; (j < peakValue.length && k < peakValue.length - 1) ; j++, k++)
    {
     
