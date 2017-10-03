@@ -175,12 +175,12 @@ class AudioProcessor implements AudioListener
   
   private void calcFrameEnergy()
   {
-    float energy=0;
-    for(int i=0;i<left.length;i++)
+    float energy = 0;
+    for(int i = 0; i < left.length; i++)
     {
-      energy += FastMath.pow(left[i],2) + FastMath.pow(right[i],2);
+      energy += FastMath.pow(left[i], 2) + FastMath.pow(right[i], 2);
     }    
-    frameEnergy=(float)energy;   
+    frameEnergy = (float) energy;
   }
   
   private void mix()

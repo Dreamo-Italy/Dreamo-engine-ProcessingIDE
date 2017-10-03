@@ -1,4 +1,4 @@
-//package dreamo.display; //<>// //<>// //<>//
+//package dreamo.display; //<>// //<>// //<>// //<>// //<>//
 
 class Stage 
 {
@@ -27,7 +27,7 @@ class Stage
 
   firstChange = false;
 
-  for (i = 0; i < SCENES_MAX; i++) //<>// //<>// //<>// //<>//
+  for (i = 0; i < SCENES_MAX; i++) //<>// //<>// //<>// //<>// //<>// //<>//
   {
    scene_score[i] = 0;
   }
@@ -212,13 +212,13 @@ class Stage
   } 
   else 
   {
-   println("Warning: cannot pop any more scenes from the Stage."); //<>// //<>// //<>//
+   println("Warning: cannot pop any more scenes from the Stage."); //<>// //<>// //<>// //<>// //<>//
   }
  }
 
  public Scene getCurrentScene() 
  {
-   return currentScene; //<>// //<>// //<>// //<>//
+   return currentScene; //<>// //<>// //<>// //<>// //<>// //<>//
   }
   //update and trace methods
  public void updateAndTrace() 

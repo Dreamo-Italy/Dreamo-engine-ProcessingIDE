@@ -377,7 +377,7 @@ class Timbre extends FeaturesExtractor
    sum =  sum / specSize - 2;
    sd = FastMath.sqrt(sum);
    
-   m3= sum1 / specSize - 1;
+   m3 = sum1 / specSize - 1;
    s3 = FastMath.pow(sd, 3);
    
    SkewnessD = (float)m3 / (float)s3;
@@ -516,7 +516,7 @@ class Timbre extends FeaturesExtractor
     fm = (freqValue[j] + freqValue[k]) / 2;
     fcb = 1.72 * ((float) FastMath.pow(fm, 0.65));  
     gfcbParam = FastMath.abs((freqValue[k] - freqValue[j])) / fcb;
-    gfcb = (float) FastMath.pow( ( ( gfcbParam  / 0.25 ) * FastMath.pow( 2.71828, ( 1 - ( gfcbParam  / 0.25 ) ) ) ), 2) ;
+    gfcb = (float) FastMath.pow( ( ( gfcbParam  / 0.25 ) * FastMath.pow( 2.71828, ( 1 - ( gfcbParam  / 0.25 ) ) ) ), 2);
    
     num += peakValue[j] * peakValue[k] * gfcb;
     denom += FastMath.pow(peakValue[j], 2);
