@@ -72,39 +72,19 @@ abstract class Scene extends AgingObject
     isFading=false;
   }
 
-  //
-  public int getParticlesNumber()
-  {
-    return particlesNumber;
-  }
-
-
-  //
-  public void setBackground(Background newBackground)
-  {
-    sceneBackground = newBackground;
-  }
-
-  public void enableBackground()
-  {
-    backgroundEnabled = true;
-  }
-
-  public void disableBackground()
-  {
-    backgroundEnabled = false;
-  }
-
-  public void setHorizontalReflection(boolean newValue)
-  {
-    reflectHorizontally = newValue;
-  }
-
-  public void setVerticalReflection(boolean newValue)
-  {
-    reflectVertically = newValue;
-  }
-
+  
+  public int getParticlesNumber() { return particlesNumber; }
+ 
+  public void setBackground(Background newBackground) { sceneBackground = newBackground; }
+  
+  public void enableBackground() { backgroundEnabled = true; }
+ 
+  public void disableBackground() { backgroundEnabled = false; }
+ 
+  public void setHorizontalReflection(boolean newValue) { reflectHorizontally = newValue; }
+  
+  public void setVerticalReflection(boolean newValue) { reflectVertically = newValue; }
+ 
   public void addParticle(Particle toAdd)
   {
     if (particlesNumber < PARTICLES_MAX)
@@ -140,21 +120,12 @@ abstract class Scene extends AgingObject
     }
   }
 
-  public Palette getPalette()
-  {
-    return pal;
-  }
-
-  public void setPalette(Palette p)
-  {
-    this.pal=p;
-  }
-
-  public void sortParticlesList()
-  {
-    Arrays.sort(particlesList, new ParticleComparator());
-  }
-
+  public Palette getPalette() { return pal; }
+ 
+  public void setPalette(Palette p) { this.pal=p; }
+ 
+  public void sortParticlesList() { Arrays.sort(particlesList, new ParticleComparator()); }
+ 
   public void removeParticleById(int idToRemove)
   {
     boolean match = false;

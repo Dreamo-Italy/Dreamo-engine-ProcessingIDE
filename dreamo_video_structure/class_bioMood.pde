@@ -98,9 +98,5 @@ class BioMood
   return ecgbPM;
  }
 
- public float getArousal() 
- {
-  return arousalTot;
- }
-
+ public float getArousal()   { return arousalTot; }
 }

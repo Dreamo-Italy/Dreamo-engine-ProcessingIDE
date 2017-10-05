@@ -151,14 +151,11 @@ void updateRanges()
   sliders[9].setRange(0,audio_decisor.getRhythmStrUpperThreshold());
   
   sliders[10].setRange(audio_decisor.getRhythmDensLowerThreshold(),9);
-  sliders[11].setRange(0,audio_decisor.getRhythmDensUpperThreshold());
-  
+  sliders[11].setRange(0,audio_decisor.getRhythmDensUpperThreshold());  
 }
 
-
 public void restoreDefault()
-{
-  
+{ 
  sliders[0].setValue(DefaultAudioThresholds.RMS_UPPER_TH);
  sliders[1].setValue(DefaultAudioThresholds.RMS_LOWER_TH);
 
@@ -176,5 +173,4 @@ public void restoreDefault()
 
  sliders[10].setValue(DefaultAudioThresholds.RHYTHMDENS_UPPER_TH);
  sliders[11].setValue(DefaultAudioThresholds.RHYTHMDENS_LOWER_TH);
-
 }

@@ -90,20 +90,11 @@ class Rhythm extends FeaturesExtractor
   currentFFTmagnitudes = coeffs.clone();
  }
 
- public void setCounter(int c) 
- {
-  counter = c;
- }
+ public void setCounter(int c)  { counter = c; }
 
- public void setThreshold(float th) 
- {
-  threshold = th;
- }
+ public void setThreshold(float th) { threshold = th; }
 
- public void setSensitivity(float sens) 
- {
-  sensitivity = sens;
- }
+ public void setSensitivity(float sens)  { sensitivity = sens; }
 
  public void setFrameEnergy(float energy) 
  {
@@ -111,50 +102,26 @@ class Rhythm extends FeaturesExtractor
   energyStats.accumulate(frameEnergy);
  }
 
- public void setBufferCount(long bufferC) 
- {
-  bufferCounter = bufferC;
- }
-
+ public void setBufferCount(long bufferC)  { bufferCounter = bufferC; }
+ 
  //**** GET METHODS ****
- public float getRhythmStrength() 
- {
-  return rhythmStrength;
- }
+ public float getRhythmStrength()  { return rhythmStrength; }
 
- public float getRhythmDensity() 
- {
-  return rhythmDensity;
- }
+ public float getRhythmDensity()  { return rhythmDensity; }
+ 
+ public float getPercussivity()  { return percussivity; }
 
- public float getPercussivity() 
- {
-  return percussivity;
- }
+ public boolean isPercOnset()  { return percOnset; }
 
- public boolean isPercOnset() 
- {
-  return percOnset;
- }
-
- public boolean isEnergyOnset() 
- {
-  return energyOnset;
- }
-
-
+ public boolean isEnergyOnset() { return energyOnset; }
+ 
  //**** FEATURES CALC METHOD ****
  public synchronized void calcFeatures() 
  {
-
   energyOnsetDetection();
 
-  if (counter > WINDOW_LENGTH) 
-  {
-   counter = 0;
-  }
+  if (counter > WINDOW_LENGTH)  { counter = 0; }
   counter++;
-
  }
 
  //**** PRIVATE METHODS **** 
@@ -173,7 +140,6 @@ class Rhythm extends FeaturesExtractor
   if (energyOnsets == 0) rhythmStrength = 0;
   else rhythmStrength = (float) energyOnsetStrength / energyOnsets;
  }
-
 
  //ENERGY ONSETS DETECTION ALGORITHM
  private void energyOnsetDetection() 
@@ -274,16 +240,12 @@ class Rhythm extends FeaturesExtractor
   {
    percOnset = false;
   }
-
  }
 
- /*
- *
- *  LOW PASS ENERGY ONSET DETECTION
- *  (TO IMPLEMENT)
- *
- *
-  
+/*
+ LOW PASS ENERGY ONSET DETECTION
+ (TO IMPLEMENT)
+ 
  private void lowPassEnergyOnsetDetection()
  {
    
@@ -294,7 +256,6 @@ class Rhythm extends FeaturesExtractor
      detectEnergyOnsets();     
    }
  }
-  
   
  private void updateLongWindow()
  {
@@ -338,8 +299,5 @@ class Rhythm extends FeaturesExtractor
  {
    return process_ok;
  }
-  
-  
  */
-
 }

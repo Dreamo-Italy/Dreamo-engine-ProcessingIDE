@@ -76,38 +76,17 @@ class Vector2d
  public void applyRotation() { rotate(direction); }
 
  //functions 
- public Vector2d mul(float parameter) //multiplies
- {
-  return new Vector2d(getX() * parameter, getY() * parameter, false);
- }
+ public Vector2d mul(float parameter) { return new Vector2d(getX() * parameter, getY() * parameter, false); }   //multiplies
+ 
+ public Vector2d quot(float parameter) { return new Vector2d(getX() / parameter, getY() / parameter, false); }  // quotient
+ 
+ public float distance(Vector2d other) { return dist(x, y, other.getX(), other.getY()); }
+ 
+ public Vector2d sum(Vector2d other)  { return new Vector2d(x + other.getX(), y + other.getY(), false); }
+ 
+ public Vector2d subtract(Vector2d other)  { return new Vector2d(x - other.getX(), y - other.getY(), false); }
+ 
+ public Vector2d mirrorX()  { return new Vector2d(-x, y, false); }
 
- public Vector2d quot(float parameter) // quotient
- {
-  return new Vector2d(getX() / parameter, getY() / parameter, false);
- }
-
- public float distance(Vector2d other) 
- {
-  return dist(x, y, other.getX(), other.getY());
- }
-
- public Vector2d sum(Vector2d other) 
- {
-  return new Vector2d(x + other.getX(), y + other.getY(), false);
- }
-
- public Vector2d subtract(Vector2d other) 
- {
-  return new Vector2d(x - other.getX(), y - other.getY(), false);
- }
-
- public Vector2d mirrorX() 
- {
-  return new Vector2d(-x, y, false);
- }
-
- public Vector2d mirrorY() 
- {
-  return new Vector2d(x, -y, false);
- }
+ public Vector2d mirrorY() { return new Vector2d(x, -y, false); }
 }

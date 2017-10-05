@@ -85,7 +85,6 @@
 
    }
 
-
    plots[0].setTitleText("Gsr");
    plots[1].setTitleText("Ecg");
    plots[2].setTitleText("RMS");
@@ -94,8 +93,6 @@
    plots[5].setTitleText("Spectral Complexity");
    plots[6].setTitleText("Rhythm Strength");
    plots[7].setTitleText("Rhythm Density");
-
-
 
    plots[0].setYLim(0, 1);
    plots[1].setYLim(-1, 15);
@@ -107,12 +104,9 @@
    plots[6].setYLim(0, 400);
    plots[7].setYLim(0, 10);
 
-
-
-
    for (int j = 0; j < nPoints; j++)
     surfacePoints.add(frameCount, 0);
-
+    
    // Change the second layer options - RMS
    plots[2].addLayer("AvgRMS", surfacePoints);
    plots[2].getLayer("AvgRMS").setPoints(surfacePoints);
@@ -142,7 +136,6 @@
    plots[3].getLayer("TH2").setPoints(surfacePoints);
    plots[3].getLayer("TH2").setPointSize(0.6);
    plots[3].getLayer("TH2").setPointColor(violet);
-
 
    // Change the second layer options - Centroid
    plots[4].addLayer("AvgCentroid", surfacePoints);
@@ -200,8 +193,6 @@
    plots[7].getLayer("TH2").setPoints(surfacePoints);
    plots[7].getLayer("TH2").setPointSize(0.6);
    plots[7].getLayer("TH2").setPointColor(violet);
-
-
   }
 
   public void update() 
@@ -298,6 +289,5 @@
    plots[7].getLayer("AvgRhythmDensity").drawPoints();
    plots[7].getLayer("TH").drawPoints();
    plots[7].getLayer("TH2").drawPoints();
-
   }
  }

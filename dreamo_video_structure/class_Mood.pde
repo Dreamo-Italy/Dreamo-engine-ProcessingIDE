@@ -25,15 +25,9 @@ class Mood
   }
   
   //set methods
-  public void setValence(float v)
-  {
-    valence=v;
-  }
+  public void setValence(float v)  { valence=v; }
   
-  public void setArousal(float a)
-  {
-    arousal=a;
-  }
+  public void setArousal(float a) { arousal=a; }
   
   public void setMood(float v, float a)
   {
@@ -42,14 +36,7 @@ class Mood
   }
    
   //get methods
-  public float getValence()
-  {
-    return valence;
-  }
+  public float getValence() { return valence; }
   
-  public float getArousal()
-  {
-    return arousal;
-  }
-
+  public float getArousal() { return arousal; }
 }

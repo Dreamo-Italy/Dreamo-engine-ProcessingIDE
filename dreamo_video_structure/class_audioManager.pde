@@ -23,10 +23,7 @@ class AudioManager
  //********* PUBLIC METHODS ***********
  public void addListener(AudioListener l)
  { 
-   if (isInitialized())
-   { 
-    in.addListener(l);
-   }
+   if (isInitialized()) { in.addListener(l); }
    else{println("AUDIO FEATURE OBJECT NOT INITIALIZED");} 
  }
  
@@ -49,11 +46,8 @@ class AudioManager
  }
   
  //********* GETTERS ***********
- public float[] getSamples()
- {
-   return in.mix.toArray();
- }   
-  
+ public float[] getSamples() { return in.mix.toArray(); }
+ 
  public int getBufferSize()
  {
    if(isInitialized()){return in.bufferSize();}
@@ -66,9 +60,5 @@ class AudioManager
    else return 0;
  }
  
- public boolean isInitialized()
- {
-   return initialized;
- } 
- 
+ public boolean isInitialized() { return initialized; }
 }

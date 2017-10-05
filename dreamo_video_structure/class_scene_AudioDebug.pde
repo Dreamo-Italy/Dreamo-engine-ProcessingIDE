@@ -38,7 +38,6 @@ class AudioDebug extends Scene
   }
   //println("CHANGES "+audio_decisor.getChangesNumber());
 
-
   //pal.influenceColors(0,map(audio_decisor.getFeaturesVector()[3],0,30,0,1),0);
 
   //println(map(audio_decisor.getFeaturesVector()[3],0,30,0,1));

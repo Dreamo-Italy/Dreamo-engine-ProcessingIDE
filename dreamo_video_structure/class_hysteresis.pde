@@ -28,25 +28,15 @@ class Hysteresis
 
  public boolean check(float value) 
  {
-
-  if (value >= upperBound) 
-  {
-   result = true;
-  } 
-  else if (value <= lowerBound) 
-  {
-   result = false;
-  }
+  if (value >= upperBound)  { result = true; }
+  else if (value <= lowerBound) { result = false; }
   return result;
  }
 
  public boolean checkWindow(float value) 
  {
-  if (idx == w) 
-  {
-   idx = 0;
-  }
-
+  if (idx == w) { idx = 0; }
+  
   if (value >= upperBound)
   {
    hWindow[idx] = true;
@@ -63,26 +53,16 @@ class Hysteresis
   {
    if (hWindow[j] == true) k++;
   }
-
-  if (k == w) 
-  {
-   result = true;
-  } 
-  else if (k == 0) 
-  {
-   result = false;
-  }
-
+  if (k == w) { result = true; }
+  else if (k == 0) { result = false; }
+  
   return result;
  }
 
  public boolean checkWindow(float value, float upperBound, float lowerBound) 
  {
-  if (idx == w) 
-  {
-   idx = 0;
-  }
-
+  if (idx == w) { idx = 0; }
+  
   if (value >= upperBound) 
   {
    hWindow[idx] = true;
@@ -93,7 +73,6 @@ class Hysteresis
    hWindow[idx] = false;
    idx++;
   }
-
   //idx++;
 
   int k = 0;
@@ -101,16 +80,10 @@ class Hysteresis
   {
    if (hWindow[j] == true) k++;
   }
-
-  if (k == w) 
-  {
-   result = true;
-  } 
-  else if (k == 0) 
-  {
-   result = false;
-  }
-
+  
+  if (k == w) { result = true; }  
+  else if (k == 0) { result = false; }
+  
   return result;
  }
 
@@ -121,27 +94,13 @@ class Hysteresis
   result = false;
  }
 
-
- public float getUpperBound() 
- {
-  return upperBound;
- }
-
-
- public float getLowerBound() 
- {
-  return lowerBound;
- }
-
-
- public void setUpperBound(float upper) 
- {
-  this.upperBound = upper;
- }
-
-
- public void setLowerBound(float lower) 
- {
-  this.lowerBound = lower;
- }
+//GETTERS
+ public float getUpperBound()  { return upperBound; }
+ 
+ public float getLowerBound()  { return lowerBound; }
+ 
+//SETTERS
+ public void setUpperBound(float upper) { this.upperBound = upper; }
+ 
+ public void setLowerBound(float lower) { this.lowerBound = lower;}
 }

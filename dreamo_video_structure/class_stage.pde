@@ -1,4 +1,4 @@
-//package dreamo.display; //<>// //<>// //<>// //<>// //<>//
+//package dreamo.display;  //<>//
 
 class Stage 
 {
@@ -212,13 +212,13 @@ class Stage
   } 
   else 
   {
-   println("Warning: cannot pop any more scenes from the Stage."); //<>// //<>// //<>// //<>// //<>//
+   println("Warning: cannot pop any more scenes from the Stage.");  //<>//
   }
  }
 
  public Scene getCurrentScene() 
  {
-   return currentScene; //<>// //<>// //<>// //<>// //<>// //<>//
+   return currentScene;  //<>//
   }
   //update and trace methods
  public void updateAndTrace() 
@@ -228,11 +228,8 @@ class Stage
   currentScene.trashDeadParticles();
  }
 
- public int getNumberOfScenes() 
- {
-  return scenesNumber;
- }
-
+ public int getNumberOfScenes()  { return scenesNumber; }
+ 
  public void nextSceneIfSilence(int noiseMaxDb) 
  {
   if (frameCount % 30 != 0) return;

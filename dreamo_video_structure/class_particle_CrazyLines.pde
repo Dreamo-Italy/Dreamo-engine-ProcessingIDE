@@ -212,37 +212,15 @@ class CrazyLines extends Particle
     
   }
   
+ public void setFormResolution(int res) { if(!morphing)targetResolution=res; }  //if not morphing, assign new target   
+ 
+ public void setElasticityCoeff(float coeff) { elasticityCoeff=coeff; }
   
-  public void setFormResolution(int res)
-  {    
-    if(!morphing)targetResolution=res; //if not morphing, assign new target   
-  }
-  
-  public void setElasticityCoeff(float coeff)
-  {
-    elasticityCoeff=coeff;
-  }
-  
- public void setVibrationFreq(float f)
- {
-   vibrationFreq=f;
- }
+ public void setVibrationFreq(float f) { vibrationFreq=f; }
  
- public void setThickness(float t)
- {
-   weightSeed=t;
- }
+ public void setThickness(float t) { weightSeed=t; }
  
- public void setVibrationRange(float r)
- {
-   vibrationRange=r;
- }
+ public void setVibrationRange(float r) { vibrationRange=r; }
  
- public void setRotationCoeff(float rot)
- {
-   rotationCoeff=rot;
- }
- 
-
-
+ public void setRotationCoeff(float rot) { rotationCoeff=rot; }
 }

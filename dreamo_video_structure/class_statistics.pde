@@ -28,32 +28,20 @@ class Statistics
     acc=new float[window+delay];
   }
 
-  public float getAverage()
-  {
-    return sum/window;
-  }
-  
+  public float getAverage() { return sum/window; }
+ 
   public float getVariance()
   {
     if(temp_var<0){temp_var=0;}
     return temp_var/window;
   }
   
-  public float getStdDev()
-  {
-    return (float)FastMath.sqrt(getVariance());
-  }
+  public float getStdDev()  { return (float)FastMath.sqrt(getVariance()); }
   
-  public float getMax()
-  {
-    return DSP.vmax(acc);
-  }
+  public float getMax() { return DSP.vmax(acc); }
   
-  public float getMin()
-  {
-    return DSP.vmin(acc);
-  }
-
+  public float getMin() { return DSP.vmin(acc); }
+  
   public void reset()
   {
     acc=new float[window];
