@@ -77,7 +77,13 @@ class AudioProcessor implements AudioListener
     statusLog.addColumn("RMS");
     statusLog.addColumn("Dyn Index");
     statusLog.addColumn("Spectral Centroid");
-    statusLog.addColumn("Spectral Complexity");    
+    statusLog.addColumn("Spectral Complexity"); 
+    statusLog.addColumn("ZCR"); 
+    statusLog.addColumn("EBF_mean_on_1024");
+    statusLog.addColumn("COBE_mean_on_1024"); 
+    statusLog.addColumn("SkewnessD");
+    statusLog.addColumn("SkewnessE");
+    statusLog.addColumn("Roughness");
     statusLog.addColumn("Rhythm Strength");
     statusLog.addColumn("Rhythm Density"); 
       
@@ -267,8 +273,8 @@ class AudioProcessor implements AudioListener
       newRow.setFloat("Spectral Centroid",timb.getCentroidHz());
       newRow.setFloat("Spectral Complexity",timb.getComplexity());
       newRow.setFloat("ZCR",timb.getZeroCrossingRate());
-      newRow.setFloat("EBF_mean_on_1024",timb.getEBFsamples());
       newRow.setFloat("COBE_mean_on_1024",timb.getCOBEsamples());
+      newRow.setFloat("EBF_mean_on_1024",timb.getEBFsamples());
       newRow.setFloat("SkewnessD",timb.getSkewnessD());
       newRow.setFloat("SkewnessE",timb.getSkewnessE());
       newRow.setFloat("Roughness",timb.getRoughness());
@@ -281,10 +287,15 @@ class AudioProcessor implements AudioListener
       newRowS.setLong("Buffer N.",bufferCount);
       newRowS.setInt("RMS",audio_decisor.getStatusVector()[0]);
       newRowS.setInt("Dyn Index",audio_decisor.getStatusVector()[1]);
-      newRowS.setInt("Spectral Centroid",audio_decisor.getStatusVector()[2]);
+      newRowS.setInt("Spectral Centroid",audio_decisor.getStatusVector()[2]);     
       newRowS.setInt("Spectral Complexity",audio_decisor.getStatusVector()[3]);
+      newRowS.setInt("COBE_mean_on_1024",audio_decisor.getStatusVector()[6]);
+      newRowS.setInt("EBF_mean_on_1024",audio_decisor.getStatusVector()[7]);      
+      newRowS.setInt("SkewnessD",audio_decisor.getStatusVector()[8]);
+      newRowS.setInt("SkewnessE",audio_decisor.getStatusVector()[9]);
+      newRowS.setInt("Roughness",audio_decisor.getStatusVector()[10]);
       newRowS.setInt("Rhythm Strength",audio_decisor.getStatusVector()[4]);
-      newRowS.setInt("Rhythm Density",audio_decisor.getStatusVector()[5]);     
+      newRowS.setInt("Rhythm Density",audio_decisor.getStatusVector()[5]);      
     } 
   } 
 }
