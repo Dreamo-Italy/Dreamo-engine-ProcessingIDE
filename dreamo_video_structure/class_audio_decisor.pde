@@ -433,8 +433,8 @@ class AudioDecisor
   switch (feature_index) 
   {
    case (0):
-    if (direction > 0) { RMSChange = 1; }
-    else if (direction < 0) { RMSChange = -1; }
+    if (direction > 0) RMSChange = 1; 
+    else if (direction < 0) RMSChange = -1; 
     else { RMSChange = 0; }
     break;
 
@@ -534,6 +534,10 @@ class AudioDecisor
 
  public int getChangesNumber() {  return changesNumber; }
  
+ public int getRMSChange() { return RMSChange; }
+ 
+ public int getDynIndexChange() { return dynIndexChange; }
+ 
  public int getCentroidChangeDir() { return centroidChange; }
  
  public int getComplexityChangeDir() { return complexityChange; }
@@ -547,6 +551,10 @@ public int getCOBEChange() { return COBEChange; } //COBE
  public int getSkewnessEChange() { return SkewnessEChange; } //SkewE
  
  public int getRoughnessChange() { return RoughnessChange; } //Rough
+ 
+ public int getRhythmStrChange() { return rhythmStrChange;}
+ 
+ public int getRhythmDensChange() { return rhythmDensChange; }
  
  public boolean getPaletteChange() { return paletteChange; }
  
