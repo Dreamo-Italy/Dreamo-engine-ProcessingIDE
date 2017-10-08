@@ -27,7 +27,7 @@ class Stage
 
   firstChange = false;
 
-  for (i = 0; i < SCENES_MAX; i++) //<>// //<>// //<>// //<>// //<>// //<>//
+  for (i = 0; i < SCENES_MAX; i++)  //<>//
   {
    scene_score[i] = 0;
   }

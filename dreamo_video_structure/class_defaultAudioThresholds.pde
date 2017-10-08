@@ -1,6 +1,5 @@
 public final static class DefaultAudioThresholds 
 {
-
  private DefaultAudioThresholds() {}
 
  static public float RMS_LOWER_TH = 0.3;
@@ -20,5 +19,4 @@ public final static class DefaultAudioThresholds
 
  static public float RHYTHMDENS_LOWER_TH = 1.5;
  static public float RHYTHMDENS_UPPER_TH = 4;
-
 }

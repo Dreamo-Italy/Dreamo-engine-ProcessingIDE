@@ -82,10 +82,7 @@ class BioMood
   return ecgArousal;
  }
 
- private float computeEcgVariation() 
- {
-  return global_ecg.getStDev();
- }
+ private float computeEcgVariation()  { return global_ecg.getStDev(); }
 
  private float computeEcgBpm() 
  {
