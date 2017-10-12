@@ -43,7 +43,7 @@ class AudioDecisor
  private Hysteresis specComplexityUpperBound;
  
  
- /*private Hysteresis COBELowerBound; //COBE
+ private Hysteresis COBELowerBound; //COBE
  private Hysteresis COBEUpperBound; //COBE
  
  private Hysteresis EBFLowerBound; //EBF
@@ -56,7 +56,7 @@ class AudioDecisor
  private Hysteresis SkewnessEUpperBound; //SkewE
  
  private Hysteresis RoughnessLowerBound; //Rough
- private Hysteresis RoughnessUpperBound; //Rough */
+ private Hysteresis RoughnessUpperBound; //Rough 
  
  
  //private Hysteresis ZCRLowerBound;
@@ -74,11 +74,11 @@ class AudioDecisor
  private int centroidStatus;
  private int complexityStatus;
  
- /*private int COBEStatus; //COBE
+ private int COBEStatus; //COBE
  private int EBFStatus;  //EBF
  private int SkewnessDStatus; //SkewD
  private int SkewnessEStatus; //SkewE
- private int RoughnessStatus; //Rough */
+ private int RoughnessStatus; //Rough 
  
  //private int ZCRStatus;
  private int rhythmStrStatus;
@@ -89,7 +89,7 @@ class AudioDecisor
  private float[] featuresVector;
  private int[] statusVector;
  private int[] prevStatusVector;
- private final int FEATURES_NUMBER = 6;   //11
+ private final int FEATURES_NUMBER = 11;   
 
  //**** SCORES ****
  private float[] paletteIndicator;
@@ -104,11 +104,11 @@ class AudioDecisor
  private int centroidChange;
  private int complexityChange; 
  
- /*private int COBEChange; //COBE
+ private int COBEChange; //COBE
  private int EBFChange;  //EBF
  private int SkewnessDChange; //SkewD
  private int SkewnessEChange; //SkewE
- private int RoughnessChange; //Rough */
+ private int RoughnessChange; //Rough 
  
  private int rhythmStrChange;
  private int rhythmDensChange;
@@ -119,7 +119,7 @@ class AudioDecisor
   rhythm = r;
   timbre = t;
 
-  instantFeatures = new float[11];
+  instantFeatures = new float[FEATURES_NUMBER];
   featuresVector = new float[FEATURES_NUMBER];
   statusVector = new int[FEATURES_NUMBER];
   prevStatusVector = new int[FEATURES_NUMBER];
@@ -157,11 +157,11 @@ class AudioDecisor
   centroidChange = 0;
   complexityChange = 0; 
   
-  /*COBEChange = 0; //COBE
+  COBEChange = 0; //COBE
   EBFChange = 0;  //EBF
   SkewnessDChange = 0; // SkewD
   SkewnessEChange = 0; // SkewE
-  RoughnessChange = 0; // Rough*/
+  RoughnessChange = 0; // Rough
   
   rhythmStrChange = 0;
   rhythmDensChange = 0;
@@ -182,20 +182,20 @@ class AudioDecisor
   specComplexityUpperBound = new Hysteresis(17, 19, 11);
   
   
-  /*COBELowerBound = new Hysteresis( 0, 0, 0 ); //COBE   TO BE implemented
-  COBEUpperBound = new Hysteresis( 0, 0, 0 ); //COBE
+  COBELowerBound = new Hysteresis( 0.073, 0.081, 11 ); //COBE   TO BE implemented
+  COBEUpperBound = new Hysteresis( 0.10, 0.16, 11 ); //COBE
   
-  EBFLowerBound = new Hysteresis( 0, 0, 0 ); //EBF  TO BE implemented
-  EBFUpperBound = new Hysteresis( 0, 0, 0 ); //EBF
+  EBFLowerBound = new Hysteresis( 1200, 1300, 11 ); //EBF  TO BE implemented
+  EBFUpperBound = new Hysteresis( 1750, 1850, 11 ); //EBF
   
-  SkewnessDLowerBound = new Hysteresis( 0, 0, 0 ); //SkewD  TO BE implemented
-  SkewnessDUpperBound = new Hysteresis( 0, 0, 0 ); //SkewD
+  SkewnessDLowerBound = new Hysteresis( 4.5, 6.5, 11 ); //SkewD  TO BE implemented
+  SkewnessDUpperBound = new Hysteresis( 8, 10, 11 ); //SkewD
   
-  SkewnessELowerBound = new Hysteresis( 0, 0, 0 ); //SkewE  TO BE implemented
-  SkewnessEUpperBound = new Hysteresis( 0, 0, 0 ); //SkewE
+  SkewnessELowerBound = new Hysteresis( 0.4, 0.6, 11 ); //SkewE  TO BE implemented
+  SkewnessEUpperBound = new Hysteresis( 0.65, 0.85, 11 ); //SkewE
   
-  RoughnessLowerBound = new Hysteresis( 0, 0, 0 ); //Rough  TO BE implemented
-  RoughnessUpperBound = new Hysteresis( 0, 0, 0 ); //Rough */
+  RoughnessLowerBound = new Hysteresis( 0.015, 0.025, 11 ); //Rough  TO BE implemented
+  RoughnessUpperBound = new Hysteresis( 0.055, 0.075, 11 ); //Rough 
   
   
   rhythmStrLowerBound = new Hysteresis(25, 30, 11);
@@ -274,11 +274,11 @@ class AudioDecisor
   checkCentroidStatus();
   checkComplexityStatus();
   
-  /*checkCOBEStatus(); //COBE
+  checkCOBEStatus(); //COBE
   checkEBFStatus(); //EBF
   checkSkewnessDStatus(); //SkewD
   checkSkewnessEStatus(); //SkewE
-  checkRoughnessStatus(); //Rough*/
+  checkRoughnessStatus(); //Rough
   
   checkRhythmStrStatus();
   checkRhythmDensStatus();
@@ -346,7 +346,7 @@ class AudioDecisor
   statusVector[5] = rhythmDensStatus;
  }
  
- /* private void checkCOBEStatus() //COBE 
+ private void checkCOBEStatus() //COBE 
  {
   if (!COBELowerBound.checkWindow(COBE.getAverage()) && !COBEUpperBound.checkWindow(COBE.getAverage()))     { COBEStatus = 0; } 
   else if (COBELowerBound.checkWindow(COBE.getAverage()) && !COBEUpperBound.checkWindow(COBE.getAverage())) { COBEStatus = 1; } 
@@ -394,7 +394,7 @@ class AudioDecisor
    
    featuresVector[10] = Roughness.getAverage();
    statusVector[10] = RoughnessStatus;
- } */
+ } 
  
  private void checkChanges() 
  {
@@ -469,7 +469,7 @@ class AudioDecisor
     else rhythmDensChange = 0;
     break;
     
-   /*case (6): //COBE
+   case (6): //COBE
     if (direction > 0) COBEChange = 1;
     else if (direction < 0) COBEChange = -1;
     else COBEChange = 0;  
@@ -497,7 +497,7 @@ class AudioDecisor
     if (direction > 0) RoughnessChange = 1;
     else if (direction < 0) RoughnessChange = -1;
     else RoughnessChange = 0; 
-   break;*/
+   break;
    
   }
  }
@@ -544,7 +544,7 @@ class AudioDecisor
  
  public int getComplexityChangeDir() { return complexityChange; }
  
- /*public int getCOBEChange() { return COBEChange; } //COBE
+ public int getCOBEChange() { return COBEChange; } //COBE
  
  public int getEBFChange() { return EBFChange; } //EBF
  
@@ -552,7 +552,7 @@ class AudioDecisor
  
  public int getSkewnessEChange() { return SkewnessEChange; } //SkewE
  
- public int getRoughnessChange() { return RoughnessChange; } //Rough */
+ public int getRoughnessChange() { return RoughnessChange; } //Rough 
  
  public int getRhythmStrChange() { return rhythmStrChange;}
  
@@ -581,7 +581,7 @@ class AudioDecisor
  {
   if (statusVector[2] == 0) { return specCentroidLowerBound.getUpperBound(); }
   else if (statusVector[2] == 1) { return specCentroidUpperBound.getUpperBound(); }
-  else if (statusVector[2] == 3) { return 7000; }
+  else if (statusVector[2] == 3) { return 7000; } // val max possibile in quello status
   else { return -1; }
  }
 
@@ -616,6 +616,7 @@ class AudioDecisor
  public float getRoughnessStatusLowerBound() { return 0.0; }  // ROUGH to be implemented if necessary
  public float getRoughnessStatusUpperBound() { return 0.0; }  // Rough to be implemented if necessary*/
  
+ 
  public float getRMSLowerThreshold() { return (RMSLowerBound.getLowerBound() + RMSLowerBound.getUpperBound()) / 2; }
  public float getRMSUpperThreshold() { return (RMSUpperBound.getLowerBound() + RMSUpperBound.getUpperBound()) / 2; }
  
@@ -628,7 +629,7 @@ class AudioDecisor
  public float getComplexityLowerThreshold() { return (specComplexityLowerBound.getLowerBound() + specComplexityLowerBound.getUpperBound()) / 2; }
  public float getComplexityUpperThreshold() { return (specComplexityUpperBound.getLowerBound() + specComplexityUpperBound.getUpperBound()) / 2; }
  
- /*public float getCOBELowerThreshold() { return ( COBELowerBound.getLowerBound() + COBELowerBound.getUpperBound() ) / 2; } //COBE
+ public float getCOBELowerThreshold() { return ( COBELowerBound.getLowerBound() + COBELowerBound.getUpperBound() ) / 2; } //COBE
  public float getCOBEUpperThreshold() { return ( COBEUpperBound.getLowerBound() + COBEUpperBound.getUpperBound() ) / 2; } //COBE
  
  public float getEBFLowerThreshold() { return ( EBFLowerBound.getLowerBound() + EBFLowerBound.getUpperBound() ) / 2; } //EBF
@@ -641,7 +642,7 @@ class AudioDecisor
  public float getSkewnessEUpperThreshold() { return ( SkewnessEUpperBound.getLowerBound() + SkewnessEUpperBound.getUpperBound() ) / 2; } //SkewE
  
  public float getRoughnessLowerThreshold() { return ( RoughnessLowerBound.getLowerBound() + RoughnessLowerBound.getUpperBound() ) / 2; } //Rough
- public float getRoughnessUpperThreshold() { return ( RoughnessUpperBound.getLowerBound() + RoughnessUpperBound.getUpperBound() ) / 2; } //Rough */
+ public float getRoughnessUpperThreshold() { return ( RoughnessUpperBound.getLowerBound() + RoughnessUpperBound.getUpperBound() ) / 2; } //Rough 
  
  public float getRhythmStrLowerThreshold()  { return (rhythmStrLowerBound.getLowerBound() + rhythmStrLowerBound.getUpperBound()) / 2; }
  public float getRhythmStrUpperThreshold()  { return (rhythmStrUpperBound.getLowerBound() + rhythmStrUpperBound.getUpperBound()) / 2; }
@@ -698,65 +699,65 @@ class AudioDecisor
   specComplexityUpperBound.setUpperBound(value + 1);
  }
  
- /*public void setCOBELowerBound(float value)  //COBE 
+ public void setCOBELowerBound(float value)  //COBE 
  {
-  COBELowerBound.setLowerBound(value);
-  COBELowerBound.setUpperBound(value);  
+  COBELowerBound.setLowerBound(value - 0.004); // il valore da sottrarre è la metà della  differneza dei due valori nel ciclo di isteresi realtivo a questa feature
+  COBELowerBound.setUpperBound(value + 0.004);  
  }
  
  public void setCOBEUpperBound(float value)  //COBE 
  {
-  COBEUpperBound.setLowerBound(value);
-  COBEUpperBound.setUpperBound(value);  
+  COBEUpperBound.setLowerBound(value - 0.03);
+  COBEUpperBound.setUpperBound(value + 0.03);  
  }
  
  public void setEBFLowerBound(float value)  //EBF 
  {
-  EBFLowerBound.setLowerBound(value);
-  EBFLowerBound.setUpperBound(value);  
+  EBFLowerBound.setLowerBound(value - 50);
+  EBFLowerBound.setUpperBound(value + 50);  
  }
  
  public void setEBFUpperBound(float value)  //EBF 
  {
-  EBFUpperBound.setLowerBound(value);
-  EBFUpperBound.setUpperBound(value);  
+  EBFUpperBound.setLowerBound(value - 50 );
+  EBFUpperBound.setUpperBound(value + 50 );  
  }
  
  public void setSkewnessDLowerBound(float value)  //SkewnessD 
  {
-  SkewnessDLowerBound.setLowerBound(value);
-  SkewnessDLowerBound.setUpperBound(value);  
+  SkewnessDLowerBound.setLowerBound(value - 1);
+  SkewnessDLowerBound.setUpperBound(value + 1);  
  }
  
- public void setSkewnessDUpperBound(float value)  //SkewnessD 
+ public void setSkewnessDUpperBound(float value )  //SkewnessD 
  {
-  SkewnessDUpperBound.setLowerBound(value);
-  SkewnessDUpperBound.setUpperBound(value);  
+  SkewnessDUpperBound.setLowerBound(value - 1);
+  SkewnessDUpperBound.setUpperBound(value + 1);  
  }
  
  public void setSkewnessELowerBound(float value)  //SkewnessE 
  {
-  SkewnessELowerBound.setLowerBound(value);
-  SkewnessELowerBound.setUpperBound(value);  
+  SkewnessELowerBound.setLowerBound(value - 0.1);
+  SkewnessELowerBound.setUpperBound(value + 0.1);  
  }
  
  public void setSkewnessEUpperBound(float value)  //SkewnessE
  {
-  SkewnessEUpperBound.setLowerBound(value);
-  SkewnessEUpperBound.setUpperBound(value);  
+  SkewnessEUpperBound.setLowerBound(value - 0.1);
+  SkewnessEUpperBound.setUpperBound(value + 0.1);  
  }
  
  public void setRoughnessLowerBound(float value)  //Rough 
  {
-  RoughnessLowerBound.setLowerBound(value);
-  RoughnessLowerBound.setUpperBound(value);  
+  RoughnessLowerBound.setLowerBound(value - 0.005);
+  RoughnessLowerBound.setUpperBound(value + 0.005);  
  }
  
  public void setRoughnessUpperBound(float value)  //Rough
  {
-  RoughnessUpperBound.setLowerBound(value);
-  RoughnessUpperBound.setUpperBound(value);  
- } */
+  RoughnessUpperBound.setLowerBound(value - 0.01);
+  RoughnessUpperBound.setUpperBound(value + 0.01);  
+ } 
   
  public void setRhythmStrLowerBound(float value) 
  {

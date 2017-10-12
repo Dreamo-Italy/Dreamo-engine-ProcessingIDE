@@ -1,4 +1,4 @@
-class PlotterGenerator extends Particle  //<>// //<>// //<>// //<>//
+class PlotterGenerator extends Particle  //<>//
 {
  // ------ initial parameters and declarations ------
 

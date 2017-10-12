@@ -83,7 +83,7 @@ class CrazyLines extends Particle
   
     //**** PARAMETERS FOR DIRECT INFLUENCE
     setParameter(0,audio_decisor.getInstantFeatures()[0]);
-    setParameter(1, (float) FastMath.pow(5,audio_decisor.getFeaturesVector()[2]/2500));
+    setParameter(1, (float) FastMath.pow( 5, audio_decisor.getFeaturesVector()[2] / 2500 ) );
     setParameter(2,audio_decisor.getFeaturesVector()[0]);    
     setParameter(3,audio_decisor.getFeaturesVector()[3]); 
     setParameter(4,audio_decisor.getFeaturesVector()[2]);
@@ -116,7 +116,7 @@ class CrazyLines extends Particle
     //**** STROKE WEIGHT VIBRATION ****
     stroke(myColor);
             
-    strokeWeight(weight); //<>// //<>// //<>// //<>// //<>//
+    strokeWeight(weight);  //<>//
    
     //**** SCALE PULSATION ****
     scale(0.5+getParameter(0)*elasticityCoeff); //DIRECT INFLUENCE of RMS (instantaneous value) on SCALE

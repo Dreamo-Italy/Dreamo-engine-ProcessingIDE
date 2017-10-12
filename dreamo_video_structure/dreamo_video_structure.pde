@@ -1,4 +1,4 @@
-void setup()
+ void setup()
 { 
  //****** VIDEO ******
  colorMode(HSB, 360, 100, 100, 100);
