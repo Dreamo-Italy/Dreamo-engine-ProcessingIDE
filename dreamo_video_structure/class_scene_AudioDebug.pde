@@ -72,18 +72,39 @@ class AudioDebug extends Scene
   int dist = 250;
   int l = 450;
   textSize(23);
+  
   text("RMS ||| " + audio_decisor.getFeaturesVector()[0], width / 5, height / 6);
   text("||| " + audio_decisor.getStatusVector()[0], width / 5 + l, height / 6);
+  
   text("DYN INDEX ||| " + audio_decisor.getFeaturesVector()[1], width / 5, height / 6 + dist / 6);
   text("||| " + audio_decisor.getStatusVector()[1], width / 5 + l, height / 6 + dist / 6);
+  
   text("CENTROID ||| " + audio_decisor.getFeaturesVector()[2], width / 5, height / 6 + dist / 6 * 2);
   text("||| " + audio_decisor.getStatusVector()[2], width / 5 + l, height / 6 + dist / 6 * 2);
+  
   text("COMPLEXITY ||| " + audio_decisor.getFeaturesVector()[3], width / 5, height / 6 + dist / 6 * 3);
   text("||| " + audio_decisor.getStatusVector()[3], width / 5 + l, height / 6 + dist / 6 * 3);
+  
   text("RHYTHM STRENGTH ||| " + audio_decisor.getFeaturesVector()[4], width / 5, height / 6 + dist / 6 * 4);
   text("||| " + audio_decisor.getStatusVector()[4], width / 5 + l, height / 6 + dist / 6 * 4);
+  
   text("RHYTHM DENSITY ||| " + audio_decisor.getFeaturesVector()[5], width / 5, height / 6 + dist / 6 * 5);
   text("||| " + audio_decisor.getStatusVector()[5], width / 5 + l, height / 6 + dist / 6 * 5);
+  
+  text("COBE ||| " + audio_decisor.getFeaturesVector()[6], width / 5, height / 6 + dist / 6 * 6);
+  text("||| " + audio_decisor.getStatusVector()[6], width / 5 + l, height / 6 + dist / 6 * 6);
+  
+  text("EBF ||| " + audio_decisor.getFeaturesVector()[7], width / 5, height / 6 + dist / 6 * 7);
+  text("||| " + audio_decisor.getStatusVector()[7], width / 5 + l, height / 6 + dist / 6 * 7);
+  
+  text("SKEWNESS D ||| " + audio_decisor.getFeaturesVector()[8], width / 5, height / 6 + dist / 6 * 8);
+  text("||| " + audio_decisor.getStatusVector()[8], width / 5 + l, height / 6 + dist / 6 * 8);
+  
+  text("SKEWNESS E ||| " + audio_decisor.getFeaturesVector()[9], width / 5, height / 6 + dist / 6 * 9);
+  text("||| " + audio_decisor.getStatusVector()[9], width / 5 + l, height / 6 + dist / 6 * 9);
+  
+  text("ROUGHNESS ||| " + audio_decisor.getFeaturesVector()[10], width / 5, height / 6 + dist / 6 * 10);
+  text("||| " + audio_decisor.getStatusVector()[10], width / 5 + l, height / 6 + dist / 6 * 10);
 
   noFill();
   stroke(pal.getColor(1));
