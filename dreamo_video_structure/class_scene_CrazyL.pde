@@ -45,8 +45,5 @@ class CrazyL extends Scene
   C.setFormResolution((int) chooseResolutionFromAudio());
   C.setThickness(chooseThicknessFromAudio());
   C.setVibrationRange(chooseVibrationRangeFromAudio());
-  
-  println("AUDIO STATUS | " + audio_decisor.getStatusVector()[0] + " | " + audio_decisor.getStatusVector()[1] + " | " + audio_decisor.getStatusVector()[2] + " | " + audio_decisor.getStatusVector()[3] + " | " + audio_decisor.getStatusVector()[4] + " | " + audio_decisor.getStatusVector()[5]);
-
  }
 }

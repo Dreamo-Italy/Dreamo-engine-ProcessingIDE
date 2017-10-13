@@ -4,7 +4,7 @@
  {
   //************ CONSTANTS **************
 
-  final int plotNumber = 11; //8
+  final int plotNumber = 11; 
 
   //********* PUBLIC MEMBERS ***********
 
@@ -438,6 +438,5 @@
    plots[10].getLayer("AvgRoughness").drawPoints();
    plots[10].getLayer("TH").drawPoints();
    plots[10].getLayer("TH2").drawPoints();
-
   }
  }

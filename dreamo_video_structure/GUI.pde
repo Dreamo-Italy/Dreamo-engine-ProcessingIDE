@@ -5,23 +5,38 @@ Slider[] sliders;
 Button default_button;
 
 //params to control
-float RMSlower=DefaultAudioThresholds.RMS_LOWER_TH; //start with default values
-float RMSupper=DefaultAudioThresholds.RMS_UPPER_TH;
+float RMSlower = DefaultAudioThresholds.RMS_LOWER_TH; //start with default values
+float RMSupper = DefaultAudioThresholds.RMS_UPPER_TH;
 
-float DYNINDEXlower=DefaultAudioThresholds.DYNINDEX_LOWER_TH;
-float DYNINDEXupper=DefaultAudioThresholds.DYNINDEX_UPPER_TH;
+float DYNINDEXlower = DefaultAudioThresholds.DYNINDEX_LOWER_TH;
+float DYNINDEXupper = DefaultAudioThresholds.DYNINDEX_UPPER_TH;
 
-float CENTROIDlower=DefaultAudioThresholds.CENTROID_LOWER_TH;
-float CENTROIDupper=DefaultAudioThresholds.CENTROID_UPPER_TH;
+float CENTROIDlower = DefaultAudioThresholds.CENTROID_LOWER_TH;
+float CENTROIDupper = DefaultAudioThresholds.CENTROID_UPPER_TH;
 
-float COMPLEXITYlower=DefaultAudioThresholds.COMPLEXITY_LOWER_TH;
-float COMPLEXITYupper=DefaultAudioThresholds.COMPLEXITY_UPPER_TH;
+float COMPLEXITYlower = DefaultAudioThresholds.COMPLEXITY_LOWER_TH;
+float COMPLEXITYupper = DefaultAudioThresholds.COMPLEXITY_UPPER_TH;
 
-float RSTRENGTHlower=DefaultAudioThresholds.RHYTHMSTR_LOWER_TH;
-float RSTRENGTHupper=DefaultAudioThresholds.RHYTHMSTR_UPPER_TH;
+float RSTRENGTHlower = DefaultAudioThresholds.RHYTHMSTR_LOWER_TH;
+float RSTRENGTHupper = DefaultAudioThresholds.RHYTHMSTR_UPPER_TH;
 
-float RDENSITYlower=DefaultAudioThresholds.RHYTHMDENS_LOWER_TH;
-float RDENSITYupper=DefaultAudioThresholds.RHYTHMDENS_UPPER_TH;
+float RDENSITYlower = DefaultAudioThresholds.RHYTHMDENS_LOWER_TH;
+float RDENSITYupper = DefaultAudioThresholds.RHYTHMDENS_UPPER_TH;
+
+/*float COBElower = DefaultAudioThresholds.COBE_LOWER_TH;
+float COBEupper = DefaultAudioThresholds.COBE_UPPER_TH;
+
+float EBFlower = DefaultAudioThresholds.EBF_LOWER_TH;
+float EBFupper = DefaultAudioThresholds.EBF_UPPER_TH;
+
+float SkewnessDlower = DefaultAudioThresholds.SKEWNESSD_LOWER_TH;
+float SkewnessDupper = DefaultAudioThresholds.SKEWNESSD_UPPER_TH;
+
+float SkewnessElower = DefaultAudioThresholds.SKEWNESSE_LOWER_TH;
+float SkewnessEupper = DefaultAudioThresholds.SKEWNESSE_UPPER_TH;
+
+float Roughnesslower = DefaultAudioThresholds.ROUGHNESS_LOWER_TH;
+float Roughnessupper = DefaultAudioThresholds.ROUGHNESS_UPPER_TH;*/
 
 void setupGUI()
 {
@@ -45,7 +60,7 @@ void setupGUI()
   controls.setColorLabel(color(255));
   controls.close();
   
-  sliders = new Slider[12];
+  sliders = new Slider[12]; //saranno 22 
   
   sliders[0]=cp5.addSlider("RMSupper",audio_decisor.getRMSLowerThreshold(),1,left,top+posY,len,thick);
   sliders[0].setCaptionLabel("RMS upper Th");
@@ -83,7 +98,9 @@ void setupGUI()
   sliders[11].setCaptionLabel("RHYTHM DENS LOWER Th");
   posY+=increment;
   
-  for(int i=0; i<12;i++)
+  // AGGIUNGERE GLI SLIDERS DELLE NUOVE FEATURES  E STABILRE UNA POSIZIONE COMODA // 
+  
+  for(int i = 0; i < 12; i++)
   {
    sliders[i].setSliderMode(Slider.FLEXIBLE);
    sliders[i].setGroup(controls);
@@ -131,6 +148,20 @@ void updateParams()
   audio_decisor.setRhythmDensLowerBound(RDENSITYlower);
   audio_decisor.setRhythmDensUpperBound(RDENSITYupper);
   
+  /*audio_decisor.setCOBELowerBound(COBElower);
+  audio_decisor.setCOBEUpperBound(COBEupper);
+  
+  audio_decisor.setEBFLowerBound(EBFlower);
+  audio_decisor.setEBFUpperBound(EBFupper);
+  
+  audio_decisor.setSkewnessDLowerBound(SkewnessDlower);
+  audio_decisor.setSkewnessDUpperBound(SkewnessDupper);
+  
+  audio_decisor.setSkewnessELowerBound(SkewnessElower);
+  audio_decisor.setSkewnessEUpperBound(SkewnessEupper);
+  
+  audio_decisor.setRoughnessLowerBound(Roughnesslower);
+  audio_decisor.setRoughnessUpperBound(Roughnessupper);*/
 }
 
 void updateRanges()
@@ -152,6 +183,23 @@ void updateRanges()
   
   sliders[10].setRange(audio_decisor.getRhythmDensLowerThreshold(),9);
   sliders[11].setRange(0,audio_decisor.getRhythmDensUpperThreshold());  
+  
+  /*sliders[12].setRange(audio_decisor.getCOBELowerThreshold(),    ????   );
+  sliders[13].setRange(0, audio_decisor.getCOBEUpperThreshold());
+  
+  sliders[14].setRange(audio_decisor.getEBFLowerThreshold(),    ????   );
+  sliders[15].setRange(0, audio_decisor.getEBFUpperThreshold());
+  
+  sliders[16].setRange(audio_decisor.getSkewnessDLowerThreshold(),    ????   );
+  sliders[17].setRange(0,  audio_decisor.getSkewnessDUpperThreshold());
+  
+  sliders[18].setRange(audio_decisor.getSkewnessELowerThreshold(),    ????   );
+  sliders[19].setRange(0,  audio_decisor.getSkewnessEUpperThreshold());
+  
+  sliders[20].setRange(audio_decisor.getRoughnessLowerThreshold(),  ????  );
+  sliders[21].setRange(0,  audio_decisor.getRoughnessUpperThreshold());*/
+  
+  
 }
 
 public void restoreDefault()
@@ -173,4 +221,20 @@ public void restoreDefault()
 
  sliders[10].setValue(DefaultAudioThresholds.RHYTHMDENS_UPPER_TH);
  sliders[11].setValue(DefaultAudioThresholds.RHYTHMDENS_LOWER_TH);
+ 
+ /*sliders[12].setValue(DefaultAudioThresholds.COBE_UPPER_TH); 
+ sliders[13].setValue(DefaultAudioThresholds.COBE_LOWER_TH);
+ 
+ sliders[14].setValue(DefaultAudioThresholds.EBF_UPPER_TH);
+ sliders[15].setValue(DefaultAudioThresholds.EBF_LOWER_TH);
+ 
+ sliders[16].setValue(DefaultAudioThresholds.SKEWNESSD_UPPER_TH);
+ sliders[17].setValue(DefaultAudioThresholds.SKEWNESSD_LOWER_TH);
+ 
+ sliders[18].setValue(DefaultAudioThresholds.SKEWNESSE_UPPER_TH);
+ sliders[19].setValue(DefaultAudioThresholds.SKEWNESSE_LOWER_TH);
+ 
+ sliders[20].setValue(DefaultAudioThresholds.ROUGHNESS_UPPER_TH);
+ sliders[21].setValue(DefaultAudioThresholds.ROUGHNESS_LOWER_TH);*/
+ 
 }
