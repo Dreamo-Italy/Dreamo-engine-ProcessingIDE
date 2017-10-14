@@ -182,19 +182,19 @@ class AudioDecisor
   specComplexityUpperBound = new Hysteresis(17, 19, 11);
   
   
-  COBELowerBound = new Hysteresis( 0.073, 0.081, 11 ); //COBE   TO BE implemented
+  COBELowerBound = new Hysteresis( 0.073, 0.081, 11 ); //COBE   
   COBEUpperBound = new Hysteresis( 0.10, 0.16, 11 ); //COBE
   
-  EBFLowerBound = new Hysteresis( 1200, 1300, 11 ); //EBF  TO BE implemented
+  EBFLowerBound = new Hysteresis( 1200, 1300, 11 ); //EBF  
   EBFUpperBound = new Hysteresis( 1750, 1850, 11 ); //EBF
   
-  SkewnessDLowerBound = new Hysteresis( 4.5, 6.5, 11 ); //SkewD  TO BE implemented
+  SkewnessDLowerBound = new Hysteresis( 4.5, 6.5, 11 ); //SkewD  
   SkewnessDUpperBound = new Hysteresis( 8, 10, 11 ); //SkewD
   
-  SkewnessELowerBound = new Hysteresis( 0.4, 0.6, 11 ); //SkewE  TO BE implemented
+  SkewnessELowerBound = new Hysteresis( 0.4, 0.6, 11 ); //SkewE  
   SkewnessEUpperBound = new Hysteresis( 0.65, 0.85, 11 ); //SkewE
   
-  RoughnessLowerBound = new Hysteresis( 0.015, 0.025, 11 ); //Rough  TO BE implemented
+  RoughnessLowerBound = new Hysteresis( 0.015, 0.025, 11 ); //Rough  
   RoughnessUpperBound = new Hysteresis( 0.055, 0.075, 11 ); //Rough 
   
   
