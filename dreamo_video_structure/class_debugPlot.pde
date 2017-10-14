@@ -94,10 +94,9 @@
    plots[9].setTitleText("Skewness E");
    plots[10].setTitleText("Roughness");
 
-
    plots[0].setYLim(0, 1); //cobe
    
-   plots[1].setYLim(0, 8000 ); //ebf
+   plots[1].setYLim(0, 8000 ); //ebf come centroide
    plots[1].getYAxis().setFontSize(7);
    
    plots[2].setYLim(0, 1);
@@ -109,11 +108,10 @@
    plots[5].setYLim(0, 50);
    plots[6].setYLim(0, 400);
    plots[7].setYLim(0, 10);
+   plots[8].setYLim(0, 50);
+   //plots[8].getYAxis().setFontSize(7);
    
-   plots[8].setYLim(0, 2000);
-   plots[8].getYAxis().setFontSize(7);
-   
-   plots[9].setYLim(0, 10);
+   plots[9].setYLim(0, 3);
    plots[10].setYLim(0, 1);
    
 

@@ -60,7 +60,7 @@ void setupGUI()
   controls.setColorLabel(color(255));
   controls.close();
   
-  sliders = new Slider[22]; //erano  12
+  sliders = new Slider[22]; 
   
   sliders[0]=cp5.addSlider("RMSupper",audio_decisor.getRMSLowerThreshold(),1,left,top+posY,len,thick);
   sliders[0].setCaptionLabel("RMS upper Th");
@@ -110,13 +110,13 @@ void setupGUI()
   sliders[15].setCaptionLabel("EBF lower Th");
   posY+=increment;
   
-  sliders[16] = cp5.addSlider("SkewnessDupper",audio_decisor.getSkewnessDLowerThreshold(), 15 ,left ,top+posY ,len ,thick);
+  sliders[16] = cp5.addSlider("SkewnessDupper",audio_decisor.getSkewnessDLowerThreshold(), 12 ,left ,top+posY ,len ,thick);
   sliders[16].setCaptionLabel("SKEWNESS D upper Th");
   sliders[17] = cp5.addSlider("SKewnessDlower",0, audio_decisor.getSkewnessDUpperThreshold(), left, top+posY+20, len, thick);
   sliders[17].setCaptionLabel("SKEWNESS D lower Th");
   posY+=increment;
   
-  sliders[18] = cp5.addSlider("SkewnessEupper",audio_decisor.getSkewnessELowerThreshold(), 5 ,left ,top+posY ,len ,thick);
+  sliders[18] = cp5.addSlider("SkewnessEupper",audio_decisor.getSkewnessELowerThreshold(), 2 ,left ,top+posY ,len ,thick);
   sliders[18].setCaptionLabel("SKEWNESS E upper Th");
   sliders[19] = cp5.addSlider("SKewnessElower",0, audio_decisor.getSkewnessEUpperThreshold(), left, top+posY+20, len, thick);
   sliders[19].setCaptionLabel("SKEWNESS E lower Th");
@@ -218,10 +218,10 @@ void updateRanges()
   sliders[14].setRange(audio_decisor.getEBFLowerThreshold(),    7000   );
   sliders[15].setRange(0, audio_decisor.getEBFUpperThreshold());
   
-  sliders[16].setRange(audio_decisor.getSkewnessDLowerThreshold(),    15   );
+  sliders[16].setRange(audio_decisor.getSkewnessDLowerThreshold(),    12   );
   sliders[17].setRange(0,  audio_decisor.getSkewnessDUpperThreshold());
   
-  sliders[18].setRange(audio_decisor.getSkewnessELowerThreshold(),    5   );
+  sliders[18].setRange(audio_decisor.getSkewnessELowerThreshold(),    2    );
   sliders[19].setRange(0,  audio_decisor.getSkewnessEUpperThreshold());
   
   sliders[20].setRange(audio_decisor.getRoughnessLowerThreshold(),  1  );
