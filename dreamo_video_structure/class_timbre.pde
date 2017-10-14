@@ -523,6 +523,7 @@ class Timbre extends FeaturesExtractor
    }
   
    Roughness = num / denom;
+   if(Float.isNaN(Roughness)) {Roughness = 0;}
    //ACUMULATE FOR STAT
    RoughnessShortTerm.accumulate(Roughness);
    RoughnessLongTerm.accumulate(Roughness);
