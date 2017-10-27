@@ -7,7 +7,7 @@
  frameRate(global_fps);
  noSmooth();
   
- //****** CONNECTION ****** // //<>// //<>// //<>//
+ //****** CONNECTION ****** // //<>// //<>// //<>// //<>//
  global_connection = new Connection(this);
 
  //****** BIOSENSORS ******
@@ -42,6 +42,7 @@
  //global_stage.addScene(new Spirals()); 
  global_stage.addScene(new ScenePerlinNoise());
  global_stage.addScene(new CrazyL());
+ global_stage.addScene(new Scene_Example());
 
  //**** DEBUG PLOTS
  global_debugPlots = new DebugPlot(this);
