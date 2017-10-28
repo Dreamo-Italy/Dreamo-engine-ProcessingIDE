@@ -6,11 +6,10 @@ class Particle_Example extends Particle
  float rectSize;
  float distCoeff;
  
+ float nCrossedX, nCrossedY;
+
  float noiseScale;
  float noiseStrength;
- float nCrossedX, nCrossedY;
- float angle;
- float speed;
  
  float initDistX1;
  float initDistY1;
@@ -21,7 +20,7 @@ class Particle_Example extends Particle
  float initDistX4;
  float initDistY4;
 
- //init
+ //INIT
  public void init()
  {
   posX = 0;
@@ -29,12 +28,11 @@ class Particle_Example extends Particle
   rectSize = 80;
   distCoeff = 0;
   
-  noiseStrength = 1;
-  noiseScale = 300;
   nCrossedX = 0;
   nCrossedY = 0;
-  angle = 0;
-  speed = 10;
+  
+  noiseStrength = 1;
+  noiseScale = 300;
   
   initDistX1 = int(random(-20,21));
   initDistY1 = int(random(-20,21));
@@ -46,28 +44,37 @@ class Particle_Example extends Particle
   initDistY4 = int(random(-20,21));
  }
  
- //update 
+ //UPDATE 
  public void update()
  {
   setParameter(0, audio_decisor.getInstantFeatures()[0]); //RMS istantaneo
   setParameter(1, audio_decisor.getInstantFeatures()[10]); // Roughness istantaneo
   setParameter(2, audio_decisor.getStatusVector()[1]); // Dyn index status
+  setParameter(3, audio_decisor.getStatusVector()[4]);// Rhythm str status;
   
-  //dimensione 
+  noiseScale = getParameter(5); // chooseVibration from audio
+  noiseStrength = getParameter(6); // choose elasticity from audio
+  setParameter( 4 , noise((getPosition().getX() + nCrossedX * width) / noiseScale, (getPosition().getY() + nCrossedY * height) / noiseScale) * noiseStrength ); //angolo movimento
+  
+  setParameter(7, audio_decisor.getStatusVector()[3]); //Spec complex;
+  
+  //DIMENSIONE 
   if (global_rhythm.isEnergyOnset()) 
   { 
-   if(getParameter(2) == 0) {rectSize -= 1;} 
-   else if (getParameter(2) == 1) {rectSize += (int(random(0,2) * 2 - 1));}
-   else if (getParameter(2) == 3 ) { rectSize += 3;}
+   if ( getParameter(2) == 0 ) { rectSize -= 1; } 
+   else if (getParameter(2) == 1) { rectSize += (int(random(0,2) * 2 - 1)); }
+   else { rectSize += 3; }
   }
-  else if (rectSize > 125 || rectSize < 35 ) {rectSize = 80; }
+  else if (rectSize > 125 || rectSize < 35 ) { rectSize = 80; }
   
-  //distorsione lati / disallineamento vertici
+  //DISTORSIONE LATI  / DISALLINEAMENTO VERTCI 
   distCoeff = getParameter(1) * 15; //15 si deve al fatto che la roughness controlla la dostorsione dell'immagine e quindi valori piccoli come quelli di getParam(1) devono essere amplificati per vederne un effetto sulla grafica.
- 
-  keepInsideTheScreen();
+  
+  if(getParameter(3) != 3) { keepInsideTheScreen_1(); }
+  else { keepInsideTheScreen_2(); }
  }
- //trace 
+ 
+ //TRACE
  public void trace()
  {
   
@@ -80,7 +87,6 @@ class Particle_Example extends Particle
   float shiftX4 = distCoeff * (int(random(0,2) * 2 - 1));
   float shiftY4 = distCoeff * (int(random(0,2) * 2 - 1));
   
-  
   colorMode(HSB, 360, 100, 100, 100);
   fill(99,100,64,60);
   noStroke();
@@ -92,8 +98,22 @@ class Particle_Example extends Particle
   endShape();
  }
  
- //eventuali altri metodi a seguire , ad esempio get / set  
- void keepInsideTheScreen() 
+ //eventuali altri metodi a seguire , ad esempio get / set 
+ void keepInsideTheScreen_1() 
+ {
+  if (getPosition().getX() > width) 
+  {
+   getPosition().setX(getPosition().getX() - width);
+   nCrossedX++;
+  }
+  if (getPosition().getX() < 0) 
+  {
+   getPosition().setX(getPosition().getX() + width);
+   nCrossedX--;
+  } 
+ }
+ 
+ void keepInsideTheScreen_2() 
  {
   if (getPosition().getX() > width) 
   {
