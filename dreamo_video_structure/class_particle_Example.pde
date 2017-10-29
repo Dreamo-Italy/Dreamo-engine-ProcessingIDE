@@ -19,6 +19,11 @@ class Particle_Example extends Particle
  float initDistY3;
  float initDistX4;
  float initDistY4;
+ 
+ int indexShifting;
+ 
+ float transparency;
+ 
 
  //INIT
  public void init()
@@ -42,6 +47,10 @@ class Particle_Example extends Particle
   initDistY3 = int(random(-20,21));
   initDistX4 = int(random(-20,21));
   initDistY4 = int(random(-20,21));
+  
+  indexShifting = 0;
+  transparency = 63;
+  
  }
  
  //UPDATE 
@@ -56,8 +65,9 @@ class Particle_Example extends Particle
   noiseStrength = getParameter(6); // choose elasticity from audio
   setParameter( 4 , noise((getPosition().getX() + nCrossedX * width) / noiseScale, (getPosition().getY() + nCrossedY * height) / noiseScale) * noiseStrength ); //angolo movimento
   
-  setParameter(7, audio_decisor.getStatusVector()[3]); //Spec complex;
-  
+  setParameter(7, audio_decisor.getStatusVector()[3]); //Spec complex
+  setParameter(8, audio_decisor.getStatusVector()[7]); // EBF status
+ 
   //DIMENSIONE 
   if (global_rhythm.isEnergyOnset()) 
   { 
@@ -68,8 +78,19 @@ class Particle_Example extends Particle
   else if (rectSize > 125 || rectSize < 35 ) { rectSize = 80; }
   
   //DISTORSIONE LATI  / DISALLINEAMENTO VERTCI 
-  distCoeff = getParameter(1) * 15; //15 si deve al fatto che la roughness controlla la dostorsione dell'immagine e quindi valori piccoli come quelli di getParam(1) devono essere amplificati per vederne un effetto sulla grafica.
+  distCoeff = getParameter(1) * 20; //20 si deve al fatto che la roughness controlla la dostorsione dell'immagine e quindi valori piccoli come quelli di getParam(1) devono essere amplificati per vederne un effetto sulla grafica.
   
+  //COLORE 
+  if (frameCount % 4 == 0 && indexShifting < getPalette().COLOR_NUM && FastMath.round(random(1)) == 1) indexShifting++;
+  if (indexShifting >= getPalette().COLOR_NUM) indexShifting = 0;
+  pal.influenceColors(0, mapForSaturation(getParameter(1), 0, 1), 0);
+  
+  if(getParameter(8) == 0) { transparency = 45; }
+  else if(getParameter(8) == 1) { transparency = 127; }
+  else { transparency = 191; }
+  
+  
+  // KEEP THNGS INSIDE THE SCREEN 
   if(getParameter(3) != 3) { keepInsideTheScreen_1(); }
   else { keepInsideTheScreen_2(); }
  }
@@ -88,7 +109,7 @@ class Particle_Example extends Particle
   float shiftY4 = distCoeff * (int(random(0,2) * 2 - 1));
   
   colorMode(HSB, 360, 100, 100, 100);
-  fill(99,100,64,60);
+  fill(pal.getColor(indexShifting), transparency);
   noStroke();
   beginShape();
    vertex(posX + initDistX1 + shiftX1 , posY + initDistY1 + shiftY1);
@@ -97,8 +118,7 @@ class Particle_Example extends Particle
    vertex(posX + initDistX4 + shiftX4, posY + initDistY4 + rectSize  + shiftY4);
   endShape();
  }
- 
- //eventuali altri metodi a seguire , ad esempio get / set 
+  
  void keepInsideTheScreen_1() 
  {
   if (getPosition().getX() > width) 

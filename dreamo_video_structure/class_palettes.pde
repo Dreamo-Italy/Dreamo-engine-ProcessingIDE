@@ -318,7 +318,7 @@ class Palette
 
  public void makeDarker(float amount) 
  {
-  //create a new color with the same H and S buu with a new B
+  //create a new color with the same H and S but with a new B
   color newColor;
 
   for (int i = 0; i < COLOR_NUM; i++) 

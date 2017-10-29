@@ -33,21 +33,16 @@ class NoiseDot extends Particle
   noiseScale = getParameter(3);
   noiseStrength = getParameter(4);
 
-
   if (frameCount % 4 == 0 && indexShifting < getPalette().COLOR_NUM && FastMath.round(random(1)) == 1) indexShifting++;
   if (indexShifting >= getPalette().COLOR_NUM) indexShifting = 0;
 
   angle = noise((getPosition().getX() + nCrossedX * width) / noiseScale, (getPosition().getY() + nCrossedY * height) / noiseScale) * noiseStrength;
-
   getSpeed().setDirection(angle);
-
-
   getSpeed().setModulus(speed * getParameter(0));
 
   pal.influenceColors(0, mapForSaturation(getParameter(1), 0, 1), 0);
 
   keepInsideTheScreen();
-
  }
 
  public float getAngle() 
