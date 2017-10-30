@@ -11,7 +11,6 @@ class Scene_Example extends Scene
   direction = 0;
   speed = 10;
   freq = 0;
-  
   pal.initColors();
   
   for ( int i = 0; i < 9; i ++) 
@@ -22,9 +21,7 @@ class Scene_Example extends Scene
     int y = height / 9 * i  ;
     
     Particle_Example temp = new Particle_Example();
-    
     temp.setPalette(pal);
-    
     temp.setPosition(new Vector2d(x , y , false));
     addParticle(temp);
    }
@@ -36,12 +33,10 @@ class Scene_Example extends Scene
  //update 
  public void update()
  {
-  
   colorFadeTo(new Palette(choosePaletteFromAudio()), 2, audio_decisor.getPaletteChange());
    
   for(int i = 0; i < particlesNumber; i ++)
   {
-    
    particlesList[i].updatePhysics();
    
    particlesList[i].setPalette(this.pal);
@@ -66,8 +61,7 @@ class Scene_Example extends Scene
     {
      particlesList[i].getSpeed().setDirection( particlesList[i].getParameter(4) );
      particlesList[i].getSpeed().setModulus( speed * particlesList[i].getParameter(0) );
-    }
-    
+    }  
    }
    else
    {
@@ -85,10 +79,7 @@ class Scene_Example extends Scene
     }
    }
    
-   particlesList[i].update();
+   particlesList[i].update();  
   }
  }
-
- //Eventuali altri metodi a seguire. 
- 
 }
