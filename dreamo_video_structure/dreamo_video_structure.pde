@@ -2,8 +2,8 @@
 { 
  //****** VIDEO ******
  colorMode(HSB, 360, 100, 100, 100);
- size(1280, 750, FX2D);
- //fullScreen(FX2D,1);
+ //size(1280, 750, FX2D);
+ fullScreen(FX2D,1);
  frameRate(global_fps);
  noSmooth();
   
@@ -157,6 +157,12 @@ void keyPressed()
      global_gsr.restartCalibration();
      global_ecg.restartCalibration();
    }
+   
+   if (key == 'd'||key=='D' )
+   {
+     global_debugPlots.toggleDebugPlots();
+   }
+   
      
  if (key=='s'||key=='S')
  {

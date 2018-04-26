@@ -16,6 +16,8 @@
   private GPointsArray[] points;
   private GPointsArray surfacePoints;
   private GPlot[] plots;
+  
+  private boolean enableDebugPlots = true;
 
   private color bgColor, red, green, white, violet;
 
@@ -85,7 +87,7 @@
    plots[0].setTitleText("COBE"); //Ecg 
    plots[1].setTitleText("EBF"); //GSr
    plots[2].setTitleText("RMS");
-   plots[3].setTitleText("Dynaicity Index");
+   plots[3].setTitleText("Dynamicity Index");
    plots[4].setTitleText("Spectral Centroid");
    plots[5].setTitleText("Spectral Complexity");
    plots[6].setTitleText("Rhythm Strength");
@@ -281,9 +283,12 @@
 
   public void update() 
   {
-   addNewPoints();
-   removeOldestPoints();
-   drawPlots();
+    if (enableDebugPlots == true)
+     {
+       addNewPoints();
+       removeOldestPoints();     
+       drawPlots();
+     }
   }
 
   public void addNewPoints() 
@@ -389,6 +394,12 @@
    plots[10].getLayer("TH").removePoint(0);
    plots[10].getLayer("TH2").removePoint(0);
      
+  }
+  
+  public void toggleDebugPlots()
+  {
+    enableDebugPlots = !enableDebugPlots;
+    println(enableDebugPlots);
   }
 
   public void drawPlots() 
