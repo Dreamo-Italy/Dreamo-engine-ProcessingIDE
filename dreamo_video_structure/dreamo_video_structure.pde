@@ -43,7 +43,7 @@ void setup()
   //****** SCENES ********
   global_stage.addScene(new BlankScene());
   
-  //global_stage.addScene(new AudioDebug());
+  global_stage.addScene(new AudioDebug());
   global_stage.addScene(new ScenePlotter());
   global_stage.addScene(new Spirals());
   global_stage.addScene(new ScenePerlinNoise());
@@ -121,7 +121,7 @@ void draw()
    println("*************************************************");
    println("************* DYNAMIC PARAMETERS ****************");
    println("RMS AVG (NORM): "+ global_dyn.getRMSAvg());
-   println("DINAMICITY INDEX: "+global_dyn.getDynamicityIndex());
+   //println("DINAMICITY INDEX: "+global_dyn.getDynamicityIndex());
    println("*************************************************");
    println("************* TIMBRIC PARAMETERS ****************");
    println("SPECTRAL CENTROID: "+global_timbre.getCentroidShortTimeAvgHz()+" Hz");
@@ -149,6 +149,8 @@ void draw()
    
    */
    
+   
+   
    //global_stage.nextSceneIfSilence(-50);
 
 }
@@ -164,12 +166,13 @@ void mouseClicked()
 
 void keyPressed()
 {
-     if (key == 'c')
-     {
-       global_gsr.restartCalibration();
-       global_ecg.restartCalibration();
-       println("key pressed");
-     }
+     println("key pressed");
+     
+   if (key == 'c')
+   {
+     global_gsr.restartCalibration();
+     global_ecg.restartCalibration();
+   }
      
   
   if (key=='s'||key=='S')
