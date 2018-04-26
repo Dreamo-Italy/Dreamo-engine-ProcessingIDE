@@ -61,14 +61,11 @@ abstract class Particle extends AgingObject
     warpAtBorders = false;
     bounceAtBorders = false;
     
-    
-    
     params = new float[PARAMETERS_NUMBER];    
     for(int i = 0; i < PARAMETERS_NUMBER; i++)
     {
       params[i] = 0.0;
-    }
-    
+    }   
   }
 
   //copy constructor
@@ -104,66 +101,30 @@ abstract class Particle extends AgingObject
 
   //PUBLIC METHODS
   //get methods
-  public Vector2d getPosition()
-  {
-    return position; // give the address of the "position" vector
-  }
-
-  public Vector2d getSpeed()
-  {
-    return speed;
-  }
-
-  public Vector2d getGravity()
-  {
-    return gravity;
-  }
-
-  public float getRotation()
-  {
-    return rotation.getDirection();
-  }
-
-  public int getDepth()
-  {
-    return depth;
-  }
+  public Vector2d getPosition() { return position; }  // give the address of the "position" vector
   
-  public int getFadingAlpha()
-  {
-    return fadingAlpha;
-  }
-
-  public long getId()
-  {
-    return id;
-  }
-
-  public boolean getPersistence()
-  {
-    return persistent;
-  }
-
-  boolean getInitialised()
-  {
-    return initialised;
-  }
-
-  boolean getSceneChanged()
-  {
-    return sceneChanged;
-  }
+  public Vector2d getSpeed() { return  speed; }
   
-  boolean isDestroying()
-  {
-    return destroying;
-  }
+  public Vector2d getGravity() { return gravity; }
   
-  void assertDestroying()
-  {
-    destroying = true;
-  }
-
+  public float getRotation() { return rotation.getDirection(); }
+  
+  public int getDepth() { return depth; }
+  
+  public int getFadingAlpha()  { return fadingAlpha; }
+  
+  public long getId() { return id; }
+  
+  public boolean getPersistence() { return persistent; }
+ 
+  boolean getInitialised() { return initialised; }
+  
+  boolean getSceneChanged() { return sceneChanged; }
+ 
+  boolean isDestroying() { return destroying; }
+  
+  void assertDestroying() { destroying = true; }
+  
   public float getParameter(int index)
   {
     if(index >= 0 && index < PARAMETERS_NUMBER)
@@ -177,80 +138,37 @@ abstract class Particle extends AgingObject
     }
   }
   
-  
-  //set methods
+  //STTERS
   public void setParameter(int index, float newValue)
   {
-    if(index >= 0 && index < PARAMETERS_NUMBER)
-    {
-      params[index] = newValue;
-    }
-    else
-    {
-      println("Warning: trying to set a parameter out of index boundaries\n");
-    }
+    if(index >= 0 && index < PARAMETERS_NUMBER) { params[index] = newValue; }
+    else { println("Warning: trying to set a parameter out of index boundaries\n"); }
   }
  
-  public void setPosition(Vector2d newPosition)
-  {
-    position = new Vector2d(newPosition);
-  }
-
-  public void setSpeed(Vector2d newSpeed) // EX: particle.setPosition(new Vector2d(5, pi/4, true));
-  {
-    speed = new Vector2d(newSpeed);
-  }
-
-  public void setGravity(Vector2d newGravity)
-  {
-    gravity = new Vector2d(newGravity);
-  }
-
-  public void setRotation(float newRotation)
-  {
-    rotation = new Vector2d(1, newRotation, true);
-  }
-
-  public void setDepth(int newDepth) //depth can be positive or negative
-  {
-    depth = newDepth;
-  }
-
-  public void setPersistence(boolean newPersistent)
-  {
-    persistent = newPersistent;
-  }
+  public void setPosition(Vector2d newPosition) { position = new Vector2d(newPosition); }
+ 
+  public void setSpeed(Vector2d newSpeed)  { speed = new Vector2d(newSpeed); }  // EX: particle.setPosition(new Vector2d(5, pi/4, true));
   
-  public void setWarpAtBorders(boolean newValue)
-  {
-    warpAtBorders = newValue;
-  }
+  public void setGravity(Vector2d newGravity) { gravity = new Vector2d(newGravity); }
+ 
+  public void setRotation(float newRotation) { rotation = new Vector2d(1, newRotation, true); }
   
-  public void setBounceAtBorders(boolean newValue)
-  {
-    bounceAtBorders = newValue;
-  }
-
-  void assertInitialised()
-  {
-    initialised = true;
-  }
-
-  void assertSceneChanged()
-  {
-    sceneChanged = true;
-  }
+  public void setDepth(int newDepth) { depth = newDepth; } //depth can be positive or negative
   
-  public void enablePhysics()
-  {
-    physicsEnabled=true;
-  }
+  public void setPersistence(boolean newPersistent) { persistent = newPersistent; }
   
-  public void disablePhysics()
-  {
-    physicsEnabled=false;
-  }
-
+  public void setWarpAtBorders(boolean newValue) { warpAtBorders = newValue; }
+  
+  public void setBounceAtBorders(boolean newValue) { bounceAtBorders = newValue; }
+  
+  void assertInitialised()  { initialised = true; }
+  
+  void assertSceneChanged() { sceneChanged = true; }
+  
+  public void enablePhysics() { physicsEnabled=true; }
+  
+  public void disablePhysics()  { physicsEnabled=false; }
+  
   //apply transformations method
   void beginTransformations() //
   {
@@ -259,22 +177,13 @@ abstract class Particle extends AgingObject
     rotation.applyRotation();   // temporary change
   }
 
-  void endTransformations()
-  {
-    popMatrix(); // wipe temporary changes
-  }
-
+  void endTransformations() { popMatrix(); }  // wipe temporary changes
+  
   //destruction
-  public void instanceDestroy()
-  {
-    destroy = true;
-  }
-
-  boolean isToBeDestroyed()
-  {
-    return destroy;
-  }
-
+  public void instanceDestroy() { destroy = true; }
+  
+  boolean isToBeDestroyed() { return destroy; }
+ 
   //update and trace methods
   void updatePhysics()
   {
@@ -345,24 +254,23 @@ abstract class Particle extends AgingObject
     }
   }
   
-  public void setColorIndex(int i)
-  {
-    colorindex=i;
-  }
+  public void setColorIndex(int i) { colorindex=i; }
   
-  public int getColorIndex()
-  {
-    return colorindex;
-  }
+  public int getColorIndex() { return colorindex; }
   
-  public void setPalette(Palette p)
-  {
-    pal=p;
-  }
+  public void setPalette(Palette p) { pal=p; }
   
   public Palette getPalette()
   { return pal; }
   
+  
+  public void updateAudio(float[] instant, float[] features, int[] status)
+  {
+    instantFeatures=instant;
+    audioFeatures=features;
+    audioStatus=status;
+    
+  }
   
   
   public void connectParticles(int connectionRadius, int particleRadius)
@@ -382,7 +290,7 @@ abstract class Particle extends AgingObject
           Vector2d p2 = global_stage.getCurrentScene().getParticleByListIndex(i2).getPosition();
                   
           d = p1.distance(p2);
-          a = pow(1/(d/connectionRadius+1), 6);
+          a = (float) FastMath.pow(1/(d/connectionRadius+1), 6);
     
           if (d <= connectionRadius && d > 2) 
             {
@@ -401,18 +309,16 @@ abstract class Particle extends AgingObject
     maxAlpha=a;
   }
   
-  public float mapForBrightness(float value, float lB, float uB)
-  {
-    return map(value,lB,uB,-0.6,1);
-  }
+  public float mapForBrightness(float value, float lB, float uB)   { return map(value,lB,uB,-0.6,1); }   
+ 
+  public float mapForSaturation(float value, float lB, float uB)   { return map(value,lB,uB,-0.2,1); }
   
-  public float mapForSaturation(float value, float lB, float uB)
-  {
-    return map(value,lB,uB,-0.2,1);
-  }
+  public float mapForTransparency(float value, float lB, float uB) { return map(value,lB,uB,60,200); }
   
+  public float mapForDimension(float value, float lB, float uB)    { return map(value,lB,uB,65,250); }
   
-
+  public float mapForDistortion(float value, float lB, float uB)    { return map(value,lB,uB,0,20); }
+  
   //methods to implement in the "child classes"
   abstract void init();
   abstract void update();
@@ -422,8 +328,6 @@ abstract class Particle extends AgingObject
   void setDamping(float newDamping){}
   void perturbate(float intensity) {}
   void setIntro(boolean introduction){}
-
-
 }
 
 class ParticleComparator implements Comparator<Particle>

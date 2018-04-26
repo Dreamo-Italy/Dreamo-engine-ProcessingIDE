@@ -1,6 +1,5 @@
 class Statistics
 {
-
   private float sum;
   private float[] acc;
   private int window;
@@ -29,32 +28,20 @@ class Statistics
     acc=new float[window+delay];
   }
 
-  public float getAverage()
-  {
-    return sum/window;
-  }
-  
+  public float getAverage() { return sum/window; }
+ 
   public float getVariance()
   {
     if(temp_var<0){temp_var=0;}
     return temp_var/window;
   }
   
-  public float getStdDev()
-  {
-    return (float)Math.sqrt(getVariance());
-  }
+  public float getStdDev()  { return (float)FastMath.sqrt(getVariance()); }
   
-  public float getMax()
-  {
-    return DSP.vmax(acc);
-  }
+  public float getMax() { return DSP.vmax(acc); }
   
-  public float getMin()
-  {
-    return DSP.vmin(acc);
-  }
-
+  public float getMin() { return DSP.vmin(acc); }
+  
   public void reset()
   {
     acc=new float[window];
@@ -65,21 +52,18 @@ class Statistics
   
   public void accumulate(float data)
   {
-    sum-=acc[aidx];//subtract last value
-    temp_var-=Math.pow((acc[aidx]-getAverage()),2);
+    sum -= acc[aidx];//subtract last value
+    temp_var -= FastMath.pow((acc[aidx]-getAverage()),2);
     
     acc[aidx]=data;//update the value
     
     sum+=acc[aidx];//update the total    
-    temp_var+=Math.pow((acc[aidx]-getAverage()),2);
+    temp_var+= FastMath.pow((acc[aidx]-getAverage()),2);
     
     aidx++;//next position
-    if (aidx>=window) {
-     
+    if (aidx>=window) 
+    {
       aidx=0;
     }//if at the end go back 
   }
-  
-  
-  
 }

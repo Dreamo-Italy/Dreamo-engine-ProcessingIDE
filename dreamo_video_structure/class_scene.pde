@@ -1,4 +1,4 @@
-//package dreamo.display; //<>//
+//package dreamo.display;  //<>// //<>// //<>//
 
 import java.util.Arrays;
 
@@ -72,39 +72,19 @@ abstract class Scene extends AgingObject
     isFading=false;
   }
 
-  //
-  public int getParticlesNumber()
-  {
-    return particlesNumber;
-  }
-
-
-  //
-  public void setBackground(Background newBackground)
-  {
-    sceneBackground = newBackground;
-  }
-
-  public void enableBackground()
-  {
-    backgroundEnabled = true;
-  }
-
-  public void disableBackground()
-  {
-    backgroundEnabled = false;
-  }
-
-  public void setHorizontalReflection(boolean newValue)
-  {
-    reflectHorizontally = newValue;
-  }
-
-  public void setVerticalReflection(boolean newValue)
-  {
-    reflectVertically = newValue;
-  }
-
+  
+  public int getParticlesNumber() { return particlesNumber; }
+ 
+  public void setBackground(Background newBackground) { sceneBackground = newBackground; }
+  
+  public void enableBackground() { backgroundEnabled = true; }
+ 
+  public void disableBackground() { backgroundEnabled = false; }
+ 
+  public void setHorizontalReflection(boolean newValue) { reflectHorizontally = newValue; }
+  
+  public void setVerticalReflection(boolean newValue) { reflectVertically = newValue; }
+ 
   public void addParticle(Particle toAdd)
   {
     if (particlesNumber < PARTICLES_MAX)
@@ -119,7 +99,8 @@ abstract class Scene extends AgingObject
         toAdd.init();
         toAdd.assertInitialised();
       }
-    } else
+    } 
+    else
     {
       println("Warning: reached maximum number of particles for a Scene. Last Particle wasn't added.");
     }
@@ -131,29 +112,20 @@ abstract class Scene extends AgingObject
     if (indexToGet < particlesNumber)
     {
       return particlesList[indexToGet]; // the object pointed by particlesList[indexToRemove] has now no reference and will be removed from memory
-    } else
+    } 
+    else
     {
       println("Warning: cannot get particle by list index, index higher than instance number.");
       return null;
     }
   }
 
-
-  public Palette getPalette()
-  {
-    return pal;
-  }
-
-  public void setPalette(Palette p)
-  {
-    this.pal=p;
-  }
-
-  public void sortParticlesList()
-  {
-    Arrays.sort(particlesList, new ParticleComparator());
-  }
-
+  public Palette getPalette() { return pal; }
+ 
+  public void setPalette(Palette p) { this.pal=p; }
+ 
+  public void sortParticlesList() { Arrays.sort(particlesList, new ParticleComparator()); }
+ 
   public void removeParticleById(int idToRemove)
   {
     boolean match = false;
@@ -202,7 +174,8 @@ abstract class Scene extends AgingObject
     {
       particlesList[particlesNumber] = null;
       particlesNumber--;
-    } else
+    } 
+    else
     {
       println("Warning: cannot pop any more particles from the scene.");
     }
@@ -223,8 +196,6 @@ abstract class Scene extends AgingObject
   //trace and update methods
   public void update()
   {
-
-
     for (int i = 0; i < particlesNumber; i++)
     {
       particlesList[i].updatePhysics();      
@@ -246,7 +217,7 @@ abstract class Scene extends AgingObject
       particlesList[i].endTransformations();
     }
 
-    if (reflectHorizontally) //<>// //<>// //<>//
+    if (reflectHorizontally) //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>//
     {
       PImage reflection = get(0, 0, width/2, height);
       pushMatrix();
@@ -299,7 +270,8 @@ abstract class Scene extends AgingObject
           endFading=frameCount+seconds*global_fps;
           targetPal=p;
           isFading=true; //now scene is fading
-        } else  //continue fading
+        } 
+        else  //continue fading
         {
           if (frameCount<=endFading)//fading finished?
           {
@@ -331,13 +303,15 @@ abstract class Scene extends AgingObject
         //startFading=frameCount;
         endFading=frameCount+seconds*global_fps;
         changingBrightness=true; //now scene is fading
-      } else  //continue fading
+      } 
+      else  //continue fading
       {
         if (frameCount<=endFading)//fading finished?
         {
           //set the colors of the palette
           this.pal.makeDarker(amount/(seconds*global_fps));
-        } else //finished 
+        } 
+        else //finished 
         { 
           changingBrightness=false;
         }
@@ -348,7 +322,8 @@ abstract class Scene extends AgingObject
 
   public void lightenColors(int seconds, float amount, boolean activate)
   {
-    if (activate || changingBrightness) {
+    if (activate || changingBrightness) 
+    {
 
       //if the scene is not already fading
       if (!changingBrightness) //set starting and ending frames
@@ -373,7 +348,8 @@ abstract class Scene extends AgingObject
 
   public void saturateColors(int seconds, float amount, boolean activate)
   {
-    if (activate || changingSaturation) {
+    if (activate || changingSaturation) 
+    {
 
       //if the scene is not already fading
       if (!changingSaturation) //set starting and ending frames
@@ -381,14 +357,16 @@ abstract class Scene extends AgingObject
         //startFading=frameCount;
         endFading=frameCount+seconds*global_fps;
         changingSaturation=true; //now scene is fading
-      } else  //continue fading
+      } 
+      else  //continue fading
       {
         if (frameCount<=endFading)//fading finished?
         {
           println("SATURATING");
 
           this.pal.saturate(amount/(seconds*global_fps));
-        } else //finished 
+        } 
+        else //finished 
         { 
           changingSaturation=false;
         }
@@ -399,7 +377,8 @@ abstract class Scene extends AgingObject
 
   public void desaturateColors(int seconds, float amount, boolean activate)
   {
-    if (activate || changingSaturation) {
+    if (activate || changingSaturation) 
+    {
 
       //if the scene is not already fading
       if (!changingSaturation) //set starting and ending frames
@@ -407,13 +386,15 @@ abstract class Scene extends AgingObject
         //startFading=frameCount;
         endFading=frameCount+seconds*global_fps;
         changingSaturation=true; //now scene is fading
-      } else  //continue fading
+      } 
+      else  //continue fading
       {
         if (frameCount<=endFading)//fading finished?
         {
           //set the colors of the palette
           this.pal.desaturate(amount/(seconds*global_fps));
-        } else //finished 
+        } 
+        else //finished 
         { 
           changingSaturation=false;
         }
@@ -425,9 +406,12 @@ abstract class Scene extends AgingObject
   protected String choosePaletteFromAudio()
   {
     //TODO: tune this parameter
-    if (audio_decisor.getPaletteIndicator()>PALETTE_THRESHOLD) {
+    if (audio_decisor.getPaletteIndicator()>PALETTE_THRESHOLD) 
+    {
       return "warm";
-    } else {
+    } 
+    else 
+    {
       return "cold";
     }
   }
@@ -574,7 +558,6 @@ abstract class Scene extends AgingObject
     else range=3/audio_decisor.getFeaturesVector()[0];
     
     return range;
-    
   }
   
   protected float chooseResolutionFromAudio()
@@ -598,7 +581,5 @@ abstract class Scene extends AgingObject
     return res;
   }
   
-
-
   abstract void init();
 }

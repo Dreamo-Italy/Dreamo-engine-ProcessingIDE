@@ -35,8 +35,11 @@ abstract class FeaturesExtractor
   //SET METHODS
   public void setSamples(float[] _samples)
   {   
-      samples=_samples.clone();  
+      samples=_samples.clone();
+      //calcFeatures();   
   }
+  
+  //public void setBufferSize
   
   public void setInitialized()
   {
@@ -67,36 +70,31 @@ abstract class FeaturesExtractor
     float tiny;
     tiny=1f-(1f/N);
 
-    return tiny*smoothedval+(1-tiny)*currentval;
-   
-  }
-  
-  //UTILITY METHODS
-  protected float linearToDecibel(final float value)
-  {
-    return 20.0 * (float) Math.log10(value);
-  }
-  
-  protected float realTimeSlope(float input)
-  {
-    slope=input-previousVal;
-    previousVal=input;
-    return slope;
-  }
-  
-  public float differentiateArray(float input)
-  {
-    diffMemory[4]=input;
-    for(int i=1;i<diffMemory.length;i++){diffMemory[i-1]=diffMemory[i];}
-    
-    //return 0;
-    // Differentiator    
-    return 0.1*(2*diffMemory[4] + diffMemory[3] -diffMemory[1]-diffMemory[0]);
+  return tiny * smoothedval + (1 - tiny) * currentval;
  }
-  
-  
-  //ABSTRACT METHODS  
-  abstract void calcFeatures();
 
-  
+ //UTILITY METHODS
+ protected float linearToDecibel(final float value) { return 20.0 * (float) FastMath.log10(value); }
+ 
+ protected float realTimeSlope(float input) 
+ {
+  slope = input - previousVal;
+  previousVal = input;
+  return slope;
+ }
+
+ public float differentiateArray(float input) 
+ {
+  diffMemory[4] = input;
+  for (int i = 1; i < diffMemory.length; i++) 
+  {
+   diffMemory[i - 1] = diffMemory[i];
+  }
+  //return 0;
+  // Differentiator    
+  return 0.1 * (2 * diffMemory[4] + diffMemory[3] - diffMemory[1] - diffMemory[0]);
+ }
+
+ //ABSTRACT METHODS  
+ abstract void calcFeatures();
 }

@@ -17,18 +17,14 @@ class AudioManager
    in = minim.getLineIn(Minim.STEREO,1024,44100); //stereo stream, 1024 samples of buffer size
    
    if(in!=null) {initialized=true;}
-   else {println("AUDIO INPUT NOT AVAILABLE");}
-   
+   else {println("AUDIO INPUT NOT AVAILABLE");} 
  }
 
  //********* PUBLIC METHODS ***********
  public void addListener(AudioListener l)
  { 
-   if (isInitialized())
-    { 
-       in.addListener(l);
-    }
-    else{println("AUDIO FEATURE OBJECT NOT INITIALIZED");} 
+   if (isInitialized()) { in.addListener(l); }
+   else{println("AUDIO FEATURE OBJECT NOT INITIALIZED");} 
  }
  
  public void enableMonitoring()
@@ -45,16 +41,13 @@ class AudioManager
  
  public void stop()
  {
-    in.close();
-    minim.stop();
-  }
+  in.close();
+  minim.stop();
+ }
   
  //********* GETTERS ***********
- public float[] getSamples()
- {
-   return in.mix.toArray();
- }   
-  
+ public float[] getSamples() { return in.mix.toArray(); }
+ 
  public int getBufferSize()
  {
    if(isInitialized()){return in.bufferSize();}
@@ -67,9 +60,5 @@ class AudioManager
    else return 0;
  }
  
- public boolean isInitialized()
- {
-   return initialized;
- } 
- 
+ public boolean isInitialized() { return initialized; }
 }
