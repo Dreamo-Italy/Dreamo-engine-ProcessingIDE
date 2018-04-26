@@ -95,7 +95,7 @@ class Particle_Example extends Particle
   float shiftX4 = distCoeff * (int(random(0,2) * 2 - 1));
   float shiftY4 = distCoeff * (int(random(0,2) * 2 - 1));
   
-  fill(pal.getColor(indexShifting) , transparency);
+  fill(pal.getColor(indexShifting), transparency);
   noStroke();
   beginShape();
    vertex(posX + initDistX1 + shiftX1 , posY + initDistY1 + shiftY1);

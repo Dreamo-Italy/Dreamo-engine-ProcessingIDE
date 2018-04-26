@@ -1,4 +1,4 @@
-  import ddf.minim.analysis.*;
+import ddf.minim.analysis.*;
 
 class AudioProcessor implements AudioListener
 {

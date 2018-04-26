@@ -340,7 +340,6 @@ class Timbre extends FeaturesExtractor
    w[m] = x[n];
    m = (int)((m + 1) - FastMath.floor((m + 1) / windowsize) * windowsize);
   }
-
   for (int i = 0; i < y.length; i++) 
   {
    y[i] = (float) FastMath.sqrt(y[i]);
@@ -374,7 +373,7 @@ class Timbre extends FeaturesExtractor
      sum = sum + tmp1;
      sum1 = sum1 + tmp2;
    }
-   sum =  sum / specSize - 2;
+   sum =  sum / specSize - 2;  
    sd = FastMath.sqrt(sum);
    
    m3 = sum1 / specSize - 1;
@@ -435,8 +434,6 @@ class Timbre extends FeaturesExtractor
    SkewnessEshortTerm.accumulate(SkewnessE);
    SkewnessElongTerm.accumulate(SkewnessE);
  }
- 
- //Spectral centroid computation method see https://en.wikipedia.org/wiki/Spectral_centroid
  
  private void calcSpectralCentroid() 
  {
