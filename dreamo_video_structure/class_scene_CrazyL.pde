@@ -29,21 +29,21 @@ class CrazyL extends Scene
   public void update()
   {
     //update audio parameter
-    instantFeatures=audio_decisor.getInstantFeatures();
-    audioFeatures=audio_decisor.getFeturesVector();
-    audioStatus=audio_decisor.getStatusVector();
+    //instantFeatures=audio_decisor.getInstantFeatures();
+    //audioFeatures=audio_decisor.getFeturesVector();
+    //audioStatus=audio_decisor.getStatusVector();
     
     for(int i = 0; i < particlesNumber; i++)
     {
       particlesList[i].updatePhysics();
-      particlesList[i].updateAudio(instantFeatures,audioFeatures,audioStatus);
+      //particlesList[i].updateAudio(instantFeatures,audioFeatures,audioStatus);
       particlesList[i].setPalette(this.pal);
       particlesList[i].update();
     } 
     
     //**** COLOR CONTROLS
     //choose warm or cold palette
-    colorFadeTo(new Palette(choosePaletteFromAudio()),2,audio_decisor.getColorChange()); 
+    //colorFadeTo(new Palette(choosePaletteFromAudio()),2,audio_decisor.getColorChange()); 
     //println(audio_decisor.getColorChange());
     
     //control color brightness
@@ -76,7 +76,7 @@ class CrazyL extends Scene
     println("FREQ: "+ chooseVibrationFromAudio());
     */
     
-    println("AUDIO STATUS | "+audioStatus[0]+" | "+audioStatus[1]+" | "+audioStatus[2]+" | "+audioStatus[3]+" | "+audioStatus[4]+" | "+audioStatus[5]);
+    //println("AUDIO STATUS | "+audioStatus[0]+" | "+audioStatus[1]+" | "+audioStatus[2]+" | "+audioStatus[3]+" | "+audioStatus[4]+" | "+audioStatus[5]);
     
   }
   
