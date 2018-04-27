@@ -19,20 +19,11 @@ class AgingObject
     lifeTimeIsUp = false;
   }
   
-  public int getLifeTimeLeft()
-  {
-    return lifeTimeLeft;
-  }
+  public int getLifeTimeLeft() { return lifeTimeLeft; }
   
-  public int getLifeTime()
-  {
-    return lifeTime;
-  }
+  public int getLifeTime() { return lifeTime; }
   
-  public boolean getLifeTimeIsUp()
-  {
-    return lifeTimeIsUp;
-  }
+  public boolean getLifeTimeIsUp() { return lifeTimeIsUp; }
   
   public void updateTime()
   {
