@@ -2,8 +2,8 @@
 { 
  //****** VIDEO ******
  colorMode(HSB, 360, 100, 100, 100);
- //size(1280, 750, FX2D);
- fullScreen(FX2D,1);
+ size(1280, 750, FX2D);
+ //fullScreen(FX2D,1);
  frameRate(global_fps);
  noSmooth();
   
@@ -37,6 +37,7 @@
 
   //****** SCENES ********
   global_stage.addScene(new BlankScene());
+  global_stage.addScene(new Scene_Example());
   
   global_stage.addScene(new AudioDebug());
   global_stage.addScene(new ScenePlotter());
