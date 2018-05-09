@@ -37,7 +37,12 @@ class AudioManager
  {
     if (isInitialized()) { in.disableMonitoring(); }
     else { println("AUDIO FEATURE OBJECT NOT INITIALIZED"); }   
- }  
+ }
+ 
+ public boolean isMonitoring()
+ {
+   return in.isMonitoring();
+ }
  
  public void stop()
  {

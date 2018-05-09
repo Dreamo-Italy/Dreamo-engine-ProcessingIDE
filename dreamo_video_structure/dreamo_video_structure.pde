@@ -172,7 +172,14 @@ void keyPressed()
      
   if (key=='m'||key=='M')
   {
-    global_audio.enableMonitoring();
+    if (global_audio.isMonitoring())
+    {
+      global_audio.disableMonitoring();
+    }
+    else 
+    {
+      global_audio.enableMonitoring();
+    }  
   }
     
   if (key=='n'||key=='N')
@@ -180,10 +187,17 @@ void keyPressed()
     global_stage.nextScene();
   }
   
-  if (key=='p' || key=='P') {
-    println("key P");
+  if (key=='+') 
+  {
     float gain = global_audio.getMasterGain();
     gain += 3;
+    global_audio.setMasterGain(gain);
+  }
+  
+  if (key=='-') 
+  {
+    float gain = global_audio.getMasterGain();
+    gain -= 3;
     global_audio.setMasterGain(gain);
   }
      
