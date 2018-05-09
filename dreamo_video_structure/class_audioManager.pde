@@ -1,4 +1,5 @@
 import ddf.minim.*;
+import ddf.minim.ugens.*;
 
 class AudioManager
 
@@ -15,7 +16,6 @@ class AudioManager
  {
    minim = new Minim(fileSystemHandler);
    in = minim.getLineIn(Minim.STEREO,1024,44100); //stereo stream, 1024 samples of buffer size
-   
    if(in!=null) {initialized=true;}
    else {println("AUDIO INPUT NOT AVAILABLE");} 
  }
@@ -61,4 +61,16 @@ class AudioManager
  }
  
  public boolean isInitialized() { return initialized; }
+ 
+ public void setMasterGain(float value) 
+ {
+   println("Old gain "+in.getGain());
+   in.setGain(value);
+   println("New gain "+in.getGain());
+ }
+ 
+ public float getMasterGain() 
+ {
+   return in.getGain();
+ }
 }
