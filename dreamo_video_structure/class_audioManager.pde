@@ -78,4 +78,22 @@ class AudioManager
  {
    return in.getGain();
  }
+ 
+  public void setMasterVolume(float value) 
+ {
+   println("Old gain "+in.getVolume());
+   in.setVolume(value);
+   println("New gain "+in.getVolume());
+ }
+ 
+ public float getMasterVolume() 
+ {
+   return in.getVolume();
+ }
+ 
+ public void mute()
+ {
+   in.mute();
+ }
+ 
 }

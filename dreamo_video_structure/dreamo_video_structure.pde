@@ -7,7 +7,7 @@
  frameRate(global_fps);
  noSmooth();
   
- //****** CONNECTION ****** // //<>// //<>// //<>// //<>//
+ //****** CONNECTION ****** // //<>// //<>// //<>// //<>// //<>//
  global_connection = new Connection(this);
 
  //****** BIOSENSORS ******
@@ -188,25 +188,35 @@ void keyPressed()
     global_stage.nextScene();
   }
   
-  if (key=='+') 
+  if (key=='+' || key=='=') 
   {
     println("plus");
     float gain = global_audio.getMasterGain();
     gain += 3;
     global_audio.setMasterGain(gain);
+    inputVol.setValue(gain);
   }
   
-  if (key=='-') 
+  if (key=='-')
   {
     float gain = global_audio.getMasterGain();
     gain -= 3;
     global_audio.setMasterGain(gain);
+    inputVol.setValue(gain);
   }
   
   if (key=='g' || key=='G')
   {
     float gain = global_audio.getMasterGain();
     println("Master Gain "+ gain);
+    inputVol.setValue(gain
+    println("Master Gain "+ global_audio.getMasterVolume());
+
+  }
+  
+  if (key=='f' || key=='F')
+  {
+    global_audio.mute();    
   }
      
 }
