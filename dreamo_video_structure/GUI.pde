@@ -39,7 +39,7 @@ float SkewnessEupper = DefaultAudioThresholds.SKEWNESSE_UPPER_TH;
 float Roughnesslower = DefaultAudioThresholds.ROUGHNESS_LOWER_TH;
 float Roughnessupper = DefaultAudioThresholds.ROUGHNESS_UPPER_TH;
 
-float inVol = global_audio.getMasterGain();
+float inVol = 0;
 
 void setupGUI()
 {

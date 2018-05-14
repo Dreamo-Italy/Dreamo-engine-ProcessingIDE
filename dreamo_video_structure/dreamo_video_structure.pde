@@ -179,7 +179,8 @@ void keyPressed()
     else 
     {
       global_audio.enableMonitoring();
-    }  
+    }
+    inputVol.setValue(global_audio.getMasterGain());
   }
     
   if (key=='n'||key=='N')
