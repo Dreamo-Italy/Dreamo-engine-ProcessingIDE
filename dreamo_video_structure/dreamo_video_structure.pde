@@ -189,6 +189,7 @@ void keyPressed()
   
   if (key=='+') 
   {
+    println("plus");
     float gain = global_audio.getMasterGain();
     gain += 3;
     global_audio.setMasterGain(gain);
@@ -199,6 +200,12 @@ void keyPressed()
     float gain = global_audio.getMasterGain();
     gain -= 3;
     global_audio.setMasterGain(gain);
+  }
+  
+  if (key=='g' || key=='G')
+  {
+    float gain = global_audio.getMasterGain();
+    println("Master Gain "+ gain);
   }
      
 }

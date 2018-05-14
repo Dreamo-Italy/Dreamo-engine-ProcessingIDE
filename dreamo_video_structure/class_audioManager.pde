@@ -69,9 +69,9 @@ class AudioManager
  
  public void setMasterGain(float value) 
  {
-   println("Old gain "+in.getGain());
+   //println("Old gain "+in.getGain());
    in.setGain(value);
-   println("New gain "+in.getGain());
+   //println("New gain "+in.getGain());
  }
  
  public float getMasterGain() 
