@@ -149,18 +149,18 @@ void mouseClicked()
 }
 
 void keyPressed()
-{
-     println("key pressed");
-     
+{     
    if (key == 'c')
    {
      global_gsr.restartCalibration();
      global_ecg.restartCalibration();
+     println("'Restart calibration' pressed");
    }
    
    if (key == 'd'||key=='D' )
    {
-     global_debugPlots.toggleDebugPlots();
+      global_debugPlots.toggleDebugPlots();
+      println("'Debug plots' pressed");
    }
    
      
@@ -168,6 +168,7 @@ void keyPressed()
  {
   audio_proc.saveLog(); //SAVE AUDIO DATA LOG
   //global_connection.saveLog(); //SAVE SENSORS LOG
+  println("'Save audio log' pressed");
  }
      
   if (key=='m'||key=='M')
@@ -175,10 +176,12 @@ void keyPressed()
     if (global_audio.isMonitoring())
     {
       global_audio.disableMonitoring();
+      println("'Disable monitoring' pressed");
     }
     else 
     {
       global_audio.enableMonitoring();
+      println("'Enable monitoring' pressed");
     }
     inputVol.setValue(global_audio.getMasterGain());
   }
@@ -186,6 +189,7 @@ void keyPressed()
   if (key=='n'||key=='N')
   {
     global_stage.nextScene();
+    println("'Next scene' pressed");
   }
   
   if (key=='+' || key=='=') 
@@ -195,6 +199,7 @@ void keyPressed()
     gain += 3;
     global_audio.setMasterGain(gain);
     inputVol.setValue(gain);
+    println("'+' pressed");    
   }
   
   if (key=='-')
@@ -203,13 +208,14 @@ void keyPressed()
     gain -= 3;
     global_audio.setMasterGain(gain);
     inputVol.setValue(gain);
+    println("'-' pressed");
   }
   
   if (key=='g' || key=='G')
   {
     float gain = global_audio.getMasterGain();
     println("Master Gain "+ gain);
-    inputVol.setValue(gain
+    inputVol.setValue(gain);
     println("Master Gain "+ global_audio.getMasterVolume());
 
   }
@@ -217,6 +223,7 @@ void keyPressed()
   if (key=='f' || key=='F')
   {
     global_audio.mute();    
+    println("'Mute' pressed");
   }
      
 }
