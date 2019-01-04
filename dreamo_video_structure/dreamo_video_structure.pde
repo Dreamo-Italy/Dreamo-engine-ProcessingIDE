@@ -150,87 +150,88 @@ void mouseClicked()
 
 void keyPressed()
 {     
-   if (key == 'c')
-   {
-     global_gsr.restartCalibration();
-     global_ecg.restartCalibration();
-     println("'Restart calibration' pressed");
-   }
-   
-   if (key == 'd'||key=='D' )
-   {
-      global_debugPlots.toggleDebugPlots();
-      println("'Debug plots' pressed");
-   }
-   
-     
- if (key=='s'||key=='S')
- {
-  audio_proc.saveLog(); //SAVE AUDIO DATA LOG
-  //global_connection.saveLog(); //SAVE SENSORS LOG
-  println("'Save audio log' pressed");
- }
-     
+  if (key == 'c')
+  {
+    global_gsr.restartCalibration();
+    global_ecg.restartCalibration();
+    println("'Restart calibration' pressed");
+  }
+
+  if (key == 'd'||key=='D' )
+  {
+    global_debugPlots.toggleDebugPlots();
+    println("'Debug plots' pressed");
+  }
+
+
+  if (key=='s'||key=='S')
+  {
+    audio_proc.saveLog(); //SAVE AUDIO DATA LOG
+    //global_connection.saveLog(); //SAVE SENSORS LOG
+    println("'Save audio log' pressed");
+  }
+
   if (key=='m'||key=='M')
   {
     if (global_audio.isMonitoring())
     {
       global_audio.disableMonitoring();
       println("'Disable monitoring' pressed");
-    }
-    else 
+    } else 
     {
       global_audio.enableMonitoring();
       println("'Enable monitoring' pressed");
     }
-    inputVol.setValue(global_audio.getMasterGain());
+    //inputVolSlider.setValue(global_audio.getMasterGain());
   }
-    
+
   if (key=='n'||key=='N')
   {
     global_stage.nextScene();
     println("'Next scene' pressed");
   }
-  
+
   if (key=='+' || key=='=') 
   {
-    println("plus");
     float gain = global_audio.getMasterGain();
-    gain += 3;
+    gain += 3.0;
     global_audio.setMasterGain(gain);
-    inputVol.setValue(gain);
-    println("'+' pressed");    
+    inputVolSlider.setValue(gain);
+    println("'+' pressed. Gain: " + global_audio.getMasterGain() );
   }
-  
+
   if (key=='-')
   {
     float gain = global_audio.getMasterGain();
-    gain -= 3;
+    gain -= 3.0;
     global_audio.setMasterGain(gain);
-    inputVol.setValue(gain);
-    println("'-' pressed");
+    inputVolSlider.setValue(gain);
+    println("'-' pressed. Gain: " + global_audio.getMasterGain() );
   }
-  
+
   if (key=='g' || key=='G')
   {
     float gain = global_audio.getMasterGain();
     println("Master Gain "+ gain);
-    inputVol.setValue(gain);
-    println("Master Gain "+ global_audio.getMasterVolume());
-
+    inputVolSlider.setValue(gain); //Adjust the slider
+    //println("Master Volume "+ global_audio.getMasterVolume());
   }
-  
+
   if (key=='f' || key=='F')
   {
-    global_audio.mute();    
-    println("'Mute' pressed");
+    if (!global_audio.isMuted())
+    {
+      global_audio.mute();    
+      println("'Mute'");
+    } else
+    {
+      global_audio.unmute();    
+      println("'Unmute'");
+    }
   }
-     
 }
 
-
-
 void stop()
-     {
-       global_audio.stop();
-     }
+{
+  global_audio.stop();
+}

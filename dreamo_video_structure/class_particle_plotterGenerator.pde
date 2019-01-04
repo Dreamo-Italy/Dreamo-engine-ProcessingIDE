@@ -55,7 +55,7 @@ class PlotterGenerator extends Particle  //<>// //<>// //<>//
    mode2 = mode1;
    mode1 = false;
   }
-  println("mode1: " + mode1);
+  //println("mode1: " + mode1);
   setParameter(0, global_dyn.getRMS() * 1.7);
 
   // default values:

@@ -3,7 +3,7 @@ import controlP5.*;
 ControlP5 cp5;
 Slider[] sliders;
 Button default_button;
-Slider inputVol;
+Slider inputVolSlider;
 
 //params to control
 float RMSlower = DefaultAudioThresholds.RMS_LOWER_TH; //start with default values
@@ -64,13 +64,13 @@ void setupGUI()
   controls.close();
 
   // Input volume control
-  inputVol = cp5.addSlider("inVol");
-  inputVol.setPosition(950, 30);
-  inputVol.setSize(len, thick);
-  inputVol.setCaptionLabel("Input vo dB");
-  inputVol.setRange(-64,6);
-  inputVol.getCaptionLabel().toUpperCase(true);
-  inputVol.getCaptionLabel().setColorBackground(0x99ffffff);
+  inputVolSlider = cp5.addSlider("inVol");
+  inputVolSlider.setPosition(950, 30);
+  inputVolSlider.setSize(len, thick);
+  inputVolSlider.setCaptionLabel("Input vol dB");
+  inputVolSlider.setRange(-64,6);
+  inputVolSlider.getCaptionLabel().toUpperCase(true);
+  inputVolSlider.getCaptionLabel().setColorBackground(0x99ffffff);
 
 
   sliders = new Slider[22];

@@ -44,6 +44,21 @@ class AudioManager
    return in.isMonitoring();
  }
  
+  public void mute()
+ {
+   in.mute();
+ }
+ 
+ public void unmute()
+ {
+   in.unmute();
+ }
+ 
+ public boolean isMuted()
+ {
+   return in.isMuted();
+ }
+ 
  public void stop()
  {
   in.close();
@@ -69,9 +84,7 @@ class AudioManager
  
  public void setMasterGain(float value) 
  {
-   //println("Old gain "+in.getGain());
    in.setGain(value);
-   //println("New gain "+in.getGain());
  }
  
  public float getMasterGain() 
@@ -79,21 +92,16 @@ class AudioManager
    return in.getGain();
  }
  
-  public void setMasterVolume(float value) 
- {
-   println("Old gain "+in.getVolume());
-   in.setVolume(value);
-   println("New gain "+in.getVolume());
- }
+ // public void setMasterVolume(float value) 
+ //{
+ //  println("Old gain "+in.getVolume());
+ //  in.setVolume(value);
+ //  println("New gain "+in.getVolume());
+ //}
  
- public float getMasterVolume() 
- {
-   return in.getVolume();
- }
- 
- public void mute()
- {
-   in.mute();
- }
- 
+ //public float getMasterVolume() 
+ //{
+ //  //return in.getVolume();
+ //  return getMasterGain();
+ //} 
 }
