@@ -313,9 +313,9 @@ abstract class Particle extends AgingObject
  
   public float mapForSaturation(float value, float lB, float uB)   { return map(value,lB,uB,-0.2,1); }
   
-  public float mapForTransparency(float value, float lB, float uB) { return map(value,lB,uB,60,200); }
+  public float mapForTransparency(float value, float lB, float uB) { return map(value,lB,uB, 30, 200); }
   
-  public float mapForDimension(float value, float lB, float uB)    { return map(value,lB,uB,65,250); }
+  public float mapForDimension(float value, float lB, float uB)    { return map(value,lB,uB, 20, 700); }
   
   public float mapForDistortion(float value, float lB, float uB)    { return map(value,lB,uB,0,20); }
   

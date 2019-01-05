@@ -16,7 +16,7 @@ class AudioManager
  {
    minim = new Minim(fileSystemHandler);
    in = minim.getLineIn(Minim.STEREO,1024,44100); //stereo stream, 1024 samples of buffer size
-   if(in!=null) {initialized=true;}
+   if(in!=null) {initialized=true; mute();}
    else {println("AUDIO INPUT NOT AVAILABLE");} 
  }
 

@@ -5,25 +5,33 @@ class Scene_Example extends Scene
  float speed;
  float freq;
  
+ int num_vertical;
+ int num_horizontal;
+ 
  //init
  public void init()
  {
   direction = 0;
   speed = 10;
   freq = 0;
+  num_vertical = 9;
+  num_horizontal = 8;
   pal.initColors();
   
-  for ( int i = 0; i < 9; i ++) 
+  for ( int i = 0; i < num_vertical; i ++) 
   {
-   for (int j = 0; j < 16; j ++) 
+   for (int j = 0; j < num_horizontal; j ++) 
    {
-    int x = width / 16 * j ;
-    int y = height / 9 * i  ;
+    int x = width / num_horizontal * j ;
+    int y = height / num_vertical * i  ;
     
-    Particle_Example temp = new Particle_Example();
-    temp.setPalette(pal);
-    temp.setPosition(new Vector2d(x , y , false));
-    addParticle(temp);
+    if (random(1) >= 0.3)
+    {
+      Particle_Example temp = new Particle_Example();
+      temp.setPalette(pal);
+      temp.setPosition(new Vector2d(x , y , false));
+      addParticle(temp);
+    }
    }
   }
   setBackground(new Background());

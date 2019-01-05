@@ -37,7 +37,8 @@ void setup()
 
   //****** SCENES ********
   global_stage.addScene(new BlankScene());
-  
+  global_stage.addScene(new Scene_Example() );
+
   global_stage.addScene(new AudioDebug());
   global_stage.addScene(new ScenePlotter());
   global_stage.addScene(new Spirals());
@@ -46,7 +47,6 @@ void setup()
 
   global_stage.addScene(new Lissajous() );
   global_stage.addScene(new LineLine1());
-
 
 
  //**** DEBUG PLOTS
