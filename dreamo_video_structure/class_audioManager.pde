@@ -15,7 +15,7 @@ class AudioManager
  public AudioManager(Object fileSystemHandler)
  {
    minim = new Minim(fileSystemHandler);
-   in = minim.getLineIn(Minim.STEREO,1024,44100); //stereo stream, 1024 samples of buffer size
+   in = minim.getLineIn(Minim.STEREO,1024,global_audioRate); //stereo stream, 1024 samples of buffer size
    if(in!=null) {initialized=true; mute();}
    else {println("AUDIO INPUT NOT AVAILABLE");} 
  }

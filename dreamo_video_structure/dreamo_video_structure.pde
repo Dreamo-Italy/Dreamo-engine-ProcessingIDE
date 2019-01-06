@@ -6,8 +6,8 @@ void setup()
  //fullScreen(FX2D,1);
  frameRate(global_fps);
  noSmooth();
-
- //****** CONNECTION ****** // //<>// //<>// //<>// //<>// //<>//
+  
+ //****** CONNECTION ******  //<>//
  global_connection = new Connection(this);
 
  //****** BIOSENSORS ******

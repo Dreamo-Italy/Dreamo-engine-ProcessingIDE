@@ -243,7 +243,7 @@ class Timbre extends FeaturesExtractor
   {
    COBEistant[i] = EnvFilteredSignal[i] / EnvSignal[i];
 
-   EBFistant[i] = (float) ((44100 / PI) * FastMath.asin( COBEistant[i] / 2));
+   EBFistant[i] = (float) ((global_audioRate / PI) * FastMath.asin( COBEistant[i] / 2));
   }
 
   // EBF medio su 1024 samples
@@ -314,7 +314,7 @@ class Timbre extends FeaturesExtractor
     samp[i] = samples[i];
    }
    //applico flitro al segnale 
-   samp = DSP.HighPass(samp, 5000, 44100); // il secondo argoemto è la frequenza di taglio del filtro 
+   samp = DSP.HighPass(samp, 5000, global_audioRate); // il secondo argoemto è la frequenza di taglio del filtro 
 
    for (int i = 0; i < samples.length; i++) 
    {
@@ -497,9 +497,9 @@ class Timbre extends FeaturesExtractor
     largerThanPrevious = (FFTcoeffs[i - 1] < FFTcoeffs[i]);
     largerThanNext = (FFTcoeffs[i] > FFTcoeffs[i + 1]);
     largerThanNoiseFloor = (FFTcoeffs[i] > avgMagnitude * 2.6); 
-    if (largerThanPrevious && largerThanNext && largerThanNoiseFloor ) 
+    if (largerThanPrevious && largerThanNext && largerThanNoiseFloor && peak < 100 ) 
     {
-     peak++;    
+     peak++;
      peakValue[ peak - 1 ] = FFTcoeffs[i];
      freqValue[ peak - 1 ] = centerFreqHz(i);
     }

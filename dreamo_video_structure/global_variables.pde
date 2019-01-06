@@ -1,6 +1,7 @@
 //package dreamo.display;
 //GLOBAL VARIABLES 
 int global_fps = 30;
+final int global_audioRate = 44100;
 
 //keeps count of the number of particles that have been instantiated from the beginning of the program
 long global_particlesInstanciatedNumber = 0; 
