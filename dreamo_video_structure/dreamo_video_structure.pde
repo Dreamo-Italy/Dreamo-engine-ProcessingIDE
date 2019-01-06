@@ -8,14 +8,14 @@ void setup()
  noSmooth();
 
  //****** CONNECTION ******  //<>//
- global_connection = new Connection(this);
+ //global_connection = new Connection(this);
 
  //****** BIOSENSORS ******
- global_gsr = new Gsr();
- global_ecg= new Ecg();
+ //global_gsr = new Gsr();
+ //global_ecg= new Ecg();
 
  //****** BIOLOGICAL MOOD ******
- global_bioMood = new BioMood();
+ //global_bioMood = new BioMood();
 
  //****** AUDIO ******
  global_audio = new AudioManager(this); //new audio manager
@@ -62,16 +62,16 @@ void draw()
  long initTimeT = System.nanoTime(); // start time
  long audioTime = System.nanoTime() - initTimeT;
 
- global_connection.update();
+ //global_connection.update();
 
  long conT = System.nanoTime() - audioTime - initTimeT; // time elapsed after CONNECTION UPDATE
 
- global_gsr.update();
+ //global_gsr.update();
 
  long gsrT= (System.nanoTime() - conT -initTimeT - audioTime);// time elapsed after GSR UPDATE
 
- global_ecg.update();
- global_bioMood.update();
+ //global_ecg.update();
+ //global_bioMood.update();
 
  long ecgT = (System.nanoTime() - conT -initTimeT - audioTime- gsrT); // time elapsed after ECG UPDATE
 
@@ -153,9 +153,9 @@ void keyPressed()
   switch(key) {
     case 'C':
     case 'c':
-      global_gsr.restartCalibration();
-      global_ecg.restartCalibration();
-      println("*** Restarting calibration ***");
+      //global_gsr.restartCalibration();
+      //global_ecg.restartCalibration();
+      //println("*** Restarting calibration ***");
       break;
     case 'D':
     case 'd':

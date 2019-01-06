@@ -25,8 +25,8 @@ class lineLine extends Particle{
   public void trace(){
     
   setParameter(0, global_dyn.getRMS());
-  setParameter(1, global_bioMood.getArousal());
-  setParameter(2, global_ecg.getBpm());
+  //setParameter(1, centroidParam);
+  //setParameter(2, global_ecg.getBpm());
   translate(width/2,height/2);
  
   
