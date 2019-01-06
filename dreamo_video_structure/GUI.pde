@@ -204,7 +204,8 @@ void updateParams()
   audio_decisor.setRoughnessLowerBound(Roughnesslower);
   audio_decisor.setRoughnessUpperBound(Roughnessupper);
 
-  global_audio.setMasterGain(inVol);
+  // global_audio.setMasterGain(inVol);
+  audio_proc.setMasterGain(inVol);
 }
 
 void updateRanges()
