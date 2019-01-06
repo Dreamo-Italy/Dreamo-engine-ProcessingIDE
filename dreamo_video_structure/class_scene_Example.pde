@@ -14,7 +14,7 @@ class Scene_Example extends Scene
  {
   direction = 0;
   speed = 10;
-  particleProbability = 0.15;
+  particleProbability = 0.7;
   freq = 0;
   num_vertical = 9;
   num_horizontal = 8;
