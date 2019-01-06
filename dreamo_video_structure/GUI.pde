@@ -68,7 +68,7 @@ void setupGUI()
   inputVolSlider.setPosition(950, 30);
   inputVolSlider.setSize(len, thick);
   inputVolSlider.setCaptionLabel("Input vol dB");
-  inputVolSlider.setRange(-64,6);
+  inputVolSlider.setRange(-64,24);
   inputVolSlider.getCaptionLabel().toUpperCase(true);
   inputVolSlider.getCaptionLabel().setColorBackground(0x99ffffff);
 
