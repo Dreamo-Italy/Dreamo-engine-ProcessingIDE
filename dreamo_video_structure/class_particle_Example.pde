@@ -21,6 +21,7 @@ class Particle_Example extends Particle
  float initDistY4;
  
  int indexShifting;
+ float multiplier;
  float transparency;
  
  //INIT
@@ -54,26 +55,29 @@ class Particle_Example extends Particle
  //UPDATE 
  public void update()
  {
+  noiseScale = getParameter(5);    //chooseVibration from audio
+  noiseStrength = getParameter(6); //choose elasticity from audio
+   
   setParameter(0, audio_decisor.getInstantFeatures()[0]);    //RMS istantaneo
   setParameter(1, audio_decisor.getInstantFeatures()[10]);   //Roughness istantaneo
   setParameter(2, audio_decisor.getFeaturesVector()[1]);     //Dyn index mediato 2 sec 
   setParameter(3, audio_decisor.getStatusVector()[4]);       //Rhythm str status;
-  
-  noiseScale = getParameter(5);    //chooseVibration from audio
-  noiseStrength = getParameter(6); //choose elasticity from audio
-  setParameter( 4 , noise((getPosition().getX() + nCrossedX * width) / noiseScale, (getPosition().getY() + nCrossedY * height) / noiseScale) * noiseStrength ); //angolo movimento
+  setParameter(4 , noise((getPosition().getX() + nCrossedX * width) / noiseScale, (getPosition().getY() + nCrossedY * height) / noiseScale) * noiseStrength ); //angolo movimento
   
   setParameter(7, audio_decisor.getStatusVector()[3]);     //Spec complex
   setParameter(8, audio_decisor.getFeaturesVector()[7]);   //EBF mediato 2 sec 
-  
-  //DIMENSIONE 
-  rectSize = mapForDimension(getParameter(2), 0, 0.8);
  
   //DISTORSIONE LATI  / DISALLINEAMENTO VERTCI 
   distCoeff = mapForDistortion(getParameter(1), 0, 0.8);
   
+  //DIMENSIONE 
+  
+  if (frameCount % 61 == 0 ){ multiplier = random(-0.005     , 0.005); }
+    rectSize = rectSize + multiplier * mapForDimension(getParameter(2), 0, 0.8);
+  
+  
   //COLORE 
-  if (frameCount % 4 == 0 && indexShifting < getPalette().COLOR_NUM && FastMath.round(random(1)) == 1) { indexShifting++; }
+  if (frameCount % 8 == 0 && indexShifting < getPalette().COLOR_NUM && FastMath.round(random(0.505)) == 1) { indexShifting++; }
   if (indexShifting >= getPalette().COLOR_NUM) { indexShifting = 0; }
   pal.influenceColors(0, mapForSaturation(getParameter(8), 500, 5000), 0);
   transparency = mapForTransparency(getParameter(8), 500, 5000);
@@ -95,7 +99,7 @@ class Particle_Example extends Particle
   float shiftX4 = distCoeff * (int(random(0,2) * 2 - 1));
   float shiftY4 = distCoeff * (int(random(0,2) * 2 - 1));
   
-  fill(pal.getColor(indexShifting) , transparency);
+  fill(pal.getColor(indexShifting), transparency);
   noStroke();
   beginShape();
    vertex(posX + initDistX1 + shiftX1 , posY + initDistY1 + shiftY1);

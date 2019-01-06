@@ -6,6 +6,9 @@ class Scene_Example extends Scene
  float freq;
  float particleProbability;
  
+ int num_vertical;
+ int num_horizontal;
+ 
  //init
  public void init()
  {
@@ -13,12 +16,14 @@ class Scene_Example extends Scene
   speed = 10;
   particleProbability = 0.15;
   freq = 0;
+  num_vertical = 9;
+  num_horizontal = 8;
   pal.initColors();
   //pal.setColor(0,0);
   
-  for ( int i = 0; i < 9; i ++) 
+  for ( int i = 0; i < num_vertical; i ++) 
   {
-   for (int j = 0; j < 16; j ++) 
+   for (int j = 0; j < num_horizontal; j ++) 
    {
      if (random(1) < particleProbability)
      {
@@ -29,7 +34,7 @@ class Scene_Example extends Scene
       temp.setPalette(pal);
       temp.setPosition(new Vector2d(x , y , false));
       addParticle(temp);
-     }
+    }
    }
   }
   setBackground(new Background());

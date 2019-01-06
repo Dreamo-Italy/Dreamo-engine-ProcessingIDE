@@ -178,7 +178,7 @@ class Rhythm extends FeaturesExtractor
 
    if (bufferCounter < standByStart + STAND_BY_TIME) 
    {
-    println("WAITING " + bufferCounter);
+    //println("WAITING " + bufferCounter);
    } 
    else 
    {

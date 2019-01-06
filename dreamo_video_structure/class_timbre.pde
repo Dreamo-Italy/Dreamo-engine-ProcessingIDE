@@ -243,7 +243,7 @@ class Timbre extends FeaturesExtractor
   {
    COBEistant[i] = EnvFilteredSignal[i] / EnvSignal[i];
 
-   EBFistant[i] = (float) ((44100 / PI) * FastMath.asin( COBEistant[i] / 2));
+   EBFistant[i] = (float) ((global_audioRate / PI) * FastMath.asin( COBEistant[i] / 2));
   }
 
   // EBF medio su 1024 samples
@@ -314,7 +314,7 @@ class Timbre extends FeaturesExtractor
     samp[i] = samples[i];
    }
    //applico flitro al segnale 
-   samp = DSP.HighPass(samp, 5000, 44100); // il secondo argoemto è la frequenza di taglio del filtro 
+   samp = DSP.HighPass(samp, 5000, global_audioRate); // il secondo argoemto è la frequenza di taglio del filtro 
 
    for (int i = 0; i < samples.length; i++) 
    {
@@ -340,7 +340,6 @@ class Timbre extends FeaturesExtractor
    w[m] = x[n];
    m = (int)((m + 1) - FastMath.floor((m + 1) / windowsize) * windowsize);
   }
-
   for (int i = 0; i < y.length; i++) 
   {
    y[i] = (float) FastMath.sqrt(y[i]);
@@ -374,7 +373,7 @@ class Timbre extends FeaturesExtractor
      sum = sum + tmp1;
      sum1 = sum1 + tmp2;
    }
-   sum =  sum / specSize - 2;
+   sum =  sum / specSize - 2;  
    sd = FastMath.sqrt(sum);
    
    m3 = sum1 / specSize - 1;
@@ -435,8 +434,6 @@ class Timbre extends FeaturesExtractor
    SkewnessEshortTerm.accumulate(SkewnessE);
    SkewnessElongTerm.accumulate(SkewnessE);
  }
- 
- //Spectral centroid computation method see https://en.wikipedia.org/wiki/Spectral_centroid
  
  private void calcSpectralCentroid() 
  {
@@ -500,9 +497,9 @@ class Timbre extends FeaturesExtractor
     largerThanPrevious = (FFTcoeffs[i - 1] < FFTcoeffs[i]);
     largerThanNext = (FFTcoeffs[i] > FFTcoeffs[i + 1]);
     largerThanNoiseFloor = (FFTcoeffs[i] > avgMagnitude * 2.6); 
-    if (largerThanPrevious && largerThanNext && largerThanNoiseFloor ) 
+    if (largerThanPrevious && largerThanNext && largerThanNoiseFloor && peak < 100 ) 
     {
-     peak++;    
+     peak++;
      peakValue[ peak - 1 ] = FFTcoeffs[i];
      freqValue[ peak - 1 ] = centerFreqHz(i);
     }

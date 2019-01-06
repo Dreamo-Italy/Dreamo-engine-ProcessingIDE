@@ -97,8 +97,8 @@ abstract class Biosensor
 
   calibrationValues.append(incomingValues);
 
-  println("Calibrating sensor: " + getID());
-  println();
+  //println("Calibrating sensor: " + getID());
+  //println();
 
   calibrationCounter++;
  }

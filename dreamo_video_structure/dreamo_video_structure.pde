@@ -1,13 +1,13 @@
- void setup()
-{ 
+void setup()
+{
  //****** VIDEO ******
  colorMode(HSB, 360, 100, 100, 100);
  size(1280, 750, FX2D);
  //fullScreen(FX2D,1);
  frameRate(global_fps);
  noSmooth();
-  
- //****** CONNECTION ****** // //<>// //<>// //<>// //<>//
+
+ //****** CONNECTION ******  //<>//
  global_connection = new Connection(this);
 
  //****** BIOSENSORS ******
@@ -24,14 +24,14 @@
  global_dyn = new Dynamic(global_audio.getBufferSize(),global_audio.getSampleRate()); //new dynamic features extractor
  global_timbre = new Timbre(global_audio.getBufferSize(),global_audio.getSampleRate()); //new timbric features extractor
  global_rhythm = new Rhythm(global_audio.getBufferSize(),global_audio.getSampleRate()); //new rhythmic features extractor
-  
+
  //add features extractors to our audio processor
  audio_proc.addDyn(global_dyn);
  audio_proc.addTimbre(global_timbre);
  audio_proc.addRhythm(global_rhythm);
 
  audio_decisor = new AudioDecisor(global_dyn,global_rhythm,global_timbre);
-  
+
  //****** STAGE ******
  global_stage = new Stage();
 
@@ -49,20 +49,19 @@
   global_stage.addScene(new LineLine1());
 
 
-
  //**** DEBUG PLOTS
  global_debugPlots = new DebugPlot(this);
-  
+
  //**** CONTROL INTERFACE
- setupGUI(); 
+ setupGUI();
 }
 
 void draw()
-{ 
- //track execution times  
+{
+ //track execution times
  long initTimeT = System.nanoTime(); // start time
  long audioTime = System.nanoTime() - initTimeT;
-   
+
  global_connection.update();
 
  long conT = System.nanoTime() - audioTime - initTimeT; // time elapsed after CONNECTION UPDATE
@@ -91,7 +90,7 @@ void draw()
  //global_ecg.printDebug();// print the DEBUG TEXT related to the ECG SENSOR
 
  audio_decisor.run();
-   
+
  drawGUI();
 
  long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME
@@ -105,8 +104,8 @@ void draw()
  println("");
  println("    LOOP duration: "+ loopT/1000 + " us");
  println("    MAX duration for framerate "+ int(frameRate) +": "+(1/frameRate*1000000)+" us");
- println(""); 
-   
+ println("");
+
  println("*************************************************");
  println("************** AUDIO PARAMETERS *****************");
  println("*************************************************");
@@ -119,12 +118,12 @@ void draw()
  println("SPECTRAL COMPLEXITY: "+global_timbre.getComplexityAvg()+" peaks");
  println("ZERO CROSSING RATE: "+global_timbre.getZeroCrossingRate());
  println("*************************************************");
-   
+
  println("************* RHYTHMIC PARAMETERS ***************");
  println("RHYTHM DENSITY: "+global_rhythm.getRhythmDensity());
  println("RHYTHM STRENGTH: "+global_rhythm.getRhythmStrength());
  println("*************************************************");
-   
+
  println("************** SILENCE DETECTOR *****************");;
  println("-60dB SILENCE: "+ global_dyn.isSilence(-60));
  println("-50dB SILENCE: "+ global_dyn.isSilence(-50));
@@ -132,13 +131,13 @@ void draw()
  println("-40dB SILENCE: "+ global_dyn.isSilence(-40));
  println("*******************END***************************");
  println("*************************************************");
-   
+
  println("CLARITY: " + audio_decisor.getClarity());
  println("ENERGY: " + audio_decisor.getEnergy());
  println("AGITATION: " + audio_decisor.getAgitation());
  println("ROUGHNESS: " + audio_decisor.getRoughness());
  */
-   
+
  //global_stage.nextSceneIfSilence(-50);
 }
 
@@ -151,41 +150,83 @@ void mouseClicked()
 
 void keyPressed()
 {
-     println("key pressed");
-     
-   if (key == 'c')
-   {
-     global_gsr.restartCalibration();
-     global_ecg.restartCalibration();
-   }
-   
-   if (key == 'd'||key=='D' )
-   {
-     global_debugPlots.toggleDebugPlots();
-   }
-   
-     
- if (key=='s'||key=='S')
- {
-  audio_proc.saveLog(); //SAVE AUDIO DATA LOG
-  //global_connection.saveLog(); //SAVE SENSORS LOG
- }
-     
-  if (key=='m'||key=='M')
-  {
-    global_audio.enableMonitoring();
+  switch(key) {
+    case 'C':
+    case 'c':
+      global_gsr.restartCalibration();
+      global_ecg.restartCalibration();
+      println("*** Restarting calibration ***");
+      break;
+    case 'D':
+    case 'd':
+      global_debugPlots.toggleDebugPlots();
+      println("*** Toggle debug plots ***");
+      break;
+    case 'S':
+    case 's':
+      // SAVE AUDIO DATA LOG
+      audio_proc.saveLog();
+      // SAVE SENSORS LOG
+      // global_connection.saveLog();
+      println("*** Saving audio log ***");
+      break;
+    case 'M':
+    case 'm':
+      if (global_audio.isMonitoring()) {
+        global_audio.disableMonitoring();
+        println("*** Disabling monitoring ***");
+      } else {
+        global_audio.enableMonitoring();
+        println("*** Enabling monitoring ***");
+      }
+      break;
+    case 'N':
+    case 'n':
+      global_stage.nextScene();
+      println("*** Next scene ***");
+      break;
+    case '+':
+    case ']': {
+      float gain = audio_proc.getMasterGaindB();
+      gain += 1.0;
+      audio_proc.setMasterGain(gain);
+      inputVolSlider.setValue(gain);
+      println("*** +1dB ***");
+      }
+      break;
+    case '-':
+    case '/': {
+      float gain = audio_proc.getMasterGaindB();
+      gain -= 1.0;
+      audio_proc.setMasterGain(gain);
+      inputVolSlider.setValue(gain);
+      println("*** -1dB ***");
+      }
+      break;
+    case '0':
+      audio_proc.setMasterGain(0.0);
+      inputVolSlider.setValue(0.0);
+      println("*** Gain reset ***");
+      break;
+    case 'G':
+    case 'g':
+      print("*** Master Gain: " + audio_proc.getMasterGaindB() + " dB ");
+      println("/ k =  " + audio_proc.getMasterGain() + " ***");
+      break;
+    case 'F':
+    case 'f':
+      if (!global_audio.isMuted()) {
+        global_audio.mute();
+        println("*** Mute ***");
+      } else {
+        global_audio.unmute();
+        println("*** Unmute ***");
+      }
+      break;
   }
-    
-  if (key=='n'||key=='N')
-  {
-    global_stage.nextScene();
-  }
-     
 }
 
-
-
 void stop()
-     {
-       global_audio.stop();
-     }
+{
+  global_audio.stop();
+}
