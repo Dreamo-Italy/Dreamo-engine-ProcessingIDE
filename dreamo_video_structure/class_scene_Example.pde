@@ -27,8 +27,8 @@ class Scene_Example extends Scene
    {
      if (random(1) < particleProbability)
      {
-      int x = width / 16 * j ;
-      int y = height / 9 * i  ;
+      int x = width / num_vertical * j ;
+      int y = height / num_horizontal * i  ;
       
       Particle_Example temp = new Particle_Example();
       temp.setPalette(pal);
