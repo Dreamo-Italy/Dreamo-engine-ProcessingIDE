@@ -6,7 +6,7 @@ void setup()
  //fullScreen(FX2D,1);
  frameRate(global_fps);
  noSmooth();
-  
+
  //****** CONNECTION ******  //<>//
  global_connection = new Connection(this);
 
@@ -150,84 +150,79 @@ void mouseClicked()
 
 void keyPressed()
 {
-  if (key == 'c')
-  {
-    global_gsr.restartCalibration();
-    global_ecg.restartCalibration();
-    println("'Restart calibration' pressed");
-  }
-
-  if (key == 'd'||key=='D' )
-  {
-    global_debugPlots.toggleDebugPlots();
-    println("'Debug plots' pressed");
-  }
-
-
-  if (key=='s'||key=='S')
-  {
-    audio_proc.saveLog(); //SAVE AUDIO DATA LOG
-    //global_connection.saveLog(); //SAVE SENSORS LOG
-    println("'Save audio log' pressed");
-  }
-
-  if (key=='m'||key=='M')
-  {
-    if (global_audio.isMonitoring())
-    {
-      global_audio.disableMonitoring();
-      println("'Disable monitoring' pressed");
-    } else
-    {
-      global_audio.enableMonitoring();
-      println("'Enable monitoring' pressed");
-    }
-    //inputVolSlider.setValue(global_audio.getMasterGain());
-  }
-
-  if (key=='n'||key=='N')
-  {
-    global_stage.nextScene();
-    println("'Next scene' pressed");
-  }
-
-  if (key=='+' || key=='=')
-  {
-    float gain = audio_proc.getMasterGain();
-    gain += 3.0;
-    audio_proc.setMasterGain(gain);
-    inputVolSlider.setValue(gain);
-    println("'+' pressed. Gain: " + audio_proc.getMasterGain() );
-  }
-
-  if (key=='-')
-  {
-    float gain = audio_proc.getMasterGain();
-    gain -= 3.0;
-    audio_proc.setMasterGain(gain);
-    inputVolSlider.setValue(gain);
-    println("'-' pressed. Gain: " + audio_proc.getMasterGain() );
-  }
-
-  if (key=='g' || key=='G')
-  {
-    float gain = global_audio.getMasterGain();
-    println("Master Gain "+ gain);
-    inputVolSlider.setValue(gain); //Adjust the slider
-    //println("Master Volume "+ global_audio.getMasterVolume());
-  }
-
-  if (key=='f' || key=='F')
-  {
-    if (!global_audio.isMuted())
-    {
-      global_audio.mute();
-      println("'Mute'");
-    } else
-    {
-      global_audio.unmute();
-      println("'Unmute'");
-    }
+  switch(key) {
+    case 'C':
+    case 'c':
+      global_gsr.restartCalibration();
+      global_ecg.restartCalibration();
+      println("*** Restarting calibration ***");
+      break;
+    case 'D':
+    case 'd':
+      global_debugPlots.toggleDebugPlots();
+      println("*** Toggle debug plots ***");
+      break;
+    case 'S':
+    case 's':
+      // SAVE AUDIO DATA LOG
+      audio_proc.saveLog();
+      // SAVE SENSORS LOG
+      // global_connection.saveLog();
+      println("*** Saving audio log ***");
+      break;
+    case 'M':
+    case 'm':
+      if (global_audio.isMonitoring()) {
+        global_audio.disableMonitoring();
+        println("*** Disabling monitoring ***");
+      } else {
+        global_audio.enableMonitoring();
+        println("*** Enabling monitoring ***");
+      }
+      break;
+    case 'N':
+    case 'n':
+      global_stage.nextScene();
+      println("*** Next scene ***");
+      break;
+    case '+':
+    case ']': {
+      float gain = audio_proc.getMasterGaindB();
+      gain += 1.0;
+      audio_proc.setMasterGain(gain);
+      inputVolSlider.setValue(gain);
+      println("*** +1dB ***");
+      }
+      break;
+    case '-':
+    case '/': {
+      float gain = audio_proc.getMasterGaindB();
+      gain -= 1.0;
+      audio_proc.setMasterGain(gain);
+      inputVolSlider.setValue(gain);
+      println("*** -1dB ***");
+      }
+      break;
+    case '0':
+      audio_proc.setMasterGain(0.0);
+      inputVolSlider.setValue(0.0);
+      println("*** Gain reset ***");
+      break;
+    case 'G':
+    case 'g':
+      print("*** Master Gain: " + audio_proc.getMasterGaindB() + " dB ");
+      println("/ k =  " + audio_proc.getMasterGain() + " ***");
+      break;
+    case 'F':
+    case 'f':
+      if (!global_audio.isMuted()) {
+        global_audio.mute();
+        println("*** Mute ***");
+      } else {
+        global_audio.unmute();
+        println("*** Unmute ***");
+      }
+      break;
   }
 }
 

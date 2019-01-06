@@ -25,6 +25,7 @@ class AudioProcessor implements AudioListener
   private long bufferCount;
 
   private float MASTER_GAIN;
+  private float MASTER_GAIN_DB;
 
   //********* CONSTRUCTOR ***********
   AudioProcessor(int bSize, float sRate)
@@ -45,6 +46,7 @@ class AudioProcessor implements AudioListener
     level = 0;
 
     MASTER_GAIN = 1;
+    MASTER_GAIN_DB = 0;
 
     if ( bSize == 0 || sRate == 0) { println("ERROR: Impossible to initialize AudioProcessor"); }
     else
@@ -164,11 +166,12 @@ class AudioProcessor implements AudioListener
 
   public void setMasterGain(float dB)
   {
+    // set dB value
+    MASTER_GAIN_DB = dB;
     // convert from dB to linear
     float linear = (float) FastMath.pow(10, dB / 20);
-    // set variable
+    // set linear
     MASTER_GAIN = linear;
-    println("master gain: " + MASTER_GAIN);
   }
 
   //********* GETTERS ***********
@@ -190,6 +193,8 @@ class AudioProcessor implements AudioListener
   public int getSpecSize() { return fft.specSize(); }
 
   public float getMasterGain() { return MASTER_GAIN; }
+
+  public float getMasterGaindB() { return MASTER_GAIN_DB; }
 
   public void saveLog()
   {
