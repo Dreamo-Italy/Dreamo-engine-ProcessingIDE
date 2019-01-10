@@ -22,12 +22,12 @@ final int marginSpace = 10;
 //main object for display
 Stage global_stage; 
 //main object for connections
-Connection global_connection;
+//Connection global_connection;
 
-Gsr global_gsr;
-Ecg global_ecg;
+//Gsr global_gsr;
+//Ecg global_ecg;
 
-BioMood global_bioMood;
+//BioMood global_bioMood;
 
 short global_sensorNumber = 2;
 
