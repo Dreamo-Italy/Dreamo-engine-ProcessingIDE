@@ -5,6 +5,8 @@ Slider[] sliders;
 Button default_button;
 Slider inputVolSlider;
 
+boolean enableGUI = true;
+
 //params to control
 float RMSlower = DefaultAudioThresholds.RMS_LOWER_TH; //start with default values
 float RMSupper = DefaultAudioThresholds.RMS_UPPER_TH;
@@ -163,10 +165,14 @@ void setupGUI()
 
 void drawGUI()
 {
-  cp5.show();
-  cp5.draw();
-  updateParams();
-  updateRanges();
+  if (enableGUI) {
+    cp5.show();
+    cp5.draw();
+    updateParams();
+    updateRanges();
+  } else {
+    cp5.hide(); 
+  }
 }
 
 void updateParams()
@@ -280,4 +286,9 @@ public void restoreDefault()
 
  sliders[20].setValue(DefaultAudioThresholds.ROUGHNESS_UPPER_TH);
  sliders[21].setValue(DefaultAudioThresholds.ROUGHNESS_LOWER_TH);
+}
+
+void toggleGUI()
+{
+  enableGUI = !enableGUI;
 }

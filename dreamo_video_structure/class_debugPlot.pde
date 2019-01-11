@@ -283,12 +283,11 @@
 
   public void update() 
   {
-    if (enableDebugPlots == true)
-     {
-       addNewPoints();
-       removeOldestPoints();     
-       drawPlots();
-     }
+    if (enableDebugPlots ) {
+      addNewPoints();
+      removeOldestPoints();     
+      drawPlots();
+      }
   }
 
   public void addNewPoints() 
@@ -398,8 +397,7 @@
   
   public void toggleDebugPlots()
   {
-    enableDebugPlots = !enableDebugPlots;
-    println(enableDebugPlots);
+    enableDebugPlots = !enableDebugPlots;   
   }
 
   public void drawPlots() 

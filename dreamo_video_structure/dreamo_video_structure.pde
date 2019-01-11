@@ -162,6 +162,11 @@ void keyPressed()
       global_debugPlots.toggleDebugPlots();
       println("*** Toggle debug plots ***");
       break;
+    case 'I':
+    case 'i':
+      toggleGUI();
+      println("*** Toggle GUI ***");
+      break;
     case 'S':
     case 's':
       // SAVE AUDIO DATA LOG
