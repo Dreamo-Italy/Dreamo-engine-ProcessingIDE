@@ -7,7 +7,7 @@ class AudioProcessor implements AudioListener
   private float[] mix;
   private float[] silence;
 
-
+  private float SILENCE_THRESHOLD;
 
   private float frameEnergy;
 
@@ -37,6 +37,7 @@ class AudioProcessor implements AudioListener
     right = null;
 
     silence = new float[bSize];
+    SILENCE_THRESHOLD = 10e-5;
 
     frameEnergy=0;
 
@@ -133,7 +134,7 @@ class AudioProcessor implements AudioListener
 
     mix(); //check if is to slow
 
-    if (frameEnergy < 10e-5) {
+    if (frameEnergy < SILENCE_THRESHOLD) {
       mix = silence.clone();
     }
 
