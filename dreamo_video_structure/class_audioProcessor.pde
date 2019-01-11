@@ -133,12 +133,12 @@ class AudioProcessor implements AudioListener
 
     mix(); //check if is to slow
 
-    if (frameEnergy > 10e-5) {
-      //calculate fourier transform
-      calcFFT(mix);
-    } else {
-      calcFFT(silence);
+    if (frameEnergy < 10e-5) {
+      mix = silence.clone();
     }
+
+    //calculate fourier transform
+    calcFFT(mix);
 
     calcRMS(mix);
 
