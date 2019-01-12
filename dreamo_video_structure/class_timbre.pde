@@ -379,7 +379,7 @@ class Timbre extends FeaturesExtractor
    m3 = sum1 / specSize - 1;
    s3 = FastMath.pow(sd, 3);
    
-   SkewnessD = (float)m3 / (float)s3;
+   SkewnessD = (float)m3 / ((float)s3 + 1);
    
    if(Float.isNaN(SkewnessD)) { SkewnessD = 0; }
    
