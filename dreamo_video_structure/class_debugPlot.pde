@@ -287,6 +287,7 @@
       addNewPoints();
       removeOldestPoints();     
       drawPlots();
+      drawDebugText();
       }
   }
 
@@ -445,5 +446,11 @@
    plots[10].getLayer("AvgRoughness").drawPoints();
    plots[10].getLayer("TH").drawPoints();
    plots[10].getLayer("TH2").drawPoints();
+  }
+  
+  public void drawDebugText()
+  {
+    text("particles: " + global_stage.getCurrentScene().getParticlesNumber() + "; framerate: " + nf(frameRate,2,1) + " \n", marginSpace, interlineSpace );
+    text("                                                      Frame Count: "+frameCount,marginSpace, interlineSpace );
   }
  }
