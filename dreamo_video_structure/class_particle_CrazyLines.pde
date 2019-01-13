@@ -194,11 +194,18 @@ class CrazyLines extends Particle
     float x=0;
     float y=0;
     float damping = 1; //to slow down speed
+    float signMultiplier;
     Vector2d currentSpeed;
     Vector2d speedChange;
 
     currentSpeed = new Vector2d(x, y, false);
     currentSpeed = this.getSpeed();
+
+    // Speed direction depends on Spectral Complexity in relation to its average
+    if(audio_decisor.getInstantFeatures()[3]<audio_decisor.getFeaturesVector()[3])
+      {signMultiplier = 1;}
+    else
+      {signMultiplier = -1;}
 
     if(audio_decisor.getStatusVector()[4]==0 || audio_decisor.getStatusVector()[4]==-1)
     {
@@ -206,18 +213,18 @@ class CrazyLines extends Particle
       else if(audio_decisor.getFeaturesVector()[4]<9) x=2; //basic shape for smooth sounds
       else x=3;
       y = -x/4;
-      damping = 1.001;
+      damping = 1.01;
     }
     else if(audio_decisor.getStatusVector()[4]==1)
     {
       x = -5;
       y = -x/2;
-      damping = 1.0005;
+      damping = 1.001;
     }
     else if (audio_decisor.getStatusVector()[4]==3)
     {
-      x = random(-1,1)*audio_decisor.getInstantFeatures()[10]*audio_decisor.getInstantFeatures()[3]*audio_decisor.getFeaturesVector()[4]*4;
-      y = audio_decisor.getStatusVector()[3]/audio_decisor.getFeaturesVector()[9]*x/5;
+      x = audio_decisor.getInstantFeatures()[10]*audio_decisor.getInstantFeatures()[3]*audio_decisor.getFeaturesVector()[4]*4;
+      y = audio_decisor.getStatusVector()[3]/audio_decisor.getFeaturesVector()[9]*x/3;
 
       //Math.signum(currentSpeed.getX()) is to avoid inverting the direction of movement in case setWarpAtBorders(false) and setBounce = true
       //x = x * (float)Math.signum(currentSpeed.getX());
@@ -225,10 +232,10 @@ class CrazyLines extends Particle
       damping = 1;
 
     }
-    speedChange = new Vector2d(x/1000, y/1000, false);
+    speedChange = new Vector2d(signMultiplier*x/1000, y/1000, false);
 
-    if (currentSpeed.getModulus() > 15)
-      {damping = 1.05;}
+    if (currentSpeed.getModulus() > 10)
+      {damping = 1.08;}
 
     currentSpeed = currentSpeed.quot(damping);
 
