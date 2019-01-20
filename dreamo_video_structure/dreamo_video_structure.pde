@@ -2,8 +2,8 @@ void setup()
 {
  //****** VIDEO ******
  colorMode(HSB, 360, 100, 100, 100);
- size(1280, 750, FX2D);
- //fullScreen(FX2D,1);
+ //size(1280, 750, FX2D);
+ fullScreen(FX2D, 2);
  frameRate(global_fps);
  noSmooth();
 
@@ -37,17 +37,15 @@ void setup()
 
   //****** SCENES ********
   global_stage.addScene(new BlankScene());
-  global_stage.addScene(new Scene_Example());
-  
-  global_stage.addScene(new AudioDebug());
-  global_stage.addScene(new ScenePlotter());
-  global_stage.addScene(new Spirals());
   global_stage.addScene(new ScenePerlinNoise());
-  global_stage.addScene(new CrazyL());
+  global_stage.addScene(new Scene_Example());
 
-  global_stage.addScene(new Lissajous() );
-  global_stage.addScene(new LineLine1());
-
+  //global_stage.addScene(new AudioDebug());
+  // global_stage.addScene(new ScenePlotter());
+  //global_stage.addScene(new Spirals());
+  //global_stage.addScene(new CrazyL());
+  //global_stage.addScene(new Lissajous());
+  //global_stage.addScene(new LineLine1());
 
  //**** DEBUG PLOTS
  global_debugPlots = new DebugPlot(this);
@@ -59,25 +57,25 @@ void setup()
 void draw()
 {
  //track execution times
- long initTimeT = System.nanoTime(); // start time
- long audioTime = System.nanoTime() - initTimeT;
+ //long initTimeT = System.nanoTime(); // start time
+ //long audioTime = System.nanoTime() - initTimeT;
 
  //global_connection.update();
 
- long conT = System.nanoTime() - audioTime - initTimeT; // time elapsed after CONNECTION UPDATE
+ //long conT = System.nanoTime() - audioTime - initTimeT; // time elapsed after CONNECTION UPDATE
 
  //global_gsr.update();
 
- long gsrT= (System.nanoTime() - conT -initTimeT - audioTime);// time elapsed after GSR UPDATE
+ //long gsrT= (System.nanoTime() - conT -initTimeT - audioTime);// time elapsed after GSR UPDATE
 
  //global_ecg.update();
  //global_bioMood.update();
 
- long ecgT = (System.nanoTime() - conT -initTimeT - audioTime- gsrT); // time elapsed after ECG UPDATE
+ //long ecgT = (System.nanoTime() - conT -initTimeT - audioTime- gsrT); // time elapsed after ECG UPDATE
 
  global_stage.updateAndTrace();
 
- long viT = (System.nanoTime() - gsrT - conT - initTimeT - audioTime-ecgT) ; // time elapsed after VIDEO UPDATE
+ //long viT = (System.nanoTime() - gsrT - conT - initTimeT - audioTime-ecgT) ; // time elapsed after VIDEO UPDATE
 
  global_debugPlots.update();
 
@@ -91,7 +89,7 @@ void draw()
 
  drawGUI();
 
- long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME
+ //long loopT = (System.nanoTime()  - initTimeT) ; // OVERALL TIME
 
  /*
  //----------- DEBUG PRINTS ------------ //
