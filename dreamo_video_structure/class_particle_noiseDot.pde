@@ -60,6 +60,8 @@ class NoiseDot extends Particle
   noStroke();
   fill(getPalette().getColor(indexShifting));
   ellipse(-5, -5, dotW, dotH);
+  strokeWeight(1);
+  connectParticles(50,10);
 
  }
 
