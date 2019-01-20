@@ -1,4 +1,4 @@
-class NoiseDot extends Particle 
+class NoiseDot extends Particle
 {
  float speed;
  float dotW;
@@ -8,8 +8,9 @@ class NoiseDot extends Particle
  float angle;
  float nCrossedX, nCrossedY;
  int indexShifting;
+ boolean nextColor;
 
- void init() 
+ void init()
  {
   speed = 10;
   dotW = 9;
@@ -19,9 +20,11 @@ class NoiseDot extends Particle
   nCrossedX = 0;
   nCrossedY = 0;
   indexShifting = 0;
+  nextColor = false;
+  getPalette().getNextColor(); // TRYING TO IMPLEMENT RANDOM COLOR AT THE BEGGINING
  }
 
- void update() 
+ void update()
  {
   //**** PARAMETERS FOR DIRECT INFLUENCE
   setParameter(0, audio_decisor.getInstantFeatures()[0]); //RMS istantaneo
@@ -33,7 +36,8 @@ class NoiseDot extends Particle
   noiseScale = getParameter(3);
   noiseStrength = getParameter(4);
 
-  if (frameCount % 4 == 0 && indexShifting < getPalette().COLOR_NUM && FastMath.round(random(1)) == 1) indexShifting++;
+  //if (frameCount % 4 == 0 && indexShifting < getPalette().COLOR_NUM && FastMath.round(random(1)) == 1) indexShifting++;
+  if (nextColor && indexShifting < getPalette().COLOR_NUM) {indexShifting++; nextColor = false;}
   if (indexShifting >= getPalette().COLOR_NUM) indexShifting = 0;
 
   angle = noise((getPosition().getX() + nCrossedX * width) / noiseScale, (getPosition().getY() + nCrossedY * height) / noiseScale) * noiseStrength;
@@ -45,41 +49,44 @@ class NoiseDot extends Particle
   keepInsideTheScreen();
  }
 
- public float getAngle() 
+ public float getAngle()
  {
   return angle;
  }
 
- void trace() 
+ void trace()
  {
 
   noStroke();
-  fill(pal.getColor(indexShifting));
+  fill(getPalette().getColor(indexShifting));
   ellipse(-5, -5, dotW, dotH);
 
  }
 
- void keepInsideTheScreen() 
+ void keepInsideTheScreen()
  {
-  if (getPosition().getX() > width) 
+  if (getPosition().getX() > width)
   {
    getPosition().setX(getPosition().getX() - width);
    nCrossedX++;
   }
-  if (getPosition().getY() > height) 
+  if (getPosition().getY() > height)
   {
    getPosition().setY(getPosition().getY() - height);
    nCrossedY++;
   }
-  if (getPosition().getX() < 0) 
+  if (getPosition().getX() < 0)
   {
    getPosition().setX(getPosition().getX() + width);
    nCrossedX--;
   }
-  if (getPosition().getY() < 0) 
+  if (getPosition().getY() < 0)
   {
    getPosition().setY(getPosition().getY() + height);
    nCrossedY--;
   }
+
  }
+ void toggleNextColor()
+  { nextColor = !nextColor;}
 }
