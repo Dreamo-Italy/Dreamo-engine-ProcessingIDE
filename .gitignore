@@ -1,3 +1,5 @@
 *.orig
 *.csv
 *.autosave
+dreamo_video_structure/application.windows64/
+dreamo_video_structure/application.windows32/
