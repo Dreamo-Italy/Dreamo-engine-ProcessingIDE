@@ -263,14 +263,10 @@ abstract class Particle extends AgingObject
   public Palette getPalette()
   { return pal; }
 
-
-  //public void updateAudio(float[] instant, float[] features, int[] status)
-  //{
-  //  instantFeatures=instant;
-  //  audioFeatures=features;
-  //  audioStatus=status;
-
-  //}
+  public float gradualShift(float initVal, float endVal, float shiftingPercentage)
+  {
+    return (1-shiftingPercentage)*initVal + shiftingPercentage*endVal;
+  }
 
 
   public void connectParticles(int connectionRadius, int particleRadius)
