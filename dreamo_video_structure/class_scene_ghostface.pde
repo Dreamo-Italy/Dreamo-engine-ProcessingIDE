@@ -1,51 +1,52 @@
-class GhostFace extends Scene
-{
-  void init()
-  {
+class GhostFace extends Scene {
+
+  GhostFaceMarker markers;
+  Hysteresis volumeControl;
+  boolean plotMarkers;
+
+  void init() {
+    getPalette().initColors("warm");
     Background bk = new Background();
     setBackground(bk);
     enableBackground();
-    pal.initColors();
+    markers = new GhostFaceMarker();
+    addParticle(markers);
+    volumeControl = new Hysteresis(0.02, 0.08, 11);
   }
 
-  public void trace()
-  {
-    sceneBackground.trace();
-    noFill();
-    fill(pal.getColor(1));
-    stroke(pal.getColor(1));
-    // eye left
-    beginShape();
-    vertex(719, 310);
-    vertex(734, 310);
-    vertex(733, 304);
-    vertex(720, 304);
-    endShape();
-    // eye right
-    beginShape();
-    vertex(579, 307);
-    vertex(564, 307);
-    vertex(564, 299);
-    vertex(579, 299);
-    endShape();
-    // ear right
-    beginShape();
-    vertex(469, 594);
-    vertex(455, 592);
-    vertex(480, 340);
-    vertex(492, 343);
-    endShape();
-    // ear left
-    beginShape();
-    vertex(850, 601);
-    vertex(833, 598);
-    vertex(804, 346);
-    vertex(813, 346);
-    endShape();
-    // ground
-    rect(0, 0, 1280, 234);
+  public void update() {
+    // check RMS
+    // plotMarkers = !volumeControl.checkWindow(audio_decisor.getFeaturesVector()[0]);
+    plotMarkers = !volumeControl.checkWindow(audio_decisor.getInstantFeatures()[0]);
+    if (plotMarkers) {
+      markers.fadeIn();
+    } else {
+      markers.fadeOut();
+    }
+    println("plot markers: " + plotMarkers);
+    // update particles
+    for(int i = 0; i < particlesNumber; i++) {
+      particlesList[i].setPalette(getPalette());
+      particlesList[i].update();
+    }
     // text(mouseX, width / 2 - 92, height / 2 + 20);
     // text(mouseY, width / 2 - 92, height / 2 + 70);
   }
 
+  public void trace() {
+    // trace background
+    if (sceneBackground != null && backgroundEnabled) {
+      sceneBackground.trace();
+    }
+    // trace particles
+    for (int i = 0; i < particlesNumber; i++) {
+      particlesList[i].beginTransformations();
+      particlesList[i].trace();
+      particlesList[i].endTransformations();
+    }
+    // trace ground marker
+    fill(getPalette().getColor(1));
+    stroke(getPalette().getColor(1));
+    rect(0, 0, 1280, 234);
+  }
 }
