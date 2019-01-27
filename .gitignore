@@ -1,2 +1,9 @@
 *.orig
 *.csv
+*.autosave
+<<<<<<< HEAD
+dreamo_video_structure/application.windows64/
+dreamo_video_structure/application.windows32/
+=======
+application.macosx
+>>>>>>> b34f513ac15adcaba8d9361c78edce85d122a69a

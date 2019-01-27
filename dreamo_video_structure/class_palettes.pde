@@ -1,4 +1,4 @@
-class Palette 
+class Palette
 {
 
  //********* CONSTANTS ***********
@@ -26,7 +26,7 @@ class Palette
  private float[] brightnesses;
 
  //********* CONTRUCTORS ***********
- public Palette() 
+ public Palette()
  {
   hues = new float[COLOR_NUM];
   saturations = new float[COLOR_NUM];
@@ -38,7 +38,7 @@ class Palette
  }
 
 
- public Palette(int i) 
+ public Palette(int i)
  {
   hues = new float[COLOR_NUM];
   saturations = new float[COLOR_NUM];
@@ -46,18 +46,18 @@ class Palette
 
   loadColors();
 
-  if (i >= MAX_PALETTE_NUM) 
+  if (i >= MAX_PALETTE_NUM)
   {
    println("WE ONLY HAVE" + MAX_PALETTE_NUM + "PALETTES");
-  } 
-  else 
+  }
+  else
   {
    initColors(i);
   }
  }
 
 
- public Palette(String type) 
+ public Palette(String type)
  {
   hues = new float[COLOR_NUM];
   saturations = new float[COLOR_NUM];
@@ -71,11 +71,11 @@ class Palette
  //********* PUBLIC METHODS ***********
 
  //set methods
- public void initColors() 
+ public void initColors()
  {
   int r = (int) random(colorsInit.length);
 
-  for (int i = 0; i < COLOR_NUM; i++) 
+  for (int i = 0; i < COLOR_NUM; i++)
   {
    colors[i] = colorsInit[r][i];
 
@@ -89,9 +89,9 @@ class Palette
   initialized = true;
  }
 
- public void initColors(int idx) 
+ public void initColors(int idx)
  {
-  for (int i = 0; i < COLOR_NUM; i++) 
+  for (int i = 0; i < COLOR_NUM; i++)
   {
    colors[i] = colorsInit[idx][i];
 
@@ -105,13 +105,13 @@ class Palette
   initialized = true;
  }
 
- public void initColors(String type) 
+ public void initColors(String type)
  {
-  if (type.equals("cold")) 
+  if (type.equals("cold"))
   {
    int r = (int) random(COLD_PALETTES);
 
-   for (int i = 0; i < COLOR_NUM; i++) 
+   for (int i = 0; i < COLOR_NUM; i++)
    {
     colors[i] = colorsInit[r][i];
 
@@ -123,12 +123,12 @@ class Palette
    ID = r;
    name = "cold";
    initialized = true;
-  } 
-  else if (type.equals("warm")) 
+  }
+  else if (type.equals("warm"))
   {
    int r = (int) random(COLD_PALETTES, WARM_PALETTES + COLD_PALETTES);
 
-   for (int i = 0; i < COLOR_NUM; i++) 
+   for (int i = 0; i < COLOR_NUM; i++)
    {
     colors[i] = colorsInit[r][i];
 
@@ -146,27 +146,27 @@ class Palette
 
  //get methods
 
- public int getColorsNumber() 
+ public int getColorsNumber()
  {
   return COLOR_NUM;
  }
 
  //random color
- public color getColor() 
+ public color getColor()
  {
   int r = (int) random(COLOR_NUM);
-  if (initialized) 
+  if (initialized)
   {
    return colors[r];
-  } 
-  else 
+  }
+  else
   {
    println("ERROR: getColor: not initialized.");
    return color(360, 100, 100);
   }
  }
 
- public color getNextColor() 
+ public color getNextColor()
  {
   if (index < COLOR_NUM - 1) index++;
   else index = 0;
@@ -174,14 +174,14 @@ class Palette
  }
 
  //color idx
- public color getColor(int idx) 
+ public color getColor(int idx)
  {
 
-  if (initialized && idx < COLOR_NUM && idx >= 0) 
+  if (initialized && idx < COLOR_NUM && idx >= 0)
   {
    return colors[idx];
-  } 
-  else 
+  }
+  else
   {
    if (!initialized)
     println("ERROR: getColor: not initialized");
@@ -193,18 +193,18 @@ class Palette
  }
 
  //return the darkest color in the Palette
- public color getDarkest() 
+ public color getDarkest()
  {
-  if (initialized) 
+  if (initialized)
   {
    float[] b = new float[COLOR_NUM];
-   for (int i = 0; i < COLOR_NUM; i++) 
+   for (int i = 0; i < COLOR_NUM; i++)
    {
     b[i] = brightness(colors[i]);
    }
    return colors[DSP.argmin(b)];
-  } 
-  else 
+  }
+  else
   {
    println("ERROR: getColor: not initialized.");
    return color(360, 100, 100);
@@ -212,79 +212,79 @@ class Palette
  }
 
  //return the lightest color in the Palette
- public color getLightest() 
+ public color getLightest()
  {
-  if (initialized) 
+  if (initialized)
   {
    float[] b = new float[COLOR_NUM];
-   for (int i = 0; i < COLOR_NUM; i++) 
+   for (int i = 0; i < COLOR_NUM; i++)
    {
     b[i] = brightness(colors[i]);
    }
    return colors[DSP.argmax(b)];
-  } 
-  else 
+  }
+  else
   {
    println("ERROR: getColor: not initialized.");
    return color(360, 100, 100);
   }
  }
 
- public int paletteSize() 
+ public int paletteSize()
  {
   return COLOR_NUM;
  }
 
- public int getID() 
+ public int getID()
  {
   return ID;
  }
 
  //********* SET METHODS **********
 
- public void setColor(color c, int idx) 
+ public void setColor(color c, int idx)
  {
-  if (initialized && idx < COLOR_NUM && idx >= 0) 
+  if (initialized && idx < COLOR_NUM && idx >= 0)
   {
    colors[idx] = c;
   }
  }
 
- public void setID(int i) 
+ public void setID(int i)
  {
   ID = i;
  }
 
- public void influenceColors(float h, float s, float b) 
+ public void influenceColors(float h, float s, float b)
  {
   //create a new color with the same H and S buu with a new B
   color newColor;
 
-  for (int i = 0; i < COLOR_NUM; i++) 
+  for (int i = 0; i < COLOR_NUM; i++)
   {
    newColor = color(hues[i] + (h * 10), saturations[i] + (s * 60), brightnesses[i] + (b * 30));
    colors[i] = newColor;
   }
  }
 
- public void influenceColors(float h, float s, float b, int coeff) 
+ public void influenceColors(float h, float s, float b, int coeff)
  {
   //create a new color with the same H and S buu with a new B
   color newColor;
 
-  for (int i = 0; i < COLOR_NUM; i++) 
+  for (int i = 0; i < COLOR_NUM; i++)
   {
    newColor = color(hues[i] + (h * coeff), saturations[i] + (s * coeff), brightnesses[i] + (b * coeff));
    colors[i] = newColor;
   }
  }
 
- public void desaturate(float amount) 
+ public void desaturate(float amount)
  {
   //create a new color with the same H and S buu with a new B
   color newColor;
 
-  for (int i = 0; i < COLOR_NUM; i++) 
+  for (int i = 0; i < COLOR_NUM; i++)
   {
    newColor = color(hues[i], saturation(colors[i]) - amount, brightnesses[i]);
    colors[i] = newColor;
@@ -292,7 +292,7 @@ class Palette
 
  }
 
- public void saturate(float amount) 
+ public void saturate(float amount)
  {
   //create a new color with the same H and S buu with a new B
   color newColor;
@@ -304,31 +304,31 @@ class Palette
 
  }
 
- public void makeBrighter(float amount) 
+ public void makeBrighter(float amount)
  {
   //create a new color with the same H and S buu with a new B
   color newColor;
 
-  for (int i = 0; i < COLOR_NUM; i++) 
+  for (int i = 0; i < COLOR_NUM; i++)
   {
    newColor = color(hues[i], saturations[i], brightness(colors[i]) + amount);
    colors[i] = newColor;
   }
  }
 
- public void makeDarker(float amount) 
+ public void makeDarker(float amount)
  {
   //create a new color with the same H and S but with a new B
   color newColor;
 
-  for (int i = 0; i < COLOR_NUM; i++) 
+  for (int i = 0; i < COLOR_NUM; i++)
   {
    newColor = color(hues[i], saturations[i], brightness(colors[i]) - amount);
    colors[i] = newColor;
   }
  }
 
- private void loadColors() 
+ private void loadColors()
  {
 
   //GHIACCIO
@@ -375,25 +375,43 @@ class Palette
   colorsInit[5][4] = #DCBF85;
 
   //RED/YELLOW/SAND
-  colorsInit[6][0] = #A63446;
-  colorsInit[6][1] = #F6F4D2;
-  colorsInit[6][2] = #E3C567;
-  colorsInit[6][3] = #F19C79;
-  colorsInit[6][4] = #A44A3F;
+  // colorsInit[6][0] = #A63446;
+  // colorsInit[6][1] = #F6F4D2;
+  // colorsInit[6][2] = #E3C567;
+  // colorsInit[6][3] = #F19C79;
+  // colorsInit[6][4] = #A44A3F;
+  // SUNSET
+  colorsInit[6][0] = #F76A48;
+  colorsInit[6][1] = #98324D;
+  colorsInit[6][2] = #5F7E89;
+  colorsInit[6][3] = #5F7E89;
+  colorsInit[6][4] = #DB4D51;
 
   //SAVANA
-  colorsInit[7][0] = #CE7725;
-  colorsInit[7][1] = #841B1B;
-  colorsInit[7][2] = #7C3626;
-  colorsInit[7][3] = #F5853F;
-  colorsInit[7][4] = #FFCDBC;
+  // colorsInit[7][0] = #CE7725;
+  // colorsInit[7][1] = #841B1B;
+  // colorsInit[7][2] = #7C3626;
+  // colorsInit[7][3] = #F5853F;
+  // colorsInit[7][4] = #FFCDBC;
+  // MOUNTAINS 1
+  colorsInit[7][0] = #47634B;
+  colorsInit[7][1] = #A6B4B3;
+  colorsInit[7][2] = #79A0AE;
+  colorsInit[7][3] = #4A80A7;
+  colorsInit[7][4] = #133246;
 
   //RED/GREEN
-  colorsInit[8][0] = color(135, 60, 95);
-  colorsInit[8][1] = color(60, 64, 70);
-  colorsInit[8][2] = color(18, 68, 100);
-  colorsInit[8][3] = color(30, 30, 90);
-  colorsInit[8][4] = color(350, 40, 73);
+  // colorsInit[8][0] = color(135, 60, 95);
+  // colorsInit[8][1] = color(60, 64, 70);
+  // colorsInit[8][2] = color(18, 68, 100);
+  // colorsInit[8][3] = color(30, 30, 90);
+  // colorsInit[8][4] = color(350, 40, 73);
+  // MOUNTAINS 2
+  colorsInit[8][0] = #F7D5AB;
+  colorsInit[8][1] = #ACC3B9;
+  colorsInit[8][2] = #467F80;
+  colorsInit[8][3] = #084659;
+  colorsInit[8][4] = #ACC3B9;
 
   colorsInit[9][0] = #EAF4D3;
   colorsInit[9][1] = #F6BD60;
