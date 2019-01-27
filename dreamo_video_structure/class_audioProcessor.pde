@@ -5,6 +5,9 @@ class AudioProcessor implements AudioListener
   private float[] left;
   private float[] right;
   private float[] mix;
+  private float[] silence;
+
+  private float SILENCE_THRESHOLD;
 
   private float frameEnergy;
 
@@ -32,6 +35,9 @@ class AudioProcessor implements AudioListener
   {
     left = null;
     right = null;
+
+    silence = new float[bSize];
+    SILENCE_THRESHOLD = 10e-5;
 
     frameEnergy=0;
 
@@ -128,6 +134,10 @@ class AudioProcessor implements AudioListener
 
     mix(); //check if is to slow
 
+    if (frameEnergy < SILENCE_THRESHOLD) {
+      mix = silence.clone();
+    }
+
     //calculate fourier transform
     calcFFT(mix);
 
@@ -222,6 +232,7 @@ class AudioProcessor implements AudioListener
       energy += FastMath.pow(left[i], 2) + FastMath.pow(right[i], 2);
     }
     frameEnergy = (float) energy;
+    //println("frame energy: " + frameEnergy);
   }
 
   private void mix()

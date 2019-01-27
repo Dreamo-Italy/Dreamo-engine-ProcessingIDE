@@ -1,2 +1,10 @@
 *.orig
 *.csv
+*.autosave
+application.windows64
+application.windows32
+application.macosx
+application.linux64
+application.linux32
+application.linux-armv6hf
+application.linux-arm64

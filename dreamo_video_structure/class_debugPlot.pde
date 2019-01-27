@@ -283,12 +283,12 @@
 
   public void update() 
   {
-    if (enableDebugPlots == true)
-     {
-       addNewPoints();
-       removeOldestPoints();     
-       drawPlots();
-     }
+    if (enableDebugPlots ) {
+      addNewPoints();
+      removeOldestPoints();     
+      drawPlots();
+      drawDebugText();
+      }
   }
 
   public void addNewPoints() 
@@ -398,8 +398,7 @@
   
   public void toggleDebugPlots()
   {
-    enableDebugPlots = !enableDebugPlots;
-    println(enableDebugPlots);
+    enableDebugPlots = !enableDebugPlots;   
   }
 
   public void drawPlots() 
@@ -447,5 +446,11 @@
    plots[10].getLayer("AvgRoughness").drawPoints();
    plots[10].getLayer("TH").drawPoints();
    plots[10].getLayer("TH2").drawPoints();
+  }
+  
+  public void drawDebugText()
+  {
+    text("particles: " + global_stage.getCurrentScene().getParticlesNumber() + "; framerate: " + nf(frameRate,2,1) + " \n", marginSpace, interlineSpace );
+    text("                                                      Frame Count: "+frameCount,marginSpace, interlineSpace );
   }
  }
