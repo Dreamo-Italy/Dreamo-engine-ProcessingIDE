@@ -27,8 +27,7 @@ class GhostFaceMarker extends Particle {
   if (indexShifting >= getPalette().COLOR_NUM) indexShifting = 0;
   // **** OPACITY
   println("RMS: " + getParameter(0));
-  // opacity = map(getParameter(0), 0, 0.8, 0, 255);
-  println("opacity: " + opacity);
+
   }
 
 

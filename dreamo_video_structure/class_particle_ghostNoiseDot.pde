@@ -10,9 +10,11 @@ class GhostNoiseDot extends Particle
  int indexShifting;
  float sizeShiftPace;
  boolean nextColor;
+ int FLOOR;
+ float opacity;
 
- void init()
- {
+ void init() {
+  opacity = 255;
   speed = 10;
   dotW = 9;
   dotH = 9;
@@ -35,7 +37,7 @@ class GhostNoiseDot extends Particle
 
   //**** PARAMETERS FROM SCENE DECISIONS
 
-  println(getParameter(2));
+  //println(getParameter(2));
   dotW = gradualShift(dotW, getParameter(2), sizeShiftPace);
   dotH = dotW;
   noiseScale = getParameter(3);
@@ -48,54 +50,51 @@ class GhostNoiseDot extends Particle
   angle = noise((getPosition().getX() + nCrossedX * width) / noiseScale, (getPosition().getY() + nCrossedY * height) / noiseScale) * noiseStrength;
   getSpeed().setDirection(angle);
   getSpeed().setModulus(speed * getParameter(0));
+  opacity = mapForTransparency(getParameter(1), 0, 0.5);
+  //println("dots op: " + opacity);
+  //map(value,lB,uB, 30, 200)
 
   pal.influenceColors(0, mapForSaturation(getParameter(1), 0, 1), 0);
 
   keepInsideTheScreen();
  }
 
- public float getAngle()
- {
+ public float getAngle() {
   return angle;
  }
 
- void trace()
- {
-
+ void trace() {
   noStroke();
-  fill(getPalette().getColor(indexShifting));
+  fill(getPalette().getColor(indexShifting), opacity);
   ellipse(-5, -5, dotW, dotH);
   strokeWeight(1);
   connectParticles(20, 5);
-
  }
 
- void keepInsideTheScreen()
- {
-  if (getPosition().getX() > width)
-  {
+// keep inide part visible in the mapped area (excxlude floor)
+ void keepInsideTheScreen() {
+  if (getPosition().getX() > width) {
    getPosition().setX(getPosition().getX() - width);
    nCrossedX++;
   }
-  if (getPosition().getY() > height)
-  {
+  if (getPosition().getY() > height) {
    getPosition().setY(getPosition().getY() - height);
    nCrossedY++;
   }
-  if (getPosition().getX() < 0)
-  {
+  if (getPosition().getX() < 0) {
    getPosition().setX(getPosition().getX() + width);
-   nCrossedX--;
-  }
-  if (getPosition().getY() < 0)
-  {
-   getPosition().setY(getPosition().getY() + height);
+   nCrossedX--; }
+  if (getPosition().getY() < FLOOR) {
+   getPosition().setY(getPosition().getY() + height - FLOOR);
    nCrossedY--;
   }
-
  }
- public void toggleNextColor()
-  { nextColor = !nextColor;}
 
+ public void toggleNextColor() {
+   nextColor = !nextColor;
+ }
 
+ public void setFloor(int _floor) {
+   FLOOR = _floor;
+ }
 }
