@@ -2,7 +2,7 @@ class Lissajous extends Scene
 {
   private int change;
   private Hysteresis centroidControl;
-  
+
   public void init()
   {
     pal.initColors(0);
@@ -10,32 +10,36 @@ class Lissajous extends Scene
     shape.setPalette(pal);
     shape.disablePhysics();
     addParticle(shape);
-    
+
     Background bk = new Background();
     setBackground(bk);
     enableBackground();
     sceneMood.setMood(0,1);
-    
+
     centroidControl = new Hysteresis(2950,3200,16);
-    
+
   }
-  
-  
+
+
   public void update()
   {
-    
+
    //example of usage
    //TODO: implement histeresis cycle to change status
-   //TODO: implement reliable decision algorithm (na parola) 
-   
+   //TODO: implement reliable decision algorithm (na parola)
+
    colorFadeTo(new Palette(4),7,centroidControl.checkWindow(global_timbre.getCentroidHz()));
    colorFadeTo(new Palette(7),7,!centroidControl.checkWindow(global_timbre.getCentroidHz()));
-   
+
    //println("HISTERESIS: "+centroidControl.check(global_timbre.getCentroidAvg()));
+   println(particlesNumber);
    for(int i = 0; i < particlesNumber; i++)
      {
        particlesList[i].updatePhysics();
-       particlesList[i].setParameter(0,global_dyn.getRMS());
+       particlesList[i].setParameter(0,global_dyn.getRMS()); //<>//
+       particlesList[i].setParameter(1, audio_decisor.getFeaturesVector()[10]);   //Roughness
+       particlesList[i].setParameter(2, audio_decisor.getFeaturesVector()[8]);   //Complexity
+       particlesList[i].setParameter(3, audio_decisor.getInstantFeatures()[6]);   //Complexity
        particlesList[i].setPalette(this.pal);
        particlesList[i].update();
      }

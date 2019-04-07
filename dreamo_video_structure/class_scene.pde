@@ -20,7 +20,7 @@ abstract class Scene extends AgingObject
   private boolean reflectHorizontally;
   private boolean reflectVertically;
 
-  //fading 
+  //fading
   private boolean isFading;
   private int startFading;
   private int endFading;
@@ -72,19 +72,19 @@ abstract class Scene extends AgingObject
     isFading=false;
   }
 
-  
+
   public int getParticlesNumber() { return particlesNumber; }
- 
+
   public void setBackground(Background newBackground) { sceneBackground = newBackground; }
-  
+
   public void enableBackground() { backgroundEnabled = true; }
- 
+
   public void disableBackground() { backgroundEnabled = false; }
- 
+
   public void setHorizontalReflection(boolean newValue) { reflectHorizontally = newValue; }
-  
+
   public void setVerticalReflection(boolean newValue) { reflectVertically = newValue; }
- 
+
   public void addParticle(Particle toAdd)
   {
     if (particlesNumber < PARTICLES_MAX)
@@ -99,7 +99,7 @@ abstract class Scene extends AgingObject
         toAdd.init();
         toAdd.assertInitialised();
       }
-    } 
+    }
     else
     {
       println("Warning: reached maximum number of particles for a Scene. Last Particle wasn't added.");
@@ -112,7 +112,7 @@ abstract class Scene extends AgingObject
     if (indexToGet < particlesNumber)
     {
       return particlesList[indexToGet]; // the object pointed by particlesList[indexToRemove] has now no reference and will be removed from memory
-    } 
+    }
     else
     {
       println("Warning: cannot get particle by list index, index higher than instance number.");
@@ -121,11 +121,11 @@ abstract class Scene extends AgingObject
   }
 
   public Palette getPalette() { return pal; }
- 
+
   public void setPalette(Palette p) { this.pal=p; }
- 
+
   public void sortParticlesList() { Arrays.sort(particlesList, new ParticleComparator()); }
- 
+
   public void removeParticleById(int idToRemove)
   {
     boolean match = false;
@@ -174,7 +174,7 @@ abstract class Scene extends AgingObject
     {
       particlesList[particlesNumber] = null;
       particlesNumber--;
-    } 
+    }
     else
     {
       println("Warning: cannot pop any more particles from the scene.");
@@ -198,7 +198,7 @@ abstract class Scene extends AgingObject
   {
     for (int i = 0; i < particlesNumber; i++)
     {
-      particlesList[i].updatePhysics();      
+      particlesList[i].updatePhysics();
       particlesList[i].update();
     }
   }
@@ -259,7 +259,7 @@ abstract class Scene extends AgingObject
 
 
   public void colorFadeTo(Palette p, int seconds, boolean activate)
-  {       
+  {
     if (this.pal.getID()!=p.getID()) //if it's not the same palette
     {
       if (activate || isFading) {
@@ -270,7 +270,7 @@ abstract class Scene extends AgingObject
           endFading=frameCount+seconds*global_fps;
           targetPal=p;
           isFading=true; //now scene is fading
-        } 
+        }
         else  //continue fading
         {
           if (frameCount<=endFading)//fading finished?
@@ -279,11 +279,11 @@ abstract class Scene extends AgingObject
             for (int i=0; i<this.pal.paletteSize(); i++)
             {
 
-              println("... FADING... ");
+              if (frameCount % 30 == 0 ) {println("... FADING... ");}
               this.pal.setColor(lerpColor(this.pal.getColor(i), targetPal.getColor(i), map(frameCount, startFading, endFading, 0, 1)), i);
             }
-          } else //finished 
-          { 
+          } else //finished
+          {
             this.setPalette(targetPal); //overwrite palette
             isFading=false;
           }
@@ -303,16 +303,16 @@ abstract class Scene extends AgingObject
         //startFading=frameCount;
         endFading=frameCount+seconds*global_fps;
         changingBrightness=true; //now scene is fading
-      } 
+      }
       else  //continue fading
       {
         if (frameCount<=endFading)//fading finished?
         {
           //set the colors of the palette
           this.pal.makeDarker(amount/(seconds*global_fps));
-        } 
-        else //finished 
-        { 
+        }
+        else //finished
+        {
           changingBrightness=false;
         }
       }
@@ -322,7 +322,7 @@ abstract class Scene extends AgingObject
 
   public void lightenColors(int seconds, float amount, boolean activate)
   {
-    if (activate || changingBrightness) 
+    if (activate || changingBrightness)
     {
 
       //if the scene is not already fading
@@ -337,8 +337,8 @@ abstract class Scene extends AgingObject
         {
           //set the colors of the palette
           this.pal.makeBrighter(amount/(seconds*global_fps));
-        } else //finished 
-        { 
+        } else //finished
+        {
           changingBrightness=false;
         }
       }
@@ -348,7 +348,7 @@ abstract class Scene extends AgingObject
 
   public void saturateColors(int seconds, float amount, boolean activate)
   {
-    if (activate || changingSaturation) 
+    if (activate || changingSaturation)
     {
 
       //if the scene is not already fading
@@ -357,7 +357,7 @@ abstract class Scene extends AgingObject
         //startFading=frameCount;
         endFading=frameCount+seconds*global_fps;
         changingSaturation=true; //now scene is fading
-      } 
+      }
       else  //continue fading
       {
         if (frameCount<=endFading)//fading finished?
@@ -365,9 +365,9 @@ abstract class Scene extends AgingObject
           println("SATURATING");
 
           this.pal.saturate(amount/(seconds*global_fps));
-        } 
-        else //finished 
-        { 
+        }
+        else //finished
+        {
           changingSaturation=false;
         }
       }
@@ -377,7 +377,7 @@ abstract class Scene extends AgingObject
 
   public void desaturateColors(int seconds, float amount, boolean activate)
   {
-    if (activate || changingSaturation) 
+    if (activate || changingSaturation)
     {
 
       //if the scene is not already fading
@@ -386,16 +386,16 @@ abstract class Scene extends AgingObject
         //startFading=frameCount;
         endFading=frameCount+seconds*global_fps;
         changingSaturation=true; //now scene is fading
-      } 
+      }
       else  //continue fading
       {
         if (frameCount<=endFading)//fading finished?
         {
           //set the colors of the palette
           this.pal.desaturate(amount/(seconds*global_fps));
-        } 
-        else //finished 
-        { 
+        }
+        else //finished
+        {
           changingSaturation=false;
         }
       }
@@ -406,11 +406,11 @@ abstract class Scene extends AgingObject
   protected String choosePaletteFromAudio()
   {
     //TODO: tune this parameter
-    if (audio_decisor.getPaletteIndicator()>PALETTE_THRESHOLD) 
+    if (audio_decisor.getPaletteIndicator()>PALETTE_THRESHOLD)
     {
       return "warm";
-    } 
-    else 
+    }
+    else
     {
       return "cold";
     }
@@ -448,7 +448,7 @@ abstract class Scene extends AgingObject
     }
     return el;
   }
-  
+
   protected float chooseRotationFromAudio()
   {
     float rot=0;
@@ -481,7 +481,7 @@ abstract class Scene extends AgingObject
     }
     return rot;
   }
-  
+
   protected float chooseThicknessFromAudio()
   {
     float t=0;
@@ -514,8 +514,8 @@ abstract class Scene extends AgingObject
     }
     return t;
   }
-  
-  
+
+
   protected float chooseVibrationFromAudio()
   {
     float vib=0;
@@ -548,22 +548,22 @@ abstract class Scene extends AgingObject
     }
     return vib;
   }
-  
-  
+
+
   protected float chooseVibrationRangeFromAudio()
   {
     float range=0;
-    
+
     if(audio_decisor.getFeaturesVector()[0]<0.05) {range=3/0.05;}
     else range=3/audio_decisor.getFeaturesVector()[0];
-    
+
     return range;
   }
-  
+
   protected float chooseResolutionFromAudio()
   {
-    float res=0; 
-    
+    float res=0;
+
     if(audio_decisor.getStatusVector()[3]==0 || audio_decisor.getStatusVector()[3]==-1)
     {
       if(audio_decisor.getFeaturesVector()[3]<3 || audio_decisor.getFeaturesVector()[0]<0.01 ) res=2; //basic shape when silence or very smooth sound
@@ -580,6 +580,6 @@ abstract class Scene extends AgingObject
     }
     return res;
   }
-  
+
   abstract void init();
 }
