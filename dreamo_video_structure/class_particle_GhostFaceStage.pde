@@ -1,17 +1,17 @@
-class GhostFaceMarker extends Particle {
+class GhostFaceStage extends Particle {
   // color
   int indexShifting;
   boolean nextColor;
   //fading
   float opacity;
-  final int INIT_OPACITY = 250;
-  final int FINAL_OPACITY = 20;
-  final int FADE_DURATION = 60; // ~= 2 seconds
+  final int INIT_OPACITY = 40;
+  final int FINAL_OPACITY = 5;
+  final int FADE_DURATION = 90; // ~= 3 seconds
   private boolean isFading;
   private int endFading;
 
  void init() {
-   opacity = 255;
+   opacity = 5;
    indexShifting = 0;
    nextColor = false;
    isFading = false;
@@ -19,50 +19,13 @@ class GhostFaceMarker extends Particle {
  }
 
  void update() {
-  //**** PARAMETERS FOR DIRECT INFLUENCE
-  setParameter(0, audio_decisor.getInstantFeatures()[0]); //RMS istantaneo
 
-  //**** COLORS
-  if (nextColor && indexShifting < getPalette().COLOR_NUM) {indexShifting++; nextColor = false;}
-  if (indexShifting >= getPalette().COLOR_NUM) indexShifting = 0;
-  // **** OPACITY
-  //println("RMS: " + getParameter(0));
-
-  }
-
+ }
 
  void trace() {
   noStroke();
-  fill(getPalette().getColor(indexShifting), opacity);
-
-  // occhio left
-  beginShape();
-  vertex(694, 393);
-  vertex(703, 393);
-  vertex(703, 390);
-  vertex(691, 390);
-  endShape();
-  // orecchio DX
-  beginShape();
-  vertex(495, 625);
-  vertex(505, 626);
-  vertex(511, 415);
-  vertex(504, 414);
-  endShape();
-  // occhio right
-  beginShape();
-  vertex(571, 392);
-  vertex(580, 393);
-  vertex(580, 390);
-  vertex(571, 389);
-  endShape();
-  // orecchio left
-  beginShape();
-  vertex(779, 628);
-  vertex(792, 628);
-  vertex(766, 419);
-  vertex(759, 417);
-  endShape();
+  fill(#fffce6, opacity);
+  ellipse(650, 450, 410, 490);
  }
 
  public void fadeIn() {
@@ -76,11 +39,12 @@ class GhostFaceMarker extends Particle {
      if (frameCount <= endFading && opacity < INIT_OPACITY) {
        // fading not finished
        // increment opacity
-       println("fading in");
+       println("stage fading in");
         opacity += (float)(INIT_OPACITY - FINAL_OPACITY) / FADE_DURATION;
       } else {
        // fading finished
        isFading = false;
+       println("stage final opacity: " + opacity);
      }
    }
  }

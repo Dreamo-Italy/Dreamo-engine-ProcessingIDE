@@ -50,9 +50,9 @@ class GhostNoiseDot extends Particle
   angle = noise((getPosition().getX() + nCrossedX * width) / noiseScale, (getPosition().getY() + nCrossedY * height) / noiseScale) * noiseStrength;
   getSpeed().setDirection(angle);
   getSpeed().setModulus(speed * getParameter(0));
-  opacity = mapForTransparency(getParameter(1), 0, 0.5);
+  // opacity = mapForTransparency(getParameter(1), 0, 0.5);
+  opacity = map(getParameter(1), 0, 0.5, 2, 250);
   //println("dots op: " + opacity);
-  //map(value,lB,uB, 30, 200)
 
   pal.influenceColors(0, mapForSaturation(getParameter(1), 0, 1), 0);
 
@@ -68,7 +68,7 @@ class GhostNoiseDot extends Particle
   fill(getPalette().getColor(indexShifting), opacity);
   ellipse(-5, -5, dotW, dotH);
   strokeWeight(1);
-  connectParticles(20, 5);
+  connectParticles(70, 20);
  }
 
 // keep inide part visible in the mapped area (excxlude floor)
