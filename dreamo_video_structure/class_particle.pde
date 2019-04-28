@@ -23,6 +23,7 @@ abstract class Particle extends AgingObject
   private boolean initialised; // has init() been called?
 
   protected Palette pal;
+  private Palette targetPal;
   private int colorindex;
 
   private boolean sceneChanged; //has the scene changed (while the particle is persistent)?
@@ -35,6 +36,11 @@ abstract class Particle extends AgingObject
 
   private boolean warpAtBorders;
   private boolean bounceAtBorders;
+
+  //fading
+  private boolean isFading;
+  private int startFading;
+  private int endFading;
 
   //CONTRUCTORS
   public Particle()
@@ -297,6 +303,40 @@ abstract class Particle extends AgingObject
           }
         }
      }
+  }
+
+  public void colorFadeTo(Palette p, int seconds, boolean activate) {
+    //if it's not the same palette
+    if (this.pal.getID() != p.getID()) {
+      if (activate || isFading) {
+        //if the scene is not already fading
+        if (!isFading) //set starting and ending frames
+        {
+          startFading = frameCount;
+          endFading = frameCount + seconds * global_fps;
+          targetPal = p;
+          isFading = true; //now scene is fading
+        }
+        else  //continue fading
+        {
+          if (frameCount <= endFading)//fading finished?
+          {
+            //set the colors of the palette
+            for (int i=0; i < this.pal.paletteSize(); i++)
+            {
+              println("... PARTICLE FADING... ");
+              this.pal.setColor(lerpColor(this.pal.getColor(i), targetPal.getColor(i), map(frameCount, startFading, endFading, 0, 1)), i);
+            }
+          } else //finished
+          {
+            println("current palette: " + this.pal.getID());
+            println("target palette: " + p.getID());
+            this.setPalette(targetPal); //overwrite palette
+            isFading = false;
+          }
+        }
+      }
+    }
   }
 
   public void setMaxAlpha(int a)

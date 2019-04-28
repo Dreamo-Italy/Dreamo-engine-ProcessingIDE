@@ -1,6 +1,7 @@
 class GhostFace extends Scene {
   // markers
   GhostFaceMarker markers;
+  GhostFaceStage stage;
   Hysteresis volumeControl;
   boolean plotMarkers;
   // dots
@@ -8,7 +9,7 @@ class GhostFace extends Scene {
   int change_col_idx;
   int changed;
   // floor
-  final int FLOOR = 234;
+  final int FLOOR = 245;
 
   void init() {
    // palette
@@ -16,7 +17,10 @@ class GhostFace extends Scene {
    pal.initColors();
    // markers
    markers = new GhostFaceMarker();
+   markers.setPalette(pal);
    addParticle(markers);
+   stage = new GhostFaceStage();
+   addParticle(stage);
    volumeControl = new Hysteresis(0.02, 0.08, 11);
    // dots
    final int row = 9; //10
@@ -46,21 +50,28 @@ class GhostFace extends Scene {
    // check RMS
    plotMarkers = !volumeControl.checkWindow(audio_decisor.getInstantFeatures()[0]);
    if (plotMarkers) {
+     boolean fadeColor = ((frameCount % 60) == 0);
+     println("fade markers color: " + fadeColor);
      markers.fadeIn();
+     markers.colorFadeTo(new Palette("warm"), 1, fadeColor);
+     stage.fadeOut();
    } else {
      markers.fadeOut();
+     stage.fadeIn();
    }
-   println("plot markers: " + plotMarkers);
+   //println("plot markers: " + plotMarkers);
    // noise dots
    colorFadeTo(new Palette(choosePaletteFromAudio()), 2, audio_decisor.getPaletteChange()); //choose warm or cold palette
    changed = 0;
 
    for (int i = 0; i < particlesNumber; i++) {
      particlesList[i].updatePhysics();
-     particlesList[i].setPalette(this.pal);
      particlesList[i].setParameter(2, 10 + 1.4 * chooseThicknessFromAudio());
      particlesList[i].setParameter(3, 1200 / chooseVibrationFromAudio());
      particlesList[i].setParameter(4, 200 * chooseElasticityFromAudio());
+     if (!plotMarkers) {
+       particlesList[i].setPalette(this.pal);
+     }
 
      // Change the color of 'change_col_number' particles at a time
      if ((audio_decisor.getChangesNumber() > 0) && (frameCount % 5 == 0 )) {
@@ -95,5 +106,8 @@ class GhostFace extends Scene {
     fill(getPalette().getColor(1));
     stroke(getPalette().getColor(1));
     rect(0, 0, 1280, FLOOR);
+
+    // text(mouseX, width/2, height/2);
+    // text(mouseY, width/2, height/2 + 50);
   }
 }
