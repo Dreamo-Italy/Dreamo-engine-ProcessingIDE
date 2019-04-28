@@ -6,6 +6,7 @@ class NoiseDot extends Particle
  float noiseScale;
  float noiseStrength;
  float angle;
+ float sizeShiftPace;
  float nCrossedX, nCrossedY;
  int indexShifting;
  boolean nextColor;
@@ -21,6 +22,7 @@ class NoiseDot extends Particle
   nCrossedY = 0;
   indexShifting = 0;
   nextColor = false;
+  sizeShiftPace = 0.05 ; //0 to 1; 0 never changes size; 1 changes immediately.
   getPalette().getNextColor(); // TRYING TO IMPLEMENT RANDOM COLOR AT THE BEGGINING
  }
 
@@ -31,8 +33,10 @@ class NoiseDot extends Particle
   setParameter(1, audio_decisor.getFeaturesVector()[0]); //RMS mediato (2 sec)
 
   //**** PARAMETERS FROM SCENE DECISIONS
-  dotW = getParameter(2);
-  dotH = getParameter(2);
+  // dotW = getParameter(2);
+  // dotH = getParameter(2);
+  dotW = gradualShift(dotW, getParameter(2), sizeShiftPace);
+  dotH = dotW;
   noiseScale = getParameter(3);
   noiseStrength = getParameter(4);
 
@@ -43,6 +47,7 @@ class NoiseDot extends Particle
   angle = noise((getPosition().getX() + nCrossedX * width) / noiseScale, (getPosition().getY() + nCrossedY * height) / noiseScale) * noiseStrength;
   getSpeed().setDirection(angle);
   getSpeed().setModulus(speed * getParameter(0));
+
 
   pal.influenceColors(0, mapForSaturation(getParameter(1), 0, 1), 0);
 
