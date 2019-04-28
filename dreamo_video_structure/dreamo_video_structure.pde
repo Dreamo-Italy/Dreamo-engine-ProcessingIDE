@@ -38,13 +38,14 @@ void setup()
   //****** SCENES ********
   global_stage.addScene(new BlankScene());
   // global_stage.addScene(new AudioDebug());
-  global_stage.addScene(new GhostFace());
+  // global_stage.addScene(new GhostFace());
   // global_stage.addScene(new ScenePerlinNoise());
   // global_stage.addScene(new Scene_Example());
   // global_stage.addScene(new ScenePlotter());
   // global_stage.addScene(new Spirals());
   // global_stage.addScene(new CrazyL());
-  // global_stage.addScene(new Lissajous());
+   //global_stage.addScene(new Lissajous());
+   global_stage.addScene(new Lissajous2());
   // global_stage.addScene(new LineLine1());
 
  //**** DEBUG PLOTS

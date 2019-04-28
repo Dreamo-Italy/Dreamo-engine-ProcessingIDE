@@ -209,6 +209,10 @@ abstract class Scene extends AgingObject
     {
       sceneBackground.trace();
     }
+    else
+    {
+      println("Did not trace the backround. Please add sceneBackground.");
+    }
 
     for (int i = 0; i < particlesNumber; i++)
     {
@@ -279,7 +283,7 @@ abstract class Scene extends AgingObject
             for (int i=0; i<this.pal.paletteSize(); i++)
             {
 
-              if (frameCount % 30 == 0 ) {println("... FADING... ");}
+              //if (frameCount % 30 == 0 ) {println("... FADING... ");}
               this.pal.setColor(lerpColor(this.pal.getColor(i), targetPal.getColor(i), map(frameCount, startFading, endFading, 0, 1)), i);
             }
           } else //finished

@@ -1,26 +1,26 @@
 //package dreamo.display;
 
-class Vector2d 
+class Vector2d
 {
  //PRIVATE MEMBERS
  private float x, y;
  private float modulus, direction;
 
  //CONSTRUCTORS
- public Vector2d(float newX_Mod, float newY_Dir, boolean polar) 
+ public Vector2d(float newX_Mod, float newY_Dir, boolean polar)
  {
-  if (polar) 
+  if (polar)
   {
    setModDir(newX_Mod, newY_Dir);
-  } 
-  else 
+  }
+  else
   {
    setXY(newX_Mod, newY_Dir);
   }
  }
 
  //copy constructor
- public Vector2d(Vector2d toCopy) 
+ public Vector2d(Vector2d toCopy)
  {
   x = toCopy.x;
   y = toCopy.y;
@@ -39,7 +39,7 @@ class Vector2d
  public float getDirection() { return direction; }
 
  //set methods
- public void setXY(float newX, float newY) 
+ public void setXY(float newX, float newY)
  {
   x = newX;
   y = newY;
@@ -51,11 +51,11 @@ class Vector2d
 
  public void setY(float newY) { setXY(x, newY); }
 
- public void setModDir(float newModulus, float newDirection) 
+ public void setModDir(float newModulus, float newDirection)
  {
   modulus = newModulus;
   direction = newDirection;
-  if (modulus < 0) 
+  if (modulus < 0)
   {
    direction -= PI;
    modulus = -modulus;
@@ -69,23 +69,25 @@ class Vector2d
  public void setModulus(float newModulus) { setModDir(newModulus, direction); }
 
  public void setDirection(float newDirection) { setModDir(modulus, newDirection); }
- 
+
  //apply methods
  public void applyTranslation() { translate(x, y); }
 
  public void applyRotation() { rotate(direction); }
 
- //functions 
+ //functions
+ public Vector2d addScalar(float parameter) { return new Vector2d(getX() + parameter, getY() + parameter, false); }   //multiplies
+
  public Vector2d mul(float parameter) { return new Vector2d(getX() * parameter, getY() * parameter, false); }   //multiplies
- 
+
  public Vector2d quot(float parameter) { return new Vector2d(getX() / parameter, getY() / parameter, false); }  // quotient
- 
+
  public float distance(Vector2d other) { return dist(x, y, other.getX(), other.getY()); }
- 
+
  public Vector2d sum(Vector2d other)  { return new Vector2d(x + other.getX(), y + other.getY(), false); }
- 
+
  public Vector2d subtract(Vector2d other)  { return new Vector2d(x - other.getX(), y - other.getY(), false); }
- 
+
  public Vector2d mirrorX()  { return new Vector2d(-x, y, false); }
 
  public Vector2d mirrorY() { return new Vector2d(x, -y, false); }
