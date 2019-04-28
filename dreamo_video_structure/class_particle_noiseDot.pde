@@ -10,9 +10,11 @@ class NoiseDot extends Particle
  float nCrossedX, nCrossedY;
  int indexShifting;
  boolean nextColor;
+ float opacity;
 
  void init()
  {
+  opacity = 255;
   speed = 10;
   dotW = 9;
   dotH = 9;
@@ -48,6 +50,7 @@ class NoiseDot extends Particle
   getSpeed().setDirection(angle);
   getSpeed().setModulus(speed * getParameter(0));
 
+  opacity = map(getParameter(1), 0, 0.5, 10, 250);
 
   pal.influenceColors(0, mapForSaturation(getParameter(1), 0, 1), 0);
 
@@ -63,7 +66,8 @@ class NoiseDot extends Particle
  {
 
   noStroke();
-  fill(getPalette().getColor(indexShifting));
+  // fill(getPalette().getColor(indexShifting));
+  fill(getPalette().getColor(indexShifting), opacity);
   ellipse(-5, -5, dotW, dotH);
   strokeWeight(1);
   connectParticles(50,10);
