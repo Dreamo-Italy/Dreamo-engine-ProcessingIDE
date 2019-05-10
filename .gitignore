@@ -1,3 +1,5 @@
+*.mov
+*.mp4
 *.orig
 *.csv
 *.autosave
