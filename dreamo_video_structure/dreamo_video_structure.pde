@@ -1,3 +1,5 @@
+import processing.video.*;
+
 void setup()
 {
  //****** VIDEO ******
@@ -37,7 +39,6 @@ void setup()
 
   //****** SCENES ********
   global_stage.addScene(new BlankScene());
-  // global_stage.addScene(new AudioDebug());
   // global_stage.addScene(new GhostFace());
   // global_stage.addScene(new ScenePerlinNoise());
   // global_stage.addScene(new Scene_Example());
@@ -47,6 +48,15 @@ void setup()
    //global_stage.addScene(new Lissajous());
    global_stage.addScene(new Lissajous2());
   // global_stage.addScene(new LineLine1());
+
+  /*
+   * WARNING: CAMERA AND VIDEO
+   * Check carefully video path and camera came! System CRASHES id they're wrong.
+   * Put video in "data" folder
+   * Use example GettingStartedCapture to get camera name (Examples -> Video)
+   */
+   // global_stage.addScene(new StaticVideo(this, "movie.mov"));
+   // global_stage.addScene(new CaptureCamera(this, "FaceTime HD Camera"));
 
  //**** DEBUG PLOTS
  global_debugPlots = new DebugPlot(this);
@@ -228,7 +238,10 @@ void keyPressed()
   }
 }
 
-void stop()
-{
+void stop() {
   global_audio.stop();
+}
+
+void movieEvent(Movie m) {
+  m.read();
 }
